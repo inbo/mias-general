@@ -1,0 +1,223 @@
+---
+title: "Clustering IAS"
+author: "Janne Adolf"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../output") })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+list.files("../functions", full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
+```
+
+```{css, echo=FALSE}
+h1, h2 {
+  margin-top: 50px; 
+  margin-bottom: 25px;
+}
+```
+
+
+```{r load-and-manipulate-data}
+#
+# get PrIUS table
+table_prius <- get_table_prius(
+  path = "../../data/raw",
+  colname_prefix = ""
+)
+#
+# get taxon keys
+taxon_keys_prius <- get(
+  load("../../data/processed/taxon_keys_prius_accepted.Rda")
+  ) |> (`[[`)("data")
+taxon_keys_checklist <- get(
+  load("../../data/processed/taxon_keys_checklist_accepted.Rda")
+  ) |> (`[[`)("data")
+#
+# get names
+names_gbif <- get_names_gbif(
+  keys = taxon_keys_prius$key_accepted
+)
+#
+# join data
+table_joint <- taxon_keys_prius |>
+  dplyr::full_join(
+    table_prius |> dplyr::rename(key_prius = nubKey)
+  ) |>
+  dplyr::rename(
+    scientificName_prius = scientificName
+  ) |>
+  dplyr::full_join(
+    names_gbif |> dplyr::rename(key_accepted = key)
+  ) |>
+  dplyr::relocate(
+    scientificName,
+    .before = scientificName_prius
+  ) |>
+    dplyr::relocate(
+    vernacularName,
+    .before = scientificName
+  )
+colnames(table_joint) <- tolower(colnames(table_joint))
+#
+# sort data
+labels_int_groep <- c(
+  "REL-AFW",
+  "REL-AAN-SPO",
+  "REL-AAN-GEV-BEP",
+  "REL-AAN-GEV-VER-BUI",
+  "REL-AAN-GEV-VER-NAT",
+  "IRR"
+  )
+labels_svt <- c(
+  "opkomend",
+  "potentieel opkomend",
+  "onduidelijk",
+  "niet opkomend",
+  "onvoldoende data",
+  "nvt"
+  )
+labels_groep <- c(
+  "dier",
+  "plant"
+  )
+table_joint_upd <- table_joint |>
+  dplyr::arrange(
+    factor(
+      int_groep,
+      levels = labels_int_groep
+    ),
+    factor(
+      groep,
+      levels = labels_groep
+    ),
+    factor(
+      svt_vlaanderen,
+      levels = labels_svt
+    ),
+    soort
+  ) |>
+  dplyr::select(
+    contains(
+      c("soort", "vernacular", "groep", "svt", "key_accepted")
+    )
+  ) |>
+  dplyr::relocate(
+    groep,
+    .before = 1
+  ) |>
+  dplyr::mutate(
+    unilijst = dplyr::case_when(
+      key_accepted %in% taxon_keys_checklist$key_accepted ~ "ja",
+      TRUE ~ "neen"
+    )
+  )
+```
+ 
+
+
+```{r define-make-table-function}
+#
+make_table <- function(
+    data_tab = table_joint_upd,
+    group = "REL-AFW",
+    labels_col = labels_svt,
+    cols = c("#d43d51", "#ea9e6b", "#fbeebe", "#97bb86", "lightgrey", "white")
+) {
+  cols_vlaanderen <- data.frame(
+      svt_vlaanderen = labels_col,
+      col_vlaanderen = cols
+    )
+  cols_n2000 <- data.frame(
+      svt_n2000 = labels_col,
+      col_n2000 = cols
+    )
+  data_tab_prep <- data_tab |>
+    dplyr::filter(get("int_groep") == group) |>
+    dplyr::left_join(x = _, y =  cols_vlaanderen) |>
+    dplyr::left_join(x = _, y =  cols_n2000) |>
+    dplyr::mutate(
+      # add colors
+      svt_vlaanderen = kableExtra::cell_spec(
+        x = get("svt_vlaanderen"),
+        color = get("col_vlaanderen")
+        ),
+      svt_n2000 = kableExtra::cell_spec(
+        x = get("svt_n2000"),
+        color = get("col_n2000")
+        )
+    ) |>
+    dplyr::select(!dplyr::contains(c("int_groep", "col")))
+  knitr::kable(
+    data_tab_prep,
+    format = "html",
+    escape = FALSE
+  ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = c("condensed", "hover"),
+      full_width = FALSE, position = "left"
+      ) |>
+    kableExtra::column_spec(
+      column = c(4, 5),
+      bold = TRUE
+    ) |>
+    kableExtra::row_spec(
+      row = data_tab_prep$soort |> grep("kreeft", x = _),
+      bold = TRUE
+    ) |>
+    kableExtra::collapse_rows(
+      columns = 1,
+      valign = "top"
+    )
+}
+```
+
+
+# On basis of PrIUS groups
+
+## REL-AFW
+
+```{r }
+make_table(group = "REL-AFW")
+```
+
+
+## REL-AAN-SPO
+
+```{r }
+make_table(group = "REL-AAN-SPO")
+```
+
+
+## REL-AAN-GEV-BEP
+
+```{r }
+make_table(group = "REL-AAN-GEV-BEP")
+```
+
+
+## REL-AAN-GEV-VER-BUI
+
+```{r }
+make_table(group = "REL-AAN-GEV-VER-BUI")
+```
+
+
+## REL-AAN-GEV-VER-NAT
+
+```{r }
+make_table(group = "REL-AAN-GEV-VER-NAT")
+```
+
+
+## IRR
+
+```{r }
+make_table(group = "IRR")
+```
