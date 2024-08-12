@@ -1,0 +1,55 @@
+---
+title: "Planning"
+author: "Janne Adolf"
+date: "`r Sys.Date()`"
+output: 
+  html_document
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../output") })
+
+
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+list.files("../functions", full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
+```
+
+```{css, echo=FALSE}
+h1, h2 {
+margin-top: 50px; 
+margin-bottom: 25px;
+}
+```
+
+
+```{r read-in-sheet}
+sheet_url <- paste0(
+  "https://docs.google.com/spreadsheets/d/",
+  "1HpDGXbUmCl_KNabdHB9ESW59m6Wc2x1ccQ8uEktDcRY/edit?usp=sharing"
+)
+data_sheet <- googlesheets4::read_sheet(
+  ss = sheet_url,
+  sheet = "algemeen"
+)
+```
+
+## Fase 1 
+```{r chart-fase-1, fig.width = 40, fig.height = 25}
+make_ganttchart(
+  data_sheet = data_sheet,
+  col_var = "trekker",
+  tasklabel_textsize = 9,
+  tasklabel_linebreak_nchar = 100,
+  brackets_vjust = -1,
+  brackets_distance = 7,
+  barwidth_scalingfactor = 10,
+  show_tasks_withoutdate = FALSE
+) + ggplot2::theme(
+  strip.text = ggplot2::element_blank()
+)
+```
+
+
