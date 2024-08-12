@@ -20,7 +20,8 @@ Research Institute for Nature and Forest (INBO)[^cph][^fnd]
 <!-- community: inbo -->
 
 <!-- description: start -->
-Repository (under construction) accompanying the development of monitoring programmes for the invasive alien species of Union concern.
+Repository (under construction) accompanying the development of monitoring schemes for the invasive alien species of Union concern in Flanders.
+This is an overarching repository.
 <!-- description: end -->
 
 <!-- Anything below here is visible in the README but not in the citation. -->
