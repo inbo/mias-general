@@ -11,6 +11,8 @@ make_ganttchart <- function(
     barwidth_scalingfactor = 5,
     cols4all_palette = "carto.pastel"
  ) {
+  require("data.table") # for :=
+  require("rlang") # for .data$variale
   #
   # process data for plotting
   data_sheet_upd <- data_sheet |>
