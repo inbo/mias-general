@@ -414,7 +414,7 @@
     },
     "checklist": {
       "Package": "checklist",
-      "Version": "0.3.6",
+      "Version": "0.4.0",
       "Source": "Repository",
       "Repository": "inbo",
       "Requirements": [
@@ -441,7 +441,7 @@
         "withr",
         "yaml"
       ],
-      "Hash": "4b6f92490b5d09c31bca16a5e7fd380d"
+      "Hash": "b3d837705be2ce6454dceda916b691bd"
     },
     "class": {
       "Package": "class",
