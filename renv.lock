@@ -416,7 +416,9 @@
       "Package": "checklist",
       "Version": "0.4.0",
       "Source": "Repository",
-      "Repository": "inbo",
+      "Repository": "https://inbo.r-universe.dev",
+      "RemoteUrl": "https://github.com/inbo/checklist",
+      "RemoteSha": "5649985b58693acb88337873ae14a7d5bc018d96",
       "Requirements": [
         "R",
         "R6",
@@ -511,7 +513,9 @@
       "Package": "codemetar",
       "Version": "0.3.5",
       "Source": "Repository",
-      "Repository": "inbo",
+      "Repository": "https://inbo.r-universe.dev",
+      "RemoteUrl": "https://github.com/ropensci/codemetar",
+      "RemoteSha": "f05d72aeae75682a3c88ff976311fcfe118df29d",
       "Requirements": [
         "R",
         "cli",
@@ -1337,7 +1341,9 @@
       "Package": "inborutils",
       "Version": "0.4.0",
       "Source": "Repository",
-      "Repository": "inbo",
+      "Repository": "https://inbo.r-universe.dev",
+      "RemoteUrl": "https://github.com/inbo/inborutils",
+      "RemoteSha": "1bfb7405a58022e8a3b7cf9b97a5c14a9a958d7e",
       "Requirements": [
         "DBI",
         "R",
@@ -1601,14 +1607,16 @@
       "Package": "lubridate",
       "Version": "1.9.3.9000",
       "Source": "Repository",
-      "Repository": "inbo",
+      "Repository": "https://inbo.r-universe.dev",
+      "RemoteUrl": "https://github.com/tidyverse/lubridate",
+      "RemoteSha": "2f3ab321511ac28ab95f729c8fa36fb9170994ea",
       "Requirements": [
         "R",
         "generics",
         "methods",
         "timechange"
       ],
-      "Hash": "eaf995f56a3d6ffcac77e853603371ff"
+      "Hash": "77778d7c6a58ec25c9e9be32965a819d"
     },
     "magrittr": {
       "Package": "magrittr",
@@ -2193,13 +2201,13 @@
     },
     "renv": {
       "Package": "renv",
-      "Version": "1.0.7",
+      "Version": "1.0.9",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
         "utils"
       ],
-      "Hash": "397b7b2a265bc5a7a06852524dabae20"
+      "Hash": "ef233f0e9064fc88c898b340c9add5c2"
     },
     "rex": {
       "Package": "rex",
@@ -2406,7 +2414,7 @@
     },
     "sf": {
       "Package": "sf",
-      "Version": "1.0-16",
+      "Version": "1.0-17",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -2425,7 +2433,7 @@
         "units",
         "utils"
       ],
-      "Hash": "ad57b543f7c3fca05213ba78ff63df9b"
+      "Hash": "453a7d0263eae87a7831242a74fe9b60"
     },
     "shiny": {
       "Package": "shiny",
