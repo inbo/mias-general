@@ -1,0 +1,172 @@
+---
+title: "Species occurrence maps"
+author: ""
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../output/informal") })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+list.files("../functions", full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
+```
+
+```{css, echo=FALSE}
+h1, h2 {
+margin-top: 50px; 
+margin-bottom: 25px;
+}
+```
+
+
+```{r get species names}
+#
+# get names ius add
+# see source/import/get_names_ius_additions.R
+names_ius_add <- get(
+  load("../../data/processed/names_ius_add.Rda")
+)
+```
+
+```{r get species keys}
+#
+# use names to get gbif keys (as an alternative to get_species_keys())
+species_info <- rgbif::name_backbone_checklist(
+  name_data = names_ius_add$data,
+  verbose = TRUE,
+  strict = TRUE
+)
+```
+
+
+```{r get species keys alternative, eval = FALSE}
+#
+# the following code mimics get_species_keys() 
+# as defined in the *first part* of script PRJ_meetnetten-IUS\_overkoepelend\data\R_code_new_EU_Species_BE_occurrences.R
+# but keeps all species info
+#
+# use species_data names to lookup gbif names
+species_info_list <- list()
+for (i in 1:length(names_ius_add$data$scientificname)) {
+  species_info_i <- rgbif::name_backbone(
+    name = names_ius_add$data$scientificname[i]
+  )
+  species_info_list <- append(
+    species_info_list,
+    list(species_info_i)
+  )
+}
+species_info_alt <- species_info_list |>
+  dplyr::bind_rows()
+#
+# are species_data names identical to species_info names?
+assertthat::assert_that(
+  all(names_ius_add$data$scientificname == c(species_info_alt$canonicalName))
+)
+#
+# get synonyms
+synonyms_list <- list()
+for (i in 1:length(names_ius_add$data$scientificname)) {
+  synonym_i <- rgbif::name_suggest(q = names_ius_add$data$scientificname[i], rank = "SPECIES", limit = 10)
+  synonyms_list <- append(
+    synonyms_list,
+    synonym_i
+  )
+}
+synonyms_data <- synonyms_list |>
+  dplyr::bind_rows() |>
+  dplyr::filter(!key %in% species_info_alt$usageKey)
+#
+# are all synonym names in species_info_alt names?
+assertthat::assert_that(
+  all(synonyms_data$canonicalName %in% species_info_alt$canonicalName)
+)
+#
+# look at the names that are additional
+synonyms_data[!synonyms_data$canonicalName %in% species_info_alt$canonicalName, ]
+# they don't seem to be correct:
+# Fusarium acaciae-mearnsii = fungi
+# Phyllactinia broussonetiae-papyriferae = fungi
+# Ovulariopsis broussonetiae-papyriferae = fungi
+# 11641716 = unclear; name_lookup(higherTaxonKey = 11641716) reveals nothing
+# 11425489 (duplicated) = unclear; name_lookup(higherTaxonKey = 11641716) reveals nothing
+)
+```
+
+
+```{r get occurrence data}
+#
+# define (common) arguments for occ search
+occ_args <- list(
+  taxonKey = species_info$usageKey,
+  gadmGid = "BEL.2_1", # id flanders (https://www.gbif.org/occurrence/search)
+  country = "BE", # use or not?
+  limit = 0
+)
+#
+# get occurrence counts
+species_counts <- do.call(
+  eval(parse(text = "rgbif::occ_search")),
+  occ_args
+) |> lapply(
+  X = _,
+  FUN = function(x) {
+    data.frame(count = purrr::pluck(x, "meta", "count"))
+    }
+  ) |>
+  purrr::list_rbind(names_to = "key")
+#
+# get occurrence data
+occ_data_list <- do.call(
+  eval(parse(text = "rgbif::occ_search")),
+  purrr::list_modify(
+    occ_args,
+    taxonKey = species_counts |> dplyr::filter(count > 0) |> dplyr::pull(key),
+    hasCoordinate = TRUE,
+    limit = 10^4
+  )
+)
+```
+
+
+```{r plot maps}
+plot_occ_list <- lapply(
+  occ_data_list,
+  plot_occ_gbif
+)
+```
+
+
+\newpage
+
+# Occurrences of species to be added to unionlist
+
+## Species with 0 occurrences in Flanders
+
+```{r zero occurrences}
+#
+# get keys with 0 occurrences
+keys_zero <- species_counts |> dplyr::filter(count == 0) |> dplyr::pull(key)
+names_zero <- species_info |> 
+      dplyr::filter(usageKey %in% as.numeric(keys_zero )) |>
+      dplyr::pull("canonicalName")
+print(names_zero)
+```
+
+
+```{r print plots in loop, results='asis', out.extra=''}
+  for (i in 1:length(plot_occ_list)){
+    key_i <- names(plot_occ_list)[i]
+    name_i <- species_info |> 
+      dplyr::filter(usageKey == as.numeric(key_i)) |>
+      dplyr::pull("canonicalName")
+    cat(paste0('\n\n## ', name_i))
+    print(plot_occ_list[[i]])
+    cat("\\clearpage")
+  }
+```
