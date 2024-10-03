@@ -1,6 +1,7 @@
 make_ganttchart <- function(
     data_sheet,
     col_var,
+    cols4all_palette = "carto.pastel",
     phase_no_plot = 1,
     show_tasks_withoutdate = FALSE,
     tasklabel_textsize = 3,
@@ -8,9 +9,42 @@ make_ganttchart <- function(
     show_brackets = TRUE,
     brackets_vjust = -0.6,
     brackets_distance = 2,
-    barwidth_scalingfactor = 5,
-    cols4all_palette = "carto.pastel"
- ) {
+    barwidth_scalingfactor = 5
+    ) {
+  #' Make a Gantt chart from a data sheet
+  #'
+  #' @description \code{make_ganttchart} creates a Gantt chart from a data sheet containing planning information. The function is currently limited as it is tailored to a specific google data sheet \href{https://docs.google.com/spreadsheets/d/1HpDGXbUmCl_KNabdHB9ESW59m6Wc2x1ccQ8uEktDcRY/edit?usp=sharing}{website} and does (partly) not generalize beyond it.
+  #'
+  #' @param data_sheet A tibble or data.frame containing the content of the data sheet.
+  #' @param col_var A character string giving the name of the variable in data_sheet that should be mapped to the task bar (\code{\link[ggplot2]{geom_segment}}) color.
+  #' @param cols4all_palette A character string giving the name of the palette to be used from the package \href{https://cran.r-project.org/web/packages/cols4all/}{cols4all}.
+  #' @param phase_no_plot A numeric string or vector providing the index number(s) of the phase(s) to be plotted. Assumes a variable named "phase_no" in data_sheet assuming those numeric value(s).
+  #' @param show_tasks_withoutdate A logical value to control whether tasks without start and end dates should be plotted.
+  #' @param tasklabel_textsize A number providing the desired size of the task labels in the chart. All text element sizes are adjusted relative to this size.
+  #' @param tasklabel_linebreak_nchar A number providing the number of characters after which a line break should be inserted into a task label.
+  #' @param show_brackets A logical value to control whether nested curly brackets should be added to the chart to visually organize the tasks. Assumes variables named "element", "block" and "step" for creating the brackets.
+  #' @param brackets_vjust A number providing the vertical justification of the bracket titles relative to the brackets.
+  #' @param brackets_distance A number providing the distance between the nested brackets.
+  #' @param barwidth_scalingfactor A number providing the scaling factor for the width of task bar (\code{\link[ggplot2]{geom_segment}}).
+  #'
+  #' @return A ggplot object.
+  #'
+  #' @examples
+  #'
+  #' \dontrun{
+  #' make_ganttchart(
+  #'   data_sheet = data_sheet,
+  #'   col_var = "responsible",
+  #'   tasklabel_textsize = 9,
+  #'   tasklabel_linebreak_nchar = 100,
+  #'   brackets_vjust = -1,
+  #'   brackets_distance = 7,
+  #'   barwidth_scalingfactor = 10,
+  #'   show_tasks_withoutdate = FALSE
+  #' )
+  #' }
+  #'
+  #' @export
   require("data.table") # for :=
   require("rlang") # for .data$variale
   #
