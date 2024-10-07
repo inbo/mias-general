@@ -24,7 +24,7 @@ margin-bottom: 25px;
 ```
 
 
-```{r get species names}
+```{r get-species-names}
 #
 # get names ius add
 # see source/import/get_names_ius_additions.R
@@ -33,7 +33,7 @@ names_ius_add <- get(
 )
 ```
 
-```{r get species keys}
+```{r get-species-keys}
 #
 # use names to get gbif keys (as an alternative to get_species_keys())
 species_info <- rgbif::name_backbone_checklist(
@@ -44,7 +44,7 @@ species_info <- rgbif::name_backbone_checklist(
 ```
 
 
-```{r get species keys alternative, eval = FALSE}
+```{r get-species-keys-alternative, eval = FALSE}
 #
 # the following code mimics get_species_keys() 
 # as defined in the *first part* of script PRJ_meetnetten-IUS\_overkoepelend\data\R_code_new_EU_Species_BE_occurrences.R
@@ -99,7 +99,7 @@ synonyms_data[!synonyms_data$canonicalName %in% species_info_alt$canonicalName, 
 ```
 
 
-```{r get occurrence data}
+```{r get-occurrence-data}
 #
 # define (common) arguments for occ search
 occ_args <- list(
@@ -133,11 +133,54 @@ occ_data_list <- do.call(
 )
 ```
 
+```{r transform-occurence-data}
 
-```{r plot maps}
+# load map of Flanders (in Belgian Lambert 72)
+map_flan <- sf::st_read(dsn = "../../data/raw/VRBG_toestand_16-08-2022_GewVLA_Shapefile/Shapefile/Refgem.shp") 
+# files downloaded from: 
+# https://download.vlaanderen.be/product/7904-voorlopig-referentiebestand-gemeentegrenzen-toestand-16082022
+#
+##
+occ_data_list_sflamb <- occ_data_list |> lapply(
+  X = _,
+  FUN = function(x) {
+    #
+    # get data
+    purrr::pluck(x, "data") |>
+      #
+      # convert occ data to sf object 
+      sf::st_as_sf(
+        x = _,
+        coords = c("decimalLongitude", "decimalLatitude"), 
+        crs = "EPSG:4326" # EPSG code for WGS 84 (default on GBIF)
+      ) |>
+      #
+      # transform coordinates 
+      sf::st_transform(
+        x = _,
+        crs = "EPSG:31370" # EPSG code for Belgian Lambert 72
+      )
+  }
+) 
+
+```
+
+
+
+
+
+```{r plot-maps}
+#
 plot_occ_list <- lapply(
-  occ_data_list,
-  plot_occ_gbif
+  1:length(occ_data_list),
+  function(x){
+     plot_occ_gbif(
+       occ_data_sf = occ_data_list_sflamb[[x]],
+       map_data_sf = map_flan,
+       plot_title = paste("Occurrences of", occ_data_list[[x]]$hierarchy[[1]] |> dplyr::filter(rank == "species") |> dplyr::pull(name), "in Flanders"),
+       plot_subtitle =paste("Total count =", occ_data_list[[x]]$meta$count)
+     )
+  }
 )
 ```
 
@@ -148,7 +191,7 @@ plot_occ_list <- lapply(
 
 ## Species with 0 occurrences in Flanders
 
-```{r zero occurrences}
+```{r zero-occurrences}
 #
 # get keys with 0 occurrences
 keys_zero <- species_counts |> dplyr::filter(count == 0) |> dplyr::pull(key)
@@ -157,11 +200,13 @@ names_zero <- species_info |>
       dplyr::pull("canonicalName")
 print(names_zero)
 ```
-
-
-```{r print plots in loop, results='asis', out.extra=''}
+\newpage
+<!-- Species with > 0 occurrences in Flanders -->
+```{r print-plots-loop, results='asis', out.extra=''}
+#
+keys_nonzero <- species_counts |> dplyr::filter(count > 0) |> dplyr::pull(key) 
   for (i in 1:length(plot_occ_list)){
-    key_i <- names(plot_occ_list)[i]
+    key_i <- keys_nonzero[i]
     name_i <- species_info |> 
       dplyr::filter(usageKey == as.numeric(key_i)) |>
       dplyr::pull("canonicalName")
