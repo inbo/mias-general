@@ -203,7 +203,7 @@ occ_data_list_sflamb <- occ_data_list |> lapply(
 ```{r make-plot-list-function}
 #
 make_plot_list <- function(i, occ_data_sf_list, map_data, occ_data_list) {
-  plot_occ_gbif(
+  args_list <- list(
     occ_data_sf = occ_data_sf_list[[i]],
     map_data_sf = map_data,
     plot_title = paste("Occurrences of",
@@ -213,6 +213,7 @@ make_plot_list <- function(i, occ_data_sf_list, map_data, occ_data_list) {
                        "in Flanders"),
     plot_subtitle = paste("Total count =", occ_data_list[[i]]$meta$count)
   )
+  do.call("plot_occ_gbif", args_list)
 }
 ```
 
