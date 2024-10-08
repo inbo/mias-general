@@ -41,6 +41,17 @@ species_info <- rgbif::name_backbone_checklist(
   verbose = TRUE,
   strict = TRUE
 )
+#
+# get and add vernacular names
+species_ven_name <- get_names_gbif(
+  species_info$usageKey
+) |> 
+  dplyr::select(c("scientificName", "vernacularName"))
+species_info <- dplyr::full_join(
+  x = species_info,
+  y = species_ven_name
+)
+
 ```
 
 
@@ -133,14 +144,18 @@ occ_data_list <- do.call(
 )
 ```
 
-```{r transform-occurence-data}
+
+```{r read-map-flanders, results='hide'}
 
 # load map of Flanders (in Belgian Lambert 72)
 map_flan <- sf::st_read(dsn = "../../data/raw/VRBG_toestand_16-08-2022_GewVLA_Shapefile/Shapefile/Refgem.shp") 
 # files downloaded from: 
 # https://download.vlaanderen.be/product/7904-voorlopig-referentiebestand-gemeentegrenzen-toestand-16082022
+
+```
+
+```{r transform-occurence-data}
 #
-##
 occ_data_list_sflamb <- occ_data_list |> lapply(
   X = _,
   FUN = function(x) {
@@ -158,15 +173,12 @@ occ_data_list_sflamb <- occ_data_list |> lapply(
       # transform coordinates 
       sf::st_transform(
         x = _,
-        crs = "EPSG:31370" # EPSG code for Belgian Lambert 72
+        crs = "EPSG:31370" # EPSG code for Belgian Lambert 72 (CRS of map)
       )
   }
 ) 
 
 ```
-
-
-
 
 
 ```{r plot-maps}
@@ -197,7 +209,7 @@ plot_occ_list <- lapply(
 keys_zero <- species_counts |> dplyr::filter(count == 0) |> dplyr::pull(key)
 names_zero <- species_info |> 
       dplyr::filter(usageKey %in% as.numeric(keys_zero )) |>
-      dplyr::pull("canonicalName")
+      dplyr::select(c("scientificName", "vernacularName"))
 print(names_zero)
 ```
 \newpage
@@ -209,8 +221,8 @@ keys_nonzero <- species_counts |> dplyr::filter(count > 0) |> dplyr::pull(key)
     key_i <- keys_nonzero[i]
     name_i <- species_info |> 
       dplyr::filter(usageKey == as.numeric(key_i)) |>
-      dplyr::pull("canonicalName")
-    cat(paste0('\n\n## ', name_i))
+      dplyr::select(c("scientificName", "vernacularName"))
+    cat(paste0('\n\n## ', paste(name_i, collapse = " | ")))
     print(plot_occ_list[[i]])
     cat("\\clearpage")
   }
