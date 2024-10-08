@@ -24,34 +24,53 @@ margin-bottom: 25px;
 ```
 
 
-```{r get-species-names}
+```{r get-species-names-prius, eval = FALSE}
 #
-# get names ius add
+# see source/import/get_names_prius_tabel.R
+names_prius <- get(
+  load("../../data/processed/names_prius.Rda")
+)
+```
+
+
+```{r get-species-names-ius-add}
+#
 # see source/import/get_names_ius_additions.R
 names_ius_add <- get(
   load("../../data/processed/names_ius_add.Rda")
 )
 ```
 
+
+```{r merge-names}
+if (exists("names_prius")) {
+  names_ius <- dplyr::full_join(
+  names_prius$data,
+  names_ius_add$data
+)
+} else {
+  names_ius <- names_ius_add$data
+}
+# replace names_ius_add$data with names_ius
+
+```
+
+
+
 ```{r get-species-keys}
 #
 # use names to get gbif keys (as an alternative to get_species_keys())
 species_info <- rgbif::name_backbone_checklist(
-  name_data = names_ius_add$data,
+  name_data = names_ius,
   verbose = TRUE,
   strict = TRUE
 )
 #
-# get and add vernacular names
-species_ven_name <- get_names_gbif(
-  species_info$usageKey
-) |> 
-  dplyr::select(c("scientificName", "vernacularName"))
+# add vernacular names
 species_info <- dplyr::full_join(
   x = species_info,
-  y = species_ven_name
+  y = names_ius
 )
-
 ```
 
 
@@ -63,9 +82,9 @@ species_info <- dplyr::full_join(
 #
 # use species_data names to lookup gbif names
 species_info_list <- list()
-for (i in 1:length(names_ius_add$data$scientificname)) {
+for (i in 1:length(names_ius$scientificname)) {
   species_info_i <- rgbif::name_backbone(
-    name = names_ius_add$data$scientificname[i]
+    name = names_ius$scientificname[i]
   )
   species_info_list <- append(
     species_info_list,
@@ -77,13 +96,13 @@ species_info_alt <- species_info_list |>
 #
 # are species_data names identical to species_info names?
 assertthat::assert_that(
-  all(names_ius_add$data$scientificname == c(species_info_alt$canonicalName))
+  all(names_ius$scientificname == c(species_info_alt$canonicalName))
 )
 #
 # get synonyms
 synonyms_list <- list()
-for (i in 1:length(names_ius_add$data$scientificname)) {
-  synonym_i <- rgbif::name_suggest(q = names_ius_add$data$scientificname[i], rank = "SPECIES", limit = 10)
+for (i in 1:length(names_ius$scientificname)) {
+  synonym_i <- rgbif::name_suggest(q = names_ius$scientificname[i], rank = "SPECIES", limit = 10)
   synonyms_list <- append(
     synonyms_list,
     synonym_i
@@ -179,22 +198,32 @@ occ_data_list_sflamb <- occ_data_list |> lapply(
 ```
 
 
-```{r plot-maps}
+```{r make-plot-list-function}
+#
+make_plot_list <- function(i, occ_data_sf_list, map_data, occ_data_list){
+  plot_occ_gbif(
+    occ_data_sf = occ_data_sf_list[[i]],
+    map_data_sf = map_data,
+    plot_title = paste("Occurrences of", occ_data_list[[i]]$hierarchy[[1]] |> 
+                         dplyr::filter(rank == "species") |> 
+                         dplyr::pull(name), "in Flanders"),
+    plot_subtitle =paste("Total count =", occ_data_list[[i]]$meta$count)
+  )
+}
+```
+
+
+```{r make-plot-list}
 #
 plot_occ_list <- lapply(
   seq_along(1:length(occ_data_list)),
-  function(i, occ_data_sf_list, map_data, occ_data_list){
-     plot_occ_gbif(
-       occ_data_sf = occ_data_sf_list[[i]],
-       map_data_sf = map_data,
-       plot_title = paste("Occurrences of", occ_data_list[[i]]$hierarchy[[1]] |> dplyr::filter(rank == "species") |> dplyr::pull(name), "in Flanders"),
-       plot_subtitle =paste("Total count =", occ_data_list[[i]]$meta$count)
-     )
-  },
+  make_plot_list,
   occ_data_sf_list = occ_data_list_sflamb,
   map_data = map_flan,
   occ_data_list = occ_data_list
 )
+# to be added functionality here: create 2 plot lists 
+
 ```
 
 
@@ -214,7 +243,9 @@ names_zero <- species_info |>
 print(names_zero)
 ```
 \newpage
+
 <!-- Species with > 0 occurrences in Flanders -->
+
 ```{r print-plots-loop, results='asis', out.extra=''}
 #
 keys_nonzero <- species_counts |> dplyr::filter(count > 0) |> dplyr::pull(key) 
