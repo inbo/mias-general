@@ -7,7 +7,7 @@ if (FALSE) googledrive::drive_auth() # make sure to tick all boxes
 if (FALSE) googledrive::drive_user() # check user
 #
 #
-# ---upload to g-drive----------------------------------------------------------------------
+# ---upload to g-drive------------------------------------------------------
 #
 # upload section rmd files (files already uploaded are skipped)
 files_list <- list.files(
@@ -44,14 +44,14 @@ try(
 )
 #
 #
-# ---download from g-drive ----------------------------------------------------------------------
+# ---download from g-drive -------------------------------------------------
 #
 if (FALSE) {
   trackdown::download_file()
 }
 #
 #
-# ---update on g-drive----------------------------------------------------------------------
+# ---update on g-drive------------------------------------------------------
 #
 if (FALSE) {
   trackdown::update_file()

@@ -14,7 +14,10 @@ names <- get(
 # make (temporary) selection
 names_tmp <- names |>
   dplyr::filter(
-    grepl("Muntiacus reevesi|Faxonius virilis|Procambarus clarkii", scientificName)
+    grepl(
+      "Muntiacus reevesi|Faxonius virilis|Procambarus clarkii",
+      scientificName
+      )
   )
 #
 # create section rmds
@@ -45,7 +48,6 @@ for (i in seq_along(names_tmp[[1]])) {
   #
   # change first headline
   rmd_tmp <- readLines(con = file_i)
-  rmd_tmp [1] <- paste("#", name_full_i)
+  rmd_tmp[1] <- paste("#", name_full_i)
   writeLines(text = rmd_tmp, con = file_i)
 }
-
