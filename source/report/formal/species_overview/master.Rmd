@@ -1,0 +1,33 @@
+---
+title: "Species overview"
+author: "Diederik Strubbe, Janne Adolf"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 1
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(
+  inputFile, 
+  encoding = encoding, 
+  output_dir = "../../../../output/formal/species_overview",
+  output_file = "species_overview.pdf"
+  ) })
+abstract: |
+  `r readLines(con = "abstract/abstract.Rmd", skipNul = TRUE) |> paste(collapse = " ")`
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+```{r child-documents, echo = FALSE, results = 'asis'}
+sections_list <- list.files(path = "sections", full.names = TRUE)
+children_list <- vector(mode = "list", length = length(sections_list))
+for (i in 1:3) {
+      children_list[[i]] <- knitr::knit_child(sections_list[[i]], quiet = TRUE, envir = environment())
+    }
+cat(unlist(children_list), sep = '\n')
+```
