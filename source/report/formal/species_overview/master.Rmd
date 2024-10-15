@@ -1,11 +1,12 @@
 ---
-title: "Species overview"
+title: "Soorten overzicht"
 author: "Diederik Strubbe, Janne Adolf"
 date: "`r Sys.Date()`"
 output: 
   pdf_document:
     toc: true
     toc_depth: 1
+toc-title: "Inhoud"
 knit: (function(inputFile, encoding) {
   rmarkdown::render(
   inputFile, 
