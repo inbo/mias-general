@@ -10,17 +10,15 @@
 
 #### Welke gekende introductieplaatsen zijn er, en kunnen deze worden gerangschikt op basis van hun belangrijkheid in de introductie van de soort?
 
-test test test
-
-#### Additional test question inserted
+*Introductieplaatsen verwijzen naar specifieke locaties en routes waarlangs invasieve soorten een land binnenkomen, zoals via transportmiddelen, handel, sierplanten, huisdieren en andere menselijke activiteiten. Dit omvat ook de natuurlijke verspreiding van invasieve populaties vanuit buurlanden naar Vlaanderen.*
 
 #### Geven de genoemde introductieplaatsen een volledig en nauwkeurig beeld van waar de soort kan opduiken?
 
-test test test
+*Zijn er kennishiaten of onzekerheden die verdere toelichting vereisen?*
 
 #### Hoe gemakkelijk zijn de gekende introductieplaatsen op te volgen?
 
-test test test 
+*Is er bijvoorbeeld een beperkt aantal specifieke introductieplaatsen of zijn er veel potentIële introductieplaatsen? Zijn potentiële introductieplaatsen publiek toegankelijk voor veldmedewerkers?*
 
 #### Hoe groot is de kans dat de soort binnen tien jaar in Vlaanderen opduikt?
 
