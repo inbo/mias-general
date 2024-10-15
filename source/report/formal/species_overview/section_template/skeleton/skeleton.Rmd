@@ -1,19 +1,84 @@
 # Species name
 
-## Subsection
+## Conclusie
 
-### Subsubsection
+*Welke meetnetspecificaties kunnen we uit de volgende overzicht afleiden?*
 
-Edit text here.
+## Overzicht soort
 
+### Introductie en vestiging
 
-### Subsubsection
+#### Welke gekende introductieplaatsen zijn er, en kunnen deze worden gerangschikt op basis van hun belangrijkheid in de introductie van de soort?
 
-Edit text here.
+*Introductieplaatsen verwijzen naar specifieke locaties en routes waarlangs invasieve soorten een land binnenkomen, zoals via transportmiddelen, handel, sierplanten, huisdieren en andere menselijke activiteiten. Dit omvat ook de natuurlijke verspreiding van invasieve populaties vanuit buurlanden naar Vlaanderen.*
 
+#### Geven de genoemde introductieplaatsen een volledig en nauwkeurig beeld van waar de soort kan opduiken?
 
-### Subsubsection
+*Zijn er kennishiaten of onzekerheden die verdere toelichting vereisen?*
 
-Edit text here.
+#### Hoe gemakkelijk zijn de gekende introductieplaatsen op te volgen?
+
+*Is er bijvoorbeeld een beperkt aantal specifieke introductieplaatsen of zijn er veel potentIële introductieplaatsen? Zijn potentiële introductieplaatsen publiek toegankelijk voor veldmedewerkers?*
+
+#### Hoe groot is de kans dat de soort binnen tien jaar in Vlaanderen opduikt?
+
+*Maak voor elke introductieplaats een inschatting ('laag', 'gemiddeld', 'hoog'). Geef ook aan hoe zeker je hiervan bent (weinig, gemiddeld, heel zeker). Indien mogelijk, geef hierbij een korte toelichting (bijvoorbeeld: ik ben heel zeker dat de soort via zeehavens de komende tien jaar in Vlaanderen gaat opduiken).*
+
+#### Hoe groot is de kans dat de soort zich kan vestigen en invasief kan worden in Vlaanderen?
+
+*Maak een inschatting ('laag', 'gemiddeld', 'hoog') op basis van klimaatovereenkomsten, habitatvereisten en de verwachte mate van introductie. Geef ook aan hoe zeker je hiervan bent (weinig, gemiddeld, heel zeker). Een goede klimaat- en habitatmatch kan vestiging al mogelijk maken met weinig individuen, terwijl een middelmatige match succesvol kan zijn bij meerdere introductieplaatsen.
+*
+
+### Verspreiding
+
+#### Geeft de kaart met GBIF waarnemingen van de soort in Vlaanderen in de afgelopen 10 jaar een goed beeld van de huidige verspreiding?
+
+*Indien nee, benoem kort de belangrijkste hiaten, of geef aan als het verspreidingsgebied van de soort onvoldoende bekend is.*
+
+#### Wat zijn de algemene habitatvoorkeuren van de soort?
+
+*Geef kort aan of het een specialist is die specifieke habitats verkiest, of een generalist die in een brede range aan leefomgevingen voorkomt.*
+
+#### Wordt op basis van habitatvoorkeuren, geschikte klimaten, en dispersiecapaciteit verwacht dat de soort zich verder zal verspreiden of uitbreiden binnen de komende 10 jaar?
+
+*Dispersiecapaciteit verwijst naar het vermogen van een soort om zich te verspreiden over een bepaald gebied, en omvat zowel de fysieke afstand die een soort kan afleggen als de snelheid waarmee die verspreiding plaatsvindt. Maak indien mogelijk ook een inschatting van de mate van verspreiding (beperkt, gemiddeld, sterk), en geef aan hoe zeker je hiervan bent (weinig, gemiddeld, heel zeker). Houd rekening met de geschiktheid van klimaat en habitats in Vlaanderen, evenals de mogelijkheden voor natuurlijke verspreiding of verdere verspreiding door menselijk handelen. Deze vraag hoeft niet beantwoord te worden voor soorten die momenteel nog niet in Vlaanderen voorkomen.*
+
+### Impact
+
+### Wat is de verwachte impact van deze soort op biodiversiteit en ecosysteemdiensten in Vlaanderen, ervan uitgaande dat de soort (verder) invasief wordt en geschikte gebieden inneemt? 
+
+*Geef een inschatting van de impact als 'laag', 'gemiddeld' of 'hoog'. Beschrijf daarbij kort de belangrijkste impactmechanismen (zoals predatie, hybridisatie, competitie, etc.). Voor soorten die al in Vlaanderen aanwezig zijn, kan dit gebaseerd worden op daadwerkelijk geobserveerde effecten. Voor andere soorten kan de inschatting gebaseerd zijn op vergelijkbare situaties in andere landen, de ecologie van de soort, gelijkenis met andere invasieve soorten, of andere relevante factoren naar keuze van de expert.*
+
+#### Zijn er naast de impact op biodiversiteit en ecosysteemdiensten ook andere mogelijke gevolgen van deze soort, zoals voor landbouw, economie, volksgezondheid, of andere sectoren? 
+
+*Een korte oplijsting van relevante impacten of sectoren is voldoende, zonder uitgebreide documentatie of rangschikking.*
+
+### Monitoring
+
+#### Welke bemonsterings- of monitoringsmethoden zijn beschikbaar voor deze soort? 
+
+*Geef een lijst van bekende methoden met een korte beschrijving van elke methode. Dit kan bijvoorbeeld het gebruik van eDNA voor invasieve vissoorten of cameravallen voor nachtactieve invasieve zoogdieren omvatten. Andere voorbeelden kunnen vallen, visuele surveys, of akoestische monitoring zijn, afhankelijk van de soort. Een eenvoudige opsomming van de methoden volstaat.*
+
+#### Hoe bruikbaar zijn de genoemde bemonsterings- en monitoringsmethoden voor deze soort? 
+
+*Geef voor elke methode een korte evaluatie met betrekking tot aspecten zoals bijvoorbeeld betrouwbaarheid, schaalbaarheid en kosten. Vermeld ook eventuele kennishiaten of onzekerheden over de beschikbare methodes. Geef een samenvattende inschatting aan of de soort met de bestaande technieken 'makkelijk', 'gemiddeld' of 'moeilijk' te monitoren is.*
+
+#### In welke mate wordt deze soort door de bestaande meetnetten in Vlaanderen opgepikt? 
+
+*De kaart met verspreidingsgegevens is gebaseerd op GBIF-data, inclusief gegevens van waarnemingen.be en verschillende INBO-meetnetten. We willen graag weten hoe goed de huidige meetnetten de soort kunnen detecteren. Bijvoorbeeld, burgerwaarnemingen via waarnemingen.be kunnen een goed beeld geven van de verspreiding van een bepaalde soort, maar er kunnen lacunes zijn in gebieden zoals havenzones waar vrijwilligers moeilijk toegang hebben. Anderzijds kan een soort slecht gedetecteerd worden door vrijwilligers, maar goed opgepikt worden door gespecialiseerde meetnetten, zoals het Meetnet zoetwatervis Vlaanderen. Vermeld welke meetnetten je kent en geef een korte inschatting van hun sterktes en zwaktes voor het detecteren van deze soort.*
+
+### Beheer
+
+#### Hoe wordt de haalbaarheid van beheer ingeschat?
+
+#### Wat zijn nodige en wenselijke beheersmaatregelen voor deze soort? 
+
+*Voor nog niet gevestigde soorten valt het beheer standaard onder 'rapid response', met als doel uitroeiing. Voor reeds gevestigde soorten kan het beheer variëren, afhankelijk van de situatie. Dit kan gericht zijn op: (a) uitroeiing onder rapid response; (b) het indammen van één of meerdere gevestigde populaties om verdere verspreiding te vermijden of te vertragen; (c) het vrijhouden van specifieke gebieden, zoals natuurreservaten, van invasie door de soort; (d) het beperken van de abundantie van de soort in bepaalde gebieden tot een ‘laag’ niveau of onder een drempelwaarde. Voor elk van deze beheerscenario's, indien van toepassing, beschrijf kort het gevorderde beheer.*
+
+#### Wat zijn de informatienoden voor het ondersteunen en evalueren van beheersmaatregelen? 
+
+*Deze vraag richt zich op bestaande en of op te stellen beheersmaatregelen Vermeld welke data en monitoring nodig zijn om het beheer te ondersteunen en te evalueren, en geef eventuele kennisnoden of hiaten aan.*
+
+### Conclusie
 
 \newpage
