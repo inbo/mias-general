@@ -5,6 +5,16 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # -------------------------------------------------------------------------
 #
+# remove old skeleton files
+if (FALSE){
+  tmp <- list.files(
+    path = "source/report/formal/species_overview/sections",
+    pattern = "skeleton",
+    full.names = TRUE
+    )
+  file.remove(tmp)
+}
+#
 # get species names
 names <- get(
   load("data/processed/names_prius.Rda")
@@ -15,7 +25,7 @@ names <- get(
 names_tmp <- names |>
   dplyr::filter(
     grepl(
-      "Muntiacus reevesi|Faxonius virilis|Procambarus clarkii",
+      "Muntiacus reevesi|Faxonius virilis",
       scientificName
       )
   )
@@ -34,7 +44,7 @@ for (i in seq_along(names_tmp[[1]])) {
   #
   # define ouput file
   file_i <- paste0(
-    "source/report/formal/species_overview/sections/", filename_i, ".Rmd"
+    "source/report/formal/species_overview/sections/", filename_i, "_skeleton.Rmd"
   )
   #
   # create new rmd file based on template
@@ -46,8 +56,8 @@ for (i in seq_along(names_tmp[[1]])) {
     )
   )
   #
-  # change first headline
+  # replace species name placeholder
   rmd_tmp <- readLines(con = file_i)
-  rmd_tmp[1] <- paste("#", name_full_i)
-  writeLines(text = rmd_tmp, con = file_i)
+  rmd_tmp_upd <- gsub("Species name", name_full_i, rmd_tmp)
+  writeLines(text =   rmd_tmp_upd, con = file_i)
 }
