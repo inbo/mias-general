@@ -22,3 +22,5 @@ output
 renv/library
 data/raw/*
 data/gis/*
+data/gbif_occcubes/*
+media/
