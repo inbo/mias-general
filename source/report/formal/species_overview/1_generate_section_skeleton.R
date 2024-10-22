@@ -6,7 +6,7 @@ list.files("source/functions", full.names = TRUE) |>
 # -------------------------------------------------------------------------
 #
 # remove old skeleton files
-if (FALSE){
+if (FALSE) {
   tmp <- list.files(
     path = "source/report/formal/species_overview/sections",
     pattern = "skeleton",
@@ -44,7 +44,9 @@ for (i in seq_along(names_tmp[[1]])) {
   #
   # define ouput file
   file_i <- paste0(
-    "source/report/formal/species_overview/sections/", filename_i, "_skeleton.Rmd"
+    "source/report/formal/species_overview/sections/",
+    filename_i,
+    "_skeleton.Rmd"
   )
   #
   # create new rmd file based on template

@@ -10,24 +10,24 @@ if (FALSE) googledrive::drive_user() # check user
 # ---define file paths-------------------------------------------------------
 #
 # root directory
-path <- "source/report/formal/species_overview"
+path <- "source/report/formal/species_overview/"
 #
 # section files
 section_files <- list.files(
-  path = paste0(path, "/sections"),
+  path = paste0(path, "sections"),
   full.names = TRUE
-)|>
+) |>
   grep(pattern = "skeleton", invert = TRUE, value = TRUE)
 #
 # section skeleton file
 skeleton_file <- list.files(
-  path = paste0(path, "/section_template/skeleton/"),
+  path = paste0(path, "section_template/skeleton/"),
   full.names = TRUE
 )
 #
 # abstract file
 abstract_file <- list.files(
-  path = paste0(path, "/abstract/"),
+  path = paste0(path, "abstract/"),
   full.names = TRUE
 )
 #

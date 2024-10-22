@@ -10,4 +10,3 @@ files_source <- list.files(
 files_destination <- files_source |>
   gsub(pattern = "_skeleton", replacement = "", x = _)
 file.copy(from = files_source, to = files_destination, overwrite = TRUE)
-
