@@ -1,0 +1,36 @@
+---
+title: "Phase 1 report"
+author: "Janne Adolf"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 2
+toc-title: "Overview"
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(
+  inputFile, 
+  encoding = encoding, 
+  output_dir = "../../../../output/formal/phase_1",
+  output_file = "phase_1_report.pdf"
+  ) })
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+```{r child-documents, echo = FALSE, results = 'asis'}
+sections_list <- list.files(path = "sections", full.names = TRUE) 
+children_list <- vector(mode = "list", length = length(sections_list))
+for (i in seq_along(sections_list)) {
+      children_list[[i]] <- knitr::knit_child(
+        sections_list[[i]],
+        quiet = TRUE,
+        envir = environment()
+        )
+    }
+cat(unlist(children_list), sep = "\n")
+```
