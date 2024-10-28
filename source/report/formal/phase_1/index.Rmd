@@ -18,7 +18,6 @@ author:
     affiliation: Instituut voor Natuur- en Bosonderzoek (INBO)
 style: INBO
 lang: nl
-
 # report specific options. See ?INBOmd::pdf_report() for full list and more details.
 reviewer:
   - name:
@@ -30,7 +29,7 @@ reviewer:
 funder: Instituut voor Natuur- en Bosonderzoek (INBO)
 rightsholder: Instituut voor Natuur- en Bosonderzoek (INBO)
 community: inbo
-keywords:
+keywords: keyword1
 # year:
 cover_photo:
 # cover_description:
@@ -51,25 +50,22 @@ cooperation:
   - Postal code city
   - https://www.website.com
 # cooperation_logo: uncomment and replace with path to logo or remove line
-
 # pdf report specific options. See ?INBOmd::pdf_report() for full list and more details.
 embargo:
 print:
   copies: 0
   motivation:
   pages:
-
 bibliography: references.bib
 link-citations: TRUE
 site: bookdown::bookdown_site
-
 output:
-  INBOmd::gitbook: default
-  INBOmd::pdf_report: default
-  INBOmd::epub_book: default
   # Don't run the format below.
   # Only required for RStudio to recognise the project as a bookdown project.
   # Hence don't use "Build all formats".
+  INBOmd::pdf_report: default
+  INBOmd::gitbook: default
+  INBOmd::epub_book: default
   bookdown::dontrun: default
 ---
 
