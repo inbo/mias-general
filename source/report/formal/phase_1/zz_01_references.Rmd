@@ -3,4 +3,3 @@
 # set appendix = FALSE, when the report has no appendix
 INBOmd::references(appendix = TRUE)
 ```
-
