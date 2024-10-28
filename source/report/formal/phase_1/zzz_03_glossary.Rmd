@@ -1,0 +1,15 @@
+# Glossary
+
+\benglish
+
+Foo
+
+:   description of foo
+
+Bar
+
+:   descirption of bar
+
+\eenglish
+
+\newpage
