@@ -16,8 +16,8 @@ author:
     email: "firstname2.lastname2@inbo.be"
     orcid: 0000-0000-0000-0000
     affiliation: Research Institute for Nature and Forest (INBO)
-style: Flanders
-lang: en
+style: INBO
+lang: nl
 # report specific options. See ?INBOmd::pdf_report() for full list and more details.
 reviewer:
   - name:
@@ -114,7 +114,7 @@ Summary here.
 
 \newpage
 
-<!--chapter:end:001_abstract.Rmd-->
+<!--chapter:end:00_1_abstract.Rmd-->
 
 # Dutch abstract {-}
 
@@ -122,7 +122,7 @@ Samenvatting hier.
 
 \newpage
 
-<!--chapter:end:002_abstract_dutch.Rmd-->
+<!--chapter:end:00_2_abstract_dutch.Rmd-->
 
 # Dutch executive summary {-}
 
@@ -130,7 +130,7 @@ Uitgebreide samenvatting hier.
 
 \newpage
 
-<!--chapter:end:003_executive_summary_dutch.Rmd-->
+<!--chapter:end:00_3_executive_summary_dutch.Rmd-->
 
 <!-- hier komt de inhoudstafel bij pdf -->
 \mainmatter
@@ -216,8 +216,7 @@ Text here.
 INBOmd::references(appendix = TRUE)
 ```
 
-
-<!--chapter:end:zzz_01_references.Rmd-->
+<!--chapter:end:zz_01_references.Rmd-->
 
 # First appendix
 
@@ -229,7 +228,7 @@ Text here.
 
 \newpage
 
-<!--chapter:end:zzz_02_appendix.Rmd-->
+<!--chapter:end:zz_02_appendix.Rmd-->
 
 # Glossary
 
@@ -247,5 +246,5 @@ Bar
 
 \newpage
 
-<!--chapter:end:zzz_03_glossary.Rmd-->
+<!--chapter:end:zz_03_glossary.Rmd-->
 
