@@ -1,0 +1,14 @@
+Titel: 
+Subtitel: 
+Auteur(s): Firstname1 Last name1, Firstname2 Lastname2
+Contactpersoon: firstname1.lastname1@inbo.be
+Afbeelding voor cover: 
+Embargo tot: 
+Geen druk
+Titel: 
+Subtitel: 
+Auteur(s): Firstname1 Last name1, Firstname2 Lastname2
+Contactpersoon: 
+Afbeelding voor cover: 
+Embargo tot: 
+Geen druk

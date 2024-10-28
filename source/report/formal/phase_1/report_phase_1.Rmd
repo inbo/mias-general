@@ -1,0 +1,251 @@
+---
+# generic options. See ?INBOmd::pdf_report() for full list and more details.
+title:
+# subtitle:
+author: 
+  - name:
+      given: Firstname1
+      family: Last name1
+    email: "firstname1.lastname1@inbo.be"
+    orcid: 0000-0002-1825-0097
+    affiliation: Research Institute for Nature and Forest (INBO)
+    corresponding: true
+  - name:
+      given: Firstname2
+      family: Lastname2
+    email: "firstname2.lastname2@inbo.be"
+    orcid: 0000-0000-0000-0000
+    affiliation: Research Institute for Nature and Forest (INBO)
+style: Flanders
+lang: en
+# report specific options. See ?INBOmd::pdf_report() for full list and more details.
+reviewer:
+  - name:
+      given: Firstname
+      family: Lastname
+    email: "firstname.lastname@inbo.be"
+    orcid: 0000-0000-0000-0000
+    affiliation: Research Institute for Nature and Forest (INBO)
+funder: Research Institute for Nature and Forest (INBO)
+rightsholder: Research Institute for Nature and Forest (INBO)
+community: inbo
+keywords: keyword1
+# year:
+cover_photo:
+# cover_description:
+# cover:
+# doi:
+# reportnr:
+# ordernr:
+# depotnr: 
+client:
+  - Organisation (remove client section when not needed)
+  - Street number
+  - Postal code city
+  - https://www.website.com
+# client_logo: uncomment and replace with path to logo or remove line
+# pdf report specific options. See ?INBOmd::pdf_report() for full list and more details.
+embargo:
+print:
+  copies: 0
+  motivation:
+  pages:
+bibliography: references.bib
+link-citations: TRUE
+site: bookdown::bookdown_site
+output:
+  # Don't run the format below.
+  # Only required for RStudio to recognise the project as a bookdown project.
+  # Hence don't use "Build all formats".
+  INBOmd::pdf_report: default
+  INBOmd::gitbook: default
+  INBOmd::epub_book: default
+  bookdown::dontrun: default
+---
+
+# Acknowledgements {-}
+
+Text here.
+
+
+```{r setup, include = FALSE}
+library(knitr)
+opts_chunk$set(
+  echo = FALSE,
+  eval = TRUE,
+  cache = FALSE,
+  warning = TRUE,
+  error = FALSE,
+  message = TRUE
+)
+library(tidyverse)
+library(INBOtheme)
+if (interactive()) {
+  theme_set(theme_inbo(base_size = 10))
+} else {
+  switch(
+    opts_knit$get("rmarkdown.pandoc.to"),
+    html = {
+      opts_chunk$set(dev = "png", dpi = 72)
+      theme_set(theme_inbo(base_size = 12))
+    },
+    latex = {
+      opts_chunk$set(dev = "cairo_pdf", dpi = 300)
+      theme_set(theme_inbo(base_size = 9))
+      update_geom_defaults("point", list(size = 1.5))
+    },
+    epub3 = {
+      opts_chunk$set(dev = "png", dpi = 300)
+      theme_set(theme_inbo(base_size = 12))
+    }
+  )
+}
+```
+
+<!--chapter:end:index.Rmd-->
+
+# Abstract {-}
+
+\benglish
+
+Summary here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:001_abstract.Rmd-->
+
+# Dutch abstract {-}
+
+Samenvatting hier.
+
+\newpage
+
+<!--chapter:end:002_abstract_dutch.Rmd-->
+
+# Dutch executive summary {-}
+
+Uitgebreide samenvatting hier.
+
+\newpage
+
+<!--chapter:end:003_executive_summary_dutch.Rmd-->
+
+<!-- hier komt de inhoudstafel bij pdf -->
+\mainmatter
+
+# Introduction
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:01_introduction.Rmd-->
+
+# Demand side
+
+## Client
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:02_1_1_demand_side_client.Rmd-->
+
+<!--# Demand side -->
+## Users
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:02_1_2_demand_side_users.Rmd-->
+
+# Scientific basis
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:02_2_scientific_basis.Rmd-->
+
+# Existing monitoring
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:02_3_existing_monitoring.Rmd-->
+
+# Conditions
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:02_4_conditions.Rmd-->
+
+```{r references, results = "asis", echo = FALSE}
+# insert the references at this position
+# set appendix = FALSE, when the report has no appendix
+INBOmd::references(appendix = TRUE)
+```
+
+
+<!--chapter:end:zzz_01_references.Rmd-->
+
+# First appendix
+
+\benglish
+
+Text here.
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:zzz_02_appendix.Rmd-->
+
+# Glossary
+
+\benglish
+
+Foo
+
+:   description of foo
+
+Bar
+
+:   descirption of bar
+
+\eenglish
+
+\newpage
+
+<!--chapter:end:zzz_03_glossary.Rmd-->
+
