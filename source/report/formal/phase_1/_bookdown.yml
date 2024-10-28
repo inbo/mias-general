@@ -1,5 +1,5 @@
-book_filename: "my-report.Rmd"
-output_dir: "../output"
+book_filename: "report_phase_1.Rmd"
+output_dir: "../../../../output/formal/phase_1"
 delete_merged_file: FALSE
 language:
   label:
