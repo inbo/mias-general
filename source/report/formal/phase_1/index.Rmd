@@ -8,26 +8,26 @@ author:
       family: Last name1
     email: "firstname1.lastname1@inbo.be"
     orcid: 0000-0002-1825-0097
-    affiliation: Instituut voor Natuur- en Bosonderzoek (INBO)
+    affiliation: Research Institute for Nature and Forest (INBO)
     corresponding: true
   - name:
       given: Firstname2
       family: Lastname2
-    email: "voornaam2.achternaam2@inbo.be"
-    orcid: 0000-0002-1825-0097
-    affiliation: Instituut voor Natuur- en Bosonderzoek (INBO)
-style: INBO
-lang: nl
+    email: "firstname2.lastname2@inbo.be"
+    orcid: 0000-0000-0000-0000
+    affiliation: Research Institute for Nature and Forest (INBO)
+style: Flanders
+lang: en
 # report specific options. See ?INBOmd::pdf_report() for full list and more details.
 reviewer:
   - name:
       given: Firstname
       family: Lastname
     email: "firstname.lastname@inbo.be"
-    orcid: 0000-0002-1825-0097
-    affiliation: Instituut voor Natuur- en Bosonderzoek (INBO)
-funder: Instituut voor Natuur- en Bosonderzoek (INBO)
-rightsholder: Instituut voor Natuur- en Bosonderzoek (INBO)
+    orcid: 0000-0000-0000-0000
+    affiliation: Research Institute for Nature and Forest (INBO)
+funder: Research Institute for Nature and Forest (INBO)
+rightsholder: Research Institute for Nature and Forest (INBO)
 community: inbo
 keywords: keyword1
 # year:
@@ -44,12 +44,6 @@ client:
   - Postal code city
   - https://www.website.com
 # client_logo: uncomment and replace with path to logo or remove line
-cooperation:
-  - Organisation (remove cooperation section when not needed)
-  - Street number
-  - Postal code city
-  - https://www.website.com
-# cooperation_logo: uncomment and replace with path to logo or remove line
 # pdf report specific options. See ?INBOmd::pdf_report() for full list and more details.
 embargo:
 print:
@@ -69,24 +63,10 @@ output:
   bookdown::dontrun: default
 ---
 
-# Dankwoord {-}
+# Acknowledgements {-}
 
-De tekst voor het optionele dankwoord.
+Text here.
 
-# Voorwoord {-}
-
-De tekst voor het optionele voorwoord.
-
-# Samenvatting {-}
-
-<!-- description: start -->
-De tekst voor de verplichte samenvatting.
-Hou het [Heerlijk Helder](https://overheid.vlaanderen.be/communicatie/heerlijk-helder).
-<!-- description: end -->
-
-# Aanbevelingen voor beheer en/of beleid {-}
-
-Verplicht wanneer relevant.
 
 ```{r setup, include = FALSE}
 library(knitr)
