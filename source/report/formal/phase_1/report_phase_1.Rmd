@@ -16,7 +16,7 @@ author:
     email: "firstname2.lastname2@inbo.be"
     orcid: 0000-0000-0000-0000
     affiliation: Research Institute for Nature and Forest (INBO)
-style: INBO
+style: Flanders
 lang: en
 # report specific options. See ?INBOmd::pdf_report() for full list and more details.
 reviewer:
