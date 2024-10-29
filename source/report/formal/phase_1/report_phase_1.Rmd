@@ -17,7 +17,7 @@ author:
     orcid: 0000-0000-0000-0000
     affiliation: Research Institute for Nature and Forest (INBO)
 style: INBO
-lang: nl
+lang: en
 # report specific options. See ?INBOmd::pdf_report() for full list and more details.
 reviewer:
   - name:
