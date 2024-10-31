@@ -2,12 +2,15 @@ function createForm() {
   var form = FormApp.create('questionnaire_test');
 
 
+
   var item = form.addListItem();
   item.setTitle('Which species are you reporting for?');
 
   item.setChoices([
     item.createChoice('[IAS list to be updated]'),
   ]);
+
+  form.addPageBreakItem().setTitle('Sectie 2');
 
   var item = form.addMultipleChoiceItem();
   item.setTitle('Is the species currently present or absent in Vlanders?');
@@ -16,6 +19,7 @@ function createForm() {
     item.createChoice('present'),
     item.createChoice('absent'),
   ]);
+
 
   form.addParagraphTextItem().setTitle('Explain briefly.');
 
