@@ -3,6 +3,8 @@ create_appsscript_gform <- function(
     name_qtype,
     name_q,
     basename_aoptions,
+    name_secno,
+    name_sectitle,
     form_title,
     gdrive_destfolder_id
 ){
@@ -14,8 +16,9 @@ create_appsscript_gform <- function(
     sep = "\n"
   )
   #
+  #
   # loop through each row of data with questions
-  form_script_qa <- c()
+  form_script_sqa <- c()
   for (i in 1:nrow(data_qa)) {
 
     q_type <- data_qa[i, name_qtype] |>
@@ -26,6 +29,17 @@ create_appsscript_gform <- function(
       dplyr::select(contains(basename_aoptions)) |>
       unlist() |>
       na.omit()
+
+    # script part to define new section
+    form_script_s <- NULL
+    if (i > 1) {
+      if (diff(unlist(data_qa[, name_secno]))[i - 1] > 0){
+        form_script_s <- sprintf(
+            "  form.addPageBreakItem().setTitle('%s');\n",
+            data_qa[i, name_sectitle]
+          )
+      }
+    }
 
     # script part to define questions
     form_script_q <- switch(
@@ -76,8 +90,9 @@ create_appsscript_gform <- function(
       NULL
     }
 
-    form_script_qa <- paste(
-      form_script_qa,
+    form_script_sqa <- paste(
+      form_script_sqa,
+      form_script_s,
       form_script_q,
       form_script_a,
       sep = "\n"
@@ -98,7 +113,7 @@ create_appsscript_gform <- function(
   # finalize google apps scripts
   form_script <- paste(
     form_script_begin,
-    form_script_qa,
+    form_script_sqa,
     form_script_save,
     "}",
     sep = "\n"

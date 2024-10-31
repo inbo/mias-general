@@ -39,6 +39,8 @@ appsscript_gform <- create_appsscript_gform(
     name_qtype = "Question type",
     name_q = "Question",
     basename_aoptions = "Response option",
+    name_secno = "Section number",
+    name_sectitle = "Section title",
     form_title = form_title,
     gdrive_destfolder_id = form_folder_id
 )
