@@ -13,7 +13,7 @@ form_folder_id <- "1INTfoS4vLtt4QmrwWLjhV43UoWjo8aix"
 # title for to be created form
 form_title <- "questionnaire_test"
 # path to locally save google apps scripts
-appscript_outpath = "source/export/survey_experts"
+appscript_outpath <- "source/export/survey_experts"
 #
 #
 # --- import data with questions and answers from google sheet ---------------
@@ -37,7 +37,7 @@ appsscript_gform <- create_appsscript_gform(
 # save script
 writeLines(
   appsscript_gform,
-  paste0(appscript_outpath,"/appsscript_gform.gs")
+  paste0(appscript_outpath, "/appsscript_gform.gs")
   )
 #
 #
@@ -96,7 +96,7 @@ appsscript_dropdownupd <- create_appsscript_dropdownupd(
 # save script
 writeLines(
   appsscript_dropdownupd,
-  paste0(appscript_outpath,"/appsscript_dropdownupd.gs")
+  paste0(appscript_outpath, "/appsscript_dropdownupd.gs")
 )
 #
 #
