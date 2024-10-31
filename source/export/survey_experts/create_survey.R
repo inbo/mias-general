@@ -6,13 +6,21 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- definitions ---------------
 #
-# PRJ_meetnetten-IUS\_overkoepelend\bevraging_soortenexperts\questions.gsheet
-sheet_id <- "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
-# PRJ_meetnetten-IUS\_overkoepelend\bevraging_soortenexperts
-form_folder_id <- "1INTfoS4vLtt4QmrwWLjhV43UoWjo8aix"
-# title for to be created form
+# adjust: title for to be created form
 form_title <- "questionnaire_test"
-# path to locally save google apps scripts
+#
+# adjust: id of sheet with questions
+# currently: PRJ_meetnetten-IUS\_overkoepelend\bevraging_soortenexperts\questions.gsheet
+sheet_id <- "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
+#
+# adjust: name of sheet tab to use
+sheet_tab_name <- form_title
+#
+# keep: id of folder to save form in
+# currently: PRJ_meetnetten-IUS\_overkoepelend\bevraging_soortenexperts
+form_folder_id <- "1INTfoS4vLtt4QmrwWLjhV43UoWjo8aix"
+#
+# keep: path to locally save google apps scripts
 appscript_outpath <- "source/export/survey_experts"
 #
 #
@@ -20,7 +28,7 @@ appscript_outpath <- "source/export/survey_experts"
 #
 data_questions <- googlesheets4::read_sheet(
   ss = sheet_id,
-  sheet = "test"
+  sheet = sheet_tab_name
 )
 #
 #
@@ -41,6 +49,36 @@ writeLines(
   )
 #
 #
+# --- delete previous form version & responses --------------------------------
+#
+if (FALSE){
+  #
+  # get form id
+  form_id <- googledrive::drive_find(
+    pattern = form_title,
+    type = "form",
+    shared_drive = "PRJ_meetnetten-IUS"
+  ) |>
+    dplyr::pull("id") |>
+    googledrive::as_id()
+  #
+  # get form reponses id
+  form_responses_id <- googledrive::drive_find(
+    pattern = form_title,
+    type = "spreadsheet",
+    shared_drive = "PRJ_meetnetten-IUS"
+  ) |>
+    dplyr::pull("id") |>
+    googledrive::as_id()
+  #
+  # remove form
+  googledrive::drive_rm(form_id)
+  #
+  # remove form responses
+  googledrive::drive_rm(form_responses_id)
+}
+#
+#
 # --- add script to google apps script project and execute script-------------
 #
 # manually (only once):
@@ -55,7 +93,7 @@ writeLines(
 # copy and paste its content into the above created apps script project
 # more specifically into a .gs file associated with the project
 # save the project
-# run the function createForm()
+# run the function
 #
 #
 # --- create google apps script which updates a dropdown menu -------------
@@ -109,4 +147,34 @@ writeLines(
 # copy and paste its content into the apps script project
 # more specifically into a (second) .gs file associated with the project
 # save the project
-# run the function updateDropdown()
+# run the function
+#
+#
+# --- create google apps script which retrieves the form view url -------------
+#
+# create apps script
+appsscript_writeviewurl <- create_appsscript_writeviewurl(
+    form_id = form_id,
+    gdrive_destfolder_id = form_folder_id,
+    name_outtxtfile = paste0(form_title, "_viewurl.txt")
+)
+#
+# save script
+writeLines(
+  appsscript_writeviewurl,
+  paste0(appscript_outpath, "/appsscript_writeviewurl.gs")
+)
+#
+#
+# --- add script to google apps script project and execute script-------------
+#
+# manually (whenever a form is ready to send out):
+# ---------------------------------------------------------------------
+# open the local "appsscript_writeviewurl.gs" file here or in a text editor
+# add a new script to the above created apps script project
+# copy and paste its content into the apps script project
+# more specifically into a (second) .gs file associated with the project
+# save the project
+# run the function
+#
+#
