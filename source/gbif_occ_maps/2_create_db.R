@@ -1,0 +1,530 @@
+#' ---
+#' title: "Create database and filter data"
+#' author:
+#' - Damiano Oldoni
+#' - Peter Desmet
+#' date: "`r Sys.Date()`"
+#' output:
+#'   html_document:
+#'     toc: true
+#'     toc_depth: 3
+#'     toc_float: true
+#'     number_sections: true
+#' ---
+#' 
+#' In this document we transform the GBIF download - a csv file containing the occurrences of species for Belgium - into a sqlite database, to handle the large volume of data. Then we filter on issues and occurrence status. Note: some of these steps can take long.
+#' 
+#' # Setup
+#' 
+## ----setup, include=FALSE-------------------------------------------------------------------------------------------------------------------------------
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+#' 
+#' Load libraries:
+#' 
+## ----load_libraries-------------------------------------------------------------------------------------------------------------------------------------
+library(tidyverse)      # To do datascience
+library(tidylog)        # To provide feedback on dplyr functions
+library(here)           # To find files
+library(rgbif)          # To use GBIF services
+library(glue)           # To write queries
+library(RSQLite)        # To interact with SQlite databases
+
+#' 
+#' # Transform CSV to sqlite file
+#' 
+#' ## Get CSV file from GBIF
+#' 
+#' Download the occurrences from GBIF, based on the download key returned in `download.Rmd`:
+#' 
+## ----get_occ_file---------------------------------------------------------------------------------------------------------------------------------------
+key <- "0031758-231002084531237"
+zip_filename <- paste0(key, ".zip")
+zip_path <- here::here("data", "raw", zip_filename)
+if (!file.exists(zip_path)) {
+  occ <- occ_download_get(
+    key = key,
+    path = here::here("data", "raw")
+  )
+}
+
+#' 
+#' Unzip the occurrence text file from the download file:
+#' 
+## ----unzip_csv------------------------------------------------------------------------------------------------------------------------------------------
+occ_file <- paste(key, "occurrence.txt", sep = "_")
+occ_path <- here::here("data", "raw", occ_file)
+
+if (!file.exists(here::here("data", "raw", occ_file))) {
+  unzip(zipfile = zip_path,
+        files = "occurrence.txt",
+        exdir = here::here("data", "raw"))
+  file.rename(from = here::here("data", "raw", "occurrence.txt"),
+              to = occ_path
+  )
+}
+
+#' 
+#' Columns names:
+#' 
+## ----get_cols-------------------------------------------------------------------------------------------------------------------------------------------
+cols_occ_file <- read_delim(occ_path, "\t", n_max = 1, quote = "")
+cols_occ_file <- names(cols_occ_file)
+cols_occ_file
+
+#' 
+#' Number of columns:
+#' 
+## ----n_cols---------------------------------------------------------------------------------------------------------------------------------------------
+length(cols_occ_file)
+
+#' 
+#' ## Create sqlite file
+#' 
+#' ### Database name, path and table name
+#' 
+#' Define name and path of `.sqlite` file:
+#' 
+## ----sqlite_path----------------------------------------------------------------------------------------------------------------------------------------
+sqlite_file <- paste(key, "occurrence.sqlite", sep = "_")
+sqlite_path <- here::here("data", "interim", sqlite_file)
+
+#' 
+#' And table name:
+#' 
+## ----define_table_name----------------------------------------------------------------------------------------------------------------------------------
+table_name <- "occ_all"
+
+#' 
+#' ### Define storage class for each column
+#' 
+#' The standard storage class is `TEXT`:
+#' 
+## ----def_default_cols_type------------------------------------------------------------------------------------------------------------------------------
+# default type: TEXT
+field_types <- rep("TEXT", length(cols_occ_file))
+names(field_types) <- cols_occ_file
+
+#' 
+#' The following columns should be of storage class `INTEGER`:
+#' 
+#' 1. `*Key`, e.g. `taxonKey`, `speciesKey`, but no `datasetKey`
+#' 2. `*DayOfYear`: `startDayOfYear` and  `endDayOfYear`  
+#' 3. `year`
+#' 4. `month`
+#' 5. `day`
+#' 
+## ----set_to_integer-------------------------------------------------------------------------------------------------------------------------------------
+int_fields <- names(field_types)[str_detect(names(field_types), "Key") & 
+                                   names(field_types) != "datasetKey"]
+int_fields <- c(
+  int_fields,
+  names(field_types)[str_detect(names(field_types), "DayOfYear")],
+  names(field_types)[names(field_types) == "year"],
+  names(field_types)[names(field_types) == "month"],
+  names(field_types)[names(field_types) == "day"]
+)
+field_types[which(names(field_types) %in% int_fields)] <- "INTEGER"
+
+#' 
+#' The following columns should be of storage class `REAL`:
+#' 
+#' 1. `decimal*`: `decimalLatitude` and `decimalLongitude`
+#' 2. `coordinate*`: `coordinateUncertaintyInMeters` and `coordinatePrecision`
+#' 3. `pointRadiusSpatialFit`
+#' 
+## ----set_to_real----------------------------------------------------------------------------------------------------------------------------------------
+real_fields <- names(field_types)[str_detect(names(field_types), "decimal")]
+real_fields <- c(
+  real_fields,
+  names(field_types)[str_detect(names(field_types), "coordinate")],
+  names(field_types)[names(field_types) == "pointRadiusSpatialFit"]
+)
+field_types[which(names(field_types) %in% real_fields)] <- "REAL"
+
+#' 
+#' ### Write csv to sqlite
+#' 
+#' Open connection to database:
+#' 
+## ----open_connection_to_db------------------------------------------------------------------------------------------------------------------------------
+sqlite_occ <- dbConnect(SQLite(), dbname = sqlite_path)
+
+#' 
+#' Fill database with occurrences from text file. This step reads the large occurrence file in chunks and transfers them in the sqlite file. This step can take long the first time you run it:
+#' 
+## ----fill_sqlite_file-----------------------------------------------------------------------------------------------------------------------------------
+if (!table_name %in% dbListTables(sqlite_occ)) {
+  dbWriteTable(
+    conn = sqlite_occ,
+    name = table_name,
+    sep = "\t",
+    value = occ_path,
+    row.names = FALSE,
+    header = TRUE,
+    field.types = field_types,
+    overwrite = TRUE
+  )
+}
+
+#' 
+#' 
+#' ## Overview
+#' 
+#' Number of columns present:
+#' 
+## ----check_fields_present-------------------------------------------------------------------------------------------------------------------------------
+cols_occ_db <- dbListFields(sqlite_occ, table_name)
+length(cols_occ_db)
+
+#' 
+#' Number of occurrences:
+#' 
+## ----n_occs_raw-----------------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql(
+    "SELECT COUNT(1) FROM {table}",
+    table = table_name,
+    .con = sqlite_occ
+  )
+n_occs_total <- dbGetQuery(sqlite_occ, query)
+n_occs_total
+
+#' 
+#' Preview first 100 rows from table `occ_all`:
+#' 
+## ----preview_df-----------------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql("SELECT * FROM {table} LIMIT 100",
+                  table = table_name,
+                  .con = sqlite_occ
+)
+preview_df <- dbGetQuery(conn = sqlite_occ, query)
+preview_df
+
+#' 
+#' Are there occurrences without geographical coordinates? If yes (likely due to parsing issues) they should be filtered out in next section.
+#' 
+## ----check_issues_coords--------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql("SELECT * FROM {table} WHERE 
+                  decimalLatitude IS NULL OR 
+                  decimalLongitude IS NULL",
+                  table = table_name,
+                  .con = sqlite_occ)
+suspect_coords_df <- dbGetQuery(sqlite_occ, query)
+suspect_coords_df
+
+#' 
+#' # Filter data
+#' 
+#' ## Define columns to select
+#' 
+#' We define a subset of columns, `cols_to_use`, we are interested to:
+#' 
+## ----columns_to_use-------------------------------------------------------------------------------------------------------------------------------------
+cols_to_use <- c(
+  "gbifID", "scientificName", "kingdom", "phylum", "class", "order", "family",
+  "genus", "specificEpithet", "infraspecificEpithet", "taxonRank", 
+  "taxonomicStatus", "datasetKey", "basisOfRecord", "occurrenceStatus",
+  "lastInterpreted", "hasCoordinate", "hasGeospatialIssues", "decimalLatitude",
+  "decimalLongitude", "coordinateUncertaintyInMeters", "coordinatePrecision",
+  "pointRadiusSpatialFit", "verbatimCoordinateSystem", "verbatimSRS",
+  "eventDate", "startDayOfYear", "endDayOfYear", "year", "month", "day",
+  "verbatimEventDate", "samplingProtocol", "samplingEffort", "issue",
+  "identificationVerificationStatus", "taxonKey", "acceptedTaxonKey",
+  "kingdomKey", "phylumKey", "classKey", "orderKey", "familyKey", "genusKey",
+  "subgenusKey", "speciesKey", "species"
+)
+
+#' 
+#' Columns in occurrence file not in `cols_to_use`:
+#' 
+## ----cols_in_cols_to_use_not_present_in_cols_occ_db-----------------------------------------------------------------------------------------------------
+cols_to_use[which(!cols_to_use %in% cols_occ_db)]
+
+#' 
+#' will be removed from the selection:
+#' 
+## ----remove_cols_not_in_cols_occ_db---------------------------------------------------------------------------------------------------------------------
+cols_to_use <- cols_to_use[which(cols_to_use %in% cols_occ_db)]
+
+#' 
+#' Final number of columns to select:
+#' 
+## ----n_cols_to_use--------------------------------------------------------------------------------------------------------------------------------------
+length(cols_to_use)
+
+#' 
+#' Storage class of these columns:
+#' 
+## ----define_field_type_subset---------------------------------------------------------------------------------------------------------------------------
+field_types_subset <- field_types[which(names(field_types) %in% cols_to_use)]
+field_types_subset
+
+#' 
+#' ## Define filters on occurrences
+#' 
+#' Occurrences containing the following issues should be filtered out:
+#' 
+## ----issues---------------------------------------------------------------------------------------------------------------------------------------------
+issues_to_discard <- c(
+  "ZERO_COORDINATE",
+  "COORDINATE_OUT_OF_RANGE", 
+  "COORDINATE_INVALID",
+  "COUNTRY_COORDINATE_MISMATCH"
+)
+
+#' 
+#' Occurrences with the following occurrence status should be filtered out as well:
+#' 
+## ----occurrenceStatus-----------------------------------------------------------------------------------------------------------------------------------
+occurrenceStatus_to_discard <- c(
+  "absent",
+  "excluded"
+)
+
+#' 
+#' We won't take into account unverified observations neither:
+#' 
+## ----identificationVerificationStatus-------------------------------------------------------------------------------------------------------------------
+identificationVerificationStatus_to_discard <- c(
+  "unverified",
+  "unvalidated",
+  "not validated",
+  "under validation",
+  "not able to validate",
+  "control could not be conclusive due to insufficient knowledge",
+  "uncertain",
+  "unconfirmed",
+  "unconfirmed - not reviewed",
+  "validation requested"
+)
+
+#' 
+#' We create an index based on these three columns if not already present:
+#' 
+## ----create_idx_occStatus_issue-------------------------------------------------------------------------------------------------------------------------
+idx_occStatus_issue <- "idx_verifStatus_occStatus_issue"
+# get indexes on table
+query <- glue_sql(
+    "PRAGMA index_list({table_name})",
+    table_name = table_name,
+    .con = sqlite_occ
+)
+indexes_all <- dbGetQuery(sqlite_occ, query)
+
+# create index if not present
+if (!idx_occStatus_issue %in% indexes_all$name) {
+  query <- glue_sql(
+  "CREATE INDEX {`idx`} ON {table_name} ({`cols_idx`*})",
+  idx = idx_occStatus_issue,
+  table_name = table_name,
+  cols_idx = c("identificationVerificationStatus",
+               "occurrenceStatus",
+               "issue"),
+  .con = sqlite_occ
+  )
+  dbExecute(sqlite_occ, query)
+}
+
+#' 
+#' As issues are semicolon separated (multiple issues could occur), we have to add `'%` before and after the issues for SQLite string matching (`LIKE` operator):
+#' 
+## ----add_%_---------------------------------------------------------------------------------------------------------------------------------------------
+issues_to_discard <- paste0("\'%", issues_to_discard, "%\'")
+
+#' 
+#' We create the subquery for filtering on issue conditions:
+#' 
+## ----subquery_issues------------------------------------------------------------------------------------------------------------------------------------
+issue_condition <- paste("issue NOT LIKE", issues_to_discard, collapse = " AND ")
+issue_condition
+
+#' 
+#' ## Create new table with filtered data
+#' 
+#' New table name: `occ`
+#'  
+## ----new_table_name-------------------------------------------------------------------------------------------------------------------------------------
+table_name_subset <- "occ"
+
+#' 
+#' We create the new table with selected columns and filtered data on `occurrenceStatus` and `issue`:
+#' 
+## ----make_new_table_subset------------------------------------------------------------------------------------------------------------------------------
+if (!table_name_subset %in% dbListTables(sqlite_occ)) {
+  dbCreateTable(conn = sqlite_occ,
+               name = table_name_subset,
+               fields = field_types_subset)
+  query <- glue_sql(
+  "INSERT INTO {small_table} SELECT {`some_cols`*} FROM {big_table} WHERE 
+  LOWER(identificationVerificationStatus) NOT IN ({unverified*}) AND LOWER(occurrenceStatus) NOT IN ({bad_status*}) AND ", issue_condition, 
+  small_table = table_name_subset,
+  some_cols = names(field_types_subset),
+  big_table = table_name,
+  unverified = identificationVerificationStatus_to_discard,
+  bad_status = occurrenceStatus_to_discard,
+  .con = sqlite_occ
+  )
+  dbExecute(sqlite_occ, query)
+}
+
+#' 
+#' ## Overview and control filtered data table
+#' 
+#' ## Structure of `occ` table
+#' 
+#' Check whether the table `occ` has been made:
+#' 
+## ----check_new_table------------------------------------------------------------------------------------------------------------------------------------
+table_name_subset %in% dbListTables(sqlite_occ)
+
+#' 
+#' Columns present:
+#' 
+## ----cols_in_occ----------------------------------------------------------------------------------------------------------------------------------------
+dbListFields(sqlite_occ, name = table_name_subset)
+
+#' 
+#' Number of occurrences:
+#' 
+## ----n_occs_filtered------------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql(
+    "SELECT COUNT(1) FROM {table}",
+    table = table_name_subset,
+    .con = sqlite_occ
+  )
+n_occs <- dbGetQuery(sqlite_occ, query)
+n_occs_total$`COUNT(1)`
+
+#' 
+#' 
+#' ### Check filtered data
+#' 
+#' Are there occurrences without geographical coordinates? It should not.
+#' 
+## ----check_issues_coords--------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql("SELECT * FROM {table} WHERE 
+                  decimalLatitude IS NULL OR 
+                  decimalLongitude IS NULL",
+                  table = table_name_subset,
+                  .con = sqlite_occ)
+invalid_coords <- dbGetQuery(sqlite_occ, query)
+invalid_coords
+
+#' 
+#' We create an index on `occurrenceStatus` to retrieve occurrence status values faster:
+#' 
+## ----create_idx_occStatus-------------------------------------------------------------------------------------------------------------------------------
+idx_occStatus <- "idx_occStatus"
+# get indexes present on table
+query <- glue_sql(
+    "PRAGMA index_list({table_name})",
+    table_name = table_name_subset,
+    .con = sqlite_occ
+)
+indexes <- dbGetQuery(sqlite_occ, query)
+# create index if not present
+if (!idx_occStatus %in% indexes$name) {
+ query <- glue_sql(
+  "CREATE INDEX {idx} ON {table_name} ({cols_idx})",
+  idx = idx_occStatus,
+  table_name = table_name_subset,
+  cols_idx = c("occurrenceStatus"),
+  .con = sqlite_occ
+  )
+ dbExecute(sqlite_occ, query)
+}
+
+#' 
+#' Occurrence status left in the filtered data:
+#' 
+## ----check_occurrenceStatus_values----------------------------------------------------------------------------------------------------------------------
+query <- glue_sql(
+    "SELECT DISTINCT occurrenceStatus FROM {table}",
+    table = table_name_subset,
+    .con = sqlite_occ
+  )
+dbGetQuery(sqlite_occ, query)
+
+#' 
+#' We create an index on `issue` as well:
+#' 
+## ----idx_issue------------------------------------------------------------------------------------------------------------------------------------------
+idx_issue <- "idx_issue"
+if (!idx_issue %in% indexes$name) {
+  query <- glue_sql(
+    "CREATE INDEX {idx} ON {table_name} ({cols_idx})",
+    idx = idx_issue,
+    table_name = table_name_subset,
+    cols_idx = c("issue"),
+    .con = sqlite_occ
+  )
+  dbExecute(sqlite_occ, query)
+}
+
+#' 
+#' Issues left in the filtered data:
+#' 
+## ----check_issues_values--------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql(
+    "SELECT DISTINCT issue FROM {table}",
+    table = table_name_subset,
+    .con = sqlite_occ
+  )
+issues_left <- dbGetQuery(sqlite_occ, query)
+issues_left
+
+#' 
+#' Check presence of the unwanted issues in the issues left:
+#' 
+## ----check_filter_on_issue------------------------------------------------------------------------------------------------------------------------------
+any(map_lgl(issues_to_discard, 
+            function(issue) {
+              any(str_detect(issues_left$issue, issue))
+            }))
+
+#' 
+#' We create an index on `identificationVerificationStatus`:
+#' 
+## ----idx_identificationVerificationStatus---------------------------------------------------------------------------------------------------------------
+idx_issue <- "idx_identificationVerificationStatus"
+if (!idx_issue %in% indexes$name) {
+  query <- glue_sql(
+    "CREATE INDEX {idx} ON {table_name} ({cols_idx})",
+    idx = idx_issue,
+    table_name = table_name_subset,
+    cols_idx = c("identificationVerificationStatus"),
+    .con = sqlite_occ
+  )
+  dbExecute(sqlite_occ, query)
+}
+
+#' 
+#' Identification verification status left in the filtered data:
+#' 
+## ----check_identificationVerificationStatus_values------------------------------------------------------------------------------------------------------
+query <- glue_sql("SELECT identificationVerificationStatus, COUNT(*)
+                  FROM {table}
+                  GROUP BY identificationVerificationStatus
+                  ORDER BY 2 DESC",
+                  table = table_name_subset,
+                  .con = sqlite_occ)
+status_verification_left <- dbGetQuery(sqlite_occ, query)
+status_verification_left
+
+#' 
+#' Overview of all indexes present on `occ`:
+#' 
+## ----index_filtered_table-------------------------------------------------------------------------------------------------------------------------------
+query <- glue_sql(
+    "PRAGMA index_list({table_name})",
+    table_name = table_name_subset,
+    .con = sqlite_occ
+)
+dbGetQuery(sqlite_occ, query)
+
+#' 
+#' Close connection:
+#' 
+## ----close_connection-----------------------------------------------------------------------------------------------------------------------------------
+dbDisconnect(sqlite_occ)
+
