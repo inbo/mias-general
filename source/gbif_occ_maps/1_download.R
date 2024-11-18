@@ -1,121 +1,55 @@
-#' ---
-#' title: "Download GBIF occurrences"
-#' author:
-#' - Damiano Oldoni
-#' - Peter Desmet
-#' date: "`r Sys.Date()`"
-#' output:
-#'   html_document:
-#'     toc: true
-#'     toc_depth: 3
-#'     toc_float: true
-#'     number_sections: true
-#' ---
-#' 
-#' In this document we download (alien) species occurrences for Belgium from [GBIF](https://www.gbif.org), to feed alien species indicators and emerging species assessments.
-#' 
-#' # Setup
-#' 
-## ----setup, include=FALSE-------------------------------------------------------------------------------------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-
-#' 
-#' Load libraries:
-#' 
-## ----load_libraries-------------------------------------------------------------------------------------------------------------------------------------
-library(tidyverse)      # To do data science
-library(here)           # To find files
-library(rgbif)          # To use GBIF services
-library(trias)          # To use functions developed for TrIAS
-library(lubridate)      # To work with dates
-
-#' 
-#' # Define download query parameters
-#' 
-#' ## Taxa
-#' 
-#' We don't filter on taxa in the download step as we need data at class level for compensating research effort bias (see [indicators](https://github.com/trias-project/indicators) repository) later.
-#' 
-#' ## Countries
-#' 
-#' Occurrences from Belgium:
-#' 
-## ----define_countries-----------------------------------------------------------------------------------------------------------------------------------
-countries <- c("BE")
-
-#' 
-#' ## Basis of record
-#' 
-#' All types of occurrences, except `FOSSIL SPECIMEN` and `LIVING SPECIMEN`, which can have misleading location information (e.g. location of captive animal).
-#' 
-## ----define_basis_of_record-----------------------------------------------------------------------------------------------------------------------------
+rm(list = ls())
+#
+# -----------------------------------------------------------------------------
+#
+# define gbif parameters
+scientific_names <- c("Muntiacus reevesi (Ogilby, 1839)", "Faxonius virilis (Hagen, 1870)") # not used
+country <- "BE"
+area_id <- "BEL.2_1" # flanders
 basis_of_record <- c(
-  "OBSERVATION", 
+  "OBSERVATION",
   "HUMAN_OBSERVATION",
-  "MATERIAL_SAMPLE", 
-  "LITERATURE", 
-  "PRESERVED_SPECIMEN", 
-  "UNKNOWN", 
+  "MATERIAL_SAMPLE",
+  "LITERATURE",
+  "PRESERVED_SPECIMEN",
+  "UNKNOWN",
   "MACHINE_OBSERVATION"
-)
-
-#' 
-#' ## Year
-#' 
-#' Occurrences with a valid year:
-#' 
-## ----define_year----------------------------------------------------------------------------------------------------------------------------------------
-year_begin <- 1000
-year_end <- year(Sys.Date())
-
-#' 
-#' ## Geographic coordinates
-#' 
-#' Occurrences with valid geographic coordinates:
-#' 
-## ----define_hasCoordinate-------------------------------------------------------------------------------------------------------------------------------
+) # so, everything but c("FOSSIL_SPECIMEN","LIVING_SPECIMEN")
+year_end <- lubridate::year(Sys.Date())
+year_begin <- year_end - 10
 hasCoordinate <- TRUE
-
-#' 
-#' # Download GBIF occurrences
-#' 
-#' ## Trigger download
-#' 
-#' **Note**: GBIF credentials are required in the next step. 
-#' 
-#' Trigger download:
-#' 
-## ----trigger_gbif_download------------------------------------------------------------------------------------------------------------------------------
-# Reuse existing download (comment to trigger new download)
-gbif_download_key <- "0031758-231002084531237"
-
-# Trigger new download (commented by default)
-# gbif_download_key <- occ_download(
-#   pred_in("country", countries),
-#   pred_in("basisOfRecord", basis_of_record),
-#   pred_gte("year", year_begin),
-#   pred_lte("year", year_end),
-#   pred("hasCoordinate", hasCoordinate),
-#   user = rstudioapi::askForPassword("GBIF username"),
-#   pwd = rstudioapi::askForPassword("GBIF password"),
-#   email = rstudioapi::askForPassword("Email address for notification")
-# )
-
-#' 
-#' ## Check status of download
-#' 
-## ----check_metadata-------------------------------------------------------------------------------------------------------------------------------------
-metadata <- occ_download_meta(key = gbif_download_key)
-metadata$key
-metadata$status
-
-#' 
-#' Write download to list of downloads and check pending downloads:
-#' 
-## ----update_download_list-------------------------------------------------------------------------------------------------------------------------------
-update_download_list(
-  file = here::here("data", "raw", "gbif_downloads.tsv"), 
-  download_to_add = gbif_download_key, 
-  input_checklist = ""
+#
+# download
+gbif_download_args <- list(
+  #rgbif::pred_in("scientificName", scientific_names),
+  rgbif::pred("country", country),
+  rgbif::pred("gadm", area_id),
+  rgbif::pred_in("basisOfRecord", basis_of_record),
+  rgbif::pred_gte("year", year_begin),
+  rgbif::pred_lte("year", year_end),
+  rgbif::pred("hasCoordinate", hasCoordinate)
+  #user = rstudioapi::askForPassword("GBIF username"),
+  #pwd = rstudioapi::askForPassword("GBIF password"),
+  #email = rstudioapi::askForPassword("Email address for notification")
 )
-
+gbif_download_key <- do.call(
+  eval(parse(text = "rgbif::occ_download")),
+  gbif_download_args
+)
+#
+# check status of download
+rgbif::occ_download_meta(key = gbif_download_key) |> purrr::pluck("status")
+#
+# save download key & metadata
+gbif_download_meta <- list(
+  key = gbif_download_key,
+  args = gbif_download_args,
+  date = Sys.Date()
+)
+save(gbif_download_meta,
+     file = paste0(
+       "data/raw/gbif_download_",
+       gbif_download_meta$key |> as.character(),
+       ".rda"
+     )
+)
