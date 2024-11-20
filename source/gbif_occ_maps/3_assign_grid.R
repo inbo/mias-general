@@ -1,311 +1,187 @@
-#' ---
-#' title: "Assign grid to occurrences"
-#' author:
-#' - Damiano Oldoni
-#' - Peter Desmet
-#' date: "`r Sys.Date()`"
-#' output:
-#'   html_document:
-#'     toc: true
-#'     toc_depth: 3
-#'     toc_float: true
-#'     number_sections: true
-#' ---
-#' 
-#' In this document we assign grid to occurrences.
-#' 
-#' # Setup
-#' 
-## ----setup, include=FALSE-------------------------------------------------------------------------------------------------------------------------------
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-
-#' 
-#' Load libraries:
-#' 
-## ----load_libraries-------------------------------------------------------------------------------------------------------------------------------------
-library(tidyverse)      # To do datascience
-library(sp)             # To work with geospatial data
-library(here)           # To find files
-library(glue)           # To write queries
-library(RSQLite)        # To interact with SQlite databases
-
-#' 
-#' # Get geographic coordinates and coordinate uncertainty
-#' 
-#' Name and path of `.sqlite` file:
-#' 
-## ----name_path------------------------------------------------------------------------------------------------------------------------------------------
-key <- "0031758-231002084531237"
-sqlite_file <- paste(key, "occurrence.sqlite", sep = "_")
-sqlite_path <- here::here("data", "interim", sqlite_file)
-
-#' 
-#' Table name:
-#' 
-## ----define_table_name----------------------------------------------------------------------------------------------------------------------------------
+rm(list = ls())
+#
+# -------------------------------------------------------------
+#
+# definitions
+gbif_download_key <- "0021545-241107131044228"
+sqlite_file <- paste0("data/gbif_occcubes/",
+                      gbif_download_key,
+                      "_occurrence.sqlite")
 table_name <- "occ"
-
-#' 
-#' Open connection to database:
-#' 
-## ----open_connection_to_db------------------------------------------------------------------------------------------------------------------------------
-sqlite_occ <- dbConnect(SQLite(), dbname = sqlite_path)
-
-#' 
-#' Retrieve geographic coordinates, `decimalLatitude` and `decimalLongitude` and coordinate uncertainty, `coordinateUncertaintyInMeters`:
-#' 
-## ----get_geodata----------------------------------------------------------------------------------------------------------------------------------------
-query <- glue_sql("SELECT {`cols`*} FROM {table}",
-              cols = c("decimalLatitude", 
-                       "decimalLongitude",
-                       "coordinateUncertaintyInMeters"),
-              table = table_name,
-              .con = sqlite_occ
+# (gbif download key see data/raw/)
+# (sqlite file data/processed)
+#
+# open connection to data base
+sqlite_occ <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = sqlite_file)
+#
+# get geographical data
+query <- glue::glue_sql("SELECT {`cols`*} FROM {table}",
+                        cols = c("decimalLatitude",
+                                 "decimalLongitude",
+                                 "coordinateUncertaintyInMeters"),
+                        table = table_name,
+                        .con = sqlite_occ
 )
-geodata_df <- 
-  dbGetQuery(sqlite_occ, query) %>%
-  dplyr::as_tibble() %>%
-  dplyr::mutate(coordinateUncertaintyInMeters = as.double(.data$coordinateUncertaintyInMeters))
-
-#' 
-#' Number of occurrences:
-#' 
-## ----n_occs---------------------------------------------------------------------------------------------------------------------------------------------
-nrow_geodata_df <- nrow(geodata_df)
-nrow_geodata_df
-
-#' 
-#' Preview:
-#' 
-## ----preview_geodata------------------------------------------------------------------------------------------------------------------------------------
-geodata_df %>% head(10)
-
-#' 
-#' Number of occurrences per each value of `coordinateUncertaintyInMeters`:
-#' 
-## ----n_occ_per_uncertainty------------------------------------------------------------------------------------------------------------------------------
-geodata_df %>%
-  group_by(coordinateUncertaintyInMeters) %>%
-  count() %>%
-  arrange(desc(n))
-
-#' 
-#' Number of occurrences without coordinate uncertainty or set to zero:
-#' 
-## ----n_occs_without_uncertainty-------------------------------------------------------------------------------------------------------------------------
-geodata_df %>%
-  filter(is.na(coordinateUncertaintyInMeters) | 
-           coordinateUncertaintyInMeters == 0) %>%
-  count()
-
-#' 
-#' We assign 1000 meters to these occurrences:
-#' 
-## ----assign_fix_uncertainty-----------------------------------------------------------------------------------------------------------------------------
-geodata_df <- 
-  geodata_df %>%
-  mutate(coordinateUncertaintyInMeters = if_else(
+geodata_df <-
+  RSQLite::dbGetQuery(sqlite_occ, query) |>
+  dplyr::as_tibble() |>
+  dplyr::mutate(coordinateUncertaintyInMeters = as.double(coordinateUncertaintyInMeters))
+#
+# number of occurrences
+nrow(geodata_df)
+#
+# preview occurrences
+geodata_df |> head(10)
+#
+# number of occurrences within each "coordinateUncertaintyInMeters" value
+geodata_df |>
+  dplyr::group_by(coordinateUncertaintyInMeters) |>
+  dplyr::count() |>
+  dplyr::arrange(dplyr::desc(dplyr::n())) |>
+  View()
+#
+# number of occurrences without "coordinateUncertaintyInMeters" or zero value
+geodata_df |>
+  dplyr::filter(is.na(coordinateUncertaintyInMeters) |
+                  coordinateUncertaintyInMeters == 0) |>
+  dplyr::count()
+#
+# assign 1000m to occurrences without or zero uncertainty
+geodata_df <-
+  geodata_df |>
+  dplyr::mutate(coordinateUncertaintyInMeters = dplyr::if_else(
     is.na(coordinateUncertaintyInMeters) | coordinateUncertaintyInMeters == 0,
     1000.0,
     coordinateUncertaintyInMeters
   ))
-
-#' 
-#' We apply the same changes in SQLite table. To speed up the process we deactivate database synchronization and wrap the execution of the query in a transaction:
-#' 
-## ----assign_1000_as_uncertainty_on_db-------------------------------------------------------------------------------------------------------------------
-# speed up by deactivating db synchronization
-query <- glue_sql(
+#
+# also in sqlite table
+query <- glue::glue_sql(
   "PRAGMA synchronous = OFF",
   .con = sqlite_occ
 )
-dbExecute(sqlite_occ, query)
-
-# Start transaction
-dbBegin(sqlite_occ)
-query <- glue_sql(
-            "UPDATE {table} SET {`column`} = 1000 WHERE 
+RSQLite::dbExecute(sqlite_occ, query)
+RSQLite::dbBegin(sqlite_occ)
+query <- glue::glue_sql(
+  "UPDATE {table} SET {`column`} = 1000 WHERE
             {`column`} = '' OR {`column`} = 0",
-            table = table_name,
-            column = "coordinateUncertaintyInMeters",
-            .con = sqlite_occ)
-dbExecute(sqlite_occ, query)
-# Commit transaction
-dbCommit(sqlite_occ)
-
-#' 
-#' Get all possible values of coordinate uncertainty from SQLite database:
-#' 
-## ----get_unique_values_uncertainty----------------------------------------------------------------------------------------------------------------------
-query <- glue_sql("SELECT DISTINCT {`column`} FROM {table}",
-              table = table_name,
-              column = "coordinateUncertaintyInMeters",
-              .con = sqlite_occ
+  table = table_name,
+  column = "coordinateUncertaintyInMeters",
+  .con = sqlite_occ)
+RSQLite::dbExecute(sqlite_occ, query)
+RSQLite::dbCommit(sqlite_occ)
+#
+# get all coordinate uncertainties from sqlite table
+query <- glue::glue_sql("SELECT DISTINCT {`column`} FROM {table}",
+                        table = table_name,
+                        column = "coordinateUncertaintyInMeters",
+                        .con = sqlite_occ
 )
-uncertainty_df <- 
-  dbGetQuery(sqlite_occ, query) %>%
-  as_tibble()
+uncertainty_df <-
+  RSQLite::dbGetQuery(sqlite_occ, query) |>
+  dplyr::as_tibble()
 uncertainty_df
-
-#' 
-#' Are there occurrences with 0 uncertainty left?
-#' 
-## ----zero_in_uncertainty_df-----------------------------------------------------------------------------------------------------------------------------
-0 %in% uncertainty_df
-
-#' 
-#' Are there occurrences without uncertainty?
-#' 
-## ----zero_in_uncertainty_df-----------------------------------------------------------------------------------------------------------------------------
-NA %in% uncertainty_df
-
-#' 
-#' # Assign grid to occurrences
-#' 
-#' We use the official grid of Belgium at 1x1km resolution as provided by EEA.
-#' 
-#' ## Project geographic coordinates, assign occurrence within uncertainty circle and assign grid cell
-#' 
-#' In this section we do the following:
-#' 1. Project latitude and longitude by using the projection of the grid. We transform GBIF data which have coordinate reference system equal to EPSG code 4326 to Lambert projection with EPSG code 3035.
-#' 2. Assign the occurrences randomly within the circle with radius equal to `coordinateUncertaintyInMeters`
-#' 3. Define the grid cell the occurrence belongs to. 
-#' 
-#' Due to memory issues, we perform this three operations in chunks on a temporary tsv file containing coordinates and coordinate uncertainties.
-#' 
-#' First, we create such file:
-#' 
-## ----create_temp_file-----------------------------------------------------------------------------------------------------------------------------------
-temp_file_coords <- here::here(
-  "data", 
-  "interim", 
-  paste0(key, "_coordinates_and_uncertainty_epsg_4326.tsv")
+#
+# check uncertainties
+assertthat::assert_that(!0 %in% uncertainty_df)
+assertthat::assert_that(!NA %in% uncertainty_df)
+#
+# ---assign grid to occurrences------------------------------------------------
+#
+tmpfile_coords <-paste0(
+  "data/gbif_occcubes/",
+  gbif_download_key,
+  "_coordinates_and_uncertainty_epsg_4326.tsv"
 )
 col_names_geodata_df <- names(geodata_df)
-write_tsv(geodata_df, temp_file_coords, na = "")
+readr::write_tsv(geodata_df, tmpfile_coords, na = "")
 remove(geodata_df)
-
-#' 
-#' Set random number generator seed (this helps reproducibility). We use the unique identifier of the reserved [Zenodo dataset's DOI](https://doi.org/10.5281/zenodo.10058400) which the occurrence cube will be published to:
-#' 
-## ----set_seed-------------------------------------------------------------------------------------------------------------------------------------------
+#
+# set seed (reproduce data on zenodo)
 set.seed(10058400)
-
-#' 
-#' We define the function to apply to each chunk:
-#' 
-## ----transform_to_3035_assign_pts_in_circle-------------------------------------------------------------------------------------------------------------
+#
+# define function
 reproject_assign <- function(df, pos){
-  
   # Step 1: reprojection
   nrow_df <- nrow(df)
-  coordinates(df) <- ~decimalLongitude+decimalLatitude
-  proj4string(df) <- CRS("+init=epsg:4326")
-  df <- spTransform(df, CRS("+init=epsg:3035"))
+  sp::coordinates(df) <- ~ decimalLongitude + decimalLatitude
+  sp::proj4string(df) <- sp::CRS("+init=epsg:4326")
+  df <- sp::spTransform(df, sp::CRS("+init=epsg:3035"))
   colnames(df@coords) <- c("x", "y")
-  
   # Step 2: assign occurrence within uncertainty circle
   df@data <-
-    df@data %>%
-    mutate(random_angle = runif(nrow_df, 0, 2*pi))
+    df@data |>
+    dplyr::mutate(random_angle = runif(nrow_df, 0, 2*pi))
   df@data <-
-    df@data %>%
-    mutate(random_r = sqrt(runif(
+    df@data |>
+    dplyr::mutate(random_r = sqrt(runif(
       nrow_df, 0, 1)) * coordinateUncertaintyInMeters)
   df@data <-
-  df@data %>%
-    mutate(x = df@coords[, "x"],
-           y = df@coords[, "y"])
+    df@data |>
+    dplyr::mutate(x = df@coords[, "x"],
+                  y = df@coords[, "y"])
   df@data <-
-    df@data %>%
-    mutate(x = x + random_r * cos(random_angle),
-           y = y + random_r * sin(random_angle)) %>%
-    select(-c(random_angle, random_r))
-  
+    df@data |>
+    dplyr::mutate(x = x + random_r * cos(random_angle),
+                  y = y + random_r * sin(random_angle)) |>
+    dplyr::select(-c(random_angle, random_r))
+
   # Step 3: Find grid cell the occurrence belongs to
   df@data <-
-    df@data %>%
-    mutate(eea_cell_code = paste0(
-    "1km", 
-    "E", floor(x/1000), 
-    "N", floor(y/1000))) %>%
-    select(x, y, coordinateUncertaintyInMeters, eea_cell_code)
+    df@data |>
+    dplyr::mutate(eea_cell_code = paste0(
+      "1km",
+      "E", floor(x/1000),
+      "N", floor(y/1000))) |>
+    dplyr::select(x, y, coordinateUncertaintyInMeters, eea_cell_code)
   return(df@data)
 }
-
-#' 
-#' And finally we apply reprojection to all occurrences:
-#' 
-## ----reproject_assign_coords_by_chunk-------------------------------------------------------------------------------------------------------------------
+#
+# apply reprojection
 chunk_size <- 1000000
-geodata_df <- read_tsv_chunked(
-  file = temp_file_coords, 
-  callback = DataFrameCallback$new(reproject_assign), 
+geodata_df <- readr::read_tsv_chunked(
+  file = tmpfile_coords,
+  callback = readr::DataFrameCallback$new(reproject_assign),
   chunk_size = chunk_size,
-  col_types = cols(.default = col_double()),
+  col_types = readr::cols(.default = readr::col_double()),
   na = ""
 )
-
-#' 
-#' Preview:
-#' 
-## ----preview_geodata_df_data----------------------------------------------------------------------------------------------------------------------------
-geodata_df %>% head(n = 10)
-
-#' 
-#' Before proceeding, we can delete the temporary file created at the beginning of this section:
-#' 
-## ----delete_temp_file-----------------------------------------------------------------------------------------------------------------------------------
-file.remove(temp_file_coords)
-
-#' 
-#' ## Add grid cell code to sqlite file
-#' 
-#' We can now add the column `eea_cell_code` to the table `occ` of sqlite file. We first create the new column `eaa_cell_code` in the table:
-#' 
-## ----add_eaa_cellcode_to_sqlite-------------------------------------------------------------------------------------------------------------------------
+#
+# preview data
+geodata_df |> head(n = 10)
+#
+# remove tmp file
+file.remove(tmpfile_coords)
+#
+# add grid cell code to sqlite file
 new_col <- "eea_cell_code"
-query <- glue_sql("ALTER TABLE {table} ADD COLUMN {colname} {type}",
-                  table = table_name,
-                  colname = new_col,
-                  type = "CHARACTER",
-                  .con = sqlite_occ
+query <- glue::glue_sql("ALTER TABLE {table} ADD COLUMN {colname} {type}",
+                        table = table_name,
+                        colname = new_col,
+                        type = "CHARACTER",
+                        .con = sqlite_occ
 )
-dbExecute(sqlite_occ, query)
-
-#' 
-#' And then we populate it with the values in `geodata_df$eaa_cell_code`. This step can take long:
-#' 
-## ----add_values_cellcode--------------------------------------------------------------------------------------------------------------------------------
-# Start transaction
-dbBegin(sqlite_occ)
-dbExecute(
+RSQLite::dbExecute(sqlite_occ, query)
+RSQLite::dbBegin(sqlite_occ)
+RSQLite::dbExecute(
   sqlite_occ,
-  glue_sql(
+  glue::glue_sql(
     "UPDATE {table} SET {`column`} = :eea_cell_code WHERE _ROWID_ = :id",
     table = table_name,
     column = new_col,
     .con = sqlite_occ),
   params = data.frame(
-  eea_cell_code = geodata_df$eea_cell_code,
-  id = rownames(geodata_df))
+    eea_cell_code = geodata_df$eea_cell_code,
+    id = rownames(geodata_df))
 )
-# Commit transaction
-dbCommit(sqlite_occ)
-
-#' 
-#' Preview:
-#' 
-## ----preview--------------------------------------------------------------------------------------------------------------------------------------------
-query <- glue_sql("SELECT * FROM {table} WHERE _ROWID_ <= 10",
-                  table = table_name,
-                  .con = sqlite_occ)
-dbGetQuery(sqlite_occ, query) %>%
-  select(eea_cell_code , everything())
-
-#' 
-#' Close connection:
-#' 
-## ----close_connection-----------------------------------------------------------------------------------------------------------------------------------
-dbDisconnect(sqlite_occ)
-
+RSQLite::dbCommit(sqlite_occ)
+#
+# preview
+query <- glue::glue_sql("SELECT * FROM {table} WHERE _ROWID_ <= 10",
+                        table = table_name,
+                        .con = sqlite_occ)
+RSQLite::dbGetQuery(sqlite_occ, query) |>
+  dplyr::select(eea_cell_code , dplyr::everything())
+#
+# close connection
+RSQLite::dbDisconnect(sqlite_occ)
