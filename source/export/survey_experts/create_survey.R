@@ -163,11 +163,11 @@ appsscript_gform <- do.call(
 # save script
 writeLines(
   appsscript_gform,
-  paste0(appscript_outpath, "/appsscript_gform.gs")
+  paste0(appscript_outpath, "/appsscripts/appsscript_gform.gs")
 )
 #
 # update dynamic sections
-update_appsscript_dynsections(paste0(appscript_outpath, "/appsscript_gform.gs"))
+update_appsscript_dynsections(paste0(appscript_outpath, "/appsscripts/appsscript_gform.gs"))
 #
 #
 #
@@ -237,7 +237,7 @@ appsscript_writeviewurl <- create_appsscript_writeviewurl(
 # save script
 writeLines(
   appsscript_writeviewurl,
-  paste0(appscript_outpath, "/appsscript_writeviewurl.gs")
+  paste0(appscript_outpath, "/appsscripts/appsscript_writeviewurl.gs")
 )
 #
 # --- delete previous sheets --------------------------------
