@@ -1,0 +1,17 @@
+
+
+## Wat is de betrouwbaarheid / detectiekans van deze beste monitoringsmethode voor deze soort?
+
+*Een hoge betrouwbaarheid betekent dat er een grote kans is dat de soort gedetecteerd wordt indien aanwezig, dankzij de consistente prestaties van de methode. Een gemiddelde betrouwbaarheid wijst op een redelijke kans op detectie, maar met variatie in prestaties afhankelijk van omstandigheden. Een lage betrouwbaarheid betekent dat de detectiekans beperkt is en de methode gevoelig is voor fouten of onnauwkeurigheid. Kies een van de volgende opties:*
+
+- grote betrouwbaarheid
+- middelgrote betrouwbaarheid
+- kleine betrouwbaarheid
+- ongekend / onvoldoende informatie
+- ik weet het niet
+
+*Licht het gekozen antwoord kort toe. Geef ook de gebruikte bronnen aan.*
+
+&nbsp;
+
+
