@@ -1,4 +1,4 @@
-create_appsscript_dropdownupd <- function(
+update_appsscript_dropdown <- function(
     form_id,
     question_text,
     aoptions_upd
