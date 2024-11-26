@@ -13,12 +13,12 @@ form_titlebase <- "bevraging"
 # currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questions.gsheet
 sheet_id <- "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
 #
-# id of folder to save form in
+# id of folder to save forms in
 # currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questionnaires_test
 form_folder_id <- "1RPd2bbmb6GiTxVz44K26v3jK8VdP8W4K"
 #
 # path to locally save google apps scripts
-appscript_outpath <- "source/export/survey_experts"
+appscript_outpath <- "source/export/survey_experts/appsscripts/"
 #
 #
 # --- import data with questions and answers from google sheet ---------------
@@ -163,11 +163,11 @@ appsscript_gform <- do.call(
 # save script
 writeLines(
   appsscript_gform,
-  paste0(appscript_outpath, "/appsscripts/appsscript_gform.gs")
+  paste0(appscript_outpath, "appsscript_gform.gs")
 )
 #
 # update dynamic sections
-update_appsscript_dynsections(paste0(appscript_outpath, "/appsscripts/appsscript_gform.gs"))
+update_appsscript_dynsections(paste0(appscript_outpath, "appsscript_gform.gs"))
 #
 #
 #
@@ -237,7 +237,7 @@ appsscript_writeviewurl <- create_appsscript_writeviewurl(
 # save script
 writeLines(
   appsscript_writeviewurl,
-  paste0(appscript_outpath, "/appsscripts/appsscript_writeviewurl.gs")
+  paste0(appscript_outpath, "appsscript_writeviewurl.gs")
 )
 #
 # --- delete previous sheets --------------------------------
