@@ -6,12 +6,11 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- definitions ---------------
 #
+# path to questions
+questions_file <- "source/export/survey_experts/questions_long.rda"
+#
 # titlebase for forms to be created
 form_titlebase <- "bevraging"
-#
-# id of sheet with questions to be asked in form
-# currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questions.gsheet
-sheet_id <- "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
 #
 # id of folder to save forms in
 # currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questionnaires_test
@@ -20,42 +19,20 @@ form_folder_id <- "1RPd2bbmb6GiTxVz44K26v3jK8VdP8W4K"
 # path to locally save google apps scripts
 appscript_outpath <- "source/export/survey_experts/appsscripts/"
 #
+# path questions overview
+qoverview_path <- "source/export/survey_experts/questions_overview"
 #
-# --- import data with questions and answers from google sheet ---------------
 #
-# get sheet tab names
-# (authentification needed)
-sheet_tab_names <- googlesheets4::sheet_names(ss = sheet_id)
+# --- import data with questions and answers ---------------
 #
-# read data from all sheet tabs
-data_questions_list <- lapply(
-  sheet_tab_names,
-  googlesheets4::read_sheet,
-  ss = sheet_id,
-  .name_repair = function(x) {
-    # rename variables
-    gsub(pattern = "\\s+|-", replacement = "_", x) |>
-      tolower()
-    }
-  )
-#
-# combine data
-data_questions <- data_questions_list |>
-  dplyr::bind_rows()
-#
-# fill missings with last value
-data_questions_upd <- data_questions |>
-  tidyr::fill(dplyr::starts_with(c("section", "question_id"))) |>
-  dplyr::group_by(question_id) |>
-  tidyr::fill(dplyr::everything()) |>
-  dplyr::ungroup()
+questions_long <- get(load(questions_file))
 #
 # reshape response options to wide
-data_questions_wide <- data_questions_upd |>
+questions_wide <- questions_long |>
   dplyr::mutate(
     tmp = paste0(dplyr::row_number()),
     .by = question_id
-    ) |>
+  ) |>
   tidyr::pivot_wider(
     values_from = c(response_option, score_response_option),
     names_from = tmp
@@ -82,19 +59,19 @@ do.call(
   create_overview_gform,
   append(form_args,
          list(
-           path_section_template_rmd = "source/export/survey_experts/questions_overview/section_template.Rmd"
+           path_section_template_rmd = paste0(qoverview_path, "section_template.Rmd")
          ))
 )
 rmarkdown::render(
-  input = "source/export/survey_experts/questions_overview/master.Rmd",
-  output_dir = "source/export/survey_experts/questions_overview/",
+  input = paste0(qoverview_path, "master.Rmd"),
+  output_dir = qoverview_path,
   output_file = "questions_overview.pdf"
 )
 #
 # upload PDF
 # path currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\media
 googledrive::drive_upload(
-    media = "source/export/survey_experts/questions_overview/questions_overview.pdf",
+    media = paste0(qoverview_path, "questions_overview.pdf"),
     path = googledrive::as_id("1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"),
     overwrite = TRUE
   )
