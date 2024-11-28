@@ -3,24 +3,30 @@ rm(list = ls())
 # ---create data base----------------------------------------------------------
 #
 # gbif download key (see downloads in data/raw/)
-gbif_download_key <- "0021545-241107131044228" #adapt manually
+gbif_download_key <- "0005016-241126133413365" #adapt manually
+#
+# paths
+gis_data_path <- "data" #"G:/Mijn Drive/gis_data" ## change back
+occcubes_data_path <- paste(gis_data_path, "gbif_occcubes", NULL, sep = "/")
 #
 # download zip file
-zip_file <- paste0("data/raw/", gbif_download_key, ".zip")
+zip_file <- paste0(occcubes_data_path, gbif_download_key, ".zip")
 if (!file.exists(zip_file)) {
   occ <- rgbif::occ_download_get(
     key = gbif_download_key,
-    path = "data/raw/"
+    path = occcubes_data_path
   )
 }
 #
 # unzip occurrence text file
-occ_file <- paste0("data/raw/", gbif_download_key, "_occurrence.txt")
+occ_file <- paste0(occcubes_data_path, "/", gbif_download_key, "_occurrence.txt")
+# remove:
+occ_file <- paste0("G:/Mijn Drive/gis_data/gbif_occcubes/",gbif_download_key, "_occurrence.txt")
 if (!file.exists(occ_file)) {
   unzip(zipfile = zip_file,
         files = "occurrence.txt",
-        exdir = "data/raw/")
-  file.rename(from = "data/raw/occurrence.txt", to = occ_file)
+        exdir = occcubes_data_path)
+  file.rename(from = paste0(occcubes_data_path, "occurrence.txt"), to = occ_file)
 }
 #
 # get column names
@@ -29,7 +35,7 @@ cols_occ_file <- readr::read_delim(occ_file, "\t", n_max = 1, quote = "") |>
 length(cols_occ_file)
 #
 # create sqlite file
-sqlite_file <- paste0("data/gbif_occcubes/", gbif_download_key, "_occurrence.sqlite")
+sqlite_file <- paste0(occcubes_data_path, gbif_download_key, "_occurrence.sqlite")
 table_name <- "occ_all"
 #
 # define storage classes
@@ -54,7 +60,7 @@ real_fields <- grep(
 )
 field_types[which(names(field_types) %in% real_fields)] <- "REAL"
 #
-# write csv to sqlite
+# write txt to sqlite
 sqlite_occ <- RSQLite::dbConnect(RSQLite::SQLite(), dbname = sqlite_file)
 if (!table_name %in% RSQLite::dbListTables(sqlite_occ)) {
   RSQLite::dbWriteTable(
@@ -68,6 +74,8 @@ if (!table_name %in% RSQLite::dbListTables(sqlite_occ)) {
     overwrite = TRUE
   )
 }
+#
+#
 #
 # number of cols
 cols_occ_db <- RSQLite::dbListFields(sqlite_occ, table_name)
@@ -310,3 +318,4 @@ RSQLite::dbGetQuery(sqlite_occ, query)
 #
 # close connection
 RSQLite::dbDisconnect(sqlite_occ)
+
