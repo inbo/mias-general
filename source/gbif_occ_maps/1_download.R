@@ -17,7 +17,11 @@ fla_borders_buffer_txt <- fla_borders_buffer |>
 # CHECK: https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html
 #
 # define gbif parameters
-scientific_names <- c("Muntiacus reevesi (Ogilby, 1839)", "Faxonius virilis (Hagen, 1870)") # not used
+scientific_names <- get(
+  load("data/processed/names_prius.Rda")
+) |>
+  purrr::pluck("data")  |>
+  dplyr::pull(dplyr::contains("scientific"))
 country <- "BE" # not used
 area_id <- "BEL.2_1" # flanders # not used
 # https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html
@@ -36,7 +40,7 @@ hasCoordinate <- TRUE
 #
 # download
 gbif_download_args <- list(
-  #rgbif::pred_in("scientificName", scientific_names),
+  rgbif::pred_in("scientificName", scientific_names),
   #rgbif::pred("country", country),
   #rgbif::pred("gadm", area_id),
   rgbif::pred_within(fla_borders_buffer_txt),
