@@ -6,12 +6,8 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- definitions ---------------
 #
-# id of sheet with questions to be asked in form
-# currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questions.gsheet
-sheet_id <- "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
+source('source/export/survey_experts/00_definitions.R')
 #
-# path to save questions
-questions_outpath <- "source/export/survey_experts/"
 #
 #
 # --- import data with questions and answers from google sheet ---------------
@@ -44,5 +40,5 @@ questions_long <- questions |>
   dplyr::ungroup()
 #
 # save questions
-save(questions_long, file = paste0(questions_outpath, "questions_long.rda"))
+save(questions_long, file = paste0(questions_path, "questions_long.rda"))
 

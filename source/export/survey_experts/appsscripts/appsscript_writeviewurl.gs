@@ -1,7 +1,7 @@
 function writeFormUrlToFile() {
-var formIdList = (['1DNb-WZqe8V9XtR-Q7bs6td6mZkhbC_gNZd4I6P4EKOM','1JrZ_kUEeVgLEp5OccBzkP7iVsY1UmT3jKlNfF_z0B_c','1QU2NuOvEpKPjiRaa4syt4uTw9NsiEq0zxlo0U--rfzQ','1kC5GK0UjyPSGotm__WFw3gAS56IFL4p1t8a-VU5t19A']);
-var folderId = '1p6eClyAGP_DUeSuKPmzeOyY05c8f5OKu';
-var fileName = 'bevraging_viewurls';
+var formIdList = (['1kC5GK0UjyPSGotm__WFw3gAS56IFL4p1t8a-VU5t19A','1QU2NuOvEpKPjiRaa4syt4uTw9NsiEq0zxlo0U--rfzQ','1JrZ_kUEeVgLEp5OccBzkP7iVsY1UmT3jKlNfF_z0B_c','1DNb-WZqe8V9XtR-Q7bs6td6mZkhbC_gNZd4I6P4EKOM']);
+var folderId = '1GPNJGmDoaaT4P2U51cUkWBQKR8cvtRnw';
+var fileName = 'bevraging_test_viewurls';
 var fileContent = [['formid', 'formtitle', 'viewurl']];
 for (var i = 0; i < formIdList.length; i++) {
 var formId = formIdList[i];

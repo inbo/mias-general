@@ -6,25 +6,17 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- definitions ---------------
 #
-# path to questions
-questions_file <- "source/export/survey_experts/questions_long.rda"
+source('source/export/survey_experts/00_definitions.R')
 #
-# titlebase for forms to be created
-form_titlebase <- "bevraging"
-#
-# id of folder to save forms in
-# currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questionnaires_test
-form_folder_id <- "1RPd2bbmb6GiTxVz44K26v3jK8VdP8W4K"
-#
-# path to locally save google apps scripts
-appscript_outpath <- "source/export/survey_experts/appsscripts/"
-#
-# path questions overview
-qoverview_path <- "source/export/survey_experts/questions_overview"
 #
 #
 # --- import data with questions and answers ---------------
 #
+questions_file <- list.files(
+  questions_path,
+  pattern = ".rda",
+  full.names = TRUE
+  )
 questions_long <- get(load(questions_file))
 #
 # reshape response options to wide
@@ -40,7 +32,7 @@ questions_wide <- questions_long |>
 #
 # define arguments to be used for form overview / form creation
 form_args <- list(
-  data_qa = data_questions_wide |>
+  data_qa = questions_wide |>
     dplyr::filter(
       question_include_in_form == 1
     ),
@@ -53,25 +45,30 @@ form_args <- list(
   name_sectitle = "section_title"
 )
 #
+#
+#
 # --- create questions overview -------------
+#
+# HERE: rename overview related files to overview
+#
 #
 do.call(
   create_overview_gform,
   append(form_args,
          list(
-           path_section_template_rmd = paste0(qoverview_path, "section_template.Rmd")
+           path_section_template_rmd = paste0(questions_path, "section_template.Rmd")
          ))
 )
 rmarkdown::render(
-  input = paste0(qoverview_path, "master.Rmd"),
-  output_dir = qoverview_path,
+  input = paste0(questions_path, "master.Rmd"),
+  output_dir = questions_path,
   output_file = "questions_overview.pdf"
 )
 #
 # upload PDF
 # path currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\media
 googledrive::drive_upload(
-    media = paste0(qoverview_path, "questions_overview.pdf"),
+    media = paste0(questions_path, "questions_overview.pdf"),
     path = googledrive::as_id("1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"),
     overwrite = TRUE
   )
@@ -86,12 +83,14 @@ pdf_url <- googledrive::drive_find(
   googledrive::drive_link()
 #
 #
+#
+#
 # --- create google apps script which builds forms -------------
 #
 # get species names
 # (there will be one form per species)
 names <- get(
-  load("data/processed/names_prius.Rda")
+  load(species_filename)
 ) |>
   purrr::pluck("data")  |>
   dplyr::mutate(vernacularName = stringr::str_to_sentence(vernacularName)) |>
@@ -129,7 +128,7 @@ appsscript_gform <- do.call(
                   name_qid = "question_id",
                   name_areq = "response_required",
                   form_titlebase = "bevraging_test",
-                  gdrive_destfolder_id = form_folder_id,
+                  gdrive_destfolder_id = form_folder_url |> googledrive::as_id(),
                   species_qtext = "Over welke soort rapporteert u?",
                   species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
                   species_info = species_info,
@@ -140,11 +139,11 @@ appsscript_gform <- do.call(
 # save script
 writeLines(
   appsscript_gform,
-  paste0(appscript_outpath, "appsscript_gform.gs")
+  paste0(appscript_path, "appsscript_gform.gs")
 )
 #
 # update dynamic sections
-update_appsscript_dynsections(paste0(appscript_outpath, "appsscript_gform.gs"))
+update_appsscript_dynsections(paste0(appscript_path, "appsscript_gform.gs"))
 #
 #
 #
@@ -181,7 +180,6 @@ if (FALSE){
 #
 # manually (only once):
 # ---------------------
-# open https:://drive.google.com/drive/folders/form_folder_id
 # create a new file of type "Google Apps Script"
 # rename appropriately
 #
@@ -192,51 +190,4 @@ if (FALSE){
 # more specifically into a .gs file associated with the project
 # save the project
 # run the function
-#
-# --- create google apps script which retrieves the form view url -------------
-#
-# get form ids
-form_ids <- googledrive::drive_find(
-  pattern = form_titlebase,
-  type = "form",
-  shared_drive = "PRJ_MIUS"
-) |>
-  googledrive::as_id()
-#
-# create apps script
-# destfolder currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\view_url
-appsscript_writeviewurl <- create_appsscript_writeviewurl(
-    form_ids = form_ids,
-    gdrive_destfolder_id = "1p6eClyAGP_DUeSuKPmzeOyY05c8f5OKu",
-    name_outfile = paste0(form_titlebase, "_viewurls")
-)
-#
-# save script
-writeLines(
-  appsscript_writeviewurl,
-  paste0(appscript_outpath, "appsscript_writeviewurl.gs")
-)
-#
-# --- delete previous sheets --------------------------------
-#
-viewurl_id <- googledrive::drive_find(
-  pattern = paste0(form_titlebase, "_viewurls"),
-  shared_drive = "PRJ_MIUS",
-  type = "spreadsheet"
-) |>
-  googledrive::as_id()
-googledrive::drive_rm(viewurl_id)
-#
-#
-# --- add script to google apps script project and execute script-------------
-#
-# manually (whenever a form is ready to send out):
-# ---------------------------------------------------------------------
-# open the local "appsscript_writeviewurl.gs" file here or in a text editor
-# add a new script to the above created apps script project
-# copy and paste its content into the apps script project
-# more specifically into a (second) .gs file associated with the project
-# save the project
-# run the function
-#
 #
