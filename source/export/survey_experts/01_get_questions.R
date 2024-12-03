@@ -39,6 +39,61 @@ questions_long <- questions |>
   tidyr::fill(dplyr::everything()) |>
   dplyr::ungroup()
 #
+# reshape response options to wide
+questions_wide <- questions_long |>
+  dplyr::mutate(
+    tmp = paste0(dplyr::row_number()),
+    .by = question_id
+  ) |>
+  tidyr::pivot_wider(
+    values_from = c(response_option, score_response_option),
+    names_from = tmp
+  )
+#
 # save questions
 save(questions_long, file = paste0(questions_path, "questions_long.rda"))
-
+save(questions_wide, file = paste0(questions_path, "questions_wide.rda"))
+#
+#
+#
+# --- create questions overview -------------
+#
+# create individual sections
+create_overview_questions(
+    data_qa = questions_wide |>
+      dplyr::filter(
+        question_include_in_form == 1
+      ),
+    name_qtype = "response_format",
+    name_q = "question_text",
+    name_qexpl = "question_explanation",
+    name_qexplfu = "question_explanation_follow_up",
+    basename_aoptions = "response_option",
+    name_secno = "section_number",
+    name_sectitle = "section_title",
+    path_section_templatefile = paste0(questions_path, "overview_section_template.Rmd"),
+    path_section_out = paste0(questions_path, "overview_sections/")
+  )
+#
+# render pdf
+rmarkdown::render(
+  input = paste0(questions_path, "overview_master.Rmd"),
+  output_dir = questions_path,
+  output_file = "overview_questions.pdf"
+)
+#
+# upload pdf
+# path currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\media
+googledrive::drive_upload(
+  media = paste0(questions_path, "overview_questions.pdf"),
+  path = googledrive::as_id("1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"),
+  overwrite = TRUE
+)
+#
+# make pdf public
+googledrive::drive_find(
+  pattern = "overview_questions",
+  type = "pdf",
+  shared_drive = "PRJ_MIUS"
+) |>
+  googledrive::drive_share_anyone()

@@ -14,78 +14,22 @@ source('source/export/survey_experts/00_definitions.R')
 #
 questions_file <- list.files(
   questions_path,
-  pattern = ".rda",
+  pattern = "wide.rda",
   full.names = TRUE
   )
-questions_long <- get(load(questions_file))
-#
-# reshape response options to wide
-questions_wide <- questions_long |>
-  dplyr::mutate(
-    tmp = paste0(dplyr::row_number()),
-    .by = question_id
-  ) |>
-  tidyr::pivot_wider(
-    values_from = c(response_option, score_response_option),
-    names_from = tmp
-  )
-#
-# define arguments to be used for form overview / form creation
-form_args <- list(
-  data_qa = questions_wide |>
-    dplyr::filter(
-      question_include_in_form == 1
-    ),
-  name_qtype = "response_format",
-  name_q = "question_text",
-  name_qexpl = "question_explanation",
-  name_qexplfu = "question_explanation_follow_up",
-  basename_aoptions = "response_option",
-  name_secno = "section_number",
-  name_sectitle = "section_title"
-)
+questions_wide <- get(load(questions_file))
 #
 #
-#
-# --- create questions overview -------------
-#
-# HERE: rename overview related files to overview
-#
-#
-do.call(
-  create_overview_gform,
-  append(form_args,
-         list(
-           path_section_template_rmd = paste0(questions_path, "section_template.Rmd")
-         ))
-)
-rmarkdown::render(
-  input = paste0(questions_path, "master.Rmd"),
-  output_dir = questions_path,
-  output_file = "questions_overview.pdf"
-)
-#
-# upload PDF
-# path currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\media
-googledrive::drive_upload(
-    media = paste0(questions_path, "questions_overview.pdf"),
-    path = googledrive::as_id("1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"),
-    overwrite = TRUE
-  )
-#
-# retrieve public url
+# retrieve public url to overview pdf
 pdf_url <- googledrive::drive_find(
-  pattern = "questions_overview",
+  pattern = "overview_questions",
   type = "pdf",
   shared_drive = "PRJ_MIUS"
 ) |>
-  googledrive::drive_share_anyone() |>
   googledrive::drive_link()
 #
 #
-#
-#
-# --- create google apps script which builds forms -------------
+# --- get species information -------------
 #
 # get species names
 # (there will be one form per species)
@@ -114,26 +58,35 @@ species_info <- data.frame(
   maps = maps_ids
 )
 #
-# write apps script to create forms
+#
+#
+# --- create google apps script which builds forms -------------
 #
 # TO DO
 # not possible yet: italics
 # https://stackoverflow.com/questions/18389284/text-formatting-for-strings-in-google-documents-from-google-apps-script?rq=3
 # multiple options for drop-down?
 #
-appsscript_gform <- do.call(
-  what = create_appsscript_gform,
-  args = append(form_args,
-                list(
-                  name_qid = "question_id",
-                  name_areq = "response_required",
-                  form_titlebase = "bevraging_test",
-                  gdrive_destfolder_id = form_folder_url |> googledrive::as_id(),
-                  species_qtext = "Over welke soort rapporteert u?",
-                  species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
-                  species_info = species_info,
-                  url_qoverview = pdf_url
-                ))
+appsscript_gform <- create_appsscript_gform(
+  data_qa = questions_wide |>
+    dplyr::filter(
+      question_include_in_form == 1
+    ),
+  name_qtype = "response_format",
+  name_q = "question_text",
+  name_qexpl = "question_explanation",
+  name_qexplfu = "question_explanation_follow_up",
+  basename_aoptions = "response_option",
+  name_secno = "section_number",
+  name_sectitle = "section_title",
+  name_qid = "question_id",
+  name_areq = "response_required",
+  form_titlebase = "bevraging_test",
+  gdrive_destfolder_id = form_folder_url |> googledrive::as_id(),
+  species_qtext = "Over welke soort rapporteert u?",
+  species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
+  species_info = species_info,
+  url_qoverview = pdf_url
 )
 #
 # save script
