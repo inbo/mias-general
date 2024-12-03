@@ -98,6 +98,7 @@ googledrive::drive_mv(
 # manually (whenever a form is ready to send out):
 # ------------------------------------------------
 # adapt the above created gsheet and gdoc "emailtext"
+# leave the text highlighted in yellow as is
 # currently in folder:
 # PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\distribution
 #
@@ -151,7 +152,8 @@ email_body <- email_text |>
   # remove characters
   gsub(pattern = "\\[a\\]", replacement = "", x = _) |>
   # keep line breaks as special characters
-  gsub(pattern = "(\\\r\\\n)", replacement = "\\\\n", x = _)
+  gsub(pattern = "(\\\r\\\n)", replacement = "\\\\n", x = _) |>
+  gsub(pattern = "(\\\\n\\\\n\\\\n)", replacement = "\\\\n\\\\n", x = _)
 #
 # compose individual emails and add to email data
 data_email$email_body <- NA
@@ -167,10 +169,10 @@ for (i in seq_along(data_email$viewurl)) {
     name_sender <- "Janne Adolf"
   }
   email_body_i <- email_body |>
-    gsub(pattern = "\\[naam ontvanger\\]", replacement = name_receiver, x = _) |>
-    gsub(pattern = "\\[jouw/uw\\]", replacement = pronoun, x = _) |>
-    gsub(pattern = "\\[naam afzender\\]", replacement = name_sender, x = _) |>
-    gsub(pattern = "\\[link bevraging\\]", replacement = data_email$viewurl[i], x = _)
+    gsub(pattern = "\\[name receiver\\]", replacement = name_receiver, x = _) |>
+    gsub(pattern = "\\[pronoun\\]", replacement = pronoun, x = _) |>
+    gsub(pattern = "\\[name sender\\]", replacement = name_sender, x = _) |>
+    gsub(pattern = "\\[link form\\]", replacement = data_email$viewurl[i], x = _)
   data_email$email_body[i] <- email_body_i
 }
 
