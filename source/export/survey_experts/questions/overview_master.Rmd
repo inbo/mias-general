@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE)
 \newpage
 
 ```{r child-documents, echo = FALSE, results = 'asis'}
-sections_list <- list.files(path = "sections", full.names = TRUE) |> 
+sections_list <- list.files(path = "overview_sections", full.names = TRUE) |> 
   stringr::str_sort(x = _, numeric = TRUE)
 children_list <- vector(mode = "list", length = length(sections_list))
 for (i in seq_along(sections_list)) {

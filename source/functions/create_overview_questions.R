@@ -1,4 +1,4 @@
-create_overview_gform <- function(
+create_overview_questions <- function(
     data_qa,
     name_qtype,
     name_q,
@@ -7,11 +7,12 @@ create_overview_gform <- function(
     basename_aoptions,
     name_secno,
     name_sectitle,
-    path_section_template_rmd
+    path_section_templatefile,
+    path_section_out
 ){
 
   # read template rmd
-  rmd_template <- readLines(con = path_section_template_rmd)
+  rmd_template <- readLines(con = path_section_templatefile)
 
   for (i in seq_along(data_qa[, name_q] |> unlist())){
     #
@@ -60,7 +61,7 @@ create_overview_gform <- function(
     # write section rmd
     writeLines(
       text = rmd_upd,
-      con = paste0(path_section_template_rmd |> dirname(), "/sections/section_", i, ".Rmd")
+      con = paste0(path_section_out, "overview_section_", i, ".Rmd")
       )
   }
 }
