@@ -15,13 +15,36 @@ fla_borders_buffer_txt <- fla_borders_buffer |>
   wk::wkt() |>
   wk::wk_orient()
 # CHECK: https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html
-#
-# define gbif parameters
-scientific_names <- get(
+
+
+# define remaining sql parameters
+species_names <- get(
   load("data/processed/names_prius.Rda")
 ) |>
   purrr::pluck("data")  |>
   dplyr::pull(dplyr::contains("scientific"))
+species_keys <- rgbif::name_backbone_checklist(species_names) |>
+  dplyr::pull("usageKey")
+# species_keys %in% taxon_keys$data$key_accepted |> sum()
+year_end <- lubridate::year(Sys.Date())
+year_begin <- year_end - 10
+
+
+sql_query <- write_sql_query_occcubes(
+  species_keys = c(11,12,13),
+  year_begin = year_begin,
+  year_end = year_end,
+  polygon_wtk = fla_borders_buffer_txt
+)
+
+
+
+
+
+
+
+# define gbif parameters
+
 country <- "BE" # not used
 area_id <- "BEL.2_1" # flanders # not used
 # https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html
@@ -34,8 +57,7 @@ basis_of_record <- c(
   "UNKNOWN",
   "MACHINE_OBSERVATION"
 ) # so, everything but c("FOSSIL_SPECIMEN","LIVING_SPECIMEN")
-year_end <- lubridate::year(Sys.Date())
-year_begin <- year_end - 10
+
 hasCoordinate <- TRUE
 #
 # download
