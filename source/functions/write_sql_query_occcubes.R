@@ -4,9 +4,12 @@ write_sql_query_occcubes <- function(
     year_end,
     polygon_wtk
 ){
-  paste0(
-    "
-SELECT
+  polygon_wtk_formatted <- gsub(
+    pattern = ",",
+    replacement = paste0(",\n", paste0(rep(" ", 5), collapse = "")),
+    x = polygon_wtk)
+  sql_query <- paste0(
+    "SELECT
 \"year\",
     GBIF_EEARGCode(
       1000,
@@ -15,12 +18,13 @@ SELECT
       COALESCE(coordinateUncertaintyInMeters, 1000)
     ) AS eeaCellCode,",
     paste0(
-      "GBIF_Within(",
-      polygon_wtk,
-      "decimalLatitude,
+      "\n   GBIF_Within(",
+      paste0("'", polygon_wtk_formatted, "'"),
+      ",\n",
+      "      decimalLatitude,
       decimalLongitude
       ) AS withinPolygon,"
-      ),
+    ),
     "
     classKey,
     class,
@@ -35,15 +39,16 @@ SELECT
   WHERE
     occurrenceStatus = 'PRESENT'
     AND speciesKey IN (",
-    paste0(species_keys, collapse = ",")
+    paste0(species_keys, collapse = ", ")
     ,
     ")
-    AND continent = 'EUROPE'
+    -- AND continent = 'EUROPE'
+    -- AND countryCode = 'BE'
     AND \"year\" >= ",
     year_begin,
-    "AND \"year\" <= ",
+    "\nAND \"year\" <= ",
     year_end,
-    "AND hasCoordinate = TRUE
+    "\nAND hasCoordinate = TRUE
     AND speciesKey IS NOT NULL
     AND NOT ARRAY_CONTAINS(issue, 'ZERO_COORDINATE')
     AND NOT ARRAY_CONTAINS(issue, 'COORDINATE_OUT_OF_RANGE')
@@ -64,6 +69,7 @@ AND (LOWER(identificationVerificationStatus) NOT IN (
   GROUP BY
     \"year\",
     eeaCellCode,
+    withinPolygon,
     classKey,
     class,
     speciesKey,
