@@ -1,5 +1,5 @@
 write_sql_query_occcubes <- function(
-    species_keys = c(11,12,13),
+    species_keys,
     year_begin,
     year_end,
     polygon
