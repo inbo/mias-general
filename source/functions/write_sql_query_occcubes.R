@@ -2,7 +2,7 @@ write_sql_query_occcubes <- function(
     species_keys,
     year_begin,
     year_end,
-    polygon
+    polygon_wtk
 ){
   paste0(
     "
@@ -13,7 +13,15 @@ SELECT
       decimalLatitude,
       decimalLongitude,
       COALESCE(coordinateUncertaintyInMeters, 1000)
-    ) AS eeaCellCode,
+    ) AS eeaCellCode,",
+    paste0(
+      "GBIF_Within(",
+      polygon_wtk,
+      "decimalLatitude,
+      decimalLongitude
+      ) AS withinPolygon,"
+      ),
+    "
     classKey,
     class,
     speciesKey,
@@ -29,10 +37,13 @@ SELECT
     AND speciesKey IN (",
     paste0(species_keys, collapse = ",")
     ,
-    ")\nAND continent = 'EUROPE' ###
-    AND \"year\" >= ",year_begin,"
-    AND \"year\" <= ",year_end,"
-    AND hasCoordinate = TRUE
+    ")
+    AND continent = 'EUROPE'
+    AND \"year\" >= ",
+    year_begin,
+    "AND \"year\" <= ",
+    year_end,
+    "AND hasCoordinate = TRUE
     AND speciesKey IS NOT NULL
     AND NOT ARRAY_CONTAINS(issue, 'ZERO_COORDINATE')
     AND NOT ARRAY_CONTAINS(issue, 'COORDINATE_OUT_OF_RANGE')
@@ -62,5 +73,4 @@ AND (LOWER(identificationVerificationStatus) NOT IN (
     eeaCellCode ASC,
     speciesKey ASC;
   ")
-  )
 }
