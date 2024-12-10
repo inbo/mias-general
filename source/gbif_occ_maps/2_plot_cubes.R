@@ -10,11 +10,14 @@ ps_vglrl <- sf::st_read("data/gis/prius/ps_vglrl.geojson")
 ps_hbtrl_deel <- sf::st_read("data/gis/prius/ps_hbtrl_deel.geojson")
 water <- sf::st_read("data/gis/prius/waterlopen.geojson")
 #
+# regenerate buffer
+buffer <- 1000*100 # in meters
+fla_borders_buffer <- sf::st_buffer(x = fla_borders, dist = buffer)
+
 #
 # get & filter cube data
 cube <- readr::read_tsv(file = "data/gbif_occcubes/0026520-241126133413365.csv")|>
   dplyr::filter(withinpolygon == TRUE)
-
 #
 species_info <- get_names_gbif(cube$specieskey |> unique())
 
@@ -36,8 +39,9 @@ plot_map  <- function(
     col_occ = "#EA5F94"
 ){
   plot_map <- ggplot2::ggplot() +
-    #ggplot2::geom_sf(data = data_fla_borders, fill = NA, size = 0.2) +
-    #ggplot2::geom_sf(data = data_prov_borders, fill = NA, size = 0.2) +
+    ggspatial::annotation_map_tile(type = "cartolight") +
+    ggplot2::geom_sf(data = data_fla_borders, fill = NA, size = 0.2) +
+    ggplot2::geom_sf(data = data_prov_borders, fill = NA, size = 0.2) +
     ggplot2::geom_sf(data = data_ps_vglrl, colour = col_prior, fill = col_prior, alpha = .3) +
     ggplot2::geom_sf(data = data_ps_vglrl, colour = col_prior, fill = col_prior, alpha = .3) +
     ggplot2::geom_sf(data = data_water, colour = col_water, fill = col_water, alpha = .5, size = 0.5) +
@@ -66,6 +70,13 @@ for (name_i in names_in_cube){
                                by.x = 'CELLCODE',
                                by.y ='eeacellcode',
                                all.y = TRUE)
+  if (FALSE) {
+  ias_cube_1km_spec_i <- dplyr::left_join(
+    x = cube_sub_i,
+    y = fla_1km,
+    by = c("eeacellcode" = "CELLCODE")
+  )
+  }
   plot_i <- plot_map(
     plot_title = paste0("Distribution of ", name_i, ""),
     plot_subtitle = "X occurrences from [date] to [date]"
