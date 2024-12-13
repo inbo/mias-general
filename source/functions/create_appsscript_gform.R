@@ -9,12 +9,11 @@ create_appsscript_gform <- function(
     name_areq,
     name_secno,
     name_sectitle,
-    form_titlebase,
     gdrive_destfolder_id,
     species_qtext,
     species_qtext_map,
     species_info,
-    url_qoverview
+    introtext
 ){
   #
   # define species information
@@ -23,11 +22,7 @@ create_appsscript_gform <- function(
 
   #
   # define loop over forms
-  form_titlelist <- if (FALSE) {
-    paste(form_titlebase, seq_along(species_names))
-  } else {
-    paste(form_titlebase, species_names)
-    }
+  form_titlelist <- species_names
   script_loop_start <- paste(
     sprintf(
       "var formtitlelist = ['%s'];",
@@ -50,17 +45,19 @@ create_appsscript_gform <- function(
   )
   script_loop_end <- "}"
   #
-  # define form title & description
+  # define form description & settings
+  introtext_pt1 <- introtext |>
+    gsub(pattern = "\\[species name\\].*", replacement = "", x = _)
+  introtext_pt2 <- introtext |>
+    gsub(pattern = ".*\\[species name\\]", replacement = "", x = _)
   script_title <- paste(
     "var form = FormApp.create(formtitle);",
     sprintf(
-      "form.setDescription('%s'.concat('%s', species, '%s', '%s', '%s', '%s'));",
-      "Bedankt om aan deze bevraging over de soort ",
+      "form.setDescription('%s'.concat('%s', species, '%s', '%s'));",
+      introtext_pt1,
       "\"",
       "\"",
-      " deel te nemen.",
-      " Voor een overzicht over de volledige vragenlijst zie: ",
-      url_qoverview
+      introtext_pt2
     ),
     NULL,
     sep = "\n"
@@ -141,6 +138,15 @@ create_appsscript_gform <- function(
         ),
         NULL,
         sep = "\n"),
+      "checkbox" = paste(
+        paste("var",q_itemname,"= form.addCheckboxItem();"),
+        sprintf(
+          "%s.setTitle('%s');",
+          q_itemname,
+          q_text
+        ),
+        NULL,
+        sep = "\n"),
       "dropdown" = paste(
         paste("var",q_itemname,"= form.addListItem();"),
         sprintf(
@@ -160,7 +166,7 @@ create_appsscript_gform <- function(
     }
     #
     # define answer options
-    script_a <- if (q_type %in% c("multiple choice", "dropdown")) {
+    script_a <- if (q_type %in% c("multiple choice", "dropdown", "checkbox")) {
       paste(
         paste0(
           q_itemname,
