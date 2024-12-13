@@ -33,29 +33,65 @@ pdf_url <- googledrive::drive_find(
 #
 # get species names
 # (there will be one form per species)
-names <- get(
-  load(species_filename)
-) |>
-  purrr::pluck("data")  |>
-  dplyr::mutate(vernacularName = stringr::str_to_sentence(vernacularName)) |>
-  dplyr::select(contains(c("scientific", "vernacular"))) |>
-  tidyr::unite(tmp, 1:2, sep = " / ") |>
-  dplyr::pull("tmp") |>
-  sort()
+species <- do.call(
+  process_expertsheet,
+  expert_sheetid_args
+)
+#
+# test: all species unique
+assertthat::are_equal(
+  species$key_acc_gbif |> unique() |> length(),
+  nrow(species)
+)
+#
+# write gsheet for review (esp. scientific names)
+if (FALSE) {
+  # create gsheet
+  sheetname <- googledrive::drive_ls(
+    pattern = "^experts",
+    type = "spreadsheet",
+    shared_drive = "PRJ_MIUS"
+  ) |> dplyr::pull(name)
+  googlesheets4::gs4_create(name = paste0("CONTROL_", sheetname, " (don't edit)"), sheets = species)
+  # move sheet to target folder
+  tmp_id <- googledrive::drive_find(
+    pattern = paste0("CONTROL_", sheetname),
+    type = "spreadsheet"
+  ) |> googledrive::as_id()
+  googledrive::drive_mv(
+    file = tmp_id,
+    path = distribution_folder_url |> paste0(x = _, "/")
+  )
+}
+#
+# summarize 'invasieve duizenknopen' in species data frame
+species_sum <- species |>
+  dplyr::filter(grepl("duizendknopen", species)) |>
+  dplyr::pull(sci_name_gbif_acc) |>
+  paste(x = _, collapse = ", ")
+species_upd <- species |>
+  dplyr::mutate(
+    sci_name_gbif_sum = dplyr::case_when(
+      grepl("duizendknopen", species) ~ species_sum,
+      TRUE ~ sci_name_gbif_acc
+    )
+  ) |>
+  dplyr::distinct(sci_name_gbif_sum, .keep_all = TRUE)
 #
 # get public ids to distribution map images
 maps_ids <- googledrive::drive_ls(
-  pattern = "placeholder",
+  pattern = "placeholder_1", ### HERE: restriction for testing; update!
   type = "png",
   shared_drive = "PRJ_MIUS"
 ) |>
   googledrive::drive_share_anyone() |>
   googledrive::as_id()
 #
+#
 # combine species info
 species_info <- data.frame(
-  names = names[c(1,20,30,40)], # for TESTING (DELETE)
-  maps = maps_ids
+  names = species$sci_name_gbif_sum[1:10], ### HERE: restriction for testing; update!
+  maps = maps_ids[1:10] ### HERE: restriction for testing; update!
 )
 #
 #
