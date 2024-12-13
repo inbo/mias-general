@@ -98,10 +98,22 @@ species_info <- data.frame(
 #
 # --- create google apps script which builds forms -------------
 #
-# TO DO
-# not possible yet: italics
+# import intro text
+introtext <- googledrive::drive_read_string(
+  file = googledrive::drive_ls(
+    path = media_folder_url |> googledrive::as_id(),
+    pattern = "introtext"
+  ) |>
+    googledrive::as_id(),
+  type = "text/plain"
+)
+introtext_upd <- introtext |>
+  gsub(pattern = "\\[link overview questions\\]", replacement = pdf_url, x = _)
+#
+# create app script
+# (not possible yet: italics
 # https://stackoverflow.com/questions/18389284/text-formatting-for-strings-in-google-documents-from-google-apps-script?rq=3
-# multiple options for drop-down?
+# multiple options for drop-down?)
 #
 appsscript_gform <- create_appsscript_gform(
   data_qa = questions_wide |>
@@ -117,12 +129,11 @@ appsscript_gform <- create_appsscript_gform(
   name_sectitle = "section_title",
   name_qid = "question_id",
   name_areq = "response_required",
-  form_titlebase = "bevraging_test",
   gdrive_destfolder_id = form_folder_url |> googledrive::as_id(),
   species_qtext = "Over welke soort rapporteert u?",
   species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
   species_info = species_info,
-  url_qoverview = pdf_url
+  introtext = introtext_upd
 )
 #
 # save script
