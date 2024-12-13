@@ -1,7 +1,7 @@
 function writeFormUrlToFile() {
-var formIdList = (['1kC5GK0UjyPSGotm__WFw3gAS56IFL4p1t8a-VU5t19A','1QU2NuOvEpKPjiRaa4syt4uTw9NsiEq0zxlo0U--rfzQ','1JrZ_kUEeVgLEp5OccBzkP7iVsY1UmT3jKlNfF_z0B_c','1DNb-WZqe8V9XtR-Q7bs6td6mZkhbC_gNZd4I6P4EKOM']);
+var formIdList = (['1Kjsq8H3x-_QLGaMSMFJDTdgjNEWgj4bxv7icnbSHd6c','1sprA4v611F1eP23hUjvCcTG8dg_jrM77VJRYrVi6wxc','130zfqtHYygIoLD1qmQWlUD67iMYFj6a8R5AkQgwV670','1XlhGy6YdLQUpd9ojuPBLG8ZpszjaqKaAKYhGD03wEaE','18sk5o2on75yhvRl2KgLiRu2XHHAfklswnQmZe8pi9po','1QEUbkwSJRnsiisLurxioJK0_iFnIKMqu_OOgWdXe_2M','1lCA_3DllvA_vHS-XZ4CwA95WwMOGhN60_GJHmHqTOkU','1xlPqsVpVzIep5pAoAziBkzHrYIarWw4BqoFspzaq0Tw','1G76kbqxXwdCnwv1JyHUAzxW1bdXHsl1Yt1TVSPfoGhg','18Hi2dMz9ieV8oQbqWNRRDKFRJcbmBaGh1KLIO2Rmlek']);
 var folderId = '1GPNJGmDoaaT4P2U51cUkWBQKR8cvtRnw';
-var fileName = 'bevraging_test_viewurls';
+var fileName = 'survey_viewurls';
 var fileContent = [['formid', 'formtitle', 'viewurl']];
 for (var i = 0; i < formIdList.length; i++) {
 var formId = formIdList[i];
