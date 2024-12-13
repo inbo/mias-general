@@ -60,51 +60,25 @@ if (FALSE) {
 # run the function
 #
 #
-# --- create google sheet for emails --------------------------------
-#
-# compose sheet content
-emailsheet_data <- data_form |>
-  dplyr::mutate(
-    species = name |>
-      gsub(pattern = paste0(form_titlebase, " "), replacement = "", x = _),
-  ) |>
-  dplyr::select("species") |>
-  dplyr::mutate(
-    expert_firstname = "expert first name",
-    expert_lastname = "expert last name",
-    expert_emailaddress = "expert email address",
-    .after = species
-  )
-#
-# create sheet (my drive)
-googlesheets4::gs4_create(name = paste0(form_titlebase, "_emailadresses"), sheets = emailsheet_data)
-#
-# move sheet to target folder
-emailsheet_id <- googledrive::drive_find(
-  pattern = paste0(form_titlebase, "_emailadresses"),
-  type = "spreadsheet"
-) |> googledrive::as_id()
-googledrive::drive_mv(
-  file = emailsheet_id,
-  path = distribution_folder_url |> paste0(x = _, "/")
-  )
-#
-# delete old sheet versions: manually to not loose email addresses
-#
-#
-#
 # --- collect email adresses and prepare email text --------------------------------
 #
 # manually (whenever a form is ready to send out):
 # ------------------------------------------------
-# adapt the above created gsheet and gdoc "emailtext"
+# adapt the relevant gsheet and gdoc "emailtext"
 # leave the text highlighted in yellow as is
 # currently in folder:
 # PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\distribution
 #
 #
-#
 # --- compose individual emails --------------------------------
+#
+# retrieve public url to overview pdf
+pdf_url <- googledrive::drive_find(
+  pattern = "overview_questions",
+  type = "pdf",
+  shared_drive = "PRJ_MIUS"
+) |>
+  googledrive::drive_link()
 #
 # import view urls
 data_viewurl <- googlesheets4::read_sheet(
@@ -116,21 +90,18 @@ data_viewurl <- googlesheets4::read_sheet(
 )
 #
 # import email adresses
-data_addresses <- googlesheets4::read_sheet(
-  ss = googledrive::drive_ls(
-    path = distribution_folder_url |> googledrive::as_id(),
-    pattern = "emailadresses"
-  ) |>
-    googledrive::as_id()
+emails <- do.call(
+  process_expertsheet,
+  expert_sheetid_args
 )
 #
 # combine data
 tmp <- data_viewurl |>
   dplyr::mutate(
-    species = formtitle |>
+    sci_name_gbif_acc = formtitle |>
       gsub(pattern = paste0(form_titlebase, " "), replacement = "", x = _),
   )
-data_email <- dplyr::full_join(tmp, data_addresses)
+data_email <- dplyr::left_join(tmp, emails)
 #
 # import email text
 email_text <- googledrive::drive_read_string(
@@ -140,42 +111,92 @@ email_text <- googledrive::drive_read_string(
   ) |>
     googledrive::as_id(),
   type = "text/plain"
-)
+) |>
+  # remove comments in text
+  gsub(pattern = "\\[[a-z]\\]", replacement = "", x = _)
 #
-# extract email body & subject line
+# extract subject line
 email_subjectline <- email_text |>
-  gsub(pattern = "(\\[begin subjectline\\] )|( \\[end subjectline\\]).*",
-       replacement = "", x = _)
-email_body <- email_text |>
-  gsub(pattern = ".*(\\[begin email\\] )|(\\[end email\\]).*",
+  gsub(pattern = "(\\[begin subjectline\\])|(\\[end subjectline\\]).*",
        replacement = "", x = _) |>
-  # remove characters
-  gsub(pattern = "\\[a\\]", replacement = "", x = _) |>
+  gsub(pattern = "(\\\r\\\n)", replacement = "", x = _)
+#
+# extract email body
+email_body <- email_text |>
+  gsub(pattern = ".*(\\[begin email\\])|(\\[end email\\]).*",
+       replacement = "", x = _) |>
   # keep line breaks as special characters
   gsub(pattern = "(\\\r\\\n)", replacement = "\\\\n", x = _) |>
-  gsub(pattern = "(\\\\n\\\\n\\\\n)", replacement = "\\\\n\\\\n", x = _)
+  gsub(pattern = "(\\\\n\\\\n\\\\n)", replacement = "\\\\n\\\\n", x = _) |>
+  gsub(pattern = "\\[link overview questions\\]", replacement = pdf_url, x = _)
+#
+# extract formlink text
+email_formlink_dummy <- email_body |>
+  gsub(pattern = ".*(\\[begin link to form text\\])|(\\[end link to form text\\]).*",
+       replacement = "\\1\\2", x = _)
+email_formlink <- email_formlink_dummy |>
+  gsub(pattern = ".*(\\[begin link to form text\\])|(\\[end link to form text\\]).*",
+       replacement = "", x = _)
+email_formlink_dummy <- email_formlink_dummy |>
+  gsub(pattern = "\\[", replacement = "\\\\[", x = _) |>
+  gsub(pattern = "\\\\n", replacement = "\\\\\\\\n", x = _)
+
 #
 # compose individual emails and add to email data
-data_email$email_body <- NA
-data_email$email_subjectline <- email_subjectline
-for (i in seq_along(data_email$viewurl)) {
-  if (grepl("@inbo", data_email$expert_emailaddress[i])) {
-    name_receiver <- data_email$expert_firstname[i]
-    pronoun <- "jouw"
-    name_sender <- "Janne"
+adresses_unique <- data_email$expert_email |> unique() ## here
+data_distribution <- data.frame(
+  expert_emailaddress = character(),
+  email_subjectline = character(),
+  email_body = character()
+)
+for (i in seq_along(adresses_unique)) {
+  address_i <- adresses_unique[i]
+  data_email_i <- data_email |>
+    dplyr::filter(expert_email == address_i) |>
+    dplyr::arrange(sci_name_gbif_acc)
+  #
+  if (grepl("@inbo", address_i)) {
+    name_institute <- "INBO"
+    name_receiver <- data_email_i$expert_firstname[1]
+    pronoun_1 <- "je"
+    pronoun_2 <- "jouw"
+    name_sender <- "Janne & Diederik"
   } else {
-    name_receiver <- paste(data_email$expert_firstname[i], data_email$expert_lastname[i])
-    pronoun <- "uw"
-    name_sender <- "Janne Adolf"
+    name_institute <- "Instituut voor Natuur- en Bosonderzoek (INBO)"
+    name_receiver <- paste(data_email_i$expert_firstname[1], data_email_i$expert_lastname[1])
+    pronoun_1 <- "u"
+    pronoun_2 <- "uw"
+    name_sender <- "Janne Adolf & Diederik Strubbe"
   }
+  #
+  email_formlink_mult <- rep(email_formlink, nrow(data_email_i))
+  for (j in seq_along(email_formlink_mult)){
+    email_formlink_mult[j] <- email_formlink_mult[j] |>
+      gsub(pattern = "\\[link form\\]", replacement = data_email_i$viewurl[j], x = _) |>
+      gsub(pattern = "\\[species name\\]", replacement = data_email_i$sci_name_gbif_acc[j], x = _)
+  }
+  email_formlink_mult <- paste(email_formlink_mult, collapse = "") |>
+    gsub(pattern = "\\\\n", replacement = "\\\\\\\\n", x = _)
+  #
   email_body_i <- email_body |>
     gsub(pattern = "\\[name receiver\\]", replacement = name_receiver, x = _) |>
-    gsub(pattern = "\\[pronoun\\]", replacement = pronoun, x = _) |>
+    gsub(pattern = "\\[name institute\\]", replacement = name_institute, x = _) |>
+    gsub(pattern = "\\[pronoun1\\]", replacement = pronoun_1, x = _) |>
+    gsub(pattern = "\\[pronoun2\\]", replacement = pronoun_2, x = _) |>
+    gsub(pattern = "\\[Pronoun1\\]", replacement = stringr::str_to_title(pronoun_1), x = _) |>
+    gsub(pattern = "\\[Pronoun2\\]", replacement = stringr::str_to_title(pronoun_2), x = _) |>
     gsub(pattern = "\\[name sender\\]", replacement = name_sender, x = _) |>
-    gsub(pattern = "\\[link form\\]", replacement = data_email$viewurl[i], x = _)
-  data_email$email_body[i] <- email_body_i
+    gsub(pattern = email_formlink_dummy, replacement = email_formlink_mult, x = _) |>
+    gsub(pattern = "(\\\\n\\\\n\\\\n)", replacement = "\\\\n\\\\n", x = _)
+  data_distribution <- dplyr::bind_rows(
+    data_distribution,
+    data.frame(
+      expert_emailaddress = address_i,
+      email_subjectline = email_subjectline,
+      email_body = email_body_i
+    )
+  )
 }
-
 #
 #
 # --- create google apps script which sends out emails --------------------------------
