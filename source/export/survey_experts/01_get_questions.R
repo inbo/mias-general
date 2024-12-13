@@ -19,12 +19,18 @@ sheet_tab_names <- googlesheets4::sheet_names(ss = sheet_id)
 # read data from all sheet tabs
 questions_list <- lapply(
   sheet_tab_names,
-  googlesheets4::read_sheet,
-  ss = sheet_id,
-  .name_repair = function(x) {
-    # rename variables
-    gsub(pattern = "\\s+|-", replacement = "_", x) |>
-      tolower()
+  function(i){
+    googlesheets4::read_sheet(
+      ss = sheet_id,
+      sheet = i,
+      .name_repair = function(x) {
+        # rename variables
+        gsub(pattern = "\\s+|-", replacement = "_", x) |>
+          tolower()
+      }
+    ) |>
+      # add tab names as variable
+      dplyr::mutate(question_id := i, .before = 1)
   }
 )
 #
