@@ -1,13 +1,18 @@
-# Monitoring
-
-## Welke monitoringsmethoden zijn voor deze soort beschikbaar? Welke is de meest relevante/beste methode naar uw inschatting?
-
-*Dit kan bijvoorbeeld het gebruik van eDNA voor invasieve vissoorten of cameravallen voor nachtactieve invasieve zoogdieren omvatten. Andere voorbeelden kunnen vallen, visuele surveys, of akoestische monitoring zijn, afhankelijk van de soort. Antwoord via een beknopt vrij tekst. Geef ook de gebruikte bronnen aan.*
 
 
+## In welke mate wordt er daarnaast nog een negatieve impact in andere domeinen verwacht?
 
+*Deze vraag kijkt naar de verwachte negatieve gevolgen over de verschillende andere domeinen heen, zoals landbouw, economie, volksgezondheid en andere relevante sectoren, en vraagt om een beoordeling van de totale impact. Kies een van de volgende opties.*
 
+- grote negatieve impact
+- middelgrote negatieve impact
+- kleine negatieve impact
+- niet van toepassing omdat soort binnen 10 jaar waarschijnlijk niet invasief gaat worden in Vlaanderen
+- ongekend
+- ik weet het niet
+
+*Optioneel: Licht het gekozen antwoord kort toe (b.v. om welke domeinen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan*
 
 &nbsp;
 
-
+\newpage

@@ -1,17 +1,16 @@
 
 
-## Is er een gestandaardiseerd en geoptimaliseerd veldprotocol beschikbaar?
+## Hoe hoog is de specificiteit van deze meest relevante bemonsteringsmethode voor de soort?
 
-*Een gestandaardiseerd veldprotocol legt de gehele meetprocedure op een duidelijke manier vast en zorgt zo voor objectiviteit. Een geoptimaliseerd veldprotocol bevat informatie over optimale tijdstippen en weersomstandigheden voor het monitoren van een soort en zorgt zo voor een voldoende en stabiele detectiekans. Kies een van de volgende opties:*
+*De specificiteit geeft aan hoe goed een methode de afwezigheid van een soort of een minimaal relevante (verandering in) populatiegrootte kan detecteren. Bij een hoge specificiteit is de kans groot dat deze afwezigheid wordt vastgesteld als de soort of de minimaal relevante (verandering in) populatiegrootte daadwerkelijk afwezig is. Een hoge specificiteit leidt ook tot een klein percentage fout-positieve resultaten. Kies een van de volgende opties.*
 
-- ja
-- ja, maar het veldprotocol is enkel gestandaardiseerd
-- ja, maar het veldprotocol is enkel geoptimaliseerd
-- neen
-- ongekend / onvoldoende informatie
+- hoge specificiteit
+- middelhoge specificiteit
+- lage specificiteit
+- ongekend
 - ik weet het niet
 
-*Licht het gekozen antwoord kort toe (b.v. om welk veldprotocol het gaat). Geef ook de gebruikte bronnen aan.*
+*Optioneel: Licht het gekozen antwoord kort toe en geef eventueel gebruikte bronnen aan.*
 
 &nbsp;
 

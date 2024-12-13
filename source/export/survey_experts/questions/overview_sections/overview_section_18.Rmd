@@ -1,16 +1,23 @@
+# Monitoring
 
+## Welke bemonsteringsmethoden zijn voor deze soort beschikbaar?
 
-## Wat is de betrouwbaarheid / detectiekans van deze beste monitoringsmethode voor deze soort?
+*Dit kan bijvoorbeeld het gebruik van eDNA voor invasieve vissoorten of cameravallen voor nachtactieve invasieve zoogdieren omvatten. Andere voorbeelden kunnen andere types vallen, visuele surveys, of akoestische monitoring zijn, afhankelijk van de soort. Kies een of meerdere van de volgende opties.*
 
-*Een hoge betrouwbaarheid betekent dat er een grote kans is dat de soort gedetecteerd wordt indien aanwezig, dankzij de consistente prestaties van de methode. Een gemiddelde betrouwbaarheid wijst op een redelijke kans op detectie, maar met variatie in prestaties afhankelijk van omstandigheden. Een lage betrouwbaarheid betekent dat de detectiekans beperkt is en de methode gevoelig is voor fouten of onnauwkeurigheid. Kies een van de volgende opties:*
+- visuele waarnemingen
+- auditieve waarnemingen
+- passieve akoestische monitoring (dmv. automatische opnames)
+- cameravallen
+- pitfall traps
+- lichtvallen
+- feromoonvallen
+- eDNA: water
+- eDNA: bodem
+- eDNA: lucht
+- elektrovisserij
+- andere
 
-- grote betrouwbaarheid
-- middelgrote betrouwbaarheid
-- kleine betrouwbaarheid
-- ongekend / onvoldoende informatie
-- ik weet het niet
-
-*Licht het gekozen antwoord kort toe. Geef ook de gebruikte bronnen aan.*
+*Optioneel: Licht het gekozen antwoord kort toe (b.v. welke andere bemonsteringsmethoden er zijn) en geef eventueel gebruikte bronnen aan.*
 
 &nbsp;
 

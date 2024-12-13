@@ -1,17 +1,17 @@
 
 
-## Hoe schat u de betrouwbaarheid van losse waarnemingen (verzameld via waarnemingen.be) in?
+## Is deze meest relevante bemonsteringsmethode vooral geschikt om de aan- of afwezigheid van de soort te bepalen of kunnen ook absolute of relatieve aantallen vastgesteld worden?
 
-*Kies een van de volgende opties:*
+*Kies een van de volgende opties.*
 
-- grote betrouwbaarheid
-- middelgrote betrouwbaarheid
-- kleine betrouwbaarheid
-- ongekend / onvoldoende informatie
+- enkel aan- of afwezigheid
+- ook relatieve aantallen
+- ook absolute (en relatieve) aantallen
+- ongekend
 - ik weet het niet
 
-*Licht het gekozen antwoord kort toe. Geef ook de gebruikte bronnen aan.*
+*Optioneel: Licht het gekozen antwoord kort toe en geef eventueel gebruikte bronnen aan.*
 
 &nbsp;
 
-\newpage
+

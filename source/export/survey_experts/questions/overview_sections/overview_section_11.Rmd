@@ -1,16 +1,16 @@
 
 
-## Wat is de werkelijke of verwachte populatiedichtheid van de soort?
+## Hoe hoog is de actuele of verwachte populatiedichtheid van de soort?
 
-*Heeft de soort het potentieel om hoge populatiedensiteiten te bereiken, is het een soort die in lage aantallen per leefgebied / geografische eenheid voorkomt? Kies een van de volgende opties:*
+*Kies een van de volgende opties.*
 
-- het verspreidingsgebied is (waarschijnlijk) eerder dicht bevolkt
-- het verspreidingsgebied is (waarschijnlijk) eerder dun bevolkt
-- het verspreidingsgebied is nog dicht nog dun bevolkt
-- ongekend / onvoldoende informatie
+- de soort heeft reeds een hoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken
+- de soort heeft een middelhoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken
+- de soort heeft een lage populatiedichtheid bereikt, of kan dit potentieel nog bereiken
+- ongekend
 - ik weet het niet
 
-*Licht het gekozen antwoord kort toe. Geef ook de gebruikte bronnen aan.*
+*Optioneel: Licht het gekozen antwoord kort toe en geef eventueel gebruikte bronnen aan.*
 
 &nbsp;
 

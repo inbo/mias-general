@@ -1,12 +1,16 @@
 
 
-## Welke bestaande meetnetten in Vlaanderen zijn relevant voor deze soort?
+## Hoe hoog zijn de kosten van deze meest relevante bemonsteringsmethode?
 
-*We beschouwen meetnetten als relevant indien ze de soort potentieel of dadelijk oppikken. Dit kan zowel onsystematisch als ook systematisch gebeuren. En het kan over enkele specifieke populaties van de soort als ook het gehele verspreidingsgebied gaan. Kies een of meerdere van de volgende opties:*
+*Kosten kunnen bijvoorbeeld verbonden zijn aan de tijd voor de opmeting van een steekproefpunt, de verwerking van gegevens, de inzet van personeel, de opleiding van personeel en het gebruik van materiaal. Lage kosten zijn van toepassing bv. wanneer vrijwilligers de soort eenvoudig kunnen determineren of dit met beperkte training door experts kunnen doen. Middelhoge kosten worden bv. verwacht bij methoden die gespecialiseerde apparatuur en technische kennis vereisen, zoals eDNA-analyse of het gebruik van cameravallen. Hoge kosten ontstaan wanneer bv. genetische analyses nodig zijn voor cryptische soorten of bv. wanneer gedetailleerd morfologisch onderzoek door experts vereist is. Kies een van de volgende opties.*
 
-- [lijst met bestaande meetnetten]
+- lage kosten
+- middelhoge kosten
+- hoge kosten
+- ongekend
+- ik weet het niet
 
-*Licht het gekozen antwoord kort toe: hoe het meetnet relevant is en wat de mogelijke sterktes en zwaktes zijn voor het detecteren van de soort. Een soort kan bijvoorbeeld eenvoudig te detecteren zijn dankzij vrijwilligers en een grote, actieve community (zoals bij vogels), waardoor platforms zoals waarnemingen.be de soort goed kunnen monitoren maar wel alleen in publiek toegankelijke gebieden. Geef ook de gebruikte bronnen aan.*
+*Optioneel: Licht het gekozen antwoord kort toe en geef eventueel gebruikte bronnen aan.*
 
 &nbsp;
 
