@@ -201,15 +201,41 @@ for (i in seq_along(adresses_unique)) {
 #
 # --- create google apps script which sends out emails --------------------------------
 #
+# write apps script to send emails (test run A)
+appsscript_email_test_a <- create_appsscript_sendemail(
+  data_email = data_distribution,
+  test = TRUE,
+  test_address = "janne.adolf@inbo.be"
+  )
+#
+# save script
+writeLines(
+  appsscript_email_test_a,
+  paste0(appscript_path, "appsscript_email_test_a.gs")
+)
+#
+# write apps script to send emails (test run B)
+appsscript_email_test_b <- create_appsscript_sendemail(
+  data_email = data_distribution |>
+    dplyr::mutate(expert_emailaddress = "janne.adolf@inbo.be")
+)
+#
+# save script
+writeLines(
+  appsscript_email_test_b,
+  paste0(appscript_path, "appsscript_email_test_b.gs")
+)
+#
 # write apps script to send emails
-appsscript_email <- create_appsscript_sendemail(data_email = data_email)
+appsscript_email <- create_appsscript_sendemail(
+  data_email = data_distribution
+  )
 #
 # save script
 writeLines(
   appsscript_email,
   paste0(appscript_path, "appsscript_email.gs")
 )
-#
 #
 #
 # --- add script to google apps script project and execute script-------------
