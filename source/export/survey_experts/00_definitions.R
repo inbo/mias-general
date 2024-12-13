@@ -12,19 +12,29 @@ questions_path <- "source/export/survey_experts/questions/"
 # --- definitions forms ---------------
 #
 # titlebase for forms to be created
-form_titlebase <- "bevraging_test"
+form_titlebase <- "survey"
 #
 # filename species names
-species_filename <- "data/processed/names_prius.Rda"
+#species_filename <- "data/processed/names_prius.Rda"
+expert_sheetid <- "1dClhdsk1QMHniYv6xcFVTKd6pLtWBDz-8avvK-xZHQ0"
+expert_sheetid_args <- list(
+  sheet_id = expert_sheetid,
+  tab_variablename = "soortengroep",
+  colnames_old = c("soort", "wetenschappelijke naam", "expert email", "expert voornaam", "expert achternaam"),
+  colnames_new = c("species", "sci_name", "expert_email", "expert_firstname", "expert_lastname"),
+  gbif_namevariable = "sci_name"
+)
 #
 # url of g-drive folder to save forms in
 # currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questionnaires_test
 form_folder_url <- "https://drive.google.com/drive/folders/1RPd2bbmb6GiTxVz44K26v3jK8VdP8W4K"
 #
+# url of g-drive folder with form media
+media_folder_url <- "https://drive.google.com/drive/folders/1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"
 #
 # path to locally save google apps scripts
 appscript_path <- "source/export/survey_experts/appsscripts/"
-
+#
 #
 # --- definitions form distribution---------------
 #
