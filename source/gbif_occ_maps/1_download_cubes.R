@@ -40,6 +40,22 @@ species <- do.call(
   species_sheetid_args
 )
 #
+# vespa velutina
+# use key of https://www.gbif.org/species/1311477
+# instead of https://www.gbif.org/species/6247411 (subspecies)
+vespa_velutina_name <- "Vespa velutina Lepeletier, 1836"
+species_upd <- species |>
+  dplyr::mutate(
+    sci_name_gbif_acc = dplyr::case_when(
+      grepl("Vespa velutina", sci_name_gbif_acc) ~ vespa_velutina_name,
+      TRUE ~ sci_name_gbif_acc
+        ),
+    key_acc_gbif = dplyr::case_when(
+      grepl("Vespa velutina", sci_name_gbif_acc) ~ rgbif::name_backbone(vespa_velutina_name)$usageKey,
+      TRUE ~ key_acc_gbif
+    )
+  )
+#
 species_upd <- species_upd |>
   dplyr::select(dplyr::intersect(dplyr::contains("gbif"), dplyr::contains("acc")))
 #
