@@ -1,4 +1,10 @@
 rm(list = ls())
+list.files("source/functions", full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
+#
+#
+gis_data_path <- "data"
 #
 # -----------------------------------------------------------------------------
 #
@@ -16,47 +22,48 @@ fla_buffer_txt <- fla_buffer |>
   sf::st_as_text() |>
   wk::wkt() |>
   wk::wk_orient()
-# CHECK: https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html
-
-
 sf::st_write(
   obj = fla_buffer,
   dsn = paste0("data/gis/fla_buffer_", buffer, "m.shp")
   )
 #
+# species list
+species_sheetid_args <- list(
+  sheet_id = "1dClhdsk1QMHniYv6xcFVTKd6pLtWBDz-8avvK-xZHQ0",
+  tab_variablename = "soortengroep",
+  colnames_old = c("soort", "wetenschappelijke naam"),
+  colnames_new = c("species", "sci_name"),
+  gbif_namevariable = "sci_name"
+)
+species <- do.call(
+  process_expertsheet,
+  species_sheetid_args
+)
+#
+species_upd <- species_upd |>
+  dplyr::select(dplyr::intersect(dplyr::contains("gbif"), dplyr::contains("acc")))
+#
 # define remaining sql parameters
-species_names <- get(
-  load("data/processed/names_prius.Rda")
-) |>
-  purrr::pluck("data")  |>
-  dplyr::pull(dplyr::contains("scientific"))
-species_keys <- rgbif::name_backbone_checklist(species_names) |>
-  dplyr::pull("usageKey")
-# species_keys %in% taxon_keys$data$key_accepted |> sum()
 year_end <- lubridate::year(Sys.Date())
 year_begin <- year_end - 10
-
-species_keys <- species_keys[1:2] ## REMOVE
-
+#
+# write sql query
 sql_query <- write_sql_query_occcubes(
-  species_keys = species_keys,
+  species_keys = species_upd |> dplyr::pull(dplyr::contains("key")),
   year_begin = year_begin,
   year_end = year_end,
-  polygon_wtk = fla_borders_buffer_txt
+  polygon_wtk = fla_buffer_txt
 )
-# write.table(sql_query, "sql_test.txt")
-
+write.table(sql_query, "sql_test.txt")
+#
 # download
 gbif_download_key <- do.call(
   eval(parse(text = "rgbif::occ_download_sql")),
   list(q = sql_query)
 )
-
+#
 # check status of download
 rgbif::occ_download_meta(key = gbif_download_key) |> purrr::pluck("status")
-
-
-
 #
 # save download key & metadata
 gbif_download_meta <- list(
@@ -71,12 +78,8 @@ save(gbif_download_meta,
        ".rda"
      )
 )
-
-
-
-
+#
 # paths
-gis_data_path <- "data" #"G:/Mijn Drive/gis_data" ## change back
 occcubes_data_path <- paste(gis_data_path, "gbif_occcubes", NULL, sep = "/")
 #
 # download zip file
@@ -90,13 +93,10 @@ if (!file.exists(zip_file)) {
 #
 # unzip csv
 occ_file <- paste0(gbif_download_key, ".csv")
-# remove:
 if (!file.exists(occ_file)) {
   unzip(zipfile = zip_file,
         files = occ_file,
         exdir = occcubes_data_path)
+  file.remove(zip_file)
 }
-#
-
-
 
