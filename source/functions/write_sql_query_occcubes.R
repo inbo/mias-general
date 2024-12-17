@@ -42,8 +42,7 @@ write_sql_query_occcubes <- function(
     paste0(species_keys, collapse = ", ")
     ,
     ")
-    -- AND continent = 'EUROPE'
-    -- AND countryCode = 'BE'
+    AND continent = 'EUROPE'
     AND \"year\" >= ",
     year_begin,
     "\nAND \"year\" <= ",
