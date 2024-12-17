@@ -3,13 +3,15 @@ rm(list = ls())
 # -----------------------------------------------------------------------------
 #
 # define polygon flanders + buffer
-buffer <- 1000*100 # in meters
-fla_borders <- sf::st_read("data/gis/prius/flanders_wgs84.geojson") # flanders
-fla_borders_buffer <- sf::st_buffer(x = fla_borders, dist = buffer)
-plot_check <- ggplot2::ggplot() + # plot to check
-  ggplot2::geom_sf(data = fla_borders_buffer, fill = "blue", size = 0.2) +
-  ggplot2::geom_sf(data = fla_borders, fill = "coral", size = 0.2)
-fla_borders_buffer_txt <- fla_borders_buffer |>
+buffer <- 1000*30 # in meters
+fla <- sf::st_read("data/gis/prius/flanders_wgs84.geojson") # flanders
+fla_buffer <- sf::st_buffer(x = fla, dist = buffer)
+if (FALSE) {
+  plot_check <- ggplot2::ggplot() + # plot to check
+    ggplot2::geom_sf(data = fla_buffer, fill = "blue", size = 0.2) +
+    ggplot2::geom_sf(data = fla, fill = "coral", size = 0.2)
+}
+fla_buffer_txt <- fla_buffer |>
   sf::st_geometry() |>
   sf::st_as_text() |>
   wk::wkt() |>
@@ -17,6 +19,11 @@ fla_borders_buffer_txt <- fla_borders_buffer |>
 # CHECK: https://docs.ropensci.org/rgbif/articles/getting_occurrence_data.html
 
 
+sf::st_write(
+  obj = fla_buffer,
+  dsn = paste0("data/gis/fla_buffer_", buffer, "m.shp")
+  )
+#
 # define remaining sql parameters
 species_names <- get(
   load("data/processed/names_prius.Rda")
