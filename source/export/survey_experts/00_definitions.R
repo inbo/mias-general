@@ -15,10 +15,9 @@ questions_path <- "source/export/survey_experts/questions/"
 form_titlebase <- "survey"
 #
 # filename species names
-#species_filename <- "data/processed/names_prius.Rda"
-expert_sheetid <- "1dClhdsk1QMHniYv6xcFVTKd6pLtWBDz-8avvK-xZHQ0"
-expert_sheetid_args <- list(
-  sheet_id = expert_sheetid,
+species_sheet_id <- "1dClhdsk1QMHniYv6xcFVTKd6pLtWBDz-8avvK-xZHQ0"
+species_sheet_args <- list(
+  sheet_id = species_sheet_id,
   tab_variablename = "soortengroep",
   colnames_old = c("soort", "wetenschappelijke naam", "expert email", "expert voornaam", "expert achternaam"),
   colnames_new = c("species", "sci_name", "expert_email", "expert_firstname", "expert_lastname"),

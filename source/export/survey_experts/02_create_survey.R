@@ -34,8 +34,8 @@ pdf_url <- googledrive::drive_find(
 # get species names
 # (there will be one form per species)
 species <- do.call(
-  process_expertsheet,
-  expert_sheetid_args
+  process_speciessheet,
+  species_sheet_args
 )
 #
 # test: all species unique

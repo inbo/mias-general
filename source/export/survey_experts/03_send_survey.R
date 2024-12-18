@@ -91,8 +91,8 @@ data_viewurl <- googlesheets4::read_sheet(
 #
 # import email adresses
 emails <- do.call(
-  process_expertsheet,
-  expert_sheetid_args
+  process_speciessheet,
+  species_sheet_args
 )
 #
 # combine data

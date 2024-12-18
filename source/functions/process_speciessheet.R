@@ -1,4 +1,4 @@
-process_expertsheet <- function(
+process_speciessheet <- function(
     sheet_id,
     tab_variablename = "soortengroep",
     colnames_old,
