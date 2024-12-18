@@ -78,7 +78,8 @@ maps_info <- maps_info |>
     species_formatted = gsub(pattern = "'", replacement = "\\\\'", species)
   )
 #
-appsscript_gform <- create_appsscript_gform(
+# create app script (in 4 parts)
+gform_baseargs <- list(
   data_qa = questions_wide |>
     dplyr::filter(
       question_include_in_form == 1
@@ -95,18 +96,29 @@ appsscript_gform <- create_appsscript_gform(
   gdrive_destfolder_id = form_folder_url |> googledrive::as_id(),
   species_qtext = "Over welke soort rapporteert u?",
   species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
-  species_info = species_info,
   introtext = introtext_upd
 )
+nparts <- 4
+nrows_parts <- nrow(maps_info)/nparts
+for (i in 1:nparts) {
+  nrows_i <- seq(((i-1) * nrows_parts + 1), (i * nrows_parts))
+  gform_args_i <- append(
+    gform_baseargs,
+    list(
+      species_names = maps_info$species_formatted[nrows_i],
+      species_maps_ids = maps_info$id[nrows_i]
+    )
+  )
+  appsscript_gform_i <- do.call(create_appsscript_gform, gform_args_i)
+  # save script
+  writeLines(
+    appsscript_gform_i,
+    paste0(appscript_path, "appsscript_gform_",i,".gs")
+  )
+  # update dynamic sections (hardcoded)
+  update_appsscript_dynsections(paste0(appscript_path, "appsscript_gform_",i,".gs"))
+}
 #
-# save script
-writeLines(
-  appsscript_gform,
-  paste0(appscript_path, "appsscript_gform.gs")
-)
-#
-# update dynamic sections
-update_appsscript_dynsections(paste0(appscript_path, "appsscript_gform.gs"))
 #
 #
 #
@@ -143,7 +155,7 @@ if (FALSE){
 #
 # manually (only once):
 # ---------------------
-# create a new file of type "Google Apps Script"
+# create a google apps script project (new file of type "Google Apps Script")
 # rename appropriately
 #
 # manually (whenever the appscript for form creation has been updated):
@@ -154,3 +166,8 @@ if (FALSE){
 # save the project
 # run the function
 #
+# manually (whenever forms have been created):
+# ---------------------------------------------------------------------
+# make sure forms can be viewed by external users
+# open form manually & open tab 'Settings'
+# in section 'Responses' deactivate 'Restrict to users in INBO and its trusted organisations'

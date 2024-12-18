@@ -1,15 +1,14 @@
 function createFormLoop() {
-var formtitlelist = ['Branta canadensis (Linnaeus, 1758)','Alopochen aegyptiaca (Linnaeus, 1766)','Threskiornis aethiopicus (Latham, 1790)','Oxyura jamaicensis (J.F.Gmelin, 1789)','Acridotheres tristis (Linnaeus, 1766)','Corvus splendens Vieillot, 1817','Pycnonotus cafer (Linnaeus, 1766)','Acridotheres cristatellus (Linnaeus, 1758)','Myiopsitta monachus (Boddaert, 1783)','Pycnonotus jocosus (Linnaeus, 1758)'];
-var specieslist = ['Branta canadensis (Linnaeus, 1758)','Alopochen aegyptiaca (Linnaeus, 1766)','Threskiornis aethiopicus (Latham, 1790)','Oxyura jamaicensis (J.F.Gmelin, 1789)','Acridotheres tristis (Linnaeus, 1766)','Corvus splendens Vieillot, 1817','Pycnonotus cafer (Linnaeus, 1766)','Acridotheres cristatellus (Linnaeus, 1758)','Myiopsitta monachus (Boddaert, 1783)','Pycnonotus jocosus (Linnaeus, 1758)'];
-var mapidlist = ['115dh0Q9N032K0lwLL0xevR-OzyTaF8hI','1p2eVIF1Er3dMbgyM7hWHAI8VGC1CtaNE','1YAA0JzoMlOxDUGnTHC62siIjLr-0rgBL','1K23k97JYjyYA21Iy7RcsdtArRruNE50u','18FmUEnbc-wG2wfwxWvfXadG-iFZ6LzJu','1i16lESeynezvo1NoG-CDrYcbMWd71A1u','1Svrv-qOCkKaoyVIUuvhFMbh3BoTXI1hO','176l8HhOpE8m6UyagczY5--GHyV-9tCwK','1eGMu9mdxBGHd92Ig-CJB9V7Bn0PeMUYz','1S5La8Th0bbpDwUj7BNiK8Lzq11DL6pZY'];
+var formtitlelist = ['Lagarosiphon major (Ridl.) Moss','Koenigia polystachya (Wall. ex Meisn.) T.M.Schust. & Reveal','Impatiens glandulifera Royle','Hydrocotyle ranunculoides L.fil.','Humulus scandens (Lour.) Merr.','Herpestes javanicus (É.Geoffroy Saint-Hilaire, 1818)','Heracleum sosnowskyi Manden.','Heracleum persicum Desf.','Heracleum mantegazzianum Sommier & Levier','Hakea sericea Schrad. & J.C.Wendl.','Gymnocoronis spilanthoides DC.','Gunnera tinctoria (Molina) Mirb.','Gambusia holbrooki Girard, 1859','Gambusia affinis (Baird & Girard, 1853)','Fundulus heteroclitus (Linnaeus, 1766)','Faxonius virilis (Hagen, 1870)','Faxonius rusticus (Girard, 1852)','Faxonius limosus (Rafinesque, 1817)','Faxonius immunis (Hagen, 1870)','Eriocheir sinensis H.Milne Edwards, 1853','Elodea nuttallii (Planch.) H.St.John','Ehrharta calycina Sm.','Delairea odorata Lem.','Crassula helmsii (Kirk) Cockayne','Corvus splendens Vieillot, 1817','Cortaderia selloana (Schult. & Schult.f.) Asch. & Graebn.','Cortaderia jubata (Lemoine) Stapf','Cipangopaludina chinensis (J.E.Gray, 1833)','Cherax quadricarinatus (von Martens, 1868)','Cherax destructor Clark, 1936'];
+var specieslist = ['Lagarosiphon major (Ridl.) Moss','Koenigia polystachya (Wall. ex Meisn.) T.M.Schust. & Reveal','Impatiens glandulifera Royle','Hydrocotyle ranunculoides L.fil.','Humulus scandens (Lour.) Merr.','Herpestes javanicus (É.Geoffroy Saint-Hilaire, 1818)','Heracleum sosnowskyi Manden.','Heracleum persicum Desf.','Heracleum mantegazzianum Sommier & Levier','Hakea sericea Schrad. & J.C.Wendl.','Gymnocoronis spilanthoides DC.','Gunnera tinctoria (Molina) Mirb.','Gambusia holbrooki Girard, 1859','Gambusia affinis (Baird & Girard, 1853)','Fundulus heteroclitus (Linnaeus, 1766)','Faxonius virilis (Hagen, 1870)','Faxonius rusticus (Girard, 1852)','Faxonius limosus (Rafinesque, 1817)','Faxonius immunis (Hagen, 1870)','Eriocheir sinensis H.Milne Edwards, 1853','Elodea nuttallii (Planch.) H.St.John','Ehrharta calycina Sm.','Delairea odorata Lem.','Crassula helmsii (Kirk) Cockayne','Corvus splendens Vieillot, 1817','Cortaderia selloana (Schult. & Schult.f.) Asch. & Graebn.','Cortaderia jubata (Lemoine) Stapf','Cipangopaludina chinensis (J.E.Gray, 1833)','Cherax quadricarinatus (von Martens, 1868)','Cherax destructor Clark, 1936'];
+var mapidlist = ['12yBJNcw4U2Yk3hHaMot1KeOjMEFmZQSz','12ysCHxUVNSjQI6ZIpPrny_VOkvsve464','131nMrvEk8qtI3z4TU9chsx0MSTF5TBMX','134PuCHaVExgteyABXwbE6E84VQ1lXayB','129F0qBXIX66t5AkwZIcxHGqUowOaXMr3','12JZxieTsZb3auJsTg1l3s1LPmobK0kWN','12OdxIv0ULd0VpbJ7RL1rKyw94pwHXQzh','12PHp7sli1UHm2qhFc2sZHszgFba6mVkI','12S1CTUj3n1XuklRazUXUCPEXzHVbEBCz','12SYVv0rtA-c3_VlMn7e0TZHqHxINvXvZ','12alAJm_uMPt8dE56WfegBhxIvyQ8cefB','12c_mqXgCazh-EQv41p9Jbbo6bjwRREXg','11nzVRED8PuCX29Jcp_iVtXbjpIv9BaJc','11p7WWqABRAA2rPVz70dYIEpcw7EvlHkJ','11qSZVnNvn4rjNQNvAFZdR8MINwBP2AkY','11ryf98Uvc-45ZiCrnEwWhbWkpSOlWFJp','11t4snH5am-SOSFDPP79CDgu8_rOIBEpZ','11v0iXGPXwqHzECeBfYtzOmqIKXSqNWaj','11zFXTGKkxgBFIlf_eWHdEqHcRreTt9H4','12-lsbamk_wTDKMczhDrcH7wDJ3x3XW4A','117tIDP1pR-iDDOP_lhihUcGXVedTGs-7','11BuL7AuA8j7rbTScNCmSy3yTENr5KSHK','11Okx0ib2lrErRy93TzXyEZPslpEmHG3e','11U4A7s1eGSiKowz5rMLq4JYyMmtn3iLH','11epkOEeQgim-mxcHFXCksetGzfwy4YZl','11fZf8Uj_F-pa4nIdHYSybSCd_eZGQ36f','11hABkqS5mewKQWRp5h-SlhS87hMqGdw3','11kvTdzw4X-cM_nYFd2LXKRxC3IVS8z5Y','10mtnByCCCesi4nQKW17UXjySgnCYgCwK','10pgUER2qWqRVnlQdE2N58oRGGJcLbrgz'];
 for (var i = 0; i < formtitlelist.length; i++) {
 var formtitle = formtitlelist[i];
 var species = specieslist[i];
 var mapid = mapidlist[i];
 
 var form = FormApp.create(formtitle);
-form.setLimitOneResponsePerUser(false);
-form.setDescription('Hartelijk dank om aan deze survey over de soort '.concat('"', species, '"', ' deel te nemen. In het vervolg vragen we u vriendelijk om een aantal vragen over de (kans op) introductie en/of vestiging, de verspreiding en abundantie, de impact, het monitoring en het beheer van de soort te beantwoorden. Het invullen van de vragenlijst zal ongeveer X-X minuten in beslag.  Bij alle vragen gaat het ons om uw oordeel als expert. Een overzicht over de volledige vragenlijst vindt u hier: https://drive.google.com/file/d/1vknc30yQC6hWIXZipMJ9U1YroTY8IKm2/view?usp=drivesdk'));
+form.setDescription('Hartelijk dank om aan deze survey over de soort '.concat('"', species, '"', ' deel te nemen. In het vervolg vragen we u vriendelijk om een aantal vragen over de (kans op) introductie en/of vestiging, de verspreiding en abundantie, de impact, het monitoring en het beheer van de soort te beantwoorden. Het invullen van de vragenlijst zal ongeveer 20 - 30 minuten in beslag.  Bij alle vragen gaat het ons om uw oordeel als expert. Een overzicht over de volledige vragenlijst vindt u hier: https://drive.google.com/file/d/1YwNtYYc0AZ-x7HFn7zNXIOSiBUTaxmX1/view?usp=drivesdk'));
 
 
 
@@ -37,7 +36,7 @@ item_2.setRequired(true);
 
 
 var item_3 = form.addMultipleChoiceItem();
-item_3.setTitle('In welk invasiestadium befindt zich deze soort in Vlaanderen?');
+item_3.setTitle('In welk invasiestadium befindt zich de soort in Vlaanderen?');
 // begin section introductievestiging
 var introductievestiging = form.addPageBreakItem();
 introductievestiging.setTitle('Introductie & vestiging');
@@ -46,17 +45,17 @@ introductievestiging.setTitle('Introductie & vestiging');
 var itemA1 = form.addMultipleChoiceItem();
 itemA1.setTitle('Hoeveel actuele en potentiële introductieplaatsen zijn er en hoe verspreid zijn deze?');
 
-itemA1.setHelpText('\nIntroductieplaatsen verwijzen naar locaties in verband met routes waarlangs invasieve soorten een land binnenkomen, zoals via transportmiddelen, handel, sierplanten, huisdieren en andere menselijke activiteiten. Dit omvat ook de natuurlijke verspreiding van invasieve populaties vanuit buurlanden naar Vlaanderen. Kies een van de volgende opties.');
+itemA1.setHelpText('\nIntroductieplaatsen verwijzen naar locaties in verband met routes waarlangs de soort Vlaanderen binnenkomt, zoals via transportmiddelen, handel, sierplanten, huisdieren en andere menselijke activiteiten. Dit omvat ook de natuurlijke verspreiding van invasieve populaties vanuit buurlanden naar Vlaanderen. Kies een van de volgende opties.');
 itemA1.setChoices([
 itemA1.createChoice('beperkt aantal specifieke locaties (bv. zeehavens)'), 
-itemA1.createChoice('groot aantal wijdverspreide locaties (bv. zoetwaterlichamen indien soort vooral wordt vrijgelaten uit aquaria)'), 
+itemA1.createChoice('groot aantal wijdverspreide locaties (bv. zoetwaterlichamen indien de soort vooral wordt vrijgelaten uit aquaria)'), 
 itemA1.createChoice('zowel specifieke als ook wijdverspreide locaties'), 
 itemA1.createChoice('ongekend'), 
 itemA1.createChoice('ik weet het niet'), 
 ]);
 
 itemA1.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. om welke introductieplaatsen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. om welke introductieplaatsen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan.');
 
 
 
@@ -64,7 +63,7 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemA2 = form.addMultipleChoiceItem();
 itemA2.setTitle('Hoe toegankelijk zijn de actuele en potentiële introductieplaatsen?');
 
-itemA2.setHelpText('\nKies een van de volgende opties:');
+itemA2.setHelpText('\nKies een van de volgende opties.');
 itemA2.setChoices([
 itemA2.createChoice('vooral publiek toegankelijke domeinen'), 
 itemA2.createChoice('vooral niet publiek toegankelijke domeinen (bv. privé, commercieel, militaire domeinen)'), 
@@ -82,14 +81,14 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemA4 = form.addParagraphTextItem();
 itemA4.setTitle('Zijn er binnen de actuele of potentiële introductieplaatsen van de soort plaatsen die om een bepaalde reden bijzondere aandacht moeten krijgen?');
 
-itemA4.setHelpText('\nAntwoord via een beknopte vrije tekst. Geef zeker de reden voor jouw selectie aan.');
+itemA4.setHelpText('\nAntwoord via een beknopte vrije tekst. Geef zeker de reden voor uw selectie aan.');
 
 
 
 
 
 var itemA5 = form.addMultipleChoiceItem();
-itemA5.setTitle('Hoe groot is de kans dat de soort in de komende tien jaar in Vlaanderen geïntroduceerd wordt?');
+itemA5.setTitle('Hoe groot is de kans dat de soort in de komende 10 jaar in Vlaanderen geïntroduceerd wordt?');
 
 itemA5.setHelpText('\nDe vraag richt zich op de kans op introductie via de actuele en potentiële introductieplaatsen van de soort. Voor een inschatting van de kans op introductie kan ook de verspreiding in buurlanden dienen. Kies een van de volgende opties.');
 itemA5.setChoices([
@@ -109,7 +108,7 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemA6 = form.addMultipleChoiceItem();
 itemA6.setTitle('Hoe groot is de kans dat de soort zich kan vestigen in Vlaanderen?');
 
-itemA6.setHelpText('\nDe kans dat een soort zich kan vestigen hangt onder andere af van klimaat- en habitatvereisten en andere ecologische kenmerken van de soort (bv. generalist of specialist, capaciteit tot snelle populatiegroei, …).  Voor een inschatting van de klimaat- en habitatovereenkomst kan ook het invasiestadium in buurlanden of landen met gelijkaardige klimaat- en habitatomstandigheden dienen. Kies een van de volgende opties.');
+itemA6.setHelpText('\nDe kans dat een soort zich kan vestigen hangt onder andere af van klimaat- en habitatvereisten en andere ecologische kenmerken van de soort (bv. generalist of specialist, capaciteit tot snelle populatiegroei).  Voor een inschatting van de klimaat- en habitatovereenkomst kan ook het invasiestadium in buurlanden of in landen met gelijkaardige klimaat- en habitatomstandigheden dienen. Kies een van de volgende opties.');
 itemA6.setChoices([
 itemA6.createChoice('grote kans'), 
 itemA6.createChoice('middelgrote kans'), 
@@ -130,17 +129,17 @@ introductievestigingdupl.setTitle('Introductie & vestiging');
 var itemA1 = form.addMultipleChoiceItem();
 itemA1.setTitle('Hoeveel actuele en potentiële introductieplaatsen zijn er en hoe verspreid zijn deze?');
 
-itemA1.setHelpText('\nIntroductieplaatsen verwijzen naar locaties in verband met routes waarlangs invasieve soorten een land binnenkomen, zoals via transportmiddelen, handel, sierplanten, huisdieren en andere menselijke activiteiten. Dit omvat ook de natuurlijke verspreiding van invasieve populaties vanuit buurlanden naar Vlaanderen. Kies een van de volgende opties.');
+itemA1.setHelpText('\nIntroductieplaatsen verwijzen naar locaties in verband met routes waarlangs de soort Vlaanderen binnenkomt, zoals via transportmiddelen, handel, sierplanten, huisdieren en andere menselijke activiteiten. Dit omvat ook de natuurlijke verspreiding van invasieve populaties vanuit buurlanden naar Vlaanderen. Kies een van de volgende opties.');
 itemA1.setChoices([
 itemA1.createChoice('beperkt aantal specifieke locaties (bv. zeehavens)'), 
-itemA1.createChoice('groot aantal wijdverspreide locaties (bv. zoetwaterlichamen indien soort vooral wordt vrijgelaten uit aquaria)'), 
+itemA1.createChoice('groot aantal wijdverspreide locaties (bv. zoetwaterlichamen indien de soort vooral wordt vrijgelaten uit aquaria)'), 
 itemA1.createChoice('zowel specifieke als ook wijdverspreide locaties'), 
 itemA1.createChoice('ongekend'), 
 itemA1.createChoice('ik weet het niet'), 
 ]);
 
 itemA1.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. om welke introductieplaatsen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. om welke introductieplaatsen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan.');
 
 
 
@@ -148,7 +147,7 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemA2 = form.addMultipleChoiceItem();
 itemA2.setTitle('Hoe toegankelijk zijn de actuele en potentiële introductieplaatsen?');
 
-itemA2.setHelpText('\nKies een van de volgende opties:');
+itemA2.setHelpText('\nKies een van de volgende opties.');
 itemA2.setChoices([
 itemA2.createChoice('vooral publiek toegankelijke domeinen'), 
 itemA2.createChoice('vooral niet publiek toegankelijke domeinen (bv. privé, commercieel, militaire domeinen)'), 
@@ -166,14 +165,14 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemA4 = form.addParagraphTextItem();
 itemA4.setTitle('Zijn er binnen de actuele of potentiële introductieplaatsen van de soort plaatsen die om een bepaalde reden bijzondere aandacht moeten krijgen?');
 
-itemA4.setHelpText('\nAntwoord via een beknopte vrije tekst. Geef zeker de reden voor jouw selectie aan.');
+itemA4.setHelpText('\nAntwoord via een beknopte vrije tekst. Geef zeker de reden voor uw selectie aan.');
 
 
 
 
 
 var itemA5 = form.addMultipleChoiceItem();
-itemA5.setTitle('Hoe groot is de kans dat de soort in de komende tien jaar in Vlaanderen geïntroduceerd wordt?');
+itemA5.setTitle('Hoe groot is de kans dat de soort in de komende 10 jaar in Vlaanderen geïntroduceerd wordt?');
 
 itemA5.setHelpText('\nDe vraag richt zich op de kans op introductie via de actuele en potentiële introductieplaatsen van de soort. Voor een inschatting van de kans op introductie kan ook de verspreiding in buurlanden dienen. Kies een van de volgende opties.');
 itemA5.setChoices([
@@ -193,7 +192,7 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemA6 = form.addMultipleChoiceItem();
 itemA6.setTitle('Hoe groot is de kans dat de soort zich kan vestigen in Vlaanderen?');
 
-itemA6.setHelpText('\nDe kans dat een soort zich kan vestigen hangt onder andere af van klimaat- en habitatvereisten en andere ecologische kenmerken van de soort (bv. generalist of specialist, capaciteit tot snelle populatiegroei, …).  Voor een inschatting van de klimaat- en habitatovereenkomst kan ook het invasiestadium in buurlanden of landen met gelijkaardige klimaat- en habitatomstandigheden dienen. Kies een van de volgende opties.');
+itemA6.setHelpText('\nDe kans dat een soort zich kan vestigen hangt onder andere af van klimaat- en habitatvereisten en andere ecologische kenmerken van de soort (bv. generalist of specialist, capaciteit tot snelle populatiegroei).  Voor een inschatting van de klimaat- en habitatovereenkomst kan ook het invasiestadium in buurlanden of in landen met gelijkaardige klimaat- en habitatomstandigheden dienen. Kies een van de volgende opties.');
 itemA6.setChoices([
 itemA6.createChoice('grote kans'), 
 itemA6.createChoice('middelgrote kans'), 
@@ -217,16 +216,16 @@ form.addImageItem().setImage(blob).setTitle('Verspreidingskaart op basis van GBI
 var itemB1 = form.addMultipleChoiceItem();
 itemB1.setTitle('Is de verspreiding van de soort over Vlaanderen voldoende gekend?');
 
-itemB1.setHelpText('\nInformatie over GBIF kaart. Kies een van de volgende opties:');
+itemB1.setHelpText('\nDe bovenstaande verspreidingskaart baseert zich op GBIF gegevens. Voor het Vlaams Gewest (gebied binnen de vaste lijn) en een 30 km brede bufferzone (gebied tussen vaste en stippellijn) zijn die hokken (EEA Reference grid, 1 x 1 km) rood gemarkeerd waarbinnen de soort tijdens de laatste 10 jaar is waargenomen. In- en uitzoomen kan via de toetscombinaties Ctrl + en Ctrl -. Kies een van de volgende opties.');
 itemB1.setChoices([
-itemB1.createChoice('ja, en de verspreidingskaart geeft een goed beeld hiervan'), 
-itemB1.createChoice('ja, maar de verspreidingskaart geeft hier geen goed beeld van'), 
+itemB1.createChoice('ja, de verspreiding is voldoende gekend en de verspreidingskaart geeft een goed beeld hiervan'), 
+itemB1.createChoice('ja, de verspreiding is voldoende gekend maar de verspreidingskaart geeft hier geen goed beeld van'), 
 itemB1.createChoice('neen, de verspreiding is niet voldoende gekend'), 
 itemB1.createChoice('ik weet het niet'), 
 ]);
 
 itemB1.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. welke leefgebieden er mogelijk niet op de kaart staan) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. welke leefgebieden er mogelijk niet op de kaart staan) en geef eventueel gebruikte bronnen aan.');
 
 
 
@@ -250,11 +249,11 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 
 
 var itemB3 = form.addMultipleChoiceItem();
-itemB3.setTitle('Hoe hoog is de actuele of verwachte populatiedichtheid van de soort?');
+itemB3.setTitle('Hoe hoog is de actuele en potentiële populatiedichtheid van de soort?');
 
 itemB3.setHelpText('\nKies een van de volgende opties.');
 itemB3.setChoices([
-itemB3.createChoice('de soort heeft reeds een hoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken'), 
+itemB3.createChoice('de soort heeft een hoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken'), 
 itemB3.createChoice('de soort heeft een middelhoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken'), 
 itemB3.createChoice('de soort heeft een lage populatiedichtheid bereikt, of kan dit potentieel nog bereiken'), 
 itemB3.createChoice('ongekend'), 
@@ -280,20 +279,20 @@ itemB4.createChoice('ik weet het niet'),
 ]);
 
 itemB4.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. welke factoren vooral bepalend voor de beoordeling waren) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. welke factoren vooral bepalend voor de beoordeling waren) en geef eventueel gebruikte bronnen aan.');
 
 
 
 
 var itemB5 = form.addMultipleChoiceItem();
-itemB5.setTitle('Hoe toegankelijk zijn de actuele en/of potentiële verspreidingsgebieden?');
+itemB5.setTitle('Hoe toegankelijk zijn de actuele en potentiële verspreidingsgebieden?');
 
 itemB5.setHelpText('\nKies een van de volgende opties.');
 itemB5.setChoices([
 itemB5.createChoice('vooral publiek toegankelijke domeinen'), 
-itemB5.createChoice('vooral niet publiek toegankelijke domeinen (b.v. privé, commercieel, militaire domeinen)'), 
+itemB5.createChoice('vooral niet publiek toegankelijke domeinen (bv. privé, commercieel, militaire domeinen)'), 
 itemB5.createChoice('zowel publiek toegankelijke als ook niet toegankelijke domeinen'), 
-itemB5.createChoice('ongekend / onvoldoende informatie'), 
+itemB5.createChoice('ongekend'), 
 itemB5.createChoice('ik weet het niet'), 
 ]);
 
@@ -306,7 +305,7 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemB7 = form.addParagraphTextItem();
 itemB7.setTitle('Zijn er binnen de huidige leefgebieden van de soort plaatsen die om een bepaalde reden bijzondere aandacht moeten krijgen?');
 
-itemB7.setHelpText('\nAntwoord via een beknopt vrij tekst. Geef zeker de reden voor jouw selectie aan.');
+itemB7.setHelpText('\nAntwoord via een beknopt vrij tekst. Geef zeker de reden voor uw selectie aan.');
 
 itemB7.setRequired(true);
 
@@ -329,9 +328,9 @@ impact.setTitle('Impact');
 
 
 var itemC1 = form.addMultipleChoiceItem();
-itemC1.setTitle('Hoe groot is de verwachte negatieve impact van deze soort op biodiversiteit en ecosysteemdiensten in Vlaanderen?');
+itemC1.setTitle('Hoe groot is de verwachte negatieve impact van de soort op biodiversiteit en ecosysteemdiensten in Vlaanderen?');
 
-itemC1.setHelpText('\nDeze vraag gaat ervan uit dat de soort al invasief is of verder wordt en geschikte gebieden in Vlaanderen inneemt. Voor soorten die al aanwezig zijn, kan dit gebaseerd worden op daadwerkelijk geobserveerde effecten. Voor andere soorten kan de inschatting gebaseerd zijn op vergelijkbare situaties in andere landen, de ecologie van de soort, gelijkenis met andere invasieve soorten, of andere relevante factoren. Kies een van de volgende opties.');
+itemC1.setHelpText('\nDeze vraag gaat ervan uit dat de soort al invasief is of wordt en geschikte gebieden in Vlaanderen inneemt. Voor soorten die al aanwezig zijn, kan dit gebaseerd worden op daadwerkelijk geobserveerde effecten. Voor andere soorten kan de inschatting gebaseerd zijn op vergelijkbare situaties in andere landen, de ecologie van de soort, gelijkenis met andere invasieve soorten, of andere relevante factoren. Kies een van de volgende opties.');
 itemC1.setChoices([
 itemC1.createChoice('grote negatieve impact verwacht'), 
 itemC1.createChoice('middelgrote negatieve impact verwacht'), 
@@ -342,13 +341,13 @@ itemC1.createChoice('ik weet het niet'),
 ]);
 
 itemC1.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. om welke impactmechanismen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. om welke impactmechanismen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan.');
 
 
 
 
 var itemC2 = form.addMultipleChoiceItem();
-itemC2.setTitle('In welke mate zal de verwachte negatieve impact van deze soort op biodiversiteit en ecosysteemdiensten zich manifesteren in natuur- of Natura 2000 gebieden?');
+itemC2.setTitle('In welke mate zal de verwachte negatieve impact van de soort op biodiversiteit en ecosysteemdiensten zich manifesteren in natuur- of Natura 2000 gebieden?');
 
 itemC2.setHelpText('\nKies een van de volgende opties.');
 itemC2.setChoices([
@@ -380,7 +379,7 @@ itemC3.createChoice('ik weet het niet'),
 ]);
 
 itemC3.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. om welke domeinen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. om welke domeinen het voornamelijk gaat) en geef eventueel gebruikte bronnen aan');
 
 // end section impact
 // begin section monitoring
@@ -389,26 +388,27 @@ monitoring.setTitle('Monitoring');
 
 
 var itemD1 = form.addCheckboxItem();
-itemD1.setTitle('Welke bemonsteringsmethoden zijn voor deze soort beschikbaar?');
+itemD1.setTitle('Welke bemonsteringsmethoden zijn voor de soort beschikbaar?');
 
 itemD1.setHelpText('\nDit kan bijvoorbeeld het gebruik van eDNA voor invasieve vissoorten of cameravallen voor nachtactieve invasieve zoogdieren omvatten. Andere voorbeelden kunnen andere types vallen, visuele surveys, of akoestische monitoring zijn, afhankelijk van de soort. Kies een of meerdere van de volgende opties.');
 itemD1.setChoices([
-itemD1.createChoice('visuele waarnemingen'), 
-itemD1.createChoice('auditieve waarnemingen'), 
+itemD1.createChoice('visuele surveys'), 
+itemD1.createChoice('akoestische surveys'), 
 itemD1.createChoice('passieve akoestische monitoring (dmv. automatische opnames)'), 
 itemD1.createChoice('cameravallen'), 
-itemD1.createChoice('pitfall traps'), 
-itemD1.createChoice('lichtvallen'), 
 itemD1.createChoice('feromoonvallen'), 
-itemD1.createChoice('eDNA: water'), 
-itemD1.createChoice('eDNA: bodem'), 
-itemD1.createChoice('eDNA: lucht'), 
+itemD1.createChoice('lichtvallen'), 
+itemD1.createChoice('kleurvallen'), 
+itemD1.createChoice('pitfall traps'), 
+itemD1.createChoice('environmental DNA: water'), 
+itemD1.createChoice('environmental DNA: bodem'), 
+itemD1.createChoice('environmental DNA: lucht'), 
 itemD1.createChoice('elektrovisserij'), 
 itemD1.createChoice('andere'), 
 ]);
 
 itemD1.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. welke andere bemonsteringsmethoden er zijn) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. welke andere bemonsteringsmethoden er zijn) en geef eventueel gebruikte bronnen aan.');
 
 
 
@@ -424,7 +424,7 @@ itemD2.setRequired(true);
 
 
 var itemD3 = form.addMultipleChoiceItem();
-itemD3.setTitle('Hoe hoog is de sensitiviteit van deze meest relevante bemonsteringsmethode voor de soort?');
+itemD3.setTitle('Hoe hoog is de sensitiviteit van deze meest relevante bemonsteringsmethode?');
 
 itemD3.setHelpText('\nDe sensitiviteit, of gevoeligheid, geeft aan hoe goed een methode in staat is om de aanwezigheid van een soort of een minimaal relevante (verandering in) populatiegrootte te detecteren. Bij een hoge sensitiviteit is de kans groot dat deze aanwezigheid wordt vastgesteld als de soort of de minimaal relevante (verandering in) populatiegrootte er daadwerkelijk is. Een hoge sensitiviteit leidt ook tot een klein percentage fout-negatieve resultaten. Kies een van de volgende opties.');
 itemD3.setChoices([
@@ -442,7 +442,7 @@ form.addParagraphTextItem().setTitle('').setHelpText('Licht het gekozen antwoord
 
 
 var itemD4 = form.addMultipleChoiceItem();
-itemD4.setTitle('Hoe hoog is de specificiteit van deze meest relevante bemonsteringsmethode voor de soort?');
+itemD4.setTitle('Hoe hoog is de specificiteit van deze meest relevante bemonsteringsmethode?');
 
 itemD4.setHelpText('\nDe specificiteit geeft aan hoe goed een methode de afwezigheid van een soort of een minimaal relevante (verandering in) populatiegrootte kan detecteren. Bij een hoge specificiteit is de kans groot dat deze afwezigheid wordt vastgesteld als de soort of de minimaal relevante (verandering in) populatiegrootte daadwerkelijk afwezig is. Een hoge specificiteit leidt ook tot een klein percentage fout-positieve resultaten. Kies een van de volgende opties.');
 itemD4.setChoices([
@@ -509,13 +509,13 @@ itemD7.createChoice('ik weet het niet'),
 ]);
 
 itemD7.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Licht het gekozen antwoord kort toe (b.v. om welk veldprotocol het gaat). Geef ook de gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Licht het gekozen antwoord kort toe (bv. om welk veldprotocol het gaat). Geef ook de gebruikte bronnen aan.');
 
 
 
 
 var itemD8 = form.addCheckboxItem();
-itemD8.setTitle('Welke bestaande meetnetten in Vlaanderen zijn relevant voor deze soort?');
+itemD8.setTitle('Welke bestaande meetnetten in Vlaanderen zijn relevant voor de soort?');
 
 itemD8.setHelpText('\nWe beschouwen meetnetten als relevant indien ze de soort potentieel of dadelijk oppikken. Dit kan over enkele specifieke populaties van de soort als ook het gehele verspreidingsgebied gaan. Kies een of meerdere van de volgende opties.');
 itemD8.setChoices([
@@ -564,7 +564,7 @@ beheer.setTitle('Beheer');
 var itemE1 = form.addMultipleChoiceItem();
 itemE1.setTitle('Wordt de soort momenteel beheerd in Vlaanderen?');
 
-itemE1.setHelpText('\nDeze vraag behandelt bestaande beheersmaatregelen welke gericht kunnen zijn op: uitroeiing onder rapid response; indamming van één of meerdere gevestigde populaties om verdere verspreiding te vermijden of te vertragen; vrijhouden van specifieke gebieden, zoals natuurreservaten; beperking van de abundantie van de soort onder een drempelwaarde. Kies een van de volgende opties.');
+itemE1.setHelpText('\nDeze vraag behandelt bestaande beheersmaatregelen welke gericht kunnen zijn op: uitroeiing onder rapid response; indamming van een of meerdere gevestigde populaties om verdere verspreiding te vermijden of te vertragen; vrijhouden van specifieke gebieden, zoals natuurreservaten; beperking van de abundantie van de soort onder een drempelwaarde. Kies een van de volgende opties.');
 itemE1.setChoices([
 itemE1.createChoice('ja'), 
 itemE1.createChoice('neen'), 
@@ -573,7 +573,7 @@ itemE1.createChoice('ik weet het niet'),
 ]);
 
 itemE1.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. over welke beheersdoelen en -maatregelen het gaat en waar de soort beheerd wordt) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. over welke beheersdoelen en -maatregelen het gaat en waar de soort beheerd wordt) en geef eventueel gebruikte bronnen aan.');
 
 
 
@@ -581,24 +581,24 @@ form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekoz
 var itemE2 = form.addMultipleChoiceItem();
 itemE2.setTitle('Indien besloten wordt om de soort te beheren, of indien de soort al beheerd wordt in Vlaanderen, welke informatie is nodig om de effectiviteit van de beheersmaatregelen te evalueren?');
 
-itemE2.setHelpText('\nDeze vraag behandelt weer bestaande en of op te stellen beheersmaatregelen (zie toelichting vraag E1). Afhankelijk van de gekozen maatregelen vergt een evaluatie van effectiviteit verschillende soorten informatie. Kies een van de volgende opties.');
+itemE2.setHelpText('\nDeze vraag behandelt weer bestaande en of op te stellen beheersmaatregelen (zie toelichting vorige vraag). Afhankelijk van de gekozen maatregelen vergt een evaluatie van effectiviteit verschillende soorten informatie. Kies een van de volgende opties.');
 itemE2.setChoices([
 itemE2.createChoice('aan- of afwezigheid van de soort'), 
 itemE2.createChoice('relatieve populatiegrootte van de soort'), 
 itemE2.createChoice('absolute populatiegrootte van de soort'), 
-itemE2.createChoice('geen directe informatie over de soort omdat andere variabelen voldoen (b.v. door soort veroorzaakte schade dient als proxy voor populatiegrootte)'), 
+itemE2.createChoice('geen directe informatie over de soort omdat andere variabelen voldoen (bv. door soort veroorzaakte schade dient als proxy voor populatiegrootte)'), 
 itemE2.createChoice('ongekend'), 
 itemE2.createChoice('ik weet het niet'), 
 ]);
 
 itemE2.setRequired(true);
-form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (b.v. over welke beheersmaatregelen het gaat en welke mogelijke proxy-variabelen er zijn) en geef eventueel gebruikte bronnen aan.');
+form.addParagraphTextItem().setTitle('').setHelpText('Optioneel: Licht het gekozen antwoord kort toe (bv. over welke beheersmaatregelen het gaat en welke mogelijke proxy-variabelen er zijn) en geef eventueel gebruikte bronnen aan.');
 
 // end section beheer
 introductievestigingdupl.setGoToPage(impact);
 introductievestiging.setGoToPage(verspreidingabundantie);
 verspreidingabundantie.setGoToPage(verspreidingabundantie);
-var folderId = '1RPd2bbmb6GiTxVz44K26v3jK8VdP8W4K';
+var folderId = '1_swosPhu5mWcLfhvBw8cg6rHUlneJfWc';
 var folder = DriveApp.getFolderById(folderId);
 var file = DriveApp.getFileById(form.getId());
 file.moveTo(folder);

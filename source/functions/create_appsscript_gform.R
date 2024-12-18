@@ -12,14 +12,10 @@ create_appsscript_gform <- function(
     gdrive_destfolder_id,
     species_qtext,
     species_qtext_map,
-    species_info,
+    species_names,
+    species_maps_ids,
     introtext
 ){
-  #
-  # define species information
-  species_names <- species_info$names
-  specias_maps <- species_info$maps
-
   #
   # define loop over forms
   form_titlelist <- species_names
@@ -34,7 +30,7 @@ create_appsscript_gform <- function(
     ),
     sprintf(
       "var mapidlist = ['%s'];",
-      specias_maps |> paste(collapse = "','")
+      species_maps_ids |> paste(collapse = "','")
     ),
     "for (var i = 0; i < formtitlelist.length; i++) {",
     "var formtitle = formtitlelist[i];",

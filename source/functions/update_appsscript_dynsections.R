@@ -62,7 +62,7 @@ update_appsscript_dynsections <- function(
   #
   # recombine script
   appsscript_beginend <- c(appsscript_begin, appsscript_end)
-  q_line <- grep("In welk invasiestadium befindt zich deze soort in Vlaanderen?", appsscript_beginend)
+  q_line <- grep("In welk invasiestadium befindt zich de soort in Vlaanderen?", appsscript_beginend)
   appsscript_begin_new <- appsscript_beginend[1:q_line]
   appsscript_end_new <- appsscript_beginend[(q_line+1):length(appsscript_beginend)]
   appsscript_upd <- c(
