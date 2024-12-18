@@ -10,7 +10,7 @@ source('source/export/survey_experts/00_definitions.R')
 #
 #
 #
-# --- import data with questions and answers ---------------
+# --- load data with questions and answers ---------------
 #
 questions_file <- list.files(
   questions_path,
@@ -29,70 +29,32 @@ pdf_url <- googledrive::drive_find(
   googledrive::drive_link()
 #
 #
-# --- get species information -------------
+# --- get distribution map information -------------
 #
-# get species names
-# (there will be one form per species)
-species <- do.call(
-  process_speciessheet,
-  species_sheet_args
-)
-#
-# test: all species unique
-assertthat::are_equal(
-  species$key_acc_gbif |> unique() |> length(),
-  nrow(species)
-)
-#
-# write gsheet for review (esp. scientific names)
-if (FALSE) {
-  # create gsheet
-  sheetname <- googledrive::drive_ls(
-    pattern = "^experts",
-    type = "spreadsheet",
-    shared_drive = "PRJ_MIUS"
-  ) |> dplyr::pull(name)
-  googlesheets4::gs4_create(name = paste0("CONTROL_", sheetname, " (don't edit)"), sheets = species)
-  # move sheet to target folder
-  tmp_id <- googledrive::drive_find(
-    pattern = paste0("CONTROL_", sheetname),
-    type = "spreadsheet"
-  ) |> googledrive::as_id()
-  googledrive::drive_mv(
-    file = tmp_id,
-    path = distribution_folder_url |> paste0(x = _, "/")
-  )
-}
-#
-# summarize 'invasieve duizenknopen' in species data frame
-species_sum <- species |>
-  dplyr::filter(grepl("duizendknopen", species)) |>
-  dplyr::pull(sci_name_gbif_acc) |>
-  paste(x = _, collapse = ", ")
-species_upd <- species |>
-  dplyr::mutate(
-    sci_name_gbif_sum = dplyr::case_when(
-      grepl("duizendknopen", species) ~ species_sum,
-      TRUE ~ sci_name_gbif_acc
-    )
-  ) |>
-  dplyr::distinct(sci_name_gbif_sum, .keep_all = TRUE)
-#
-# get public ids to distribution map images
-maps_ids <- googledrive::drive_ls(
-  pattern = "placeholder_1", ### HERE: restriction for testing; update!
-  type = "png",
+# list distribution map files on gdrive (filenames and -ids)
+maps_files <- googledrive::drive_ls(
+  path = map_folder_url, ### HERE: restriction for testing; update!
   shared_drive = "PRJ_MIUS"
-) |>
+)
+#
+# load dataframe with file- and speciesnames
+maps_files_names <- get(load("media/gbif_occcubes/plot_filepaths.rda")) |>
+  dplyr::mutate(
+    name = basename(path_to_map)
+  )
+#
+# join
+maps_info <- dplyr::left_join(
+  maps_files,
+  maps_files_names
+)
+#
+# make map images public (ids don't change)
+tmp <- maps_info |>
+  dplyr::pull(id) |>
   googledrive::drive_share_anyone() |>
   googledrive::as_id()
-#
-#
-# combine species info
-species_info <- data.frame(
-  names = species$sci_name_gbif_sum[1:10], ### HERE: restriction for testing; update!
-  maps = maps_ids[1:10] ### HERE: restriction for testing; update!
-)
+tmp %in% maps_info$id
 #
 #
 #
@@ -110,10 +72,11 @@ introtext <- googledrive::drive_read_string(
 introtext_upd <- introtext |>
   gsub(pattern = "\\[link overview questions\\]", replacement = pdf_url, x = _)
 #
-# create app script
-# (not possible yet: italics
-# https://stackoverflow.com/questions/18389284/text-formatting-for-strings-in-google-documents-from-google-apps-script?rq=3
-# multiple options for drop-down?)
+# format names
+maps_info <- maps_info |>
+  dplyr::mutate(
+    species_formatted = gsub(pattern = "'", replacement = "\\\\'", species)
+  )
 #
 appsscript_gform <- create_appsscript_gform(
   data_qa = questions_wide |>

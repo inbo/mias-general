@@ -30,6 +30,9 @@ form_folder_url <- "https://drive.google.com/drive/folders/1_swosPhu5mWcLfhvBw8c
 #
 # url of g-drive folder with form media
 media_folder_url <- "https://drive.google.com/drive/folders/1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"
+
+# url of g-drive folder with distribution map pngs
+map_folder_url <- "https://drive.google.com/drive/folders/16okbiFiL4jEGT_CL93SbItCvBWKsB2R8"
 #
 # path to locally save google apps scripts
 appscript_path <- "source/export/survey_experts/appsscripts/"
