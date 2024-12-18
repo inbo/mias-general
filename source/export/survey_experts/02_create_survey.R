@@ -108,7 +108,7 @@ gform_baseargs <- list(
   species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
   introtext = introtext_upd
 )
-nparts <- 4
+nparts <- 6
 nrows_parts <- nrow(maps_info)/nparts
 for (i in 1:nparts) {
   nrows_i <- seq(((i-1) * nrows_parts + 1), (i * nrows_parts))
