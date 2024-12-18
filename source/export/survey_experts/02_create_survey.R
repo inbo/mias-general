@@ -43,10 +43,20 @@ maps_files_names <- get(load("media/gbif_occcubes/plot_filepaths.rda")) |>
     name = basename(path_to_map)
   )
 #
+# rename "vespa_velutina" for questionnaire
+vespa_velutina_name <- "Vespa velutina nigrithorax de Buysson, 1905"
+maps_files_names_upd <- maps_files_names |>
+  dplyr::mutate(
+    species = dplyr::case_when(
+      grepl("Vespa velutina", species) ~ vespa_velutina_name,
+      TRUE ~ species
+    )
+  )
+#
 # join
 maps_info <- dplyr::left_join(
   maps_files,
-  maps_files_names
+  maps_files_names_upd
 )
 #
 # make map images public (ids don't change)
