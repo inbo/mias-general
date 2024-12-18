@@ -1,6 +1,6 @@
 
 
-## Hoe hoog is de sensitiviteit van deze meest relevante bemonsteringsmethode voor de soort?
+## Hoe hoog is de sensitiviteit van deze meest relevante bemonsteringsmethode?
 
 *De sensitiviteit, of gevoeligheid, geeft aan hoe goed een methode in staat is om de aanwezigheid van een soort of een minimaal relevante (verandering in) populatiegrootte te detecteren. Bij een hoge sensitiviteit is de kans groot dat deze aanwezigheid wordt vastgesteld als de soort of de minimaal relevante (verandering in) populatiegrootte er daadwerkelijk is. Een hoge sensitiviteit leidt ook tot een klein percentage fout-negatieve resultaten. Kies een van de volgende opties.*
 

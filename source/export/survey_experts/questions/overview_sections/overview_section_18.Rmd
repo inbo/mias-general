@@ -1,23 +1,24 @@
 # Monitoring
 
-## Welke bemonsteringsmethoden zijn voor deze soort beschikbaar?
+## Welke bemonsteringsmethoden zijn voor de soort beschikbaar?
 
 *Dit kan bijvoorbeeld het gebruik van eDNA voor invasieve vissoorten of cameravallen voor nachtactieve invasieve zoogdieren omvatten. Andere voorbeelden kunnen andere types vallen, visuele surveys, of akoestische monitoring zijn, afhankelijk van de soort. Kies een of meerdere van de volgende opties.*
 
-- visuele waarnemingen
-- auditieve waarnemingen
+- visuele surveys
+- akoestische surveys
 - passieve akoestische monitoring (dmv. automatische opnames)
 - cameravallen
-- pitfall traps
-- lichtvallen
 - feromoonvallen
-- eDNA: water
-- eDNA: bodem
-- eDNA: lucht
+- lichtvallen
+- kleurvallen
+- pitfall traps
+- environmental DNA: water
+- environmental DNA: bodem
+- environmental DNA: lucht
 - elektrovisserij
 - andere
 
-*Optioneel: Licht het gekozen antwoord kort toe (b.v. welke andere bemonsteringsmethoden er zijn) en geef eventueel gebruikte bronnen aan.*
+*Optioneel: Licht het gekozen antwoord kort toe (bv. welke andere bemonsteringsmethoden er zijn) en geef eventueel gebruikte bronnen aan.*
 
 &nbsp;
 

@@ -1,10 +1,10 @@
 
 
-## Hoe hoog is de actuele of verwachte populatiedichtheid van de soort?
+## Hoe hoog is de actuele en potentiële populatiedichtheid van de soort?
 
 *Kies een van de volgende opties.*
 
-- de soort heeft reeds een hoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken
+- de soort heeft een hoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken
 - de soort heeft een middelhoge populatiedichtheid bereikt, of kan dit potentieel nog bereiken
 - de soort heeft een lage populatiedichtheid bereikt, of kan dit potentieel nog bereiken
 - ongekend

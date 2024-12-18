@@ -1,13 +1,13 @@
 
 
-## Hoe toegankelijk zijn de actuele en/of potentiële verspreidingsgebieden?
+## Hoe toegankelijk zijn de actuele en potentiële verspreidingsgebieden?
 
 *Kies een van de volgende opties.*
 
 - vooral publiek toegankelijke domeinen
-- vooral niet publiek toegankelijke domeinen (b.v. privé, commercieel, militaire domeinen)
+- vooral niet publiek toegankelijke domeinen (bv. privé, commercieel, militaire domeinen)
 - zowel publiek toegankelijke als ook niet toegankelijke domeinen
-- ongekend / onvoldoende informatie
+- ongekend
 - ik weet het niet
 
 *Optioneel: Licht het gekozen antwoord kort toe en geef eventueel gebruikte bronnen aan.*

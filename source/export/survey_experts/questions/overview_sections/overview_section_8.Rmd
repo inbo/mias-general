@@ -2,7 +2,7 @@
 
 ## Hoe groot is de kans dat de soort zich kan vestigen in Vlaanderen?
 
-*De kans dat een soort zich kan vestigen hangt onder andere af van klimaat- en habitatvereisten en andere ecologische kenmerken van de soort (bv. generalist of specialist, capaciteit tot snelle populatiegroei, …).  Voor een inschatting van de klimaat- en habitatovereenkomst kan ook het invasiestadium in buurlanden of landen met gelijkaardige klimaat- en habitatomstandigheden dienen. Kies een van de volgende opties.*
+*De kans dat een soort zich kan vestigen hangt onder andere af van klimaat- en habitatvereisten en andere ecologische kenmerken van de soort (bv. generalist of specialist, capaciteit tot snelle populatiegroei).  Voor een inschatting van de klimaat- en habitatovereenkomst kan ook het invasiestadium in buurlanden of in landen met gelijkaardige klimaat- en habitatomstandigheden dienen. Kies een van de volgende opties.*
 
 - grote kans
 - middelgrote kans

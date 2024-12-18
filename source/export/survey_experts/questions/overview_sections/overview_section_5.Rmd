@@ -2,7 +2,7 @@
 
 ## Hoe toegankelijk zijn de actuele en potentiële introductieplaatsen?
 
-*Kies een van de volgende opties:*
+*Kies een van de volgende opties.*
 
 - vooral publiek toegankelijke domeinen
 - vooral niet publiek toegankelijke domeinen (bv. privé, commercieel, militaire domeinen)
