@@ -44,7 +44,7 @@ maps_files_names <- get(load("media/gbif_occcubes/plot_filepaths.rda")) |>
   )
 #
 # rename "vespa_velutina" for questionnaire
-vespa_velutina_name <- "Vespa velutina nigrithorax de Buysson, 1905"
+vespa_velutina_name <- "Vespa velutina nigrithorax Buysson, 1905"
 maps_files_names_upd <- maps_files_names |>
   dplyr::mutate(
     species = dplyr::case_when(
