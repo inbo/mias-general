@@ -25,8 +25,8 @@ species_sheet_args <- list(
 )
 #
 # url of g-drive folder to save forms in
-# currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questionnaires_test
-form_folder_url <- "https://drive.google.com/drive/folders/1RPd2bbmb6GiTxVz44K26v3jK8VdP8W4K"
+# PRJ_MIUS/_overkoepelend/bevraging_soortenexperts/survey
+form_folder_url <- "https://drive.google.com/drive/folders/1_swosPhu5mWcLfhvBw8cg6rHUlneJfWc"
 #
 # url of g-drive folder with form media
 media_folder_url <- "https://drive.google.com/drive/folders/1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"
