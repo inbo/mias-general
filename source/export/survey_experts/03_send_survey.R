@@ -89,19 +89,35 @@ data_viewurl <- googlesheets4::read_sheet(
     googledrive::as_id()
 )
 #
-# import email adresses
-emails <- do.call(
+# import species names and email adresses
+species <- do.call(
   process_speciessheet,
   species_sheet_args
 )
 #
-# combine data
-tmp <- data_viewurl |>
+# rename 'invasieve duizenknopen'
+knotweed_names <- species |>
+  dplyr::filter(grepl("duizendknopen", species)) |>
+  dplyr::pull(sci_name_gbif_acc) |>
+  paste(x = _, collapse = ", ")
+species_upd <- species |>
   dplyr::mutate(
-    sci_name_gbif_acc = formtitle |>
-      gsub(pattern = paste0(form_titlebase, " "), replacement = "", x = _),
-  )
-data_email <- dplyr::left_join(tmp, emails)
+    sci_name_gbif_upd = dplyr::case_when(
+      grepl("duizendknopen", species) ~ knotweed_names,
+      TRUE ~ sci_name_gbif_acc
+    )
+  ) |>
+  dplyr::distinct(sci_name_gbif_upd, .keep_all = TRUE)
+#
+# combine data
+data_email <- dplyr::left_join(
+  species_upd,
+  data_viewurl,
+  by = c("sci_name_gbif_upd" = "formtitle")
+  ) |>
+  # remove rows for which there is no expert yet
+  dplyr::filter(!is.na(expert_email))
+
 #
 # import email text
 email_text <- googledrive::drive_read_string(
@@ -153,7 +169,7 @@ for (i in seq_along(adresses_unique)) {
   address_i <- adresses_unique[i]
   data_email_i <- data_email |>
     dplyr::filter(expert_email == address_i) |>
-    dplyr::arrange(sci_name_gbif_acc)
+    dplyr::arrange(sci_name_gbif_upd)
   #
   if (grepl("@inbo", address_i)) {
     name_institute <- "INBO"
@@ -173,10 +189,13 @@ for (i in seq_along(adresses_unique)) {
   for (j in seq_along(email_formlink_mult)){
     email_formlink_mult[j] <- email_formlink_mult[j] |>
       gsub(pattern = "\\[link form\\]", replacement = data_email_i$viewurl[j], x = _) |>
-      gsub(pattern = "\\[species name\\]", replacement = data_email_i$sci_name_gbif_acc[j], x = _)
+      gsub(pattern = "\\[species name\\]", replacement = data_email_i$sci_name_gbif_upd[j], x = _)
   }
   email_formlink_mult <- paste(email_formlink_mult, collapse = "") |>
     gsub(pattern = "\\\\n", replacement = "\\\\\\\\n", x = _)
+  #
+  # format species names
+  email_formlink_mult <- email_formlink_mult |> gsub(pattern = "'", replacement = "\\\\\\\\'")
   #
   email_body_i <- email_body |>
     gsub(pattern = "\\[name receiver\\]", replacement = name_receiver, x = _) |>
