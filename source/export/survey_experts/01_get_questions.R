@@ -34,7 +34,7 @@ questions_list <- lapply(
   }
 )
 #
-# combine data
+# combine data across tabs
 questions <- questions_list |>
   dplyr::bind_rows()
 #
@@ -62,7 +62,7 @@ save(questions_wide, file = paste0(questions_path, "questions_wide.rda"))
 #
 #
 #
-# --- create questions overview -------------
+# --- create questions overview pdf -------------
 #
 # create individual sections
 create_overview_questions(
