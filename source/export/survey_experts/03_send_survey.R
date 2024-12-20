@@ -238,6 +238,7 @@ appsscript_email_test_b <- create_appsscript_sendemail(
   data_email = data_distribution |>
     dplyr::mutate(expert_emailaddress = "janne.adolf@inbo.be")
 )
+# need to manually rename function to sendEmailTest in google apps scripts
 #
 # save script
 writeLines(
