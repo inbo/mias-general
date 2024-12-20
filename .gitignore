@@ -9,6 +9,7 @@
 *.shx
 *.xls*
 *_files
+*.gs
 .DS_Store
 .RData
 .Renviron
