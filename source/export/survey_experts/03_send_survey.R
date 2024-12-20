@@ -272,3 +272,36 @@ writeLines(
 # more specifically into a .gs file associated with the project
 # save the project
 # run the function
+#
+# --- document mails sent -------------
+#
+data_email_wide <- data_email |>
+  dplyr::mutate(
+    species_no = paste0("species ", dplyr::row_number()),
+    .by = expert_email
+  ) |>
+  tidyr::pivot_wider(
+    data = _,
+    id_cols = expert_email,
+    names_from = species_no,
+    values_from = sci_name_gbif_upd
+    )
+data_distribution_upd <- dplyr::left_join(
+  data_distribution,
+  data_email_wide,
+  by = c("expert_emailaddress" = "expert_email")
+)
+# create gsheet for documentation
+googlesheets4::gs4_create(
+  name = paste0("CONTROL emails sent ", Sys.Date(), " (don't edit)"),
+  sheets = data_distribution_upd
+  )
+# move sheet to target folder
+tmp_id <- googledrive::drive_find(
+  pattern = paste0("CONTROL emails sent ", Sys.Date()),
+  type = "spreadsheet"
+) |> googledrive::as_id()
+googledrive::drive_mv(
+  file = tmp_id,
+  path = distribution_folder_url |> paste0(x = _, "/")
+)
