@@ -6,7 +6,7 @@ output:
   pdf_document:
     toc: true
     toc_depth: 1
-toc-title: "Inhoud"
+toc-title: "Content"
 ---
 
 ```{r setup, include=FALSE}
