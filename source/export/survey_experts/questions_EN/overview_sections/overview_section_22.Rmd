@@ -1,0 +1,17 @@
+
+
+## How high are the costs of this most relevant surveillance technique?
+
+*Costs may be associated e.g. with the time to measure a sampling point, data processing, staff deployment, staff training and the use of equipment. Low costs apply e.g. when volunteers can easily observe the species or can do so with limited training by experts. Medium costs are expected e.g. when methods require specialised equipment and technical knowledge, such as eDNA analysis or the use of camera traps. High costs arise when e.g. genetic analyses are needed for cryptic species or e.g. when detailed morphological research by experts is required. Choose one of the following options.*
+
+- low costs
+- medium costs
+- high costs
+- unknown
+- I do not know
+
+*Optional: Briefly explain the chosen answer and indicate any sources used.*
+
+&nbsp;
+
+

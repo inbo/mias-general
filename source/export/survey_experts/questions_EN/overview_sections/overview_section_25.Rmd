@@ -1,0 +1,25 @@
+
+
+## Which existing surveillance schemes in Flanders are relevant to the species?
+
+*We consider surveillance schemes relevant if they potentially or actually pick up the species. This can cover certain specific populations of the species as well as the entire distribution area. Choose one or more of the following options.*
+
+- Common Breeding Birds Project (Algemene Broedvogelmonitoring Vlaanderen)
+- Flemish Butterfly Monitoring Scheme (Algemene vlindermonitoring)
+- Rare Breeding Birds Project (Bijzondere Broedvogels Vlaanderen)
+- Florabank
+- Marten Network (Marternetwerk)
+- Meetnetten.be
+- Moth Monitoring Scheme (Nachtvlindermeetnet)
+- Fish Monitoring Scheme (Vis Informatie Systeem)
+- Wintering Waterbird Counts (Watervogeltellingen)
+- Winter Bats Counts (Wintertellingen Vleermuizen)
+- other
+- none
+- I do not know
+
+*Optional: Briefly explain the chosen answer (how the surveillance scheme is relevant and what the possible strengths and weaknesses are for detecting the species) and indicate any sources used.*
+
+&nbsp;
+
+

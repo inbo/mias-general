@@ -82,24 +82,25 @@ create_overview_questions(
   )
 #
 # render pdf
+pdf_name <- paste0("overview_questions_", lang, ".pdf")
 rmarkdown::render(
   input = paste0(questions_path, "overview_master.Rmd"),
   output_dir = questions_path,
-  output_file = "overview_questions.pdf"
+  output_file = pdf_name
 )
 #
 # upload pdf
-# path currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\media
 googledrive::drive_upload(
-  media = paste0(questions_path, "overview_questions.pdf"),
-  path = googledrive::as_id("1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"),
+  media = paste0(questions_path, pdf_name),
+  path = media_folder_url |> googledrive::as_id(),
   overwrite = TRUE
 )
 #
 # make pdf public
 googledrive::drive_find(
-  pattern = "overview_questions",
+  pattern = pdf_name,
   type = "pdf",
   shared_drive = "PRJ_MIUS"
 ) |>
   googledrive::drive_share_anyone()
+

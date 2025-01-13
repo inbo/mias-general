@@ -1,0 +1,17 @@
+
+
+## What is the level of specificity of this most relevant surveillance technique?
+
+*The specificity indicates how well a method can detect the absence of a species or a minimally relevant (change in) population size. With high specificity, the absence is likely to be detected if the species or minimum relevant (change in) population size is actually absent. High specificity also leads to a small percentage of false-positive results. Choose one of the following options.*
+
+- high specificity
+- medium specificity
+- low specificity
+- unknown
+- I do not know
+
+*Optional: Briefly explain the chosen answer and indicate any sources used.*
+
+&nbsp;
+
+

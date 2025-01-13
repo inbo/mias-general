@@ -1,0 +1,18 @@
+
+
+## Is there a standardised and optimised field protocol available?
+
+*A standardised field protocol clearly defines the entire measurement procedure and thus ensures objectivity. An optimised field protocol contains information on optimal times and weather conditions for measuring a species, thus ensuring a sufficient and stable detection probability. Choose one of the following options.*
+
+- yes
+- yes, but the field protocol is only standardised
+- yes, but the field protocol is only optimised
+- no
+- unknown
+- I do not know
+
+*Briefly explain the chosen answer (e.g. which field protocol is concerned). Also indicate the sources used.*
+
+&nbsp;
+
+

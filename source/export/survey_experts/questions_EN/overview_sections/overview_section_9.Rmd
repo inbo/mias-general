@@ -1,0 +1,16 @@
+# Distribution & abundance
+
+## Is the distribution of the species across Flanders sufficiently known?
+
+*The above distribution map is based on GBIF data. For the Flemish Region (area within the solid line) and a 30 km wide buffer zone (area between solid and dotted line), we mark those grid cells (EEA Reference grid, 1 x 1 km) in red within which the species has been observed during the last 10 years. You can zoom in and out using the keyboard shortcuts Ctrl + and Ctrl -. Choose one of the following options.*
+
+- yes, the distribution is sufficiently known and the distribution map is representative of it
+- yes, the distribution is sufficiently known but the distribution map is not representative of it
+- no, the distribution is not sufficiently known
+- I do not know
+
+*Optional: Briefly explain the answer chosen (e.g. which occurrences may not be on the map) and indicate any sources used.*
+
+&nbsp;
+
+
