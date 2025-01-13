@@ -1,0 +1,30 @@
+---
+title: "Survey species experts | Overview questions"
+author: ""
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    toc: true
+    toc_depth: 1
+toc-title: "Inhoud"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+\newpage
+
+```{r child-documents, echo = FALSE, results = 'asis'}
+sections_list <- list.files(path = "overview_sections", full.names = TRUE) |> 
+  stringr::str_sort(x = _, numeric = TRUE)
+children_list <- vector(mode = "list", length = length(sections_list))
+for (i in seq_along(sections_list)) {
+      children_list[[i]] <- knitr::knit_child(
+        sections_list[[i]],
+        quiet = TRUE,
+        envir = environment()
+        )
+    }
+cat(unlist(children_list), sep = "\n")
+```
