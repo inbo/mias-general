@@ -1,12 +1,26 @@
 #
+# --- definitions questions -------------
+#
+# language
+lang <- "EN"
+#
+#
 # --- definitions questions ---------------
 #
 # id of sheet with questions to be asked in form
 # currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\questions.gsheet
-sheet_id <- "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
+sheet_id <- if (lang == "NL") {
+  "1MikuShtt9mFdb5f2Nzts7pFR5MZ6HR7h-6Lx0bcEF7k"
+} else if (lang == "EN"){
+  "1sYKyJBACeo1RdygEXSj1UsEbsCT4oJkuVANbdkP6cGs"
+}
 #
 # path to locally save questions
-questions_path <- "source/export/survey_experts/questions/"
+questions_path <- if (lang == "NL") {
+  "source/export/survey_experts/questions_NL/"
+} else if (lang == "EN"){
+  "source/export/survey_experts/questions_EN/"
+}
 #
 #
 # --- definitions forms ---------------
