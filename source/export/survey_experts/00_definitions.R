@@ -59,3 +59,8 @@ appscript_path <- "source/export/survey_experts/appsscripts/"
 distribution_folder_url <- "https://drive.google.com/drive/folders/1GPNJGmDoaaT4P2U51cUkWBQKR8cvtRnw"
 #
 #
+# --- definitions response collection ---------------
+#
+# url of g-drive folder to save responses in
+# currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\responses
+response_folder_url <- "https://drive.google.com/drive/folders/1Esk5X5J9YKgtZdS4iNQ8g1jpemG6uGcR"
