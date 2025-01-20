@@ -2,7 +2,7 @@
 # --- definitions questions -------------
 #
 # language
-lang <- "EN"
+lang <- "NL"
 #
 #
 # --- definitions questions ---------------
@@ -64,3 +64,6 @@ distribution_folder_url <- "https://drive.google.com/drive/folders/1GPNJGmDoaaT4
 # url of g-drive folder to save responses in
 # currently: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\responses
 response_folder_url <- "https://drive.google.com/drive/folders/1Esk5X5J9YKgtZdS4iNQ8g1jpemG6uGcR"
+#
+# path to locally save response data (ignored by git)
+response_data_path <- "data/survey_experts/"

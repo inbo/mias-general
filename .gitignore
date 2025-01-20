@@ -24,4 +24,5 @@ renv/library
 data/raw/*
 data/gis/*
 data/gbif_occcubes/*
+data/survey_experts/*
 media/
