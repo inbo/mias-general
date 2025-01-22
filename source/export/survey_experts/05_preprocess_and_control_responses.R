@@ -70,8 +70,6 @@ data_resp_long_tmp <- data_responses |>
     values_to = "response"
   )
 #
-# HERE: remove duplicate columns does not always work?
-# check: rein.brys@inbo.be
 # cleaning the data
 colnames_dupl <- colnames(data_responses) |>
   grep(pattern = "\\.1", value = TRUE)
