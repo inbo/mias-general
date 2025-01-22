@@ -10,64 +10,11 @@ source('source/export/survey_experts/00_definitions.R')
 #
 #
 #
-# --- create google apps script which collects data -------------
-#
-# get form ids
-data_form <- googledrive::drive_ls(
-  path = form_folder_url |>
-    googledrive::as_id()
-) |>
-  # species in alphabetical, forms in according order
-  dplyr::arrange(name)
-form_ids <- data_form |>
-  googledrive::as_id()
-#
-# create apps script
-name_sheet_raw <- paste0(form_titlebase, "_responses_", Sys.Date())
-appsscript_linkformstosheet <- create_appsscript_linkformstosheet(
-  form_ids = form_ids,
-  gdrive_destfolder_id = response_folder_url |>
-    googledrive::as_id(),
-  name_outfile = name_sheet_raw
-)
-#
-# save script
-writeLines(
-  appsscript_linkformstosheet,
-  paste0(appscript_path, "appsscript_linkformstosheet.gs")
-)
-#
-# --- delete previous sheets --------------------------------
-#
-if (FALSE){
-  responses_id <- googledrive::drive_find(
-    pattern = paste0(form_titlebase, "_responses"),
-    shared_drive = "PRJ_MIUS",
-    type = "spreadsheet"
-  ) |>
-    googledrive::as_id()
-  googledrive::drive_rm(responses_id)
-}
-#
-#
-# --- add script to google apps script project and execute script-------------
-#
-# manually (whenever a form is ready to send out):
-# ---------------------------------------------------------------------
-# open the local "appsscript_linkformstosheet.gs" file here or in a text editor
-# add a new script to the above created apps script project
-# copy and paste its content into the apps script project
-# more specifically into a .gs file associated with the project
-# save the project
-# run the function
-#
-#
-#
 # --- import data into R --------------------------------
 #
 # get sheet id
 responses_id <- googledrive::drive_find(
-  pattern =  name_sheet_raw,
+  pattern =  paste0(form_titlebase, "_responses$"),
   shared_drive = "PRJ_MIUS",
   type = "spreadsheet"
 ) |>
@@ -104,21 +51,27 @@ data_responses_list_filled <- vctrs::list_drop_empty(data_responses_list)
 data_responses <- data_responses_list_filled |>
   dplyr::bind_rows()
 #
-# reshape to long and rename
+# rename id columns & reshape to long
 colnames_rename <- c(
-  timestamp = colnames(data_responses) |> grep(pattern = "timestamp", value = TRUE),
-  email = colnames(data_responses) |> grep(pattern = "e_mail", value = TRUE),
-  species = colnames(data_responses) |> grep(pattern = "welke_soort", value = TRUE),
-  stadium = colnames(data_responses) |> grep(pattern = "invasiestadium", value = TRUE)
+  timestamp = colnames(data_responses) |>
+    grep(pattern = "timestamp", value = TRUE),
+  email = colnames(data_responses) |>
+    grep(pattern = "e_mail", value = TRUE),
+  species = colnames(data_responses) |>
+    grep(pattern = "welke_soort", value = TRUE),
+  stadium = colnames(data_responses) |>
+    grep(pattern = "invasiestadium", value = TRUE)
 )
 data_resp_long_tmp <- data_responses |>
   dplyr::rename(colnames_rename) |>
   tidyr::pivot_longer(
-    cols = -tidyr::all_of(colnames_rename |> names()),
+    cols = -(colnames_rename |> names()),
     names_to = "question",
     values_to = "response"
   )
 #
+# HERE: remove duplicate columns does not always work?
+# check: rein.brys@inbo.be
 # cleaning the data
 colnames_dupl <- colnames(data_responses) |>
   grep(pattern = "\\.1", value = TRUE)
@@ -135,14 +88,19 @@ data_resp_long <- data_resp_long_tmp |>
     question_upd = dplyr::case_when(
       grepl("column", question) ~ paste0('followup_', question_tmp),
       TRUE ~ question
-    ),
+    ) |> gsub(pattern = "\\.1", replacement = ""),
     .after = question
   ) |>
   # remove duplicated & not-filled-in sections
   dplyr::group_by(species) |>
   dplyr::mutate(
     keep_row = dplyr::case_when(
-      (question_tmp %in% colnames_dupl & is.na(response)) ~ FALSE,
+      (
+        question_tmp %in%
+         c(colnames_dupl,
+           colnames_dupl |> gsub(pattern = "\\.1", replacement = ""))
+       & is.na(response)
+       ) ~ FALSE,
       TRUE ~ TRUE
     )
   ) |>
