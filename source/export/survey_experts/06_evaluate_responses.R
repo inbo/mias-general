@@ -23,7 +23,10 @@ res_file <- list.files(
   response_data_path,
   pattern = "long.rda",
   full.names = TRUE
-) # sort & select most recent
+) |>
+  # sort & select most recent
+  sort(decreasing = TRUE) |>
+  _[1]
 res_long <- get(load(res_file))
 #
 #
@@ -50,9 +53,17 @@ q_long_upd_tmp <- q_long |>
     values_to = "q_text"
   ) |>
   dplyr::mutate(
-    score_upd = dplyr::case_when(
+    response_score = dplyr::case_when(
       grepl("followup", q_text) ~ NA_real_,
       TRUE ~ score_response_option
+    ),
+    response_required = dplyr::case_when(
+      grepl("followup", q_text) ~ 0,
+      TRUE ~ response_required
+    ),
+    question_use_for_ranking = dplyr::case_when(
+      grepl("followup", q_text) ~ 0,
+      TRUE ~ question_use_for_ranking
     )
   ) |>
   tidyr::drop_na(q_text) |>
@@ -60,32 +71,39 @@ q_long_upd_tmp <- q_long |>
   dplyr::mutate(
     q_text_upd = q_text |>
       gsub(pattern = "\\s+|-", replacement = "_", x = _) |>
-      tolower()) |>
-  # select columns
-  dplyr::select(
-    c(
-      "section_title", "section_number",
-      "q_text_upd",
-      "response_required", "response_option", "score_upd", "score_category"
-    )
-  )
+      tolower())
 #
 # isolate meta data
 q_meta <- q_long_upd_tmp |>
   dplyr::select(
-    c("score_category", "section_title", "section_number", "q_text_upd")
+    c("question_use_for_ranking", "response_required", "score_category", "section_title", "section_number", "q_text_upd")
     ) |>
   dplyr::distinct(q_text_upd, .keep_all = TRUE)
 q_long_upd <- q_long_upd_tmp |>
   dplyr::select(
-    -c("score_category", "section_title", "section_number")
+    c("q_text_upd", "response_option", "response_score")
   )
 #
+# modify meta data
+q_meta <- q_meta |>
+  # fix error in original question data
+  dplyr::mutate(
+    question_use_for_ranking = dplyr::case_when(
+      grepl("welke_bemonsteringsmethoden", q_text_upd) ~ 0,
+      TRUE ~ question_use_for_ranking
+    )
+  ) |>
+  # rename
+  dplyr::rename(
+    score_crit = "score_category",
+    section_no = "section_number"
+  )
+
 #
 #
 # --- join questions and responses ---------------
 #
-res_final <- dplyr::left_join(
+res_all <- dplyr::left_join(
   x = res_long,
   y = q_long_upd |> dplyr::select(-dplyr::contains("section")),
   by = c(
@@ -97,8 +115,27 @@ res_final <- dplyr::left_join(
     x = _,
     y = q_meta,
     by = c("question_upd" = "q_text_upd")
-  )
-
+  ) |>
+  # add indicator whether section was skipped
+  dplyr::mutate(
+    section_skipped = dplyr::case_when(
+      grepl("afw", stadium) & grepl("Versp", section_title) ~ TRUE,
+      grepl("spo|wijd", stadium) & grepl("Intro", section_title) ~ TRUE,
+      TRUE ~ FALSE
+    )
+  ) |>
+  # rename
+  dplyr::rename(
+    question_text = "question_upd",
+    response_text = "response",
+    question_scored = "question_use_for_ranking"
+    )
+#
+# define subsets of response data
+res_scored <- res_all |>
+  dplyr::filter(question_scored |> as.logical(), !section_skipped)
+res_open <- res_all |>
+  dplyr::filter(!question_scored |> as.logical(), !section_skipped)
 
 
 
