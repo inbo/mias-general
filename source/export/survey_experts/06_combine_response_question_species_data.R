@@ -10,7 +10,7 @@ source('source/export/survey_experts/00_definitions.R')
 #
 #
 #
-# --- load questions and response data ---------------
+# --- load questions and response data and species list ---------------
 #
 q_file <- list.files(
   questions_path,
@@ -29,6 +29,8 @@ res_file <- list.files(
   _[1]
 res_long <- get(load(res_file))
 #
+load("data/processed/2025-01-27_species_list.Rda")
+species_list <- species_list$data
 #
 #
 # --- reshape questions according to structure of responses ---------------
@@ -98,12 +100,12 @@ q_meta <- q_meta |>
     score_crit = "score_category",
     section_no = "section_number"
   )
-
+#
 #
 #
 # --- join questions and responses ---------------
 #
-res_comb <- dplyr::left_join(
+res_comb_tmp <- dplyr::left_join(
   x = res_long,
   y = q_long_upd |> dplyr::select(-dplyr::contains("section")),
   by = c(
@@ -130,6 +132,48 @@ res_comb <- dplyr::left_join(
     response_text = "response",
     question_scored = "question_use_for_ranking"
     )
+#
+#
+#
+# --- add species information ---------------
+#
+# restructure species information
+species_info <- species_list |>
+  dplyr::mutate(
+    ven_name_eng = dplyr::case_when(
+      is.na(ven_name_gbif_eng_alt) ~ ven_name_gbif_eng,
+      grepl("Knotweed", ven_name_gbif_eng_alt) ~ "Asian, Giant, Bohemian Knotweed",
+      TRUE ~ ven_name_gbif_eng_alt
+    ),
+    ven_name_nld = dplyr::case_when(
+      is.na(ven_name_gbif_nld) ~ ven_name_gheet_nld,
+      TRUE ~ ven_name_gbif_nld
+    ),
+    sci_name = dplyr::case_when(
+      grepl("Knotweed", ven_name_gbif_eng_alt) ~
+        "Reynoutria japonica Houtt., Reynoutria sachalinensis (F.Schmidt) Nakai, Reynoutria ×bohemica Chrtek & Chrtková", #sci_name_gbif_acc_alt,
+      TRUE ~ sci_name_gbif_acc
+    )
+  ) |>
+  dplyr::select(
+    tidyselect::any_of(
+      c("on_unionlist", "prius_stadium",
+        "sci_name", "ven_name_eng", "ven_name_nld")
+      )
+    ) |>
+  dplyr::distinct(sci_name, .keep_all = TRUE)
+#
+# join results data and species information
+res_comb <- dplyr::left_join(
+  x = res_comb_tmp ,
+  y = species_info,
+  by = c("species" = "sci_name")
+)
+#
+# test whether join was successfull
+assertthat::noNA(res_comb$ven_name_eng)
+assertthat::noNA(res_comb$ven_name_nld)
+#
 #
 #
 # --- save ---------------
