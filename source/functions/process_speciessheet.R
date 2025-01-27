@@ -13,20 +13,25 @@ process_speciessheet <- function(
   sheet_list <- lapply(
     sheet_tab_names,
     function(i){
-      googlesheets4::read_sheet(
+      sheet_i <- googlesheets4::read_sheet(
         ss = sheet_id,
         sheet = i,
         .name_repair = function(x) {
           # rename variables
           gsub(pattern = "\\s+|-", replacement = " ", x)
         }
-      ) |>
-        # add tab names as variable
-        dplyr::mutate(tab_variablename := i, .before = 1)
+      )
+      if (!is.null(tab_variablename)) {
+        sheet_i <- sheet_i |>  dplyr::mutate(tab_variablename := i, .before = 1)
+      }
+      return(sheet_i)
     }
   )
   #
   # create data frame
+  if (is.null(tab_variablename)) {
+    sheet_list <- sheet_list[[1]]
+  }
   sheet_data <- sheet_list |> dplyr::bind_rows()
   #
   # rename columns
@@ -52,7 +57,7 @@ process_speciessheet <- function(
       .after = gbif_namevariable
     ) |>
     dplyr::mutate(
-      key_acc_gbif = gbif_data$key_acc
+      key_gbif_acc = gbif_data$key_acc
     )
   #
   #
