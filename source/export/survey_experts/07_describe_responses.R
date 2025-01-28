@@ -33,18 +33,18 @@ sum_mean <- function(
     dplyr::filter(
       grepl(crit, score_crit)
     ) |>
-    dplyr::mutate(
-      mean = mean(response_score, na.rm = TRUE),
-      .by = group_by_what
-    ) |>
-    dplyr::mutate(
-      mean = mean(mean),
-      .by = "species"
-    ) |>
+    # mean per group
+    dplyr::group_by(dplyr::across(tidyselect::all_of(group_by_what))) |>
+    dplyr::mutate(m = mean(response_score, na.rm = TRUE)) |>
+    dplyr::filter(dplyr::row_number() == 1) |>
+    dplyr::ungroup() |>
+    # mean of means
+    dplyr::mutate(m = mean(m), .by = species) |>
     dplyr::distinct(species, .keep_all = TRUE) |>
-    dplyr::select(tidyselect::contains(c("species","mean","union", "ven"))) |>
-    dplyr::arrange(desc(mean)) |>
-    dplyr::rename_with(~ paste0("mean_", crit), "mean")
+    #
+    dplyr::select(tidyselect::starts_with(c("species","m","on_union", "ven"))) |>
+    dplyr::arrange(dplyr::desc(m)) |>
+    dplyr::rename_with(~ paste0("m_", crit), "m")
 }
 #
 # function to factorize variables
@@ -67,60 +67,86 @@ factorize <- function(
 # --- plot ranking according to mean scores ---------------
 #
 # grand means urgency & feasibility
-res_mean_feas <- sum_mean(res_scored, "feas")
-res_mean_urge <- sum_mean(res_scored, "urge")
-res_mean <- dplyr::full_join(res_mean_feas, res_mean_urge) |>
-  dplyr::mutate(
-    mean_feasurge = mean(c(mean_feas, mean_urge)),
-    .by = species
-  ) |> dplyr::arrange(dplyr::desc(mean_feasurge))
-#
+res_m_feas <- sum_mean(res_scored, "feas")
+res_m_urge <- sum_mean(res_scored, "urge")
+# grand mean all questions
+res_m_feasurge <- sum_mean(res_scored, "feas|urge")
 # section group means urgency & feasibility
-res_mean_feas_gm <- sum_mean(res_scored, "feas", group_by_what = c("species", "section_no"))
-res_mean_urge_gm <- sum_mean(res_scored, "urge", group_by_what = c("species", "section_no"))
-res_mean_gm <- dplyr::full_join(res_mean_feas_gm, res_mean_urge_gm) |>
+res_gm_feas <- sum_mean(res_scored, "feas", group_by_what = c("species", "section_no"))
+res_gm_urge <- sum_mean(res_scored, "urge", group_by_what = c("species", "section_no"))
+
+# merge data
+res_m <- dplyr::full_join(
+  x = res_m_feas,
+  y = res_m_urge
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = res_m_feasurge |> dplyr::rename(m_feasurge = "m_feas|urge")
+    ) |>
+  dplyr::full_join(
+    x = _,
+    y = res_gm_feas |> dplyr::rename(gm_feas = "m_feas")
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = res_gm_urge |> dplyr::rename(gm_urge = "m_urge")
+  ) |>
   dplyr::mutate(
-    mean_feasurge = mean(c(mean_feas, mean_urge)),
+    gm_mfeas_murge = mean(c(m_feas, m_urge)),
     .by = species
-  ) |> dplyr::arrange(dplyr::desc(mean_feasurge))
+  ) |>
+  dplyr::mutate(
+    gm_gmfeas_gmurge = mean(c(gm_feas, gm_urge)),
+    .by = species
+  ) |>
+  dplyr::arrange(dplyr::desc(m_feasurge))
+#
+# correlations of different means
+cor(res_m |> dplyr::select(tidyselect::contains(c("m_"))))
 #
 #
 # convert to plot data
-res_plot_tmp <- res_mean |>
+res_plot_tmp <- res_m |>
   dplyr::mutate(
-    mean_max = dplyr::case_when(
-      mean_feas > mean_urge ~ mean_feas,
-      TRUE ~ mean_urge
+    m_max = dplyr::case_when(
+      m_feas > m_urge ~ m_feas,
+      TRUE ~ m_urge
   ))
 res_plot <- factorize(
   res_plot_tmp,
   c("species", "ven_name_eng", "ven_name_nld"),
   list(
-    res_mean$species |> unique() |> rev(),
-    res_mean$ven_name_eng |> unique() |> rev(),
-    res_mean$ven_name_nld |> unique() |> rev()
+    res_m$species |> unique() |> rev(),
+    res_m$ven_name_eng |> unique() |> rev(),
+    res_m$ven_name_nld |> unique() |> rev()
   )
 )
 #
 # plot
 ggplot2::ggplot(
   res_plot,
-  ggplot2::aes(x = mean_feasurge, y = species, color = on_unionlist)) +
+  ggplot2::aes(x = m_feasurge, y = species, color = on_unionlist)) +
   ggplot2::geom_point() +
-  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = mean_max), linetype = "dashed") +
-  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = mean_feasurge)) +
-  ggplot2::geom_point(ggplot2::aes(x = mean_feas), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = mean_feas), shape = "F") +
-  ggplot2::geom_point(ggplot2::aes(x = mean_urge), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = mean_urge), shape = "U") +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_max), linetype = "dashed") +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge)) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feas), shape = "F") +
+  ggplot2::geom_point(ggplot2::aes(x = m_urge), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_urge), shape = "U") +
   ggplot2::scale_y_discrete(labels = res_plot$ven_name_nld |> levels()) +
   ggplot2::coord_cartesian(xlim = c(
     res_scored$response_score |> na.omit() |> min(),
     res_scored$response_score |> na.omit() |> max()
     )) +
   ggplot2::theme_bw() +
+  ggplot2::labs(
+    x = "mean(mean(feas), mean(urge))",
+    y = "species (vernacular name nld)",
+    color = "on unionlist?"
+    ) +
   NULL
-#
+# always a bit closer to F as it has more questions
 #
 # --- plot score categories 'unknown' vs. rest ---------------
 #
