@@ -29,7 +29,15 @@ res_file <- list.files(
   _[1]
 res_long <- get(load(res_file))
 #
-load("data/processed/2025-01-27_species_list.Rda")
+species_list_file <- list.files(
+  "data/processed/",
+  pattern = "species_list",
+  full.names = TRUE
+) |>
+  # sort & select most recent
+  sort(decreasing = TRUE) |>
+  _[1]
+species_list <- get(load(species_list_file))
 species_list <- species_list$data
 #
 #
