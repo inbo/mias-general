@@ -4,13 +4,60 @@ list.files("source/functions", full.names = TRUE) |>
   invisible()
 #
 #
-# --- definitions & preparations ---------------
+# --- definitions ---------------
 #
 source('source/export/survey_experts/00_definitions.R')
 #
 #
+#
+# --- prepare response data ---------------
+#
 # response data
 load(paste0(response_data_path, "results_combined.rda"))
+#
+# add variables
+res_comb_upd <- res_comb |>
+  dplyr::mutate(
+    question_text_short = dplyr::case_match(
+      question_id,
+      "A1" ~ "Hoeveel introductieplaatsen?",
+      "A2" ~ "Introductieplaatsen toegankelijk?",
+      "A4" ~ "Bijzondere introductieplaatsen?",
+      "A5" ~ "Kans op introductie?",
+      "A6" ~ "Kans op vestiging?",
+      "B1" ~ "Verspreiding gekend?",
+      "B2" ~ "Verspreidingspatroon?",
+      "B3" ~ "Welke populatiedichtheid?",
+      "B4" ~ "Verandering verspreidingsgebieden?",
+      "B5" ~ "Verspreidingsgebieden toegankelijk?",
+      "B7" ~ "Bijzondere verspreidingsgebieden?",
+      "C1" ~ "Impact biodiversiteit?",
+      "C2" ~ "Impact biodiversiteit natuurgebieden?",
+      "C3" ~ "Impact andere sectoren?",
+      "D1" ~ "Welke bemonsteringsmethoden?",
+      "D2" ~ "Meest relevante methode?",
+      "D3" ~ "Sensitiviteit methode?",
+      "D4" ~ "Specificiteit methode?",
+      "D5" ~ "Kosten methode?",
+      "D6" ~ "Scope methode?",
+      "D7" ~ "Veldprotocol beschikbaar?",
+      "D8" ~ "Relevante meetnetten?",
+      "D9" ~ "Door meetnetten opgepikt?",
+      "D10" ~ "Losse waarnemingen representatief?",
+      "E1" ~ "Soort beheerd?",
+      "E2" ~ "Informatie beheersevaluatie",
+    ),
+    question_text_trunc = stringr::str_trunc(string = question_text, width = 40),
+    .after = question_text
+  )
+# dplyr::rowwise() |>
+# dplyr::mutate(
+#  question_text_wrap = question_text |>
+#    stringr::str_wrap(width = 40) |>
+#    paste(x = _, NULL, collapse = "\n")
+#)
+
+
 #
 # define subsets of response data
 res_scored <- res_comb |>
