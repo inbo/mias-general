@@ -60,9 +60,9 @@ res_comb_upd <- res_comb |>
 
 #
 # define subsets of response data
-res_scored <- res_comb |>
+res_scored <- res_comb_upd |>
   dplyr::filter(question_scored |> as.logical(), !section_skipped)
-res_open <- res_comb |>
+res_open <- res_comb_upd |>
   dplyr::filter(!question_scored |> as.logical(), !section_skipped)
 #
 #
@@ -89,7 +89,7 @@ sum_mean <- function(
     dplyr::mutate(m = mean(m), .by = species) |>
     dplyr::distinct(species, .keep_all = TRUE) |>
     #
-    dplyr::select(tidyselect::starts_with(c("species","m","on_union", "ven"))) |>
+    dplyr::select(tidyselect::starts_with(c("species","stadium","m","on_union", "ven"))) |>
     dplyr::arrange(dplyr::desc(m)) |>
     dplyr::rename_with(~ paste0("m_", crit), "m")
 }
@@ -159,48 +159,54 @@ res_plot_tmp <- res_m |>
     m_max = dplyr::case_when(
       m_feas > m_urge ~ m_feas,
       TRUE ~ m_urge
-  ))
+  ),
+  on_unionlist_upd = dplyr::case_when(
+    on_unionlist ~ "on unionlist",
+    !on_unionlist ~ "not on unionlist"
+  )
+  )
 res_plot <- factorize(
   res_plot_tmp,
-  c("species", "ven_name_eng", "ven_name_nld"),
+  c("species", "ven_name_eng", "ven_name_nld", "on_unionlist_upd"),
   list(
     res_m$species |> unique() |> rev(),
     res_m$ven_name_eng |> unique() |> rev(),
-    res_m$ven_name_nld |> unique() |> rev()
+    res_m$ven_name_nld |> unique() |> rev(),
+    c("on unionlist", "not on unionlist")
   )
 )
 #
 # plot
 ggplot2::ggplot(
   res_plot,
-  ggplot2::aes(x = m_feasurge, y = species, color = on_unionlist)) +
-  ggplot2::geom_point() +
+  ggplot2::aes(x = m_feasurge, y = ven_name_nld, color = on_unionlist_upd)) +
   ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_max), linetype = "dashed") +
   ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge)) +
   ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
   ggplot2::geom_point(ggplot2::aes(x = m_feas), shape = "F") +
   ggplot2::geom_point(ggplot2::aes(x = m_urge), color = "white", size = 2) +
   ggplot2::geom_point(ggplot2::aes(x = m_urge), shape = "U") +
-  ggplot2::scale_y_discrete(labels = res_plot$ven_name_nld |> levels()) +
+  ggplot2::geom_point() +
   ggplot2::coord_cartesian(xlim = c(
     res_scored$response_score |> na.omit() |> min(),
     res_scored$response_score |> na.omit() |> max()
     )) +
   ggplot2::theme_bw() +
+  ggplot2::theme(legend.title = ggplot2::element_blank()) +
   ggplot2::labs(
-    x = "mean(mean(feas), mean(urge))",
-    y = "species (vernacular name nld)",
-    color = "on unionlist?"
-    ) +
-  NULL
-# always a bit closer to F as it has more questions
+    x = "mean of feasibilty and urgency scores (grand mean)",
+    y = "species (vernacular name nld)"
+    )
+# closer to F if species is present as F then has more questions
+# closer to U if species is absent as U then has more questions
+#
+#
 #
 # --- plot score categories 'unknown' vs. rest ---------------
 #
 # convert to plot data
 res_plot_tmp <- res_scored |>
   dplyr::mutate(
-    question_text_trunc = stringr::str_trunc(string = question_text, width = 40),
     score_category = dplyr::case_when(
       !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
       TRUE ~ response_text |> gsub(" ", "", x = _)
@@ -224,11 +230,11 @@ res_plot_tmp <- res_scored |>
   ) |>
   dplyr::group_by(species) |>
   tidyr::fill(tidyselect::contains("prop_scores"), .direction = "downup") |>
-  dplyr::ungroup()
+  dplyr::ungroup() |>
+  dplyr::mutate(dplyr::across(tidyselect::contains("prop_scores"), \(x) tidyr::replace_na(x, 0)))
 
 # check whether proportions sum to 1
 test <- res_plot_tmp |>
-  dplyr::mutate(dplyr::across(tidyselect::contains("prop_scores"), \(x) tidyr::replace_na(x, 0))) |>
   dplyr::rowwise() |>
   dplyr::mutate(prop_check = rowSums(dplyr::across(tidyselect::starts_with("prop_scores"))))
 assertthat::are_equal(sum(test$prop_check), nrow(test))
@@ -244,57 +250,71 @@ res_plot <- factorize(
         seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
         res_plot_tmp$section_no |> unique()
       )],
-    res_mean$species |> unique() |> rev(),
-    res_mean$ven_name_nld |> unique() |> rev()
+    res_m$species |> unique() |> rev(),
+    res_m$ven_name_nld |> unique() |> rev()
   )
 )
 #
 # plot
-ggplot2::ggplot(
-  res_plot,
-  ggplot2::aes(y = species)
-) +
+ggplot2::ggplot(res_plot, ggplot2::aes(y = ven_name_nld)) +
   ggplot2::geom_linerange(
-    ggplot2::aes(xmin = 0, xmax = prop_scores_ongekend + prop_scores_ikweethetniet),
-    color = "#EA5F94",
-    size = 2
+    ggplot2::aes(
+      xmin = 0,
+      xmax = prop_scores_ongekend + prop_scores_ikweethetniet,
+      color = "ongekend / ik weet het niet"
+      ),
+    linewidth = 2
   ) +
   ggplot2::geom_linerange(
-    ggplot2::aes(xmin = prop_scores_ongekend + prop_scores_ikweethetniet,
-                 xmax = prop_scores_ongekend + prop_scores_ikweethetniet + prop_scores_rest),
-    color = "lightgrey",
-    size = 2
+    ggplot2::aes(
+      xmin = prop_scores_ongekend + prop_scores_ikweethetniet,
+      xmax = prop_scores_ongekend + prop_scores_ikweethetniet + prop_scores_rest,
+      color = "rest"
+      ),
+    linewidth = 2
   ) +
-  ggplot2::theme_bw() +
-  ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 90)
-  ) +
-  #ggplot2::scale_color_manual(values = c("#EA5F94", "#EA5F94", "lightgrey")) +
+  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
   ggplot2::coord_cartesian(xlim = c(0,1)) +
-  ggplot2::scale_y_discrete(labels = res_plot$ven_name_nld |> levels())
+  ggplot2::theme_bw() +
+  ggplot2::labs(
+    x = "proportion responses",
+    y = "species (vernacular name nld)",
+    color = "category response"
+  )
 #
 #
+res_plot_upd <- res_plot |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ "ongekend / ik weet het niet"
+      )
+  )
+
 ggplot2::ggplot(
-  # group by stadium?
-  res_plot,
+  res_plot_upd,
   ggplot2::aes(
-    x = question_text, y = species,
-    fill = score_category, color = score_category, shape = score_category
+    x = question_text_short, y = ven_name_nld,
+    fill = score_category, color = score_category
   )
 ) +
-  ggplot2::geom_point(size = 3) +
+  ggplot2::geom_point(size = 3, shape = 21) +
   ggplot2::facet_grid(
     cols = ggplot2::vars(section_title),
     scales = "free",
     space = "free"
   ) +
+  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_fill_manual(values = c("#EA5F94", "lightgrey")) +
   ggplot2::theme_bw() +
   ggplot2::theme(
-    axis.text.x = ggplot2::element_text(angle = 90)
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank()
   ) +
-  ggplot2::scale_shape_manual(values = c(21, 21, 21)) +
-  ggplot2::scale_color_manual(values = c("#EA5F94", "#EA5F94", "lightgrey")) +
-  ggplot2::scale_fill_manual(values = c("#EA5F94", "#EA5F94", "white")) +
-  ggplot2::scale_x_discrete(labels = res_plot$question_text_trunc |> levels()) +
-  ggplot2::scale_y_discrete(labels = res_plot$ven_name_nld |> levels())
-
+  ggplot2::labs(
+    x = "proportion responses",
+    y = "species (vernacular name nld)",
+    color = "category response",
+    fill = "category response"
+  )
+#
