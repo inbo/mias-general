@@ -318,3 +318,144 @@ ggplot2::ggplot(
     fill = "category response"
   )
 #
+#
+#
+# --- plot reported vs. prius stadium ---------------
+#
+res_plot_tmp <- res_comb_upd |>
+  dplyr::distinct(species, .keep_all = TRUE) |>
+  dplyr::mutate(
+    prius_stadium_upd = dplyr::case_when(
+      grepl("IRR", prius_stadium) ~ "irrelevant",
+      grepl("AFW", prius_stadium) ~ "afwezig",
+      grepl("SPO", prius_stadium) ~ "sporadisch aanwezig",
+      grepl("BEP", prius_stadium) ~ "beperkt gevestigd",
+      grepl("VER", prius_stadium) ~ "wijdverspreid"
+    ),
+    on_unionlist_upd = dplyr::case_when(
+      on_unionlist ~ "on unionlist",
+      !on_unionlist ~ "not on unionlist"
+    ),
+    # stadium labels
+    label_helper = paste(prius_stadium_upd, stadium, sep ="_")
+  ) |>
+  dplyr::group_by(label_helper) |>
+  dplyr::mutate(
+    stadium_label = dplyr::case_when(
+      (prius_stadium_upd != stadium & dplyr::row_number() == 1) ~ paste(ven_name_nld, collapse = "\n"),
+      TRUE ~ NA_character_
+    )) |>
+  dplyr::ungroup()
+varlevels = c("irrelevant", "afwezig", "sporadisch aanwezig", "beperkt gevestigd", "wijdverspreid")
+res_plot <- factorize(
+  res_plot_tmp,
+  c("stadium", "prius_stadium_upd", "on_unionlist_upd"),
+  list(
+    varlevels,
+    varlevels,
+    c("on unionlist", "not on unionlist")
+  )
+)
+#
+# plot
+ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(x = prius_stadium_upd, y = stadium)) +
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = "lightgrey", linewidth = 2) +
+  #ggplot2::geom_point(size = 12, shape = 21, fill = "white", color = "lightgrey") +
+  ggplot2::geom_point(
+    size = 3,
+    position = ggplot2::position_jitter(width = 0.1, height = 0.1),
+    alpha = .4
+    ) +
+  ggforce::geom_mark_circle(
+    ggplot2::aes(
+    label = stadium_label,
+    filter = !is.na(stadium_label)),
+    color = "#EA5F94",
+    label.fontface = "plain", label.fontsize = 10, label.colour = "#EA5F94",
+    con.type = "straight", con.colour = "#EA5F94"
+    ) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(on_unionlist_upd),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::scale_x_discrete(drop = FALSE) +
+  ggplot2::scale_y_discrete(drop = FALSE) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "prius stadium",
+    y = "reported stadium"
+  )
+#
+#
+#
+# --- plot scoring questions ---------------
+#
+#
+#
+# --- plot score distributions over closed questions ---------------
+#
+# convert to plot data
+res_plot_tmp <- res_scored |>
+  dplyr::mutate(
+    question_no = dplyr::row_number(),
+    .by = c(species, section_no)
+  )
+#
+# convert character vars to factors for ordering
+res_plot <- factorize(
+  res_plot_tmp,
+  c("question_text", "question_text_short", "section_title"),
+  list(
+    res_plot_tmp$question_text |> unique(),
+    res_plot_tmp$question_text_short |> unique(),
+    res_plot_tmp$section_title |> unique() |> _[match(
+      seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
+      res_plot_tmp$section_no |> unique()
+    )]
+  )
+)
+#
+# plot
+ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
+  ggplot2::geom_bar(ggplot2::aes(fill = score_crit)) +
+  ggtext::geom_textbox(
+    ggplot2::aes(x = 0.5, y = Inf, label = question_text_short),
+    hjust = 0, vjust = -0.2, size = 2.5,
+    box.padding = grid::unit(c(0, 0, 0, 0), "pt"),
+    box.colour = "transparent", fill = "transparent",
+    width = grid::unit(100, "pt")
+    ) +
+  ggh4x::facet_grid2(
+    rows = ggplot2::vars(section_title),
+    cols = ggplot2::vars(question_no),
+    scales = "free",
+    independent = "x",
+    render_empty = FALSE,
+    switch = "y"
+  ) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.x.top = ggplot2::element_blank(),
+    strip.placement = "outside",
+    panel.spacing.y = grid::unit(1.5, "lines"),
+    legend.position = "bottom",
+    legend.title = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "response score",
+    y = "frequency"
+  )
+#
+#
+#
+# --- plot word clouds over open questions ---------------
+#
