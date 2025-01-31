@@ -128,6 +128,13 @@ knotweed_vernnames_eng <- if (TRUE) {
 } else {
   "invasive knotweeds"
 }
+knotweed_vernnames_nld <- if (TRUE) {
+  "Japanse, Sachalinse, Bastaard duizendknoop"
+} else {
+  species_upd_tmp3 |>
+    dplyr::filter(grepl("Reynoutria japonica", sci_name_gbif_acc)) |>
+    dplyr::pull(vern_name_gsheet_nld)
+}
 #
 # 3) misgurnus mohoity (Dybowski, 1869):
 # add vernacular name in English
@@ -150,12 +157,15 @@ species_upd <- species_upd_tmp3 |>
       grepl("Reynoutria", sci_name_gbif_acc) ~ knotweed_vernnames_eng,
       TRUE ~ NA_character_
     ),
+    vern_name_gbif_nld_alt = dplyr::case_when(
+      grepl("Reynoutria", sci_name_gbif_acc) ~ knotweed_vernnames_nld,
       TRUE ~ NA_character_
     )
   ) |>
   dplyr::relocate(sci_name_gbif_acc_alt, .before = key_gbif_acc) |>
   dplyr::relocate(key_gbif_acc_alt, .after = key_gbif_acc) |>
   dplyr::relocate(vern_name_gbif_eng_alt, .after = vern_name_gbif_eng) |>
+  dplyr::relocate(vern_name_gbif_nld_alt, .after = vern_name_gbif_nld) |>
   dplyr::relocate(vern_name_gbif_deu, .after = vern_name_gbif_fra)
 #
 #
@@ -179,6 +189,7 @@ species_list <- list(
       "key_gbif_acc_alt",
       "vern_name_gsheet_nld",
       "vern_name_gbif_nld",
+      "vern_name_gbif_nld_alt",
       "vern_name_gbif_eng",
       "vern_name_gbif_eng_alt",
       "vern_name_gbif_fra",
@@ -197,6 +208,7 @@ species_list <- list(
       "alternatives for key_gbif_acc",
       "dutch vernacular name in original gsheet",
       "dutch vernacular name in GBIF",
+      "alternatives for vern_name_gbif_nld",
       "english vernacular name in GBIF",
       "alternatives for vern_name_gbif_eng",
       "french vernacular name in GBIF",
