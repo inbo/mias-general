@@ -10,7 +10,8 @@ source('source/export/survey_experts/00_definitions.R')
 #
 #
 #
-## --- create google apps script which retrieves the form view url -------------
+# --- create google apps script which retrieves the form view url -------------
+### no need to repeat if forms are re-send to other experts
 #
 # get form ids
 data_form <- googledrive::drive_ls(
@@ -36,6 +37,7 @@ writeLines(
 #
 #
 # --- delete previous sheets --------------------------------
+### no need to repeat if forms are re-send to other experts
 #
 if (FALSE) {
   viewurl_id <- googledrive::drive_find(
@@ -49,6 +51,7 @@ if (FALSE) {
 #
 #
 # --- add script to google apps script project and execute script-------------
+# ### no need to repeat if forms are re-send to other experts
 #
 # manually (whenever a form is ready to send out):
 # ------------------------------------------------
@@ -74,7 +77,7 @@ if (FALSE) {
 #
 # retrieve public url to overview pdf
 pdf_url <- googledrive::drive_find(
-  pattern = "overview_questions",
+  pattern = paste0("overview_questions_", lang),
   type = "pdf",
   shared_drive = "PRJ_MIUS"
 ) |>
@@ -123,7 +126,7 @@ data_email <- dplyr::left_join(
 email_text <- googledrive::drive_read_string(
   file = googledrive::drive_ls(
     path = distribution_folder_url |> googledrive::as_id(),
-    pattern = "emailtext"
+    pattern = paste0("emailtext_", lang)
   ) |>
     googledrive::as_id(),
   type = "text/plain"
