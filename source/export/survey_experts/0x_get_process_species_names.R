@@ -124,7 +124,9 @@ knotweed_vernnames_eng <- if (TRUE) {
     dplyr::filter(grepl("Reynoutria", sci_name_gbif_acc)) |>
     dplyr::pull(vern_name_gbif_eng) |>
     _[c(2,3,1)] |> # sort according to naming in survey
-    paste(x = _, collapse = ", ")
+    paste(x = _, collapse = ", ") |>
+    gsub(" knotweed", "", x = _) |>
+    paste(x = _, "knotweed")
 } else {
   "invasive knotweeds"
 }
