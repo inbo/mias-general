@@ -64,9 +64,9 @@ species_upd_tmp2 <- species_upd_tmp1 |>
 #
 #
 #
-# --- add venacular names in English, Dutch, French, German ---------------
+# --- add vernacular names in English, Dutch, French, German ---------------
 #
-ven_names <- lapply(
+vern_names <- lapply(
   species_upd_tmp2$key_gbif_acc,
   function(x){
     rgbif::name_usage(key = x, data = "vernacularNames") |>
@@ -77,7 +77,7 @@ ven_names <- lapply(
       tidyr::pivot_wider(
         names_from = language,
         values_from = vernacularName,
-        names_prefix = "ven_name_gbif_"
+        names_prefix = "vern_name_gbif_"
       )
   }) |>
   dplyr::bind_rows()
@@ -85,13 +85,13 @@ ven_names <- lapply(
 #
 species_upd_tmp3 <- dplyr::left_join(
   species_upd_tmp2,
-  ven_names,
+  vern_names,
   by = c("key_gbif_acc" = "taxonKey")
 ) |>
-  dplyr::rename(ven_name_gheet_nld = "species") |>
-  dplyr::relocate(ven_name_gheet_nld, .before = ven_name_gbif_nld) |>
-  dplyr::relocate(ven_name_gbif_eng, ven_name_gbif_fra, .after = ven_name_gbif_nld) |>
   dplyr::mutate(dplyr::across(dplyr::contains("nld"), stringr::str_to_sentence))
+  dplyr::rename(vern_name_gsheet_nld = "species") |>
+  dplyr::relocate(vern_name_gsheet_nld, .before = vern_name_gbif_nld) |>
+  dplyr::relocate(vern_name_gbif_eng, vern_name_gbif_fra, .after = vern_name_gbif_nld) |>
 #
 #
 #
@@ -112,14 +112,18 @@ knotweed_names <- species_upd_tmp3 |>
   dplyr::filter(grepl("Reynoutria", sci_name_gbif_acc)) |>
   dplyr::pull(sci_name_gbif_acc) |>
   paste(x = _, collapse = ", ")
-knotweed_vennames <- species_upd_tmp3 |>
-  dplyr::filter(grepl("Reynoutria", sci_name_gbif_acc)) |>
-  dplyr::pull(ven_name_gbif_eng) |>
-  paste(x = _, collapse = ", ")
+knotweed_vernnames_eng <- if (TRUE) {
+  species_upd_tmp3 |>
+    dplyr::filter(grepl("Reynoutria", sci_name_gbif_acc)) |>
+    dplyr::pull(vern_name_gbif_eng) |>
+    paste(x = _, collapse = ", ")
+} else {
+  "invasive knotweeds"
+}
 #
 # 3) misgurnus mohoity (Dybowski, 1869):
 # add vernacular name in English
-misgurnus_venname <- "Oriental wheatherfish"
+misgurnus_vernname_eng <- "Oriental wheatherfish"
 #
 # adapt
 species_upd <- species_upd_tmp3 |>
@@ -133,16 +137,18 @@ species_upd <- species_upd_tmp3 |>
       grepl("Vespa velutina", sci_name_gbif_acc) ~ rgbif::name_backbone(vespa_velutina_name)$usageKey,
       TRUE ~ NA_real_
     ),
-    ven_name_gbif_eng_alt = dplyr::case_when(
-      grepl("Misgurnus mohoity", sci_name_gbif_acc) ~ misgurnus_venname,
-      grepl("Reynoutria", sci_name_gbif_acc) ~ knotweed_vennames,
+    vern_name_gbif_eng_alt = dplyr::case_when(
+      grepl("Misgurnus mohoity", sci_name_gbif_acc) ~ misgurnus_vernname_eng,
+      grepl("Reynoutria", sci_name_gbif_acc) ~ knotweed_vernnames_eng,
+      TRUE ~ NA_character_
+    ),
       TRUE ~ NA_character_
     )
   ) |>
   dplyr::relocate(sci_name_gbif_acc_alt, .before = key_gbif_acc) |>
   dplyr::relocate(key_gbif_acc_alt, .after = key_gbif_acc) |>
-  dplyr::relocate(ven_name_gbif_eng_alt, .after = ven_name_gbif_eng) |>
-  dplyr::relocate(ven_name_gbif_deu, .after = ven_name_gbif_fra)
+  dplyr::relocate(vern_name_gbif_eng_alt, .after = vern_name_gbif_eng) |>
+  dplyr::relocate(vern_name_gbif_deu, .after = vern_name_gbif_fra)
 #
 #
 #
@@ -163,12 +169,12 @@ species_list <- list(
       "sci_name_gbif_acc_alt",
       "key_gbif_acc",
       "key_gbif_acc_alt",
-      "ven_name_gheet_nld",
-      "ven_name_gbif_nld",
-      "ven_name_gbif_eng",
-      "ven_name_gbif_eng_alt",
-      "ven_name_gbif_fra",
-      "ven_name_gbif_deu"
+      "vern_name_gsheet_nld",
+      "vern_name_gbif_nld",
+      "vern_name_gbif_eng",
+      "vern_name_gbif_eng_alt",
+      "vern_name_gbif_fra",
+      "vern_name_gbif_deu"
     ),
     content = c(
       "whether the species is currently (see date) on the union list",
@@ -181,12 +187,12 @@ species_list <- list(
       "alternatives for sci_name_gbif_acc",
       "accepted species key in GBIF",
       "alternatives for key_gbif_acc",
-      "dutch venacular name in original gsheet",
-      "dutch venacular name in GBIF",
-      "english venacular name in GBIF",
-      "alternatives for ven_name_gbif_eng",
-      "french venacular name in GBIF",
-      "german venacular name in GBIF"
+      "dutch vernacular name in original gsheet",
+      "dutch vernacular name in GBIF",
+      "english vernacular name in GBIF",
+      "alternatives for vern_name_gbif_eng",
+      "french vernacular name in GBIF",
+      "german vernacular name in GBIF"
     ),
     date = Sys.Date()
   )

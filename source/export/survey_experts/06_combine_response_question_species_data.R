@@ -148,17 +148,17 @@ res_comb_tmp <- dplyr::left_join(
 # restructure species information
 species_info <- species_list |>
   dplyr::mutate(
-    ven_name_eng = dplyr::case_when(
-      is.na(ven_name_gbif_eng_alt) ~ ven_name_gbif_eng,
-      grepl("Knotweed", ven_name_gbif_eng_alt) ~ "Asian, Giant, Bohemian Knotweed",
-      TRUE ~ ven_name_gbif_eng_alt
+    vern_name_eng = dplyr::case_when(
+      is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
+      grepl("Knotweed", vern_name_gbif_eng_alt) ~ "Asian, Giant, Bohemian Knotweed",
+      TRUE ~ vern_name_gbif_eng_alt
     ),
-    ven_name_nld = dplyr::case_when(
-      is.na(ven_name_gbif_nld) ~ ven_name_gheet_nld,
-      TRUE ~ ven_name_gbif_nld
+    vern_name_nld = dplyr::case_when(
+      is.na(vern_name_gbif_nld) ~ vern_name_gsheet_nld,
+      TRUE ~ vern_name_gbif_nld
     ),
     sci_name = dplyr::case_when(
-      grepl("Knotweed", ven_name_gbif_eng_alt) ~
+      grepl("Knotweed", vern_name_gbif_eng_alt) ~
         "Reynoutria japonica Houtt., Reynoutria sachalinensis (F.Schmidt) Nakai, Reynoutria ×bohemica Chrtek & Chrtková", #sci_name_gbif_acc_alt,
       TRUE ~ sci_name_gbif_acc
     )
@@ -166,7 +166,7 @@ species_info <- species_list |>
   dplyr::select(
     tidyselect::any_of(
       c("on_unionlist", "prius_stadium",
-        "sci_name", "ven_name_eng", "ven_name_nld")
+        "sci_name", "vern_name_eng", "vern_name_nld")
       )
     ) |>
   dplyr::distinct(sci_name, .keep_all = TRUE)
@@ -179,8 +179,8 @@ res_comb <- dplyr::left_join(
 )
 #
 # test whether join was successfull
-assertthat::noNA(res_comb$ven_name_eng)
-assertthat::noNA(res_comb$ven_name_nld)
+assertthat::noNA(res_comb$vern_name_eng)
+assertthat::noNA(res_comb$vern_name_nld)
 #
 #
 #

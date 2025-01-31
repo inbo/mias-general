@@ -167,11 +167,11 @@ res_plot_tmp <- res_m |>
   )
 res_plot <- factorize(
   res_plot_tmp,
-  c("species", "ven_name_eng", "ven_name_nld", "on_unionlist_upd"),
+  c("species", "vern_name_eng", "vern_name_nld", "on_unionlist_upd"),
   list(
     res_m$species |> unique() |> rev(),
-    res_m$ven_name_eng |> unique() |> rev(),
-    res_m$ven_name_nld |> unique() |> rev(),
+    res_m$vern_name_eng |> unique() |> rev(),
+    res_m$vern_name_nld |> unique() |> rev(),
     c("on unionlist", "not on unionlist")
   )
 )
@@ -179,7 +179,7 @@ res_plot <- factorize(
 # plot
 ggplot2::ggplot(
   res_plot,
-  ggplot2::aes(x = m_feasurge, y = ven_name_nld, color = on_unionlist_upd)) +
+  ggplot2::aes(x = m_feasurge, y = vern_name_nld, color = on_unionlist_upd)) +
   ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_max), linetype = "dashed") +
   ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge)) +
   ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
@@ -242,7 +242,7 @@ assertthat::are_equal(sum(test$prop_check), nrow(test))
 # convert character vars to factors for ordering
 res_plot <- factorize(
   res_plot_tmp,
-  c("question_text", "question_text_trunc", "section_title", "species", "ven_name_nld"),
+  c("question_text", "question_text_trunc", "section_title", "species", "vern_name_nld"),
   list(
     res_plot_tmp$question_text |> unique(),
     res_plot_tmp$question_text_trunc |> unique(),
@@ -251,12 +251,12 @@ res_plot <- factorize(
         res_plot_tmp$section_no |> unique()
       )],
     res_m$species |> unique() |> rev(),
-    res_m$ven_name_nld |> unique() |> rev()
+    res_m$vern_name_nld |> unique() |> rev()
   )
 )
 #
 # plot
-ggplot2::ggplot(res_plot, ggplot2::aes(y = ven_name_nld)) +
+ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
   ggplot2::geom_linerange(
     ggplot2::aes(
       xmin = 0,
@@ -294,7 +294,7 @@ res_plot_upd <- res_plot |>
 ggplot2::ggplot(
   res_plot_upd,
   ggplot2::aes(
-    x = question_text_short, y = ven_name_nld,
+    x = question_text_short, y = vern_name_nld,
     fill = score_category, color = score_category
   )
 ) +
@@ -342,7 +342,7 @@ res_plot_tmp <- res_comb_upd |>
   dplyr::group_by(label_helper) |>
   dplyr::mutate(
     stadium_label = dplyr::case_when(
-      (prius_stadium_upd != stadium & dplyr::row_number() == 1) ~ paste(ven_name_nld, collapse = "\n"),
+      (prius_stadium_upd != stadium & dplyr::row_number() == 1) ~ paste(vern_name_nld, collapse = "\n"),
       TRUE ~ NA_character_
     )) |>
   dplyr::ungroup()
