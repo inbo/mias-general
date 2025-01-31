@@ -54,7 +54,7 @@ process_speciessheet <- function(
       !!paste0("status_", gbif_namevariable, "_gbif") := gbif_data$status,
       !!paste0(gbif_namevariable, "_gbif_acc") := gbif_names$scientificName,
       !!paste0("status_", gbif_namevariable, "_gbif_acc") := gbif_names$taxonomicStatus,
-      .after = gbif_namevariable
+      .after = tidyselect::all_of(gbif_namevariable)
     ) |>
     dplyr::mutate(
       key_gbif_acc = gbif_data$key_acc

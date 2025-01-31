@@ -65,7 +65,7 @@ colnames_rename <- c(
 data_resp_long_tmp <- data_responses |>
   dplyr::rename(colnames_rename) |>
   tidyr::pivot_longer(
-    cols = -(colnames_rename |> names()),
+    cols = -(tidyselect::all_of(colnames_rename |> names())),
     names_to = "question",
     values_to = "response"
   )
