@@ -89,7 +89,7 @@ sum_mean <- function(
     dplyr::mutate(m = mean(m), .by = species) |>
     dplyr::distinct(species, .keep_all = TRUE) |>
     #
-    dplyr::select(tidyselect::starts_with(c("species","stadium","m","on_union", "ven"))) |>
+    dplyr::select(tidyselect::starts_with(c("species","stadium","m","on_union", "vern"))) |>
     dplyr::arrange(dplyr::desc(m)) |>
     dplyr::rename_with(~ paste0("m_", crit), "m")
 }
@@ -389,14 +389,92 @@ ggplot2::ggplot(
     strip.background = ggplot2::element_blank()
   ) +
   ggplot2::labs(
-    x = "prius stadium",
-    y = "reported stadium"
+    x = "stadium in prius",
+    y = "stadium reported by expert"
   )
 #
 #
 #
 # --- plot scoring questions ---------------
 #
+# get questions
+q_file <- list.files(
+  questions_path,
+  pattern = "long.rda",
+  full.names = TRUE
+)
+q_long <- get(load(q_file))
+#
+#
+# prepare data for plotting
+q_plot_tmp <- q_long |>
+  # filter rows
+  dplyr::filter(question_include_in_form == 1, question_use_for_ranking == 1) |>
+  tidyr::drop_na(score_response_option) |>
+  # insert line breaks in questions & shorten responses
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    question_text = question_text |>
+      stringr::str_wrap(width = 50) |>
+      paste(x = _, NULL, collapse = "\n"),
+    response_option = response_option |>
+      stringr::str_trunc(string = _, width = 65) |>
+      paste("-", y = _) |>
+      stringr::str_wrap(width = 40) |>
+      paste(x = _, NULL, collapse = "\n"),
+  ) |>
+  # merge labels based on response scores
+  tidyr::pivot_wider(
+    values_from = response_option,
+    names_from = score_response_option,
+    values_fn = function(x) paste(x, collapse = "\n")
+  ) |>
+  tidyr::pivot_longer(
+    cols = paste(1:4),
+    names_to = "score",
+    values_to = "response"
+  ) |>
+  dplyr::mutate(
+    score = as.numeric(score)
+  )
+#
+q_plot <- factorize(
+  q_plot_tmp,
+  c("question_text", "section_title"),
+  list(
+    q_plot_tmp$question_text |> unique() |> rev(),
+    q_plot_tmp$section_title |> unique()
+  )
+)
+#
+# plot
+ggplot2::ggplot(
+  data = q_plot,
+  mapping = ggplot2::aes(x = score, y = question_text)) +
+  ggplot2::geom_label(
+    ggplot2::aes(label = response, fill = score_category),
+    hjust = 0,
+    size = 3,
+    angle = 0,
+    alpha = .2
+  ) +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(section_title),
+    scales = "free",
+    space = "free") +
+  ggplot2::scale_x_continuous(
+    breaks = 1:4,
+    labels = paste(1:4, c("\nLow feasibility / urgency", "", "", "\nHigh feasibility / urgency"))
+  ) +
+  ggplot2::labs(x = "", y = "") +
+  ggplot2::coord_cartesian(xlim = c(0.8,4.8)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    panel.grid = ggplot2::element_blank(),
+    strip.background = ggplot2::element_blank(),
+    legend.title = ggplot2::element_blank(),
+    legend.position = "bottom"
+  )
 #
 #
 # --- plot score distributions over closed questions ---------------
