@@ -117,11 +117,13 @@ vespa_velutina_name <- "Vespa velutina Lepeletier, 1836"
 knotweed_names <- species_upd_tmp3 |>
   dplyr::filter(grepl("Reynoutria", sci_name_gbif_acc)) |>
   dplyr::pull(sci_name_gbif_acc) |>
+  _[c(2,3,1)] |> # sort according to naming in survey
   paste(x = _, collapse = ", ")
 knotweed_vernnames_eng <- if (TRUE) {
   species_upd_tmp3 |>
     dplyr::filter(grepl("Reynoutria", sci_name_gbif_acc)) |>
     dplyr::pull(vern_name_gbif_eng) |>
+    _[c(2,3,1)] |> # sort according to naming in survey
     paste(x = _, collapse = ", ")
 } else {
   "invasive knotweeds"
