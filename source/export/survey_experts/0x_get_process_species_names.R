@@ -88,10 +88,16 @@ species_upd_tmp3 <- dplyr::left_join(
   vern_names,
   by = c("key_gbif_acc" = "taxonKey")
 ) |>
-  dplyr::mutate(dplyr::across(dplyr::contains("nld"), stringr::str_to_sentence))
   dplyr::rename(vern_name_gsheet_nld = "species") |>
   dplyr::relocate(vern_name_gsheet_nld, .before = vern_name_gbif_nld) |>
   dplyr::relocate(vern_name_gbif_eng, vern_name_gbif_fra, .after = vern_name_gbif_nld) |>
+  # capitalize vernacular names
+  dplyr::mutate(
+    dplyr::across(
+      dplyr::contains(c("nld", "eng")),
+      stringr::str_to_sentence
+    )
+  )
 #
 #
 #
