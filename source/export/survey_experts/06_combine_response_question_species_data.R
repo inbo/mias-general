@@ -29,7 +29,15 @@ res_file <- list.files(
   _[1]
 res_long <- get(load(res_file))
 #
-load("data/processed/2025-01-27_species_list.Rda")
+species_list_file <- list.files(
+  "data/processed/",
+  pattern = "species_list",
+  full.names = TRUE
+) |>
+  # sort & select most recent
+  sort(decreasing = TRUE) |>
+  _[1]
+species_list <- get(load(species_list_file))
 species_list <- species_list$data
 #
 #
@@ -78,7 +86,7 @@ q_long_upd_tmp <- q_long |>
 # isolate meta data
 q_meta <- q_long_upd_tmp |>
   dplyr::select(
-    c("question_use_for_ranking", "response_required", "score_category", "section_title", "section_number", "q_text_upd")
+    c("question_id", "question_use_for_ranking", "response_required", "score_category", "section_title", "section_number", "q_text_upd")
     ) |>
   dplyr::distinct(q_text_upd, .keep_all = TRUE)
 q_long_upd <- q_long_upd_tmp |>
@@ -121,8 +129,8 @@ res_comb_tmp <- dplyr::left_join(
   # add indicator whether section was skipped
   dplyr::mutate(
     section_skipped = dplyr::case_when(
-      grepl("afw", stadium) & grepl("Versp", section_title) ~ TRUE,
-      grepl("spo|wijd", stadium) & grepl("Intro", section_title) ~ TRUE,
+      grepl("afwezig", stadium) & grepl("Verspreiding", section_title) ~ TRUE,
+      grepl("beperkt|wijdverspreid", stadium) & grepl("Introductie", section_title) ~ TRUE,
       TRUE ~ FALSE
     )
   ) |>
