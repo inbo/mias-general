@@ -150,16 +150,15 @@ species_info <- species_list |>
   dplyr::mutate(
     vern_name_eng = dplyr::case_when(
       is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
-      grepl("Knotweed", vern_name_gbif_eng_alt) ~ "Asian, Giant, Bohemian Knotweed",
       TRUE ~ vern_name_gbif_eng_alt
     ),
     vern_name_nld = dplyr::case_when(
-      is.na(vern_name_gbif_nld) ~ vern_name_gsheet_nld,
+      is.na(vern_name_gbif_nld) & is.na(vern_name_gbif_nld_alt)  ~ vern_name_gsheet_nld,
+      !is.na(vern_name_gbif_nld_alt)  ~ vern_name_gbif_nld_alt,
       TRUE ~ vern_name_gbif_nld
     ),
     sci_name = dplyr::case_when(
-      grepl("Knotweed", vern_name_gbif_eng_alt) ~
-        "Reynoutria japonica Houtt., Reynoutria sachalinensis (F.Schmidt) Nakai, Reynoutria ×bohemica Chrtek & Chrtková", #sci_name_gbif_acc_alt,
+      grepl("Reynoutria", sci_name_gbif_acc) ~ sci_name_gbif_acc_alt,
       TRUE ~ sci_name_gbif_acc
     )
   ) |>
