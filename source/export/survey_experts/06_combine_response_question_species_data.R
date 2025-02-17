@@ -164,7 +164,7 @@ species_info <- species_list |>
   ) |>
   dplyr::select(
     tidyselect::any_of(
-      c("on_unionlist", "prius_stadium",
+      c("on_unionlist", "kingdom", "prius_stadium", "prius_milieu",
         "sci_name", "vern_name_eng", "vern_name_nld")
       )
     ) |>

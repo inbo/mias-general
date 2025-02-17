@@ -26,8 +26,8 @@ if (TRUE) {
   species_sheetid_args <- list(
     sheet_id = "1sd-AXrETsRI01XIry5YU2V8Vl-_UU9y2CwgM3y01fTk",
     tab_variablename = NULL,
-    colnames_old = c("soort", "species"),
-    colnames_new = c("species", "sci_name"),
+    colnames_old = c("soort", "species", "groep"),
+    colnames_new = c("species", "sci_name", "kingdom"),
     gbif_namevariable = "sci_name"
   )
 }
@@ -47,7 +47,7 @@ assertthat::are_equal(
 #
 species_upd_tmp1 <- species |>
   dplyr::rename(sci_name_gsheet = "sci_name") |>
-  dplyr::select(dplyr::contains(c("unielijst", "int_groep", "species", "sci_name", "gbif")))
+  dplyr::select(dplyr::contains(c("unielijst", "kingdom", "int_groep", "species", "milieu", "sci_name", "gbif")))
 #
 #
 #
@@ -60,7 +60,9 @@ species_upd_tmp2 <- species_upd_tmp1 |>
   dplyr::rename(tidyselect::any_of(c(on_unionlist = "unielijst"))) |>
   dplyr::mutate(dplyr::across(dplyr::contains("on_unionlist"), as.logical)) |>
   # 2) status in Flanders according to PrIUS report
-  dplyr::rename(tidyselect::any_of(c(prius_stadium = "int_groep")))
+  dplyr::rename(tidyselect::any_of(
+    c(prius_stadium = "int_groep", prius_milieu = "milieu"))
+    )
 #
 #
 #
@@ -180,7 +182,9 @@ species_list <- list(
   meta = data.frame(
     variablename = c(
       "on_unionlist",
+      "kingdom",
       "prius_stadium",
+      "prius_milieu",
       "sci_name_gsheet",
       "sci_name_gbif",
       "status_sci_name_gbif",
@@ -199,7 +203,9 @@ species_list <- list(
     ),
     content = c(
       "whether the species is currently (see date) on the union list",
+      "kingdom of species",
       "stadium in Flanders according to prius report",
+      "milieu according to prius report",
       "scientific name in original gsheet",
       "scientific name in GBIF matching scientific name in original gsheet, retrieved via rgbif::name_backbone_checklist",
       "status in GBIF of sci_name_gbif",
