@@ -39,8 +39,8 @@ response_data_path <- "../../../data/survey_experts/"
 responses_recoded_folder_url <- "https://drive.google.com/drive/folders/1MdeXChxuP2uMxKTUB3f25wJQafkvT2-8"
 
 # fig dim
-fig_w <- 8
-fig_h <- 8
+fig_w <- 10
+fig_h <- 10
 
 
 # check whether y-axis labels are always correct
@@ -534,9 +534,9 @@ plot_scoredist
 ```
 
 
-### Score porportions "unknown" vs. rest per question
+### Score porportions "unknown" vs. rest per species
 
-```{r score-props, fig.width = fig_w * 1.2, fig.height = fig_h}
+```{r score-props-1, fig.width = fig_w * 1.2, fig.height = fig_h}
 
 # convert to plot data
 res_plot_tmp <- res_scored |>
@@ -607,7 +607,6 @@ plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_nam
     linewidth = 2
   ) +
   ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
-  ggplot2::scale_y_discrete(labels = labs_hl) +
   ggplot2::coord_cartesian(xlim = c(0,1)) +
   ggplot2::theme_bw() +
   ggplot2::theme(
@@ -1016,9 +1015,8 @@ plot_meth_netw <- ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circul
                         lineend = "butt"
   ) +
   ggraph::geom_node_text(ggplot2::aes(label = name), nudge_y = -0.1, hjust = 1) +
-  ggplot2::coord_flip(ylim = c(-1,9)) +
+  ggplot2::coord_flip(ylim = c(-2,9)) +
   ggplot2::theme_void()
-
 plot_meth_netw
 
 ```
@@ -1136,7 +1134,6 @@ plot_meth_patt <- ggplot2::ggplot(
     fill = "category response"
   )
 # here mark best meth
-
 plot_meth_patt
 
 ```
