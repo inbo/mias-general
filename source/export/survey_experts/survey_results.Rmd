@@ -342,7 +342,7 @@ res_plot <- factorize(
 )
 #
 # plot
-ggplot2::ggplot(
+plot_stadium <- ggplot2::ggplot(
   res_plot,
   ggplot2::aes(x = prius_stadium_upd, y = stadium)) +
   ggplot2::geom_abline(intercept = 0, slope = 1, color = "lightgrey", linewidth = 2) +
@@ -376,6 +376,7 @@ ggplot2::ggplot(
     x = "stadium in prius",
     y = "stadium reported by expert"
   )
+plot_stadium
 
 ```
 
@@ -440,7 +441,7 @@ q_plot <- factorize(
 )
 #
 # plot
-ggplot2::ggplot(
+plot_scoring <- ggplot2::ggplot(
   data = q_plot,
   mapping = ggplot2::aes(x = score, y = question_text_short)) +
   ggplot2::geom_label(
@@ -467,10 +468,9 @@ ggplot2::ggplot(
     legend.title = ggplot2::element_blank(),
     legend.position = "bottom"
   )
+plot_scoring
 
 ```
-
-
 
 ### Score distributions per question
 
@@ -498,7 +498,7 @@ res_plot <- factorize(
 )
 #
 # plot
-ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
+plot_scoredist <- ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
   ggplot2::geom_bar(ggplot2::aes(fill = score_crit)) +
   ggtext::geom_textbox(
     ggplot2::aes(x = 0.5, y = Inf, label = question_text_short),
@@ -529,7 +529,7 @@ ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
     x = "response score",
     y = "frequency"
   )
-
+plot_scoredist
 
 ```
 
@@ -589,7 +589,7 @@ res_plot <- factorize(
 )
 #
 # plot
-ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
+plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
   ggplot2::geom_linerange(
     ggplot2::aes(
       xmin = 0,
@@ -618,6 +618,7 @@ ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
     y = "species (vernacular name nld)",
     color = "category response"
   )
+plot_unknown_prop_species
 
 ```
 
@@ -729,7 +730,7 @@ res_plot_upd <- res_plot |>
     )
   )
 
-ggplot2::ggplot(
+plot_unknown_pattern <- ggplot2::ggplot(
   res_plot_upd,
   ggplot2::aes(
     x = question_text_short, y = vern_name_nld,
@@ -757,6 +758,7 @@ ggplot2::ggplot(
     color = "category response",
     fill = "category response"
   )
+plot_unknown_pattern
 #
 
 ```
@@ -912,7 +914,7 @@ res_plot <- factorize(
 )
 #
 # plot
-ggplot2::ggplot(res_plot) +
+plot_meth_freq <- ggplot2::ggplot(res_plot) +
   ggplot2::geom_linerange(
     ggplot2::aes(xmin = 0, xmax = response_count,
                  y = response_options,
@@ -928,6 +930,7 @@ ggplot2::ggplot(res_plot) +
     x = "frequency",
     y = "method"
   )
+plot_meth_freq
 #
 
 
@@ -1004,7 +1007,7 @@ res_plot_tmp <- res_plot_tmp1 |>
   tidygraph::activate(nodes) |>
   dplyr::arrange(match(name, res_plot_tmp2$response_options))
 #
-ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circular = FALSE) +
+plot_meth_netw <- ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circular = FALSE) +
   ggraph::geom_edge_arc(ggplot2::aes(edge_width = n_links/1.5, label = n_links, alpha = (n_links + 10)/100),
                         #label_dodge = grid::unit(3, 'mm'),
                         angle_calc = 'along',
@@ -1016,6 +1019,7 @@ ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circular = FALSE) +
   ggplot2::coord_flip(ylim = c(-1,9)) +
   ggplot2::theme_void()
 
+plot_meth_netw
 
 ```
 
