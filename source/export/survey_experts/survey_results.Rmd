@@ -1,0 +1,1115 @@
+---
+title: "Results expert survey on invasive alien species"
+author: "Janne Adolf"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../../output/survey_experts") })
+---
+
+<!----------------------------------------------------------------------->
+<!---- setup ------------------------------------------------------------>
+<!----------------------------------------------------------------------->
+
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+
+list.files("../../functions", full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
+
+# language
+lang <- "NL"
+
+# ADAPT: use english q's
+questions_path <- if (lang == "NL") {
+  "questions_NL/"
+} else if (lang == "EN"){
+  "questions_EN/"
+}
+
+# path to locally saved processed response data 
+response_data_path <- "../../../data/survey_experts/"
+
+# url to folder with gsheet containing manually recoded responses
+responses_recoded_folder_url <- "https://drive.google.com/drive/folders/1MdeXChxuP2uMxKTUB3f25wJQafkvT2-8"
+
+# fig dim
+fig_w <- 8
+fig_h <- 8
+
+
+# check whether y-axis labels are always correct
+
+
+```
+
+<!----------------------------------------------------------------------->
+<!---- prepare response data -------------------------------------------->
+<!----------------------------------------------------------------------->
+
+```{r prep-data}
+
+# response data
+load(paste0(response_data_path, "results_combined_upd.rda"))
+#
+# define subsets of response data
+
+res_scored <- res_comb_upd |>
+  dplyr::filter(question_scored |> as.logical(), !section_skipped) |>
+  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) 
+res_open <- res_comb_upd |>
+  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
+  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium))
+
+```
+
+<!----------------------------------------------------------------------->
+<!---- setup functions -------------------------------------------------->
+<!----------------------------------------------------------------------->
+
+```{r setup-functions}
+
+# mean function
+summarize <- function(
+    res,
+    crit,
+    group_by_what = "species",
+    fun = "mean"
+){
+  res_mean <- res |>
+    dplyr::filter(
+      grepl(crit, score_crit)
+    ) |>
+    # fun output per group
+    dplyr::group_by(dplyr::across(tidyselect::all_of(group_by_what))) |>
+    dplyr::mutate(m = do.call(fun, list(response_score, na.rm = TRUE))) |>
+    dplyr::filter(dplyr::row_number() == 1) |>
+    dplyr::ungroup() |>
+    # fun output of fun output
+    dplyr::mutate(m = do.call(fun, list(m)), .by = species) |>
+    dplyr::distinct(species, .keep_all = TRUE) |>
+    #
+    dplyr::select(tidyselect::starts_with(c("species","stadium","m","on_union", "vern"))) |>
+    dplyr::arrange(dplyr::desc(m)) |>
+    dplyr::rename_with(~ paste0("m_", crit), "m")
+}
+#
+# function to factorize variables
+factorize <- function(
+    res,
+    varnames,
+    varlevels
+) {
+  for (i in seq_along(varnames)) {
+    res  <- res  |>
+      dplyr::mutate(
+        !!varnames[i] := factor(get(varnames[i]), levels = varlevels[[i]])
+      )
+  }
+  return(res)
+}
+#
+# function to highlight labels
+highlight_labs <- function(
+    labs,
+    pattern,
+    color = "black"
+){
+  tmpdata <- data.frame(labs = labs)|>
+    dplyr::mutate(
+      labs_hl := dplyr::case_when(
+        grepl(pattern, labs) ~ glue::glue(
+          "<span style = 'color:{color}'>**{labs}**</span>"),
+        TRUE ~ labs
+      )
+    ) |>
+    dplyr::pull(labs_hl)
+}
+
+```
+
+<!----------------------------------------------------------------------->
+<!---- calculate mean scores and rank ----------------------------------->
+<!----------------------------------------------------------------------->
+
+```{r mean-ranking, results = 'hide'}
+
+# grand means urgency & feasibility
+res_m_feas <- summarize(res_scored, "feas")
+res_m_urge <- summarize(res_scored, "urge")
+# grand mean all questions
+res_m_feasurge <- summarize(res_scored, "feas|urge")
+# section group means urgency & feasibility
+res_gm_feas <- summarize(res_scored, "feas", group_by_what = c("species", "section_no"))
+res_gm_urge <- summarize(res_scored, "urge", group_by_what = c("species", "section_no"))
+# grand median all questions
+res_med_feasurge <- summarize(res_scored, "feas|urge", fun = "median")
+
+# merge data
+res_m <- dplyr::full_join(
+  x = res_m_feas,
+  y = res_m_urge
+) |>
+  dplyr::full_join(
+    x = _,
+    y = res_m_feasurge |> dplyr::rename(m_feasurge = "m_feas|urge")
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = res_gm_feas |> dplyr::rename(gm_feas = "m_feas")
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = res_gm_urge |> dplyr::rename(gm_urge = "m_urge")
+  ) |>
+  dplyr::mutate(
+    gm_mfeas_murge = mean(c(m_feas, m_urge)),
+    .by = species
+  ) |>
+  dplyr::mutate(
+    gm_gmfeas_gmurge = mean(c(gm_feas, gm_urge)),
+    .by = species
+  ) |>
+  dplyr::arrange(dplyr::desc(m_feasurge))
+#
+# correlations of different means
+cor(res_m |> dplyr::select(tidyselect::contains(c("m_"))))
+
+```
+
+<!----------------------------------------------------------------------->
+<!---- define common plot parameters ------------------------------------>
+<!----------------------------------------------------------------------->
+
+```{r setup-plot-parameters}
+
+# order of factor levels
+levels_species <- res_m$species |> unique() |> rev()
+levels_vern_name_eng <- res_m$vern_name_eng |> unique() |> rev()
+levels_vern_name_nld <- res_m$vern_name_nld |> unique() |> rev()
+levels_stadium <- c(
+  "irrelevant", "afwezig", "sporadisch aanwezig",
+  "beperkt gevestigd", "wijdverspreid"
+)
+levels_milieu <- c(
+  "freshwater",
+  "freshwater, terrestrial",
+  "terrestrial",
+  "terrestrial, brackishwater",
+  "freshwater, brackishwater",
+  "freshwater, brackishwater, marine"
+)
+#
+# axis labels to highlight 
+# these (only work if y axis not facetted)
+labs_hl <- highlight_labs(
+  labs = levels_vern_name_nld,
+  pattern = "kreeft|muntjak",
+  color = "#58508d"
+)
+#
+# colors (cols4all - palette: met.lakota)
+cols_stadium <- data.frame(
+  cols = c("#247D3F", "#04A3BD", "#F0BE3D", "#DA7901", "#931E18"),
+  stadium = levels_stadium
+)
+
+
+```
+
+
+
+## Invasion stadium
+
+### Invasion stadium Prius vs. survey 
+
+```{r invasion-stadium-1, fig.width = fig_w, fig.height = fig_h * 0.75}
+
+res_plot_tmp <- res_comb_upd |>
+  dplyr::distinct(species, .keep_all = TRUE) |>
+  dplyr::mutate(
+    prius_stadium_upd = dplyr::case_when(
+      grepl("IRR", prius_stadium) ~ "irrelevant",
+      grepl("AFW", prius_stadium) ~ "afwezig",
+      grepl("SPO", prius_stadium) ~ "sporadisch aanwezig",
+      grepl("BEP", prius_stadium) ~ "beperkt gevestigd",
+      grepl("VER", prius_stadium) ~ "wijdverspreid"
+    ),
+    on_unionlist_upd = dplyr::case_when(
+      on_unionlist ~ "on unionlist",
+      !on_unionlist ~ "not on unionlist"
+    ),
+    # stadium labels
+    label_helper = paste(prius_stadium_upd, stadium, sep ="_")
+  ) |>
+  dplyr::group_by(label_helper) |>
+  dplyr::mutate(
+    stadium_label = dplyr::case_when(
+      (prius_stadium_upd != stadium & dplyr::row_number() == 1) ~ paste(vern_name_nld, collapse = "\n"),
+      TRUE ~ NA_character_
+    )) |>
+  dplyr::ungroup()
+res_plot <- factorize(
+  res_plot_tmp,
+  c("stadium", "prius_stadium_upd", "on_unionlist_upd"),
+  list(
+    levels_stadium,
+    levels_stadium,
+    c("on unionlist", "not on unionlist")
+  )
+)
+#
+# plot
+ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(x = prius_stadium_upd, y = stadium)) +
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = "lightgrey", linewidth = 2) +
+  #ggplot2::geom_point(size = 12, shape = 21, fill = "white", color = "lightgrey") +
+  ggplot2::geom_point(
+    size = 3,
+    position = ggplot2::position_jitter(width = 0.1, height = 0.1),
+    alpha = .4
+  ) +
+  ggforce::geom_mark_circle(
+    ggplot2::aes(
+      label = stadium_label,
+      filter = !is.na(stadium_label)),
+    color = "#EA5F94",
+    label.fontface = "plain", label.fontsize = 10, label.colour = "#EA5F94",
+    con.type = "straight", con.colour = "#EA5F94"
+  ) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(on_unionlist_upd),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::scale_x_discrete(drop = FALSE) +
+  ggplot2::scale_y_discrete(drop = FALSE) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "stadium in prius",
+    y = "stadium reported by expert"
+  )
+
+```
+
+## Response scores 
+
+### Scoring of questions
+
+```{r scoring-questions, fig.width = 1.5 * fig_w, fig.height = fig_h * 1.6}
+
+# get questions
+q_file <- list.files(
+  questions_path,
+  pattern = "long.rda",
+  full.names = TRUE
+)
+q_long <- get(load(q_file))
+#
+#
+# prepare data for plotting
+q_plot_tmp <- q_long |>
+  # filter rows
+  dplyr::filter(question_include_in_form == 1, question_use_for_ranking == 1) |>
+  tidyr::drop_na(score_response_option) |>
+  # insert line breaks & shorten responses
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    response_option = response_option |>
+      stringr::str_trunc(string = _, width = 65) |>
+      paste("-", y = _) |>
+      stringr::str_wrap(width = 40) |>
+      paste(x = _, NULL, collapse = "\n"),
+  ) |>
+  # merge responses based on response scores
+  tidyr::pivot_wider(
+    values_from = response_option,
+    names_from = score_response_option,
+    values_fn = function(x) paste(x, collapse = "\n")
+  ) |>
+  tidyr::pivot_longer(
+    cols = paste(1:4),
+    names_to = "score",
+    values_to = "response"
+  ) |>
+  dplyr::mutate(
+    score = as.numeric(score)
+  ) |>
+  # add question text short
+  dplyr::left_join(
+    x = _,
+    y = res_scored |>
+      dplyr::select(tidyselect::contains(c("question_id", "question_text_short"))) |>
+      dplyr::distinct(question_id, .keep_all = TRUE)
+  )
+#
+q_plot <- factorize(
+  q_plot_tmp,
+  c("question_text_short", "section_title"),
+  list(
+    q_plot_tmp$question_text_short |> unique() |> rev(),
+    q_plot_tmp$section_title |> unique()
+  )
+)
+#
+# plot
+ggplot2::ggplot(
+  data = q_plot,
+  mapping = ggplot2::aes(x = score, y = question_text_short)) +
+  ggplot2::geom_label(
+    ggplot2::aes(label = response, fill = score_category),
+    hjust = 0,
+    size = 3,
+    angle = 0,
+    alpha = .2
+  ) +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(section_title),
+    scales = "free",
+    space = "free") +
+  ggplot2::scale_x_continuous(
+    breaks = 1:4,
+    labels = paste(1:4, c("\nLow feasibility / urgency", "", "", "\nHigh feasibility / urgency"))
+  ) +
+  ggplot2::labs(x = "", y = "") +
+  ggplot2::coord_cartesian(xlim = c(0.8,4.8)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    panel.grid = ggplot2::element_blank(),
+    strip.background = ggplot2::element_blank(),
+    legend.title = ggplot2::element_blank(),
+    legend.position = "bottom"
+  )
+
+```
+
+
+
+### Score distributions per question
+
+```{r score-distributions, fig.width = fig_w, fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_scored |>
+  dplyr::mutate(
+    question_no = dplyr::row_number(),
+    .by = c(species, section_no)
+  )
+#
+# convert character vars to factors for ordering
+res_plot <- factorize(
+  res_plot_tmp,
+  c("question_text", "question_text_short", "section_title"),
+  list(
+    res_plot_tmp$question_text |> unique(),
+    res_plot_tmp$question_text_short |> unique(),
+    res_plot_tmp$section_title |> unique() |> _[match(
+      seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
+      res_plot_tmp$section_no |> unique()
+    )]
+  )
+)
+#
+# plot
+ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
+  ggplot2::geom_bar(ggplot2::aes(fill = score_crit)) +
+  ggtext::geom_textbox(
+    ggplot2::aes(x = 0.5, y = Inf, label = question_text_short),
+    hjust = 0, vjust = -0.2, size = 2.5,
+    box.padding = grid::unit(c(0, 0, 0, 0), "pt"),
+    box.colour = "transparent", fill = "transparent",
+    width = grid::unit(100, "pt")
+  ) +
+  ggh4x::facet_grid2(
+    rows = ggplot2::vars(section_title),
+    cols = ggplot2::vars(question_no),
+    scales = "free",
+    independent = "x",
+    render_empty = FALSE,
+    labeller = ggplot2::label_wrap_gen(width = 20)
+  ) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.x.top = ggplot2::element_blank(),
+    strip.placement = "outside",
+    panel.spacing.y = grid::unit(1.5, "lines"),
+    legend.position = "bottom",
+    legend.title = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "response score",
+    y = "frequency"
+  )
+
+
+```
+
+
+### Score porportions "unknown" vs. rest per question
+
+```{r score-props, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_scored |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ response_text |> gsub(" ", "", x = _)
+    )
+  ) |>
+  # score category proportions per species
+  dplyr::mutate(
+    n_scores_category = dplyr::n(),
+    .by = c(species, score_category)
+  ) |>
+  dplyr::mutate(
+    n_scores_tot = dplyr::n(),
+    .by = species
+  ) |>
+  dplyr::mutate(prop_scores = n_scores_category / n_scores_tot) |>
+  tidyr::pivot_wider(
+    data = _,
+    names_from = score_category,
+    values_from = prop_scores,
+    names_prefix = "prop_scores_"
+  ) |>
+  dplyr::group_by(species) |>
+  tidyr::fill(tidyselect::contains("prop_scores"), .direction = "downup") |>
+  dplyr::ungroup() |>
+  dplyr::mutate(dplyr::across(tidyselect::contains("prop_scores"), \(x) tidyr::replace_na(x, 0)))
+
+# check whether proportions sum to 1
+test <- res_plot_tmp |>
+  dplyr::rowwise() |>
+  dplyr::mutate(prop_check = rowSums(dplyr::across(tidyselect::starts_with("prop_scores"))))
+assertthat::are_equal(sum(test$prop_check), nrow(test))
+#
+# convert character vars to factors for ordering
+res_plot <- factorize(
+  res_plot_tmp,
+  c("question_text", "section_title", "species", "vern_name_nld"),
+  list(
+    res_plot_tmp$question_text |> unique(),
+    res_plot_tmp$section_title |> unique() |> _[match(
+      seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
+      res_plot_tmp$section_no |> unique()
+    )],
+    levels_species,
+    levels_vern_name_nld
+  )
+)
+#
+# plot
+ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      xmin = 0,
+      xmax = prop_scores_ongekend + prop_scores_ikweethetniet,
+      color = "ongekend / ik weet het niet"
+    ),
+    linewidth = 2
+  ) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      xmin = prop_scores_ongekend + prop_scores_ikweethetniet,
+      xmax = prop_scores_ongekend + prop_scores_ikweethetniet + prop_scores_rest,
+      color = "rest"
+    ),
+    linewidth = 2
+  ) +
+  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::coord_cartesian(xlim = c(0,1)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.y = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "proportion responses",
+    y = "species (vernacular name nld)",
+    color = "category response"
+  )
+
+```
+
+### Score patterns "unknown" vs. rest per question
+
+```{r score-patterns, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+#
+res_plot_upd <- res_plot |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ "ongekend / ik weet het niet"
+    )
+  )
+
+ggplot2::ggplot(
+  res_plot_upd,
+  ggplot2::aes(
+    x = question_text_short, y = vern_name_nld,
+    fill = score_category, color = score_category
+  )
+) +
+  ggplot2::geom_point(size = 3, shape = 21) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(section_title),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_fill_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank(),
+    axis.text.y = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "proportion responses",
+    y = "species (vernacular name nld)",
+    color = "category response",
+    fill = "category response"
+  )
+#
+
+```
+
+
+### Ranking according to mean response scores
+
+```{r ranking, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_m |>
+  dplyr::mutate(
+    m_max = dplyr::case_when(
+      m_feas > m_urge ~ m_feas,
+      TRUE ~ m_urge
+    ),
+    m_min = dplyr::case_when(
+      m_feas < m_urge ~ m_feas,
+      TRUE ~ m_urge
+    ),
+    on_unionlist_upd = dplyr::case_when(
+      on_unionlist ~ "on unionlist",
+      !on_unionlist ~ "not on unionlist"
+    ),
+    part = dplyr::case_when(
+      dplyr::row_number() < (dplyr::n()/2) ~ "part 1",
+      TRUE ~ "part 2"
+    )
+  )
+res_plot <- factorize(
+  res = res_plot_tmp,
+  varnames = c("species", "vern_name_eng", "vern_name_nld",
+               "on_unionlist_upd", "stadium"),
+  varlevels = list(
+    levels_species,
+    levels_vern_name_eng,
+    levels_vern_name_nld,
+    c("on unionlist", "not on unionlist"),
+    levels_stadium
+  )
+)
+#
+# plot
+# (split in 2 using facet_wrap - requires attention to labels)
+ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(x = m_feasurge, y = vern_name_nld, color = stadium)) +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge), linetype = "dotted") +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = m_min, xmax = m_max)) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feasurge), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feas), shape = "F") +
+  ggplot2::geom_point(ggplot2::aes(x = m_urge), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_urge), shape = "U") +
+  ggplot2::geom_point(ggplot2::aes(shape = on_unionlist_upd), size = 2) +
+  ggplot2::scale_shape_manual(values = c(16, 1)) +
+  ggplot2::scale_color_manual(
+    values = cols_stadium |>
+      dplyr::filter(stadium %in% (res_plot$stadium |> unique())) |>
+      dplyr::pull(cols)) +
+  ggplot2::coord_cartesian(xlim = c(
+    res_scored$response_score |> na.omit() |> min(),
+    res_scored$response_score |> na.omit() |> max()
+  )) +
+  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    legend.title = ggplot2::element_blank(),
+    axis.text.y = ggtext::element_markdown(),
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.minor.y = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "mean of feasibilty and urgency scores (grand mean)",
+    y = "species (vernacular name nld)"
+  )
+# closer to F if species is present as F then has more questions
+# closer to U if species is absent as U then has more questions
+#
+```
+
+## Methods
+
+```{r methods-prep}
+
+# get meth_recoded
+meth_recoded <- res_open |> # or use open
+  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
+  dplyr::filter(grepl("D1$|D2", question_id)) |>
+  dplyr::arrange(question_id, species)
+#
+#
+# prepare for plotting
+res_meth_recoded <- meth_recoded |>
+  # add other methods to question D1 not fu
+  dplyr::group_by(species, question_id) |>
+  tidyr::fill(response_text_recoded, .direction = "up") |>
+  dplyr::ungroup() |>
+  # remove string "andere" if other methods are listed
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      !is.na(response_text_recoded) ~ gsub(", andere", "", response_text),
+      TRUE ~ response_text
+    )
+  ) |>
+  # add other methods listed
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      grepl("D1$", question_id) & !grepl("followup", question_text) & !is.na(response_text_recoded) ~
+        paste(response_text_final, response_text_recoded, sep = ", "),
+      grepl("D1$", question_id) & !grepl("followup", question_text) & is.na(response_text_recoded) ~
+        response_text_final,
+      TRUE ~ NA_character_
+    )
+  ) |>
+  # add best method
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      grepl("D2$", question_id) ~ response_text_recoded,
+      TRUE ~ response_text_final
+    )
+  ) |>
+  # move response_text_final
+  dplyr::relocate(response_text_final, .after = response_text_recoded)
+#
+#
+#
+### get and sort all possible methods / response options
+#
+# get response options method
+q_file <- list.files(questions_path, pattern = "long.rda", full.names = TRUE)
+q_long <- get(load(q_file))
+response_options <- q_long |>
+  dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
+  dplyr::select(response_option)
+#
+# recode methods
+response_options <- response_options |>
+  dplyr::mutate(
+    response_option = dplyr::case_when(
+      grepl("passieve akoestische monitoring", response_option) ~ "passieve akoestische monitoring",
+      TRUE ~ response_option
+    )
+  ) |>
+  dplyr::pull(response_option)
+#
+# add other methods listed
+response_options_other <- meth_recoded |>
+  dplyr::filter(grepl("D1$", question_id) & grepl("followup", question_text)) |>
+  dplyr::pull(response_text_recoded) |>
+  na.omit() |>
+  paste(x = _, collapse = ", ") |>
+  stringr::str_split_1(string = _, pattern = ",") |>
+  unique() |>
+  trimws()
+response_options_upd <- append(response_options, response_options_other)
+#
+# add categories
+categories <- c(
+  "surveys", #1
+  "eDNA", #2
+  "trapping and netting", #3
+  "electrofishing", #4
+  "remote sensing", #5
+  "research", #6
+  "citizen science", #7
+  "trained dogs", #8
+  "other" #9
+  )
+response_options_data <- data.frame(
+  response_options = response_options_upd,
+  response_options_cat = NA
+) |> dplyr::mutate(
+  response_options_cat = dplyr::case_when(
+    grepl("surveys|sporen", response_options) ~ categories[1],
+    grepl("environmental DNA", response_options) ~ categories[2],
+    grepl("camera|passieve", response_options) ~ categories[5],
+    grepl("fuik|vallen|trap|netten", response_options) ~ categories[3],
+    grepl("elektrovisserij", response_options) ~ categories[4],
+    grepl("experten|genetische", response_options) ~ categories[6],
+    grepl("burger", response_options) ~ categories[7],
+    grepl("honden", response_options) ~ categories[8],
+    grepl("andere", response_options) ~ categories[9]
+  )
+) |>
+  dplyr::arrange(match(response_options_cat, categories))
+
+```
+
+### Frequency of methods
+
+```{r methods-freq, fig.width = fig_w, fig.height = fig_h}
+# frequency plot also for best methods
+#
+# get response options per species in long format
+res_plot_tmp1 <- res_meth_recoded |>
+  dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
+  tidyr::crossing(response_options_data) |>
+  dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
+                  .after = response_text_final) |>
+  dplyr::group_by(species) |>
+  dplyr::rowwise() |>
+  # option misses "passieve akoestische monitoring (dmv automatische opnames)"
+  dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
+  dplyr::ungroup()
+#
+#
+# count response option across species
+res_plot_tmp2 <- res_plot_tmp1 |>
+  dplyr::mutate(
+    response_count = dplyr::n(),
+    .by = response_options,
+    .after = response_options
+  ) |>
+  dplyr::distinct(
+    response_options,
+    .keep_all = TRUE
+  ) |>
+  dplyr::arrange(response_count)
+#
+res_plot <- factorize(
+  res = res_plot_tmp2,
+  varnames = c("response_options", "response_options_cat"),
+  varlevels = list(res_plot_tmp2$response_options,
+                   response_options_data$response_options_cat |> unique()
+                   )
+)
+#
+# plot
+ggplot2::ggplot(res_plot) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(xmin = 0, xmax = response_count,
+                 y = response_options,
+                 color = response_options_cat),
+    linewidth = 2
+  ) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    panel.grid.minor.y = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "frequency",
+    y = "method"
+  )
+#
+
+
+```
+
+
+### Methods combinations
+
+```{r methods-network, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+
+### plot combination of method within species (network graph)
+#
+# get maximum number of methods selected
+methods_n_max <- res_plot_tmp1 |>
+  dplyr::count(species) |>
+  dplyr::pull(n) |>
+  max()
+#
+# get number of unique pairwise methods combinations (ignoring order)
+methods_pw_max <- methods_n_max * (methods_n_max - 1) / 2
+#
+# prepare plot data # HERE BROKEN
+res_plot_tmp <- res_plot_tmp1 |>
+  dplyr::mutate(
+    tmp = dplyr::row_number(),
+    .by = species
+  ) |>
+  dplyr::select(-response_options_cat) |>
+  tidyr::pivot_wider(
+    names_from = tmp,
+    names_prefix = "method_",
+    values_from = response_options
+  ) |>
+  # get all unique pairwise combinations of method columns
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    method_pw = combn(
+      x = dplyr::across(tidyselect::contains("method")), # & where !is.na not working
+      m = 2,
+      FUN = paste,
+      collapse = ";"
+    ) |> paste(x = _, collapse = ",")
+  ) |>
+  # separate pairwise combinations into columns
+  tidyr::separate_wider_delim(
+    cols = method_pw,
+    delim = ",",
+    names = paste0("method_pw_", 1:methods_pw_max),
+    too_few = "align_start"
+  ) |>
+  # transform to long format
+  tidyr::pivot_longer(
+    cols = tidyselect::starts_with("method_pw"),
+    names_to = "method_pw_name",
+    values_to = "method_pw_value"
+  ) |>
+  # remove combinations containing NA
+  dplyr::filter(
+    !grepl("NA\\;|\\;NA", method_pw_value)
+  ) |>
+  # separate methods pw values into from and to columns
+  tidyr::separate_wider_delim(
+    cols = method_pw_value,
+    delim = ";",
+    names = c("from", "to")
+  ) |>
+  # turn into network data
+  dplyr::select(c("from", "to")) |>
+  tidygraph::as_tbl_graph(x = _, directed = FALSE) |>
+  tidygraph::activate(edges) |>
+  dplyr::group_by(from, to) |>
+  dplyr::mutate(n_links = dplyr::n()) |>
+  dplyr::ungroup() |>
+  tidygraph::activate(nodes) |>
+  dplyr::arrange(match(name, res_plot_tmp2$response_options))
+#
+ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circular = FALSE) +
+  ggraph::geom_edge_arc(ggplot2::aes(edge_width = n_links/1.5, label = n_links, alpha = (n_links + 10)/100),
+                        #label_dodge = grid::unit(3, 'mm'),
+                        angle_calc = 'along',
+                        label_size = 4,
+                        colour ="#04A3BD",
+                        lineend = "butt"
+  ) +
+  ggraph::geom_node_text(ggplot2::aes(label = name), nudge_y = -0.1, hjust = 1) +
+  ggplot2::coord_flip(ylim = c(-1,9)) +
+  ggplot2::theme_void()
+
+
+```
+
+### Methods pattern across species
+
+```{r methods-pattern, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+# (cat can be used for last plot analoguous to questionnaire sections)
+#
+# convert to plot data
+res_plot <- factorize(
+  res = res_plot_tmp1,
+  varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+  varlevels = list(levels_vern_name_nld,
+                   response_options_data$response_options,
+                   response_options_data$response_options_cat |> unique(),
+                   levels_milieu
+                   )
+)
+#
+# response options used
+response_options_used <- dplyr::right_join(
+  response_options_data,
+  res_plot_tmp1 |>
+    dplyr::distinct(response_options)
+)
+#
+data_helper_tmp <- response_options_used |>
+  dplyr::mutate(
+    rownumber = dplyr::row_number()
+  ) |>
+  dplyr::mutate(
+    x_cat = dplyr::row_number() ,
+    .by = response_options_cat
+  ) |>
+  tidyr::crossing(data.frame(
+    species = res_plot_tmp1$species,
+    vern_name_nld = res_plot_tmp1$vern_name_nld)
+    )|>
+  dplyr::left_join(
+    x = _,
+    y = res_plot_tmp1
+  ) |>
+    # fill other vars HERE
+   dplyr::group_by(species) |>
+  tidyr::fill(prius_milieu, .direction = "downup")|>
+     dplyr::ungroup(species) |>
+  dplyr::arrange(species, rownumber)  
+#
+data_lines <- data_helper_tmp |>
+  # remove leading and trailing NAs
+  dplyr::group_by(species) |>
+  dplyr::filter(cumsum(!is.na(stadium)) != 0 & rev(cumsum(!is.na(rev(stadium)))) != 0) |>
+  dplyr::ungroup() |>
+  # add x_min and x_max per category
+  dplyr::group_by(species, response_options_cat) |>
+  dplyr::mutate(
+    x_cat_min = x_cat |> min(),
+    x_cat_max = x_cat |> max(),
+    .after = x_cat
+  ) |>
+  dplyr::slice_head() |>
+  dplyr::ungroup() |>
+  # adjust in between values
+  dplyr::arrange(species, rownumber)|>
+  dplyr::mutate(
+    x_cat_min = dplyr::case_when(
+      dplyr::row_number() == 1 ~ x_cat_min,
+      TRUE ~ x_cat_min - 0.5
+      ),
+    x_cat_max = dplyr::case_when(
+      dplyr::row_number() == dplyr::n()  ~ x_cat_max,
+      TRUE ~ x_cat_max + 0.5
+    ),
+    .by = species
+    ) |>
+  dplyr::ungroup() |>
+  factorize(
+    res = _,
+    varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+    varlevels = list(levels_vern_name_nld,
+                     response_options_data$response_options,
+                     response_options_data$response_options_cat |> unique(),
+                     levels_milieu
+                     )
+  )
+#
+# plot
+plot_meth_patt <- ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(
+    x = response_options, y = vern_name_nld, group = response_options_cat
+  #  # color, fill
+    )
+) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(response_options_cat),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::geom_point(size = 3, shape = 21) +
+  ggplot2::geom_linerange(data = data_lines, ggplot2::aes(xmin = x_cat_min, xmax = x_cat_max), linetype = "dashed") +
+  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.x.top = ggplot2::element_text(angle = 45, hjust = 0, vjust = 0),
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.text.y = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "methods",
+    y = "species (vernacular name nld)",
+    color = "category response",
+    fill = "category response"
+  )
+# here mark best meth
+
+plot_meth_patt
+
+```
+
+## Grouping
+
+### Grouping according to methods and habitats
+
+```{r grouping-1}
+
+# define data rect 
+# with coordinates and color per facet
+# xmin, xmax, ymin, ymax, color, prius_milieu, response_options_cat
+# factorize also prius_milieu, also for data lines
+# coordinates dont work yet
+data_bg <- data_helper_tmp |>
+  dplyr::group_by(species, prius_milieu, response_options_cat) |>
+    dplyr::mutate(
+    x_cat_min = 0.5,
+    x_cat_max = dplyr::n() + 0.5
+  )|>
+  dplyr::ungroup() |>
+  dplyr::group_by(prius_milieu, response_options_cat, response_options) |>
+  dplyr::mutate(
+    y_cat_min = 0.5,
+    y_cat_max = dplyr::n() + 0.5
+  ) |>
+  dplyr::ungroup() |>
+  dplyr::distinct(response_options_cat, prius_milieu, .keep_all = TRUE) |>
+  # add alpha
+  dplyr::group_by(response_options_cat, prius_milieu) |>
+  dplyr::mutate(
+    alpha = dplyr::n()/10 
+  ) |>
+  dplyr::ungroup() |>
+  factorize(
+    res = _,
+    varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+    varlevels = list(levels_vern_name_nld,
+                     response_options_data$response_options,
+                     response_options_data$response_options_cat |> unique(),
+                     levels_milieu
+                     )
+  )
+#
+plot_meth_patt + 
+  ggplot2::geom_rect(
+    data = data_bg,
+    ggplot2::aes(xmin = x_cat_min, xmax = x_cat_max, ymin = y_cat_min, ymax = y_cat_max),
+    alpha = 0,
+    fill = "green",
+    alpha = .2
+  ) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(response_options_cat),
+    rows = ggplot2::vars(prius_milieu),
+    scales = "free",
+    space = "free",
+    labeller = ggplot2::label_wrap_gen(width = 20)
+  ) +
+  ggplot2::scale_y_discrete(labels = ggplot2::waiver()) + 
+  ggplot2::theme(
+    strip.text.y.right = ggplot2::element_text(angle = 90)
+  )
+
+
+# habitat as facet rows 
+
+# plants vs. animals
+
+# in function of invasion stadium
+
+```
+
+
+
+
