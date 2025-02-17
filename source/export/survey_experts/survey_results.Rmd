@@ -621,7 +621,102 @@ ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
 
 ```
 
-### Score patterns "unknown" vs. rest per question
+
+### Score porportions "unknown" vs. rest per question
+
+```{r score-props-2, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_scored |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ response_text |> gsub(" ", "", x = _)
+    )
+  ) |>
+  # score category proportions per question
+  dplyr::mutate(
+    n_scores_category = dplyr::n(),
+    .by = c(question_text, score_category)
+  ) |>
+  dplyr::mutate(
+    n_scores_tot = dplyr::n(),
+    .by = question_text
+  ) |>
+  dplyr::mutate(prop_scores = n_scores_category / n_scores_tot) |>
+  tidyr::pivot_wider(
+    data = _,
+    names_from = score_category,
+    values_from = prop_scores,
+    names_prefix = "prop_scores_"
+  ) |>
+  dplyr::group_by(question_text) |>
+  tidyr::fill(tidyselect::contains("prop_scores"), .direction = "downup") |>
+  dplyr::ungroup() |>
+  dplyr::mutate(dplyr::across(tidyselect::contains("prop_scores"), \(x) tidyr::replace_na(x, 0)))
+
+# check whether proportions sum to 1
+test <- res_plot_tmp |>
+  dplyr::rowwise() |>
+  dplyr::mutate(prop_check = rowSums(dplyr::across(tidyselect::starts_with("prop_scores"))))
+assertthat::are_equal(sum(test$prop_check), nrow(test))
+#
+# convert character vars to factors for ordering
+res_plot <- factorize(
+  res_plot_tmp,
+  c("question_text_short", "section_title", "species", "vern_name_nld"),
+  list(
+    res_plot_tmp$question_text_short |> unique(),
+    res_plot_tmp$section_title |> unique() |> _[match(
+      seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
+      res_plot_tmp$section_no |> unique()
+    )],
+    levels_species,
+    levels_vern_name_nld
+  )
+)
+#
+# plot
+plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(x = question_text_short)) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      ymin = 0,
+      ymax = prop_scores_ongekend + prop_scores_ikweethetniet,
+      color = "ongekend / ik weet het niet"
+    ),
+    linewidth = 2
+  ) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      ymin = prop_scores_ongekend + prop_scores_ikweethetniet,
+      ymax = prop_scores_ongekend + prop_scores_ikweethetniet + prop_scores_rest,
+      color = "rest"
+    ),
+    linewidth = 2
+  ) +
+    ggplot2::facet_grid(
+    cols = ggplot2::vars(section_title),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
+  #ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::coord_cartesian(ylim = c(0,1)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank()
+  ) + 
+  ggplot2::labs(
+    x = "question",
+    y = "proportion responses",
+    color = "category response"
+  )
+plot_unknown_prop_species
+
+```
+
+### Score patterns "unknown" vs. rest per species and question
 
 ```{r score-patterns, fig.width = fig_w * 1.2, fig.height = fig_h}
 
@@ -657,7 +752,7 @@ ggplot2::ggplot(
     axis.text.y = ggtext::element_markdown()
   ) +
   ggplot2::labs(
-    x = "proportion responses",
+    x = "question",
     y = "species (vernacular name nld)",
     color = "category response",
     fill = "category response"
