@@ -1104,6 +1104,26 @@ data_lines <- data_helper_tmp |>
                      )
   )
 #
+# data best methods
+res_plot_best <- res_meth_recoded |>
+  dplyr::filter(grepl("D2$", question_id)) |>
+  tidyr::crossing(response_options_data) |>
+  dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
+                  .after = response_text_final) |>
+  dplyr::group_by(species) |>
+  dplyr::rowwise() |>
+  dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
+  dplyr::ungroup() |>
+  factorize(
+  res = _,
+  varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+  varlevels = list(levels_vern_name_nld,
+                   response_options_data$response_options,
+                   response_options_data$response_options_cat |> unique(),
+                   levels_milieu
+                   )
+)
+#
 # plot
 plot_meth_patt <- ggplot2::ggplot(
   res_plot,
@@ -1119,6 +1139,7 @@ plot_meth_patt <- ggplot2::ggplot(
   ) +
   ggplot2::geom_point(size = 3, shape = 21) +
   ggplot2::geom_linerange(data = data_lines, ggplot2::aes(xmin = x_cat_min, xmax = x_cat_max), linetype = "dashed") +
+  ggplot2::geom_point(data = res_plot_best, size = 3) +
   ggplot2::scale_y_discrete(labels = labs_hl) +
   ggplot2::theme_bw() +
   ggplot2::theme(
