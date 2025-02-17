@@ -1141,7 +1141,7 @@ plot_meth_patt
 
 ### Grouping according to methods and habitats
 
-```{r grouping-1}
+```{r methods-grouping-1, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
 
 # define data rect 
 # with coordinates and color per facet
@@ -1161,13 +1161,17 @@ data_bg <- data_helper_tmp |>
     y_cat_max = dplyr::n() + 0.5
   ) |>
   dplyr::ungroup() |>
-  dplyr::distinct(response_options_cat, prius_milieu, .keep_all = TRUE) |>
   # add alpha
   dplyr::group_by(response_options_cat, prius_milieu) |>
-  dplyr::mutate(
-    alpha = dplyr::n()/10 
-  ) |>
+    dplyr::mutate(
+    alpha = dplyr::case_when(
+      any(!is.na(stadium)) ~ 1,
+      TRUE ~ 0
+      )
+  ) |> 
   dplyr::ungroup() |>
+  dplyr::distinct(response_options_cat, prius_milieu, .keep_all = TRUE) |>
+  # finalize
   factorize(
     res = _,
     varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
@@ -1178,13 +1182,15 @@ data_bg <- data_helper_tmp |>
                      )
   )
 #
-plot_meth_patt + 
+plot_meth_group <- plot_meth_patt + 
   ggplot2::geom_rect(
     data = data_bg,
-    ggplot2::aes(xmin = x_cat_min, xmax = x_cat_max, ymin = y_cat_min, ymax = y_cat_max),
-    alpha = 0,
-    fill = "green",
-    alpha = .2
+    ggplot2::aes(
+      xmin = x_cat_min, xmax = x_cat_max, 
+      ymin = y_cat_min, ymax = y_cat_max,
+      alpha = alpha |> as.numeric()
+      ),
+    fill = "#EA5F94"
   ) +
   ggplot2::facet_grid(
     cols = ggplot2::vars(response_options_cat),
@@ -1193,17 +1199,14 @@ plot_meth_patt +
     space = "free",
     labeller = ggplot2::label_wrap_gen(width = 20)
   ) +
+  ggplot2::scale_alpha(range = c(0, 0.05)) +  
   ggplot2::scale_y_discrete(labels = ggplot2::waiver()) + 
   ggplot2::theme(
-    strip.text.y.right = ggplot2::element_text(angle = 90)
+    strip.text.y.right = ggplot2::element_text(angle = 0),
+    legend.position = "none"
   )
+plot_meth_group
 
-
-# habitat as facet rows 
-
-# plants vs. animals
-
-# in function of invasion stadium
 
 ```
 
