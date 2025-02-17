@@ -222,7 +222,84 @@ cols_stadium <- data.frame(
 
 ```
 
+## Species ranking
 
+### Ranking according to grand mean response scores
+
+```{r ranking, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_m |>
+  dplyr::mutate(
+    m_max = dplyr::case_when(
+      m_feas > m_urge ~ m_feas,
+      TRUE ~ m_urge
+    ),
+    m_min = dplyr::case_when(
+      m_feas < m_urge ~ m_feas,
+      TRUE ~ m_urge
+    ),
+    on_unionlist_upd = dplyr::case_when(
+      on_unionlist ~ "on unionlist",
+      !on_unionlist ~ "not on unionlist"
+    ),
+    part = dplyr::case_when(
+      dplyr::row_number() < (dplyr::n()/2) ~ "part 1",
+      TRUE ~ "part 2"
+    )
+  )
+res_plot <- factorize(
+  res = res_plot_tmp,
+  varnames = c("species", "vern_name_eng", "vern_name_nld",
+               "on_unionlist_upd", "stadium"),
+  varlevels = list(
+    levels_species,
+    levels_vern_name_eng,
+    levels_vern_name_nld,
+    c("on unionlist", "not on unionlist"),
+    levels_stadium
+  )
+)
+#
+# plot
+# (split in 2 using facet_wrap - requires attention to labels)
+plot_ranking <- ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(x = m_feasurge, y = vern_name_nld, color = stadium)) +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge), linetype = "dotted") +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = m_min, xmax = m_max)) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feasurge), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_feas), shape = "F") +
+  ggplot2::geom_point(ggplot2::aes(x = m_urge), color = "white", size = 2) +
+  ggplot2::geom_point(ggplot2::aes(x = m_urge), shape = "U") +
+  ggplot2::geom_point(ggplot2::aes(shape = on_unionlist_upd), size = 2) +
+  ggplot2::scale_shape_manual(values = c(16, 1)) +
+  ggplot2::scale_color_manual(
+    values = cols_stadium |>
+      dplyr::filter(stadium %in% (res_plot$stadium |> unique())) |>
+      dplyr::pull(cols)) +
+  ggplot2::coord_cartesian(xlim = c(
+    res_scored$response_score |> na.omit() |> min(),
+    res_scored$response_score |> na.omit() |> max()
+  )) +
+  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    legend.title = ggplot2::element_blank(),
+    axis.text.y = ggtext::element_markdown(),
+    panel.grid.major.y = ggplot2::element_blank(),
+    panel.grid.minor.y = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "mean of feasibilty and urgency scores (grand mean)",
+    y = "species (vernacular name nld)"
+  )
+plot_ranking
+# closer to F if species is present as F then has more questions
+# closer to U if species is absent as U then has more questions
+#
+```
 
 ## Invasion stadium
 
@@ -590,81 +667,6 @@ ggplot2::ggplot(
 ```
 
 
-### Ranking according to mean response scores
-
-```{r ranking, fig.width = fig_w * 1.2, fig.height = fig_h}
-
-# convert to plot data
-res_plot_tmp <- res_m |>
-  dplyr::mutate(
-    m_max = dplyr::case_when(
-      m_feas > m_urge ~ m_feas,
-      TRUE ~ m_urge
-    ),
-    m_min = dplyr::case_when(
-      m_feas < m_urge ~ m_feas,
-      TRUE ~ m_urge
-    ),
-    on_unionlist_upd = dplyr::case_when(
-      on_unionlist ~ "on unionlist",
-      !on_unionlist ~ "not on unionlist"
-    ),
-    part = dplyr::case_when(
-      dplyr::row_number() < (dplyr::n()/2) ~ "part 1",
-      TRUE ~ "part 2"
-    )
-  )
-res_plot <- factorize(
-  res = res_plot_tmp,
-  varnames = c("species", "vern_name_eng", "vern_name_nld",
-               "on_unionlist_upd", "stadium"),
-  varlevels = list(
-    levels_species,
-    levels_vern_name_eng,
-    levels_vern_name_nld,
-    c("on unionlist", "not on unionlist"),
-    levels_stadium
-  )
-)
-#
-# plot
-# (split in 2 using facet_wrap - requires attention to labels)
-ggplot2::ggplot(
-  res_plot,
-  ggplot2::aes(x = m_feasurge, y = vern_name_nld, color = stadium)) +
-  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge), linetype = "dotted") +
-  ggplot2::geom_linerange(ggplot2::aes(xmin = m_min, xmax = m_max)) +
-  ggplot2::geom_point(ggplot2::aes(x = m_feasurge), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = m_feas), shape = "F") +
-  ggplot2::geom_point(ggplot2::aes(x = m_urge), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = m_urge), shape = "U") +
-  ggplot2::geom_point(ggplot2::aes(shape = on_unionlist_upd), size = 2) +
-  ggplot2::scale_shape_manual(values = c(16, 1)) +
-  ggplot2::scale_color_manual(
-    values = cols_stadium |>
-      dplyr::filter(stadium %in% (res_plot$stadium |> unique())) |>
-      dplyr::pull(cols)) +
-  ggplot2::coord_cartesian(xlim = c(
-    res_scored$response_score |> na.omit() |> min(),
-    res_scored$response_score |> na.omit() |> max()
-  )) +
-  ggplot2::scale_y_discrete(labels = labs_hl) +
-  ggplot2::theme_bw() +
-  ggplot2::theme(
-    legend.title = ggplot2::element_blank(),
-    axis.text.y = ggtext::element_markdown(),
-    panel.grid.major.y = ggplot2::element_blank(),
-    panel.grid.minor.y = ggplot2::element_blank()
-  ) +
-  ggplot2::labs(
-    x = "mean of feasibilty and urgency scores (grand mean)",
-    y = "species (vernacular name nld)"
-  )
-# closer to F if species is present as F then has more questions
-# closer to U if species is absent as U then has more questions
-#
-```
 
 ## Methods
 
