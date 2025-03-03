@@ -1324,5 +1324,81 @@ plot_meth_group
 ```
 
 
+### Characteristics best method
+
+Frequencies of responses options per "most relevant" method.
+Responses concerning sensitivity, specificity and costs are separated by column.
+
+
+```{r best-method, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+
+res_plot_tmp <- res_plot_best |> 
+  dplyr::distinct(species, .keep_all = TRUE) |>
+  dplyr::rename(best_method = response_text_final) |>
+  dplyr::select(tidyselect::contains(c("species", "best_method"))) |>
+  dplyr::full_join(
+    x = _,
+    y = res_scored |> 
+      dplyr::filter(grepl("D3|D4|D5", question_id)) |>
+      dplyr::filter(!grepl("followup", question_text))
+  ) |>
+  # adapt response text
+  dplyr::mutate(
+    response_text_recoded = dplyr::case_when(
+      grepl("ongekend|ik weet het niet", response_text) ~ "ongekend / weet niet",
+      grepl("lage", response_text) ~ "laag",
+      grepl("middelhoge", response_text) ~ "middelhoog",
+      grepl("^hoge", response_text) ~ "hoog"
+    ) 
+  ) |>
+  # sort according to response score and frequency best method
+  dplyr::mutate(
+    n_rows = dplyr::n(), 
+    .by = best_method
+  ) |>
+  dplyr::arrange(
+    n_rows |> dplyr::desc(),
+    response_score
+    )
+#
+res_plot <- res_plot_tmp |>
+  factorize(
+    res = _,
+    varnames = c("best_method", "question_text_short", "response_text_recoded"),
+    varlevels = list(res_plot_tmp$best_method |> unique(),
+                     res_plot_tmp$question_text_short |> unique() |> rev(),
+                     res_plot_tmp$response_text_recoded |> unique()
+    )
+  )
+#
+plot_bestmeth <- ggplot2::ggplot(
+  res_plot, 
+  ggplot2::aes(x = response_text_recoded)
+  ) +
+  ggplot2::geom_bar() +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(best_method),
+    cols = ggplot2::vars(question_text_short),
+    labeller = ggplot2::label_wrap_gen(width = 20),
+    switch = "y",
+    scales = "free"
+  ) +
+  ggplot2::scale_y_continuous(breaks = \(x) seq(floor(min(x)), ceiling(max(x)), by = ceiling(max(x)/4))) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.y.left = ggplot2::element_text(angle = 0),
+    strip.placement = "outside",
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1)
+  ) +
+  ggplot2::labs(
+    x = "response score",
+    y = "frequency"
+  )
+plot_bestmeth
+# NA value?
+
+```
 
 
