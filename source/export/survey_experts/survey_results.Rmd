@@ -407,6 +407,66 @@ plot_stadium
 
 ```
 
+
+### Invasion stadium and species distribution
+
+Reported status of species distribution (to what extent known?) per species,
+with species grouped by invasion stadium as reported in survey.
+
+```{r invasion-stadium-2, fig.width = fig_w, fig.height = fig_h * 1.5}
+
+res_plot_tmp1 <- res_scored |>
+  dplyr::filter(grepl("B1", question_id)) |>
+   # adapt response text
+  dplyr::mutate(
+    response_text_recoded = dplyr::case_when(
+      grepl("ik weet het niet", response_text) ~ "weet niet",
+      grepl("niet voldoende gekend", response_text) ~ "ongekend",
+      grepl("geen goed beeld", response_text) ~ "gekend, maar kaart geeft geen goed beeld",
+      grepl("geeft een goed beeld", response_text) ~ "gekend en kaart geeft goed beeld"
+    ) 
+  ) |>
+  dplyr::arrange(response_score |> dplyr::desc())
+res_plot_tmp2  <- factorize(
+  res_plot_tmp1,
+  c("stadium", "response_text_recoded"),
+  list(
+    levels_stadium,
+    res_plot_tmp1$response_text_recoded |> unique() |> rev()
+  )
+) |> 
+  dplyr::arrange(response_text_recoded)
+res_plot <- res_plot_tmp2 |>
+  factorize("vern_name_nld", list(res_plot_tmp2$vern_name_nld |> unique() |> rev()))
+#
+# plot
+plot_stadium_dist <- ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(x = response_text_recoded, y = vern_name_nld)) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(stadium),
+    scales = "free",
+    space = "free",
+    labeller = ggplot2::label_wrap_gen(width = 10)
+  ) +
+  ggplot2::scale_x_discrete(labels = ggplot2::label_wrap_gen(width = 20)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank(),
+    strip.text.y.right = ggplot2::element_text(angle = 0)
+  ) +
+  ggplot2::labs(
+    x = "distribution of species",
+    y = "species (vernacular name nld)"
+  )
+
+plot_stadium_dist
+
+```
+
+
 ## Response scores 
 
 ### Scoring of questions
