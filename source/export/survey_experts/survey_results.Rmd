@@ -1122,7 +1122,7 @@ data_helper_tmp <- response_options_used |>
   ) |>
     # fill other vars HERE
    dplyr::group_by(species) |>
-  tidyr::fill(prius_milieu, .direction = "downup")|>
+  tidyr::fill(prius_milieu, kingdom, .direction = "downup")|>
      dplyr::ungroup(species) |>
   dplyr::arrange(species, rownumber)  
 #
@@ -1175,32 +1175,32 @@ res_plot_best <- res_meth_recoded |>
   dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
   dplyr::ungroup() |>
   factorize(
-  res = _,
-  varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
-  varlevels = list(levels_vern_name_nld,
-                   response_options_data$response_options,
-                   response_options_data$response_options_cat |> unique(),
-                   levels_milieu
-                   )
-)
+    res = _,
+    varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+    varlevels = list(levels_vern_name_nld,
+                     response_options_data$response_options,
+                     response_options_data$response_options_cat |> unique(),
+                     levels_milieu
+    )
+  )
 #
 # plot
 plot_meth_patt <- ggplot2::ggplot(
   res_plot,
   ggplot2::aes(
     x = response_options, y = vern_name_nld, group = response_options_cat
-  #  # color, fill
     )
 ) +
   ggplot2::facet_grid(
     cols = ggplot2::vars(response_options_cat),
+    rows = ggplot2::vars(kingdom),
     scales = "free",
     space = "free"
   ) +
   ggplot2::geom_point(size = 3, shape = 21) +
   ggplot2::geom_linerange(data = data_lines, ggplot2::aes(xmin = x_cat_min, xmax = x_cat_max), linetype = "dashed") +
   ggplot2::geom_point(data = res_plot_best, size = 3) +
-  ggplot2::scale_y_discrete(labels = labs_hl) +
+  #ggplot2::scale_y_discrete(labels = labs_hl) +
   ggplot2::theme_bw() +
   ggplot2::theme(
     strip.background = ggplot2::element_blank(),
