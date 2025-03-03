@@ -261,12 +261,15 @@ tmp <- googledrive::drive_find(
 )
 #
 tmp_id1 <- tmp |>
-  dplyr::filter(grepl("2025-01-28", name)) |>
+  dplyr::filter(grepl("2025-02-18", name)) |>
   googledrive::as_id()
 tmp_id2 <- tmp |>
-  dplyr::filter(grepl("2025-01-31", name)) |>
+  dplyr::filter(grepl("2025-02-27", name)) |>
   googledrive::as_id()
 #
 ctrl1 <- googlesheets4::read_sheet(ss = tmp_id1)
 ctrl2 <- googlesheets4::read_sheet(ss = tmp_id2)
 generics::setdiff(ctrl2, ctrl1) |> View()
+
+
+ctrl2 |> View()
