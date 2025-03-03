@@ -120,3 +120,46 @@ save(res_comb_upd, file = paste0(response_data_path, "results_combined_upd.rda")
 #
 #
 
+# --- process recoded data for methods ---------------
+#
+res_meth_recoded <- res_comb_upd |>
+  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
+  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) |>
+  dplyr::filter(grepl("D1$|D2", question_id)) |>
+  dplyr::arrange(question_id, species) |>
+  # add other methods to question D1 not fu
+  dplyr::group_by(species, question_id) |>
+  tidyr::fill(response_text_recoded, .direction = "up") |>
+  dplyr::ungroup() |>
+  # remove string "andere" if other methods are listed
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      !is.na(response_text_recoded) ~ gsub(", andere", "", response_text),
+      TRUE ~ response_text
+    )
+  ) |>
+  # add other methods listed
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      grepl("D1$", question_id) & !grepl("followup", question_text) & !is.na(response_text_recoded) ~
+        paste(response_text_final, response_text_recoded, sep = ", "),
+      grepl("D1$", question_id) & !grepl("followup", question_text) & is.na(response_text_recoded) ~
+        response_text_final,
+      TRUE ~ NA_character_
+    )
+  ) |>
+  # add best method
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      grepl("D2$", question_id) ~ response_text_recoded,
+      TRUE ~ response_text_final
+    )
+  ) |>
+  # move response_text_final
+  dplyr::relocate(response_text_final, .after = response_text_recoded)
+#
+# save data set
+save(res_meth_recoded, file = paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))
+#
+#
