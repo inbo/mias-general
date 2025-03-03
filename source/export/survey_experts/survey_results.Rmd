@@ -212,7 +212,26 @@ levels_milieu <- c(
   "terrestrial, brackishwater",
   "freshwater, brackishwater",
   "freshwater, brackishwater, marine"
+# colors stadium (cols4all - palette: met.lakota)
+cols_stadium <- data.frame(
+  cols = c("#247D3F", "#04A3BD", "#F0BE3D", "#DA7901", "#931E18"),
+  stadium = levels_stadium
 )
+#
+# colors feasibility urgency
+cols_feasurge <- c("#04A3BD", "#DA7901")
+#
+# color to highlight data
+col_hl <- "#F0BE3D"
+#
+# color for background data
+col_bg <- "#E5E4E2"
+#
+# colors method categories (cols4all - 10 cols - palette: met.redon)
+cols_meth <- c("#5B859E","#1E395F","#75884B","#1E5A46","#DF8D71","#AF4F2F","#D48F90","#732F30","#AB84A5","#59385C")
+#
+# color to highlight axis labels
+col_labs <- "#71797E" #"#EA5F94"
 #
 # axis labels to highlight 
 # these (only work if y axis not facetted)
@@ -224,13 +243,7 @@ labs_hl_allspec <- highlight_labs(
 labs_hl <- highlight_labs(
   labs = levels_vern_name_nld,
   pattern = "kreeft|muntjak",
-  color = "#58508d"
-)
-#
-# colors (cols4all - palette: met.lakota)
-cols_stadium <- data.frame(
-  cols = c("#247D3F", "#04A3BD", "#F0BE3D", "#DA7901", "#931E18"),
-  stadium = levels_stadium
+  color = col_labs
 )
 
 
@@ -359,8 +372,8 @@ res_plot <- factorize(
 plot_stadium <- ggplot2::ggplot(
   res_plot,
   ggplot2::aes(x = prius_stadium_upd, y = stadium)) +
-  ggplot2::geom_abline(intercept = 0, slope = 1, color = "lightgrey", linewidth = 2) +
-  #ggplot2::geom_point(size = 12, shape = 21, fill = "white", color = "lightgrey") +
+  ggplot2::geom_abline(intercept = 0, slope = 1, color = col_bg, linewidth = 2) +
+  #ggplot2::geom_point(size = 12, shape = 21, fill = "white", color = col_bg) +
   ggplot2::geom_point(
     size = 3,
     position = ggplot2::position_jitter(width = 0.1, height = 0.1),
@@ -370,9 +383,9 @@ plot_stadium <- ggplot2::ggplot(
     ggplot2::aes(
       label = stadium_label,
       filter = !is.na(stadium_label)),
-    color = "#EA5F94",
-    label.fontface = "plain", label.fontsize = 10, label.colour = "#EA5F94",
-    con.type = "straight", con.colour = "#EA5F94"
+    color = col_hl,
+    label.fontface = "plain", label.fontsize = 10, label.colour = col_hl,
+    con.type = "straight", con.colour = col_hl
   ) +
   ggplot2::facet_grid(
     cols = ggplot2::vars(on_unionlist_upd),
@@ -473,6 +486,7 @@ plot_scoring <- ggplot2::ggplot(
     breaks = 1:4,
     labels = paste(1:4, c("\nLow feasibility / urgency", "", "", "\nHigh feasibility / urgency"))
   ) +
+  ggplot2::scale_fill_manual(values = cols_feasurge) + 
   ggplot2::labs(x = "", y = "") +
   ggplot2::coord_cartesian(xlim = c(0.8,4.8)) +
   ggplot2::theme_bw() +
@@ -529,6 +543,7 @@ plot_scoredist <- ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
     render_empty = FALSE,
     labeller = ggplot2::label_wrap_gen(width = 20)
   ) +
+  ggplot2::scale_fill_manual(values = cols_feasurge) + 
   ggplot2::coord_cartesian(clip = "off") +
   ggplot2::theme_bw() +
   ggplot2::theme(
@@ -620,7 +635,7 @@ plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_nam
     ),
     linewidth = 2
   ) +
-  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_color_manual(values = c(col_hl, col_bg)) +
   ggplot2::coord_cartesian(xlim = c(0,1)) +
   ggplot2::theme_bw() +
   ggplot2::theme(
@@ -713,7 +728,7 @@ plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(x = question
     scales = "free",
     space = "free"
   ) +
-  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_color_manual(values = c(col_hl, col_bg)) +
   #ggplot2::scale_y_discrete(labels = labs_hl) +
   ggplot2::coord_cartesian(ylim = c(0,1)) +
   ggplot2::theme_bw() +
@@ -756,8 +771,8 @@ plot_unknown_pattern <- ggplot2::ggplot(
     scales = "free",
     space = "free"
   ) +
-  ggplot2::scale_color_manual(values = c("#EA5F94", "lightgrey")) +
-  ggplot2::scale_fill_manual(values = c("#EA5F94", "lightgrey")) +
+  ggplot2::scale_color_manual(values = c(col_hl, col_bg)) +
+  ggplot2::scale_fill_manual(values = c(col_hl, col_bg)) +
   ggplot2::scale_y_discrete(labels = labs_hl) +
   ggplot2::theme_bw() +
   ggplot2::theme(
@@ -934,6 +949,7 @@ plot_meth_freq <- ggplot2::ggplot(res_plot) +
                  color = response_options_cat),
     linewidth = 2
   ) +
+  ggplot2::scale_color_manual(values = c(cols_meth)) +
   ggplot2::theme_bw() +
   ggplot2::theme(
     panel.grid.minor.y = ggplot2::element_blank(),
@@ -941,7 +957,8 @@ plot_meth_freq <- ggplot2::ggplot(res_plot) +
   ) +
   ggplot2::labs(
     x = "frequency",
-    y = "method"
+    y = "method",
+    color = "method category"
   )
 plot_meth_freq
 #
@@ -1025,7 +1042,7 @@ plot_meth_netw <- ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circul
                         #label_dodge = grid::unit(3, 'mm'),
                         angle_calc = 'along',
                         label_size = 4,
-                        colour ="#04A3BD",
+                        colour = col_hl,
                         lineend = "butt"
   ) +
   ggraph::geom_node_text(ggplot2::aes(label = name), nudge_y = -0.1, hjust = 1) +
@@ -1226,7 +1243,7 @@ plot_meth_group <- plot_meth_patt +
       ymin = y_cat_min, ymax = y_cat_max,
       alpha = alpha |> as.numeric()
       ),
-    fill = "#EA5F94"
+    fill = col_hl
   ) +
   ggplot2::facet_grid(
     cols = ggplot2::vars(response_options_cat),
