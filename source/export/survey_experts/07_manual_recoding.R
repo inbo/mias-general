@@ -105,10 +105,69 @@ tmp_id <- tmp[1,] |>
 meth_recoded <- googlesheets4::read_sheet(ss = tmp_id)
 #
 #
-# re-join with data
+#
+#
+# --- manually recode monitoring schemes ---------------
+#
+#
+# split up "other" if other schemes are named in follow-up (manually)
+#
+#
+# export to g-sheet for manual recoding
+# (only once for given response data)
+if (FALSE){
+  res_to_recode <- res_comb_upd |>
+    dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
+    dplyr::filter(grepl("D8", question_id)) |>
+    dplyr::mutate(response_text_recoded = NA_character_, .after = response_text) |>
+    dplyr::arrange(species, question_id) |>
+    dplyr::select(tidyselect::contains(c("species", "question_text", "question_id", "response_text")))
+  #
+  # upload updated sheet
+  googlesheets4::gs4_create(
+    name =  paste0(Sys.Date(), "_monitoring_recoded"),
+    sheets = res_to_recode
+  )
+  # move updated sheet to target folder
+  tmp_id <- googledrive::drive_find(
+    pattern = paste0(Sys.Date(), "_monitoring_recoded"),
+    type = "spreadsheet"
+  ) |> googledrive::as_id()
+  googledrive::drive_mv(
+    file = tmp_id,
+    path = responses_recoded_folder_url |> paste0(x = _, "/")
+  )
+  #
+  # in g-sheet recode response_text manually where needed (D1 followup)
+  # D8 followup: other monitoring schemes
+}
+#
+#
+# import recoded monitoring from g-sheet
+tmp <- googledrive::drive_find(
+  pattern = "monitoring_recoded_JA",
+  shared_drive = "PRJ_MIUS",
+  type = "spreadsheet"
+) |>
+  dplyr::arrange(dplyr::desc(name))
+tmp_id <- tmp[1,] |>
+  googledrive::as_id()
+moni_recoded <- googlesheets4::read_sheet(ss = tmp_id)
+#
+#
+#
+# --- join data ---------------
+#
+# join both recoded data frames
+res_recoded <- dplyr::full_join(
+  meth_recoded,
+  moni_recoded
+)
+#
+# re-join with original data
 res_comb_upd <- dplyr::full_join(
   res_comb_upd,
-  meth_recoded
+  res_recoded
 )
 #
 #
@@ -119,7 +178,6 @@ save(res_comb_upd, file = paste0(response_data_path, "results_combined_upd.rda")
 #
 #
 #
-
 # --- process recoded data for methods ---------------
 #
 res_meth_recoded <- res_comb_upd |>
@@ -162,4 +220,43 @@ res_meth_recoded <- res_comb_upd |>
 # save data set
 save(res_meth_recoded, file = paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))
 #
+#
+#
+# --- process recoded data for monitoring schemes ---------------
+#
+res_moni_recoded <- res_comb_upd |>
+  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
+  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) |>
+  dplyr::filter(grepl("D8", question_id)) |>
+  dplyr::arrange(question_id, species) |>
+  # add other monitoring schemes to question D1 not fu
+  #dplyr::group_by(species, question_id) |>
+  #tidyr::fill(response_text_recoded, .direction = "up") |>
+  #dplyr::ungroup() |>
+  # remove string "andere" if other methods are listed
+  #dplyr::mutate(
+  #  response_text_final = dplyr::case_when(
+  #    !is.na(response_text_recoded) ~ gsub(", andere", "", response_text),
+  #    grepl("-andere", response_text_recoded) ~ gsub("andere", "", response_text),
+  #    TRUE ~ response_text
+  #  )
+  # add other methods listed
+  #dplyr::rowwise() |>
+  #dplyr::mutate(
+  #  response_text_final = dplyr::case_when(
+  #    grepl("D8", question_id) & !grepl("followup", question_text) & !is.na(response_text_recoded) ~
+  #      paste(response_text_final, response_text_recoded, sep = ", "),
+  #    grepl("D8", question_id) & !grepl("followup", question_text) & is.na(response_text_recoded) ~
+  #      response_text_final,
+  #    TRUE ~ NA_character_
+  #  )
+  #) |>
+  dplyr::mutate(
+    response_text_final = response_text_recoded
+    ) |>
+  # move response_text_final
+  dplyr::relocate(response_text_final, .after = response_text_recoded)
+#
+# save data set
+save(res_moni_recoded, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))
 #
