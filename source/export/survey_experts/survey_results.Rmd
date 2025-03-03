@@ -59,9 +59,11 @@ load(paste0(response_data_path, "results_combined_upd.rda"))
 #
 # define subsets of response data
 
-res_scored <- res_comb_upd |>
+res_scored_allspec <- res_comb_upd |>
   dplyr::filter(question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) 
+  dplyr::filter(!grepl("IRR", prius_stadium)) 
+res_scored <- res_scored_allspec |>
+  dplyr::filter(on_unionlist) 
 res_open <- res_comb_upd |>
   dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
   dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium))
@@ -140,18 +142,18 @@ highlight_labs <- function(
 ```{r mean-ranking, results = 'hide'}
 
 # grand means urgency & feasibility
-res_m_feas <- summarize(res_scored, "feas")
-res_m_urge <- summarize(res_scored, "urge")
+res_m_feas <- summarize(res_scored_allspec, "feas")
+res_m_urge <- summarize(res_scored_allspec, "urge")
 # grand mean all questions
-res_m_feasurge <- summarize(res_scored, "feas|urge")
+res_m_feasurge <- summarize(res_scored_allspec, "feas|urge")
 # section group means urgency & feasibility
-res_gm_feas <- summarize(res_scored, "feas", group_by_what = c("species", "section_no"))
-res_gm_urge <- summarize(res_scored, "urge", group_by_what = c("species", "section_no"))
+res_gm_feas <- summarize(res_scored_allspec, "feas", group_by_what = c("species", "section_no"))
+res_gm_urge <- summarize(res_scored_allspec, "urge", group_by_what = c("species", "section_no"))
 # grand median all questions
-res_med_feasurge <- summarize(res_scored, "feas|urge", fun = "median")
+res_med_feasurge <- summarize(res_scored_allspec, "feas|urge", fun = "median")
 
 # merge data
-res_m <- dplyr::full_join(
+res_m_allspec <- dplyr::full_join(
   x = res_m_feas,
   y = res_m_urge
 ) |>
@@ -178,7 +180,11 @@ res_m <- dplyr::full_join(
   dplyr::arrange(dplyr::desc(m_feasurge))
 #
 # correlations of different means
-cor(res_m |> dplyr::select(tidyselect::contains(c("m_"))))
+cor(res_m_allspec |> dplyr::select(tidyselect::contains(c("m_"))))
+#
+# keep only species on unionlist
+res_m <- res_m_allspec |>
+  dplyr::filter(on_unionlist) 
 
 ```
 
@@ -189,8 +195,11 @@ cor(res_m |> dplyr::select(tidyselect::contains(c("m_"))))
 ```{r setup-plot-parameters}
 
 # order of factor levels
+levels_species_allspec <- res_m_allspec$species |> unique() |> rev()
 levels_species <- res_m$species |> unique() |> rev()
+levels_vern_name_eng_allspec <- res_m_allspec$vern_name_eng |> unique() |> rev()
 levels_vern_name_eng <- res_m$vern_name_eng |> unique() |> rev()
+levels_vern_name_nld_allspec <- res_m_allspec$vern_name_nld |> unique() |> rev()
 levels_vern_name_nld <- res_m$vern_name_nld |> unique() |> rev()
 levels_stadium <- c(
   "irrelevant", "afwezig", "sporadisch aanwezig",
@@ -207,6 +216,11 @@ levels_milieu <- c(
 #
 # axis labels to highlight 
 # these (only work if y axis not facetted)
+labs_hl_allspec <- highlight_labs(
+  labs = levels_vern_name_nld_allspec,
+  pattern = "kreeft|muntjak",
+  color = col_labs
+)
 labs_hl <- highlight_labs(
   labs = levels_vern_name_nld,
   pattern = "kreeft|muntjak",
@@ -229,7 +243,7 @@ cols_stadium <- data.frame(
 ```{r ranking, fig.width = fig_w * 1.2, fig.height = fig_h}
 
 # convert to plot data
-res_plot_tmp <- res_m |>
+res_plot_tmp <- res_m_allspec |>
   dplyr::mutate(
     m_max = dplyr::case_when(
       m_feas > m_urge ~ m_feas,
@@ -253,9 +267,9 @@ res_plot <- factorize(
   varnames = c("species", "vern_name_eng", "vern_name_nld",
                "on_unionlist_upd", "stadium"),
   varlevels = list(
-    levels_species,
-    levels_vern_name_eng,
-    levels_vern_name_nld,
+    levels_species_allspec,
+    levels_vern_name_eng_allspec,
+    levels_vern_name_nld_allspec,
     c("on unionlist", "not on unionlist"),
     levels_stadium
   )
@@ -280,10 +294,10 @@ plot_ranking <- ggplot2::ggplot(
       dplyr::filter(stadium %in% (res_plot$stadium |> unique())) |>
       dplyr::pull(cols)) +
   ggplot2::coord_cartesian(xlim = c(
-    res_scored$response_score |> na.omit() |> min(),
-    res_scored$response_score |> na.omit() |> max()
+    res_scored_allspec$response_score |> na.omit() |> min(),
+    res_scored_allspec$response_score |> na.omit() |> max()
   )) +
-  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::scale_y_discrete(labels = labs_hl_allspec) +
   ggplot2::theme_bw() +
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
