@@ -87,8 +87,9 @@ if (FALSE){
     path = responses_recoded_folder_url |> paste0(x = _, "/")
   )
   #
-  # in g-sheet recode response_text manually where needed (D1 followup & D2)
-  # D1 followup: other methods
+  # in g-sheet recode response_text manually
+  # D1: = response_text
+  # D1 followup: other methods (should not be one out of the ones given in D1)
   # D2: most relevant method (should be 1 out of the ones given in D1 / D1fu)
 }
 #
@@ -186,28 +187,37 @@ res_meth_recoded <- res_comb_upd |>
   dplyr::filter(grepl("D1$|D2", question_id)) |>
   dplyr::arrange(question_id, species) |>
   # add other methods to question D1 not fu
+  dplyr::mutate(
+    helper_response_other = dplyr::case_when(
+      grepl("D1", question_id) & grepl("followup", question_text) ~ response_text_recoded,
+      TRUE ~ NA
+    )) |>
   dplyr::group_by(species, question_id) |>
-  tidyr::fill(response_text_recoded, .direction = "up") |>
+  tidyr::fill(helper_response_other, .direction = "up") |>
   dplyr::ungroup() |>
   # remove string "andere" if other methods are listed
   dplyr::mutate(
     response_text_final = dplyr::case_when(
-      !is.na(response_text_recoded) ~ gsub(", andere", "", response_text),
-      TRUE ~ response_text
+      !is.na(helper_response_other) ~ gsub(", andere", "", response_text_recoded),
+      TRUE ~ response_text_recoded
     )
   ) |>
   # add other methods listed
   dplyr::rowwise() |>
   dplyr::mutate(
     response_text_final = dplyr::case_when(
-      grepl("D1$", question_id) & !grepl("followup", question_text) & !is.na(response_text_recoded) ~
-        paste(response_text_final, response_text_recoded, sep = ", "),
-      grepl("D1$", question_id) & !grepl("followup", question_text) & is.na(response_text_recoded) ~
-        response_text_final,
-      TRUE ~ NA_character_
+      !is.na(helper_response_other) ~ paste(
+        response_text_final, helper_response_other, sep = ", "
+        ),
+      TRUE ~ response_text_final
     )
-  ) |>
-  # add best method
+  )   |>
+  # move response_text_final
+  dplyr::relocate(
+    tidyselect::any_of(c("response_text_recoded", "response_text_final")),
+    .after = response_text
+  )
+#
   dplyr::mutate(
     response_text_final = dplyr::case_when(
       grepl("D2$", question_id) ~ response_text_recoded,
@@ -229,33 +239,14 @@ res_moni_recoded <- res_comb_upd |>
   dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) |>
   dplyr::filter(grepl("D8", question_id)) |>
   dplyr::arrange(question_id, species) |>
-  # add other monitoring schemes to question D1 not fu
-  #dplyr::group_by(species, question_id) |>
-  #tidyr::fill(response_text_recoded, .direction = "up") |>
-  #dplyr::ungroup() |>
-  # remove string "andere" if other methods are listed
-  #dplyr::mutate(
-  #  response_text_final = dplyr::case_when(
-  #    !is.na(response_text_recoded) ~ gsub(", andere", "", response_text),
-  #    grepl("-andere", response_text_recoded) ~ gsub("andere", "", response_text),
-  #    TRUE ~ response_text
-  #  )
-  # add other methods listed
-  #dplyr::rowwise() |>
-  #dplyr::mutate(
-  #  response_text_final = dplyr::case_when(
-  #    grepl("D8", question_id) & !grepl("followup", question_text) & !is.na(response_text_recoded) ~
-  #      paste(response_text_final, response_text_recoded, sep = ", "),
-  #    grepl("D8", question_id) & !grepl("followup", question_text) & is.na(response_text_recoded) ~
-  #      response_text_final,
-  #    TRUE ~ NA_character_
-  #  )
-  #) |>
   dplyr::mutate(
     response_text_final = response_text_recoded
     ) |>
   # move response_text_final
-  dplyr::relocate(response_text_final, .after = response_text_recoded)
+  dplyr::relocate(
+    tidyselect::any_of(c("response_text_recoded", "response_text_final")),
+    .after = response_text
+    )
 #
 # save data set
 save(res_moni_recoded, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))
