@@ -857,77 +857,13 @@ plot_unknown_pattern
 
 ```{r methods-prep}
 
-# get meth_recoded
-meth_recoded <- res_open |> 
-  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(grepl("D1$|D2", question_id)) |>
-  dplyr::arrange(question_id, species)
-#
-#
-# prepare for plotting
+# get recoded and processed data
 res_meth_recoded <- get(load(paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))) 
+response_options_data <- get(load((paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))))
 #
 #
 #
-### get and sort all possible methods / response options
-#
-# get response options method
-q_file <- list.files(questions_path, pattern = "long.rda", full.names = TRUE)
-q_long <- get(load(q_file))
-response_options <- q_long |>
-  dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
-  dplyr::select(response_option)
-#
-# recode methods
-response_options <- response_options |>
-  dplyr::mutate(
-    response_option = dplyr::case_when(
-      grepl("passieve akoestische monitoring", response_option) ~ "passieve akoestische monitoring",
-      TRUE ~ response_option
-    )
-  ) |>
-  dplyr::pull(response_option)
-#
-# add other methods listed
-response_options_other <- meth_recoded |>
-  dplyr::filter(grepl("D1$", question_id) & grepl("followup", question_text)) |>
-  dplyr::pull(response_text_recoded) |>
-  na.omit() |>
-  paste(x = _, collapse = ", ") |>
-  stringr::str_split_1(string = _, pattern = ",") |>
-  unique() |>
-  trimws()
-response_options_upd <- append(response_options, response_options_other)
-#
-# add categories
-categories <- c(
-  "surveys", #1
-  "eDNA", #2
-  "trapping and netting", #3
-  "electrofishing", #4
-  "remote sensing", #5
-  "research", #6
-  "citizen science", #7
-  "trained dogs", #8
-  "other" #9
-  )
-response_options_data <- data.frame(
-  response_options = response_options_upd,
-  response_options_cat = NA
-) |> dplyr::mutate(
-  response_options_cat = dplyr::case_when(
-    grepl("surveys|sporen", response_options) ~ categories[1],
-    grepl("environmental DNA", response_options) ~ categories[2],
-    grepl("camera|passieve", response_options) ~ categories[5],
-    grepl("fuik|vallen|trap|netten", response_options) ~ categories[3],
-    grepl("elektrovisserij", response_options) ~ categories[4],
-    grepl("experten|genetische", response_options) ~ categories[6],
-    grepl("burger", response_options) ~ categories[7],
-    grepl("honden", response_options) ~ categories[8],
-    grepl("andere", response_options) ~ categories[9]
-  )
-) |>
-  dplyr::arrange(match(response_options_cat, categories))
+
 
 ```
 

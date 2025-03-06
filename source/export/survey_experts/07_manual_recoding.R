@@ -218,17 +218,66 @@ res_meth_recoded <- res_comb_upd |>
     .after = response_text
   )
 #
+#
+# get all possible response options for methods
+q_file <- list.files(questions_path, pattern = "long.rda", full.names = TRUE)
+q_long <- get(load(q_file))
+response_options <- q_long |>
+  dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
+  dplyr::select(response_option) |>
+  # recode case which is otherwise missed
   dplyr::mutate(
-    response_text_final = dplyr::case_when(
-      grepl("D2$", question_id) ~ response_text_recoded,
-      TRUE ~ response_text_final
+    response_option = dplyr::case_when(
+      grepl("passieve akoestische monitoring", response_option) ~ "passieve akoestische monitoring",
+      TRUE ~ response_option
     )
   ) |>
-  # move response_text_final
-  dplyr::relocate(response_text_final, .after = response_text_recoded)
+  dplyr::pull(response_option)
 #
-# save data set
+# add other methods listed
+response_options_other <- res_meth_recoded |>
+  dplyr::filter(grepl("D1$", question_id) & grepl("followup", question_text)) |>
+  dplyr::pull(response_text_recoded) |>
+  na.omit() |>
+  paste(x = _, collapse = ", ") |>
+  stringr::str_split_1(string = _, pattern = ",") |>
+  unique() |>
+  trimws()
+response_options_upd <- append(response_options, response_options_other)
+#
+# add methods categories
+categories <- c(
+  "surveys", #1
+  "eDNA", #2
+  "trapping and netting", #3
+  "electrofishing", #4
+  "remote sensing", #5
+  "research", #6
+  "citizen science", #7
+  "trained dogs", #8
+  "other" #9
+)
+response_options_data <- data.frame(
+  response_options = response_options_upd,
+  response_options_cat = NA
+) |> dplyr::mutate(
+  response_options_cat = dplyr::case_when(
+    grepl("surveys|sporen", response_options) ~ categories[1],
+    grepl("environmental DNA", response_options) ~ categories[2],
+    grepl("camera|passieve", response_options) ~ categories[5],
+    grepl("fuik|vallen|trap|netten", response_options) ~ categories[3],
+    grepl("elektrovisserij", response_options) ~ categories[4],
+    grepl("experten|genetische", response_options) ~ categories[6],
+    grepl("burger", response_options) ~ categories[7],
+    grepl("honden", response_options) ~ categories[8],
+    grepl("andere", response_options) ~ categories[9]
+  )
+) |>
+  dplyr::arrange(match(response_options_cat, categories))
+#
+# save data sets
 save(res_meth_recoded, file = paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))
+save(response_options_data, file = paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))
 #
 #
 #
