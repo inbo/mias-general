@@ -61,6 +61,7 @@ res_comb_upd <- res_comb |>
 #
 # split up "other" if other methods are named in follow-up (manually)
 #
+# HERE: for new responses only export diff rows
 #
 # export to g-sheet for manual recoding
 # (only once for given response data)
@@ -181,6 +182,7 @@ save(res_comb_upd, file = paste0(response_data_path, "results_combined_upd.rda")
 #
 # --- process recoded data for methods ---------------
 #
+# CHECK: can D1 fu be removed here? no filtering needed later
 res_meth_recoded <- res_comb_upd |>
   dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
   dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) |>
