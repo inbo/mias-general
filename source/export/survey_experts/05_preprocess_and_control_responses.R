@@ -179,7 +179,7 @@ if (FALSE) {
 #
 # get g-sheet that documents emails sent
 tmp <- googledrive::drive_find(
-  pattern = "CONTROL emails sent 2024-12-20",
+  pattern = "CONTROL emails sent 2024-12-20", # 2024-12-20 & 2025-01-31
   shared_drive = "PRJ_MIUS",
   type = "spreadsheet"
 ) |>
@@ -255,21 +255,22 @@ googledrive::drive_mv(
 # --- compare recorded responses --------------------------------
 #
 tmp <- googledrive::drive_find(
-  pattern = "CONTROL emails sent 2024-12-20",
+  pattern = "CONTROL emails sent 2024-12-20", # 2024-12-20 & 2025-01-31
   shared_drive = "PRJ_MIUS",
   type = "spreadsheet"
 )
+# print tmp to see options to compare
 #
 tmp_id1 <- tmp |>
-  dplyr::filter(grepl("2025-02-18", name)) |>
+  dplyr::filter(grepl("2025-02-27", name)) |>
   googledrive::as_id()
 tmp_id2 <- tmp |>
-  dplyr::filter(grepl("2025-02-27", name)) |>
+  dplyr::filter(grepl("2025-03-07", name)) |>
   googledrive::as_id()
 #
 ctrl1 <- googlesheets4::read_sheet(ss = tmp_id1)
 ctrl2 <- googlesheets4::read_sheet(ss = tmp_id2)
 generics::setdiff(ctrl2, ctrl1) |> View()
 
-
+# check both: 2024-12-20 & 2025-01-31
 ctrl2 |> View()
