@@ -59,39 +59,67 @@ res_comb_upd <- res_comb |>
 #
 # --- manually recode methods ---------------
 #
-# split up "other" if other methods are named in follow-up (manually)
-#
-# HERE: for new responses only export diff rows
 #
 # export to g-sheet for manual recoding
 # (only once for given response data)
 if (FALSE){
+  #
+  # search for existing gsheet with already recoded data
+  tmp_id <- googledrive::drive_ls(
+    path = responses_recoded_folder_url,
+    shared_drive = "PRJ_MIUS"
+  ) |>
+    dplyr::filter(grepl("methods", name)) |>
+    dplyr::filter(grepl("JA", name)) |>
+    googledrive::as_id()
+  #
+  # if existing, read gsheet and extract species
+  if (length(tmp_id) > 0) {
+    tmp_sheet <- googlesheets4::read_sheet(ss = tmp_id)
+    species_recoded <- tmp_sheet$species |> unique()
+  } else {
+    species_recoded <- NULL
+  }
+  #
+  # prepare data frame for manual recoding
   res_to_recode <- res_comb_upd |>
     dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
     dplyr::filter(grepl("D1$|D2", question_id)) |>
     dplyr::mutate(response_text_recoded = NA_character_, .after = response_text) |>
     dplyr::arrange(species, question_id) |>
-    dplyr::select(tidyselect::contains(c("species", "question", "response_text")))
+    dplyr::select(tidyselect::contains(c("species", "question", "response_text"))) |>
+    dplyr::filter(!species %in% species_recoded)
   #
-  # upload updated sheet
-  googlesheets4::gs4_create(
-    name =  paste0(Sys.Date(), "_methods_recoded"),
-    sheets = res_to_recode
-  )
-  # move updated sheet to target folder
-  tmp_id <- googledrive::drive_find(
-    pattern = paste0(Sys.Date(), "_methods_recoded"),
-    type = "spreadsheet"
-  ) |> googledrive::as_id()
-  googledrive::drive_mv(
-    file = tmp_id,
-    path = responses_recoded_folder_url |> paste0(x = _, "/")
-  )
+  # upload data frame or append to sheet if existing
+  if (is.null(species_recoded)) {
+    #
+    # upload new sheet
+    googlesheets4::gs4_create(
+      name =  paste0(Sys.Date(), "_methods_recoded"),
+      sheets = res_to_recode
+    )
+    # move sheet to target folder
+    tmp_id <- googledrive::drive_find(
+      pattern = paste0(Sys.Date(), "_methods_recoded"),
+      type = "spreadsheet"
+    ) |> googledrive::as_id()
+    googledrive::drive_mv(
+      file = tmp_id,
+      path = responses_recoded_folder_url |> paste0(x = _, "/")
+    )
+  } else {
+    #
+    # append new data to sheet
+    googlesheets4::sheet_append(
+      ss = tmp_id,
+      data = res_to_recode
+    )
+  }
   #
   # in g-sheet recode response_text manually
   # D1: = response_text
   # D1 followup: other methods (should not be one out of the ones given in D1)
-  # D2: most relevant method (should be 1 out of the ones given in D1 / D1fu)
+  # D2: most relevant method (should be one out of the ones given in D1 / D1fu)
 }
 #
 #
@@ -112,35 +140,63 @@ meth_recoded <- googlesheets4::read_sheet(ss = tmp_id)
 # --- manually recode monitoring schemes ---------------
 #
 #
-# split up "other" if other schemes are named in follow-up (manually)
-#
-#
 # export to g-sheet for manual recoding
 # (only once for given response data)
 if (FALSE){
+  #
+  # search for existing gsheet with already recoded data
+  tmp_id <- googledrive::drive_ls(
+    path = responses_recoded_folder_url,
+    shared_drive = "PRJ_MIUS"
+  ) |>
+    dplyr::filter(grepl("monitoring", name)) |>
+    dplyr::filter(grepl("JA", name)) |>
+    googledrive::as_id()
+  #
+  # if existing, read gsheet and extract species
+  if (length(tmp_id) > 0) {
+    tmp_sheet <- googlesheets4::read_sheet(ss = tmp_id)
+    species_recoded <- tmp_sheet$species |> unique()
+  } else {
+    species_recoded <- NULL
+  }
+  #
+  # prepare data frame for manual recoding
   res_to_recode <- res_comb_upd |>
     dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
     dplyr::filter(grepl("D8", question_id)) |>
     dplyr::mutate(response_text_recoded = NA_character_, .after = response_text) |>
     dplyr::arrange(species, question_id) |>
-    dplyr::select(tidyselect::contains(c("species", "question_text", "question_id", "response_text")))
+    dplyr::select(tidyselect::contains(c("species", "question", "response_text"))) |>
+    dplyr::filter(!species %in% species_recoded)
   #
-  # upload updated sheet
-  googlesheets4::gs4_create(
-    name =  paste0(Sys.Date(), "_monitoring_recoded"),
-    sheets = res_to_recode
-  )
-  # move updated sheet to target folder
-  tmp_id <- googledrive::drive_find(
-    pattern = paste0(Sys.Date(), "_monitoring_recoded"),
-    type = "spreadsheet"
-  ) |> googledrive::as_id()
-  googledrive::drive_mv(
-    file = tmp_id,
-    path = responses_recoded_folder_url |> paste0(x = _, "/")
-  )
+  # upload data frame or append to sheet if existing
+  if (is.null(species_recoded)) {
+    #
+    # upload new sheet
+    googlesheets4::gs4_create(
+      name =  paste0(Sys.Date(), "_monitoring_recoded"),
+      sheets = res_to_recode
+    )
+    # move updated sheet to target folder
+    tmp_id <- googledrive::drive_find(
+      pattern = paste0(Sys.Date(), "_monitoring_recoded"),
+      type = "spreadsheet"
+    ) |> googledrive::as_id()
+    googledrive::drive_mv(
+      file = tmp_id,
+      path = responses_recoded_folder_url |> paste0(x = _, "/")
+    )
+  } else {
+    #
+    # append new data to sheet
+    googlesheets4::sheet_append(
+      ss = tmp_id,
+      data = res_to_recode
+    )
+  }
   #
-  # in g-sheet recode response_text manually where needed (D1 followup)
+  # in g-sheet recode response_text manually where needed:
   # D8 followup: other monitoring schemes
 }
 #
@@ -210,7 +266,7 @@ res_meth_recoded <- res_comb_upd |>
     response_text_final = dplyr::case_when(
       !is.na(helper_response_other) ~ paste(
         response_text_final, helper_response_other, sep = ", "
-        ),
+      ),
       TRUE ~ response_text_final
     )
   )   |>
@@ -246,6 +302,9 @@ response_options_other <- res_meth_recoded |>
   unique() |>
   trimws()
 response_options_upd <- append(response_options, response_options_other)
+#
+# check for duplicates
+duplicated(response_options_upd) |> any()
 #
 # add methods categories
 categories <- c(
@@ -292,12 +351,12 @@ res_moni_recoded <- res_comb_upd |>
   dplyr::arrange(question_id, species) |>
   dplyr::mutate(
     response_text_final = response_text_recoded
-    ) |>
+  ) |>
   # move response_text_final
   dplyr::relocate(
     tidyselect::any_of(c("response_text_recoded", "response_text_final")),
     .after = response_text
-    )
+  )
 #
 # save data set
 save(res_moni_recoded, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))
