@@ -352,12 +352,53 @@ res_moni_recoded <- res_comb_upd |>
   dplyr::mutate(
     response_text_final = response_text_recoded
   ) |>
+  # add other methods to question D8 not fu
+  dplyr::mutate(
+    helper_response_other = dplyr::case_when(
+      grepl("D8", question_id) & grepl("followup", question_text) ~ response_text_final,
+      TRUE ~ NA
+    )) |>
+  dplyr::group_by(species, question_id) |>
+  tidyr::fill(helper_response_other, .direction = "up") |>
+  dplyr::ungroup() |>
+  # add other methods listed
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    response_text_final = dplyr::case_when(
+      !is.na(helper_response_other) ~ paste(
+        response_text_final, helper_response_other, sep = ", "
+      ),
+      TRUE ~ response_text_final
+    )
+  )   |>
   # move response_text_final
   dplyr::relocate(
     tidyselect::any_of(c("response_text_recoded", "response_text_final")),
     .after = response_text
   )
+# here: filter fu question
 #
-# save data set
+#
+# get all possible listed response options for monitoring
+res_moni_options <- q_long |>
+  dplyr::filter(grepl("D8", question_id), !grepl("followup", question_text)) |>
+  dplyr::pull(response_option)
+#
+# get "other" methods listed
+res_moni_options_other <- res_moni_recoded |>
+  dplyr::pull(helper_response_other) |>
+  na.omit() |>
+  paste(x = _, collapse = ", ") |>
+  stringr::str_split_1(string = _, pattern = ",") |>
+  trimws() |>
+  unique()
+#
+# combine response options monitoring
+res_moni_options_upd <- append(res_moni_options, res_moni_options_other)
+#
+# check for duplicates
+duplicated(res_moni_options_upd) |> any()
+#
+# save data sets
 save(res_moni_recoded, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))
-#
+save(res_moni_options_upd, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_options.rda"))

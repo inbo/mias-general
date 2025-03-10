@@ -1363,42 +1363,10 @@ plot_bestmeth
 
 ```{r moni-prep}
 #
-# get moni_recoded
-moni_recoded <- res_open |> # or use open
-  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(grepl("D8", question_id)) |>
-  dplyr::arrange(question_id, species)
 #
-#
-# prepare for plotting
+# get recoded and processed data 
 res_moni_recoded <- get(load(paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))) 
-#
-#
-#
-### get and sort all possible methods / response options
-#
-# get response options method
-response_options <- q_long |>
-  dplyr::filter(grepl("D8", question_id), !grepl("followup", question_text)) |>
-  dplyr::select(response_option) |>
-  dplyr::pull(response_option)
-#
-# add other methods listed
-# alternatively: just use response_text_final for all options?
-response_options_other <- moni_recoded |>
-  dplyr::filter(grepl("D8", question_id) & grepl("followup", question_text)) |>
-  dplyr::pull(response_text_recoded) |>
-  na.omit() |>
-  paste(x = _, collapse = ", ") |>
-  stringr::str_split_1(string = _, pattern = ",") |>
-  unique() |>
-  trimws()
-response_options_upd <- append(response_options, response_options_other)
-#
-response_options_data <- data.frame(
-  response_options = response_options_upd
-) |>
-  dplyr::arrange(response_options_upd)
+res_moni_options <- get(load((paste0(response_data_path, "recoded_processed/", "results_monitoring_options.rda"))))
 
 ```
 
@@ -1415,7 +1383,7 @@ Species are grouped by kingdom, and within groups sorted according to grand mean
 # get response options per species in long format
 res_plot_tmp <- res_moni_recoded |>
   dplyr::filter(grepl("D8", question_id)) |>
-  tidyr::crossing(response_options_data) |>
+  tidyr::crossing(res_moni_options) |>
   dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
                   .after = response_text_final) |>
   dplyr::group_by(species) |>
