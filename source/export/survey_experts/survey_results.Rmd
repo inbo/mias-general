@@ -895,7 +895,7 @@ plot_unknown_pattern
 
 # get recoded and processed data
 res_meth_recoded <- get(load(paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))) 
-response_options_data <- get(load((paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))))
+res_meth_options <- get(load((paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))))
 #
 #
 #
@@ -916,7 +916,7 @@ Methods are grouped into categories distinguished by color.
 # get response options per species in long format
 res_plot_tmp1 <- res_meth_recoded |>
   dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
-  tidyr::crossing(response_options_data) |>
+  tidyr::crossing(res_meth_options) |>
   dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
                   .after = response_text_final) |>
   dplyr::group_by(species) |>
@@ -942,7 +942,7 @@ res_plot <- factorize(
   res = res_plot_tmp2,
   varnames = c("response_options", "response_options_cat"),
   varlevels = list(res_plot_tmp2$response_options,
-                   response_options_data$response_options_cat |> unique()
+                   res_meth_options$response_options_cat |> unique()
                    )
 )
 #
@@ -1074,15 +1074,15 @@ res_plot <- factorize(
   res = res_plot_tmp1,
   varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
   varlevels = list(levels_vern_name_nld,
-                   response_options_data$response_options,
-                   response_options_data$response_options_cat |> unique(),
+                   res_meth_options$response_options,
+                   res_meth_options$response_options_cat |> unique(),
                    levels_milieu
                    )
 )
 #
 # create helper data - here to collect methods with lines per species
 response_options_used <- dplyr::right_join(
-  response_options_data,
+  res_meth_options,
   res_plot_tmp1 |>
     dplyr::distinct(response_options)
 )
@@ -1140,8 +1140,8 @@ data_lines <- data_helper_tmp |>
     res = _,
     varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
     varlevels = list(levels_vern_name_nld,
-                     response_options_data$response_options,
-                     response_options_data$response_options_cat |> unique(),
+                     res_meth_options$response_options,
+                     res_meth_options$response_options_cat |> unique(),
                      levels_milieu
                      )
   )
@@ -1149,7 +1149,7 @@ data_lines <- data_helper_tmp |>
 # data best methods (reply "geen" turns NA)
 res_plot_best <- res_meth_recoded |>
   dplyr::filter(grepl("D2$", question_id)) |>
-  tidyr::crossing(response_options_data) |>
+  tidyr::crossing(res_meth_options) |>
   dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
                   .after = response_text_final) |>
   dplyr::group_by(species) |>
@@ -1160,8 +1160,8 @@ res_plot_best <- res_meth_recoded |>
     res = _,
     varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
     varlevels = list(levels_vern_name_nld,
-                     response_options_data$response_options,
-                     response_options_data$response_options_cat |> unique(),
+                     res_meth_options$response_options,
+                     res_meth_options$response_options_cat |> unique(),
                      levels_milieu
     )
   )
@@ -1242,8 +1242,8 @@ data_bg <- data_helper_tmp |>
     res = _,
     varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
     varlevels = list(levels_vern_name_nld,
-                     response_options_data$response_options,
-                     response_options_data$response_options_cat |> unique(),
+                     res_meth_options$response_options,
+                     res_meth_options$response_options_cat |> unique(),
                      levels_milieu
                      )
   )
