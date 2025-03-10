@@ -83,7 +83,6 @@ if (FALSE){
   #
   # prepare data frame for manual recoding
   res_to_recode <- res_comb_upd |>
-    dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
     dplyr::filter(grepl("D1$|D2", question_id)) |>
     dplyr::mutate(response_text_recoded = NA_character_, .after = response_text) |>
     dplyr::arrange(species, question_id) |>
@@ -163,7 +162,6 @@ if (FALSE){
   #
   # prepare data frame for manual recoding
   res_to_recode <- res_comb_upd |>
-    dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
     dplyr::filter(grepl("D8", question_id)) |>
     dplyr::mutate(response_text_recoded = NA_character_, .after = response_text) |>
     dplyr::arrange(species, question_id) |>
@@ -198,6 +196,7 @@ if (FALSE){
   #
   # in g-sheet recode response_text manually where needed:
   # D8 followup: other monitoring schemes
+  # D8: remove "andere" if D8 fu is not NA
 }
 #
 #
@@ -238,10 +237,8 @@ save(res_comb_upd, file = paste0(response_data_path, "results_combined_upd.rda")
 #
 # --- process recoded data for methods ---------------
 #
-# CHECK: can D1 fu be removed here? no filtering needed later
+# add methods listed as "other"
 res_meth_recoded <- res_comb_upd |>
-  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) |>
   dplyr::filter(grepl("D1$|D2", question_id)) |>
   dplyr::arrange(question_id, species) |>
   # add other methods to question D1 not fu
@@ -253,7 +250,7 @@ res_meth_recoded <- res_comb_upd |>
   dplyr::group_by(species, question_id) |>
   tidyr::fill(helper_response_other, .direction = "up") |>
   dplyr::ungroup() |>
-  # remove string "andere" if other methods are listed
+  # remove string "andere" (always at the end) if other methods are listed # done manually?
   dplyr::mutate(
     response_text_final = dplyr::case_when(
       !is.na(helper_response_other) ~ gsub(", andere", "", response_text_recoded),
@@ -277,10 +274,10 @@ res_meth_recoded <- res_comb_upd |>
   )
 #
 #
-# get all possible response options for methods
+# get all possible listed response options for methods
 q_file <- list.files(questions_path, pattern = "long.rda", full.names = TRUE)
 q_long <- get(load(q_file))
-response_options <- q_long |>
+res_meth_options <- q_long |>
   dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
   dplyr::select(response_option) |>
   # recode case which is otherwise missed
@@ -292,19 +289,20 @@ response_options <- q_long |>
   ) |>
   dplyr::pull(response_option)
 #
-# add other methods listed
-response_options_other <- res_meth_recoded |>
-  dplyr::filter(grepl("D1$", question_id) & grepl("followup", question_text)) |>
-  dplyr::pull(response_text_recoded) |>
+# get "other" methods listed
+res_meth_options_other <- res_meth_recoded |>
+  dplyr::pull(helper_response_other) |>
   na.omit() |>
   paste(x = _, collapse = ", ") |>
   stringr::str_split_1(string = _, pattern = ",") |>
-  unique() |>
-  trimws()
-response_options_upd <- append(response_options, response_options_other)
+  trimws() |>
+  unique()
+#
+# combine response options methods
+res_meth_options_upd <- append(res_meth_options, res_meth_options_other)
 #
 # check for duplicates
-duplicated(response_options_upd) |> any()
+duplicated(res_meth_options_upd) |> any()
 #
 # add methods categories
 categories <- c(
@@ -318,8 +316,8 @@ categories <- c(
   "trained dogs", #8
   "other" #9
 )
-response_options_data <- data.frame(
-  response_options = response_options_upd,
+res_meth_options_data <- data.frame(
+  response_options = res_meth_options_upd,
   response_options_cat = NA
 ) |> dplyr::mutate(
   response_options_cat = dplyr::case_when(
@@ -328,7 +326,7 @@ response_options_data <- data.frame(
     grepl("camera|passieve", response_options) ~ categories[5],
     grepl("fuik|vallen|trap|netten", response_options) ~ categories[3],
     grepl("elektrovisserij", response_options) ~ categories[4],
-    grepl("experten|genetische", response_options) ~ categories[6],
+    grepl("experten|genetische|stalen", response_options) ~ categories[6],
     grepl("burger", response_options) ~ categories[7],
     grepl("honden", response_options) ~ categories[8],
     grepl("andere", response_options) ~ categories[9]
@@ -338,15 +336,13 @@ response_options_data <- data.frame(
 #
 # save data sets
 save(res_meth_recoded, file = paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))
-save(response_options_data, file = paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))
+save(res_meth_options_data, file = paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))
 #
 #
 #
 # --- process recoded data for monitoring schemes ---------------
 #
 res_moni_recoded <- res_comb_upd |>
-  dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium)) |>
   dplyr::filter(grepl("D8", question_id)) |>
   dplyr::arrange(question_id, species) |>
   dplyr::mutate(
