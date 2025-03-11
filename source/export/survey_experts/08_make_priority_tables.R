@@ -22,20 +22,17 @@ assertthat::are_equal(
   res_meth_recoded$species |> unique() |> sort(),
   res_comb_upd$species |> unique() |> sort()
   )
+
 #
 #
 #
 # --- create table: surveillance scopes ---------------
 #
 table_scope <- res_comb_upd |>
-  dplyr::select(tidyselect::all_of(c("species", "stadium"))) |>
+  dplyr::select(tidyselect::all_of(
+    c("species", "vern_name_nld", "kingdom", "prius_milieu", "stadium", "prius_stadium")
+    )) |>
   dplyr::distinct(species, .keep_all = TRUE) |>
-  #dplyr::mutate(
-  #  scope_detection = NA_real_,
-  #  scope_inventory = NA_real_,
-  #  scope_distribution = NA_real_,
-  #  scope_abundance = NA_real_
-  #)
   tidyr::crossing(
     scope_type = c(
       "detection",
@@ -48,7 +45,9 @@ table_scope <- res_comb_upd |>
   ) |>
   dplyr::mutate(
     scope_boolean = NA_real_,
-    scope_motivation = NA_character_
+    scope_boolean_motivation = NA_character_,
+    scope_prior = NA_character_,
+    scope_prior_motivation = NA_character_
     )
 #
 #
@@ -224,36 +223,70 @@ table_base_skeleton <- dplyr::full_join(
   )
 #
 #
-# --- define conditions for base table - step 1 ---------------
+# --- define conditions for base table (step 1) ---------------
 #
-# scope per species based on invasion stadium
-expr_stadium_1 <- '
+#
+# set scope to 1...
+#
+# ... per species based on invasion stadium (and 0 otherwise)
+stadium_scope_1_expr <- '
   (grepl("afwezig|sporadisch", stadium) &
      grepl("detection", scope_type)) |
   (grepl("beperkt", stadium) &
      grepl("inventory|distribution|abundance", scope_type)) |
   (grepl("wijd", stadium) &
      grepl("distribution|abundance", scope_type)) |
-  (grepl("wijd", stadium) & grepl("detection", scope_type) &
+  (grepl("wijd", stadium) &
+     grepl("detection", scope_type) &
      grepl("BUI", prius_stadium))
-   '
+     '
+stadium_scope_0_motivation <-
+  "scope not relevant due to invasion stadium"
 #
-# scope per species based on invasion stadium (FIX)
-expr_area_1 <- '
+#
+# set scope to 0...
+#
+#
+# ... per species based on whether surveillance area is known
+area_scope_0_expr <- '
   (grepl("beperkt", stadium) &
      grepl("verspreiding is voldoende gekend", area_dist) &
-     grepl("distribution|abundance", scope_type)) |
-  (grepl("beperkt", stadium) &
-     !grepl("verspreiding is voldoende gekend", area_dist) &
-     grepl("inventory|distribution|abundance", scope_type))
+     grepl("inventory", scope_type))
      '
-# define specific expr_area_0
+area_scope_0_motivation <-
+  "scope not relevant as distribution area is known"
 #
 #
+# ... per species based on whether management exists
+management_exits_scope_0_expr <- '
+  (!grepl("ja", management_exists) &
+     grepl("management", scope_type))
+     '
+management_exits_scope_0_motivation <-
+  "scope not relevant as species is not managed"
 #
-# --- define conditions for base table - step 2 ---------------
+#
+# ... per species based on info necessary to evaluate management
+management_eval_scope_0_expr <- '
+  (grepl("aan- of afwezigheid", management_evaluation) &
+     grepl("management", scope_type) &
+     grepl("abundance", scope_type)) |
+  (grepl("populatiegrootte", management_evaluation) &
+     grepl("management", scope_type) &
+     grepl("distribution", scope_type)
+  )
+  '
+management_eval_scope_0_motivation <-
+  "scope not relevant as information not necessary to evaluate management"
 #
 #
+# ... per method based on whether method is suitable
+method_scope_0_expr <- '
+  (grepl("aan- of afwezigheid", method_scope) &
+     grepl("abundance", scope_type))
+     '
+method_scope_0_motivation <-
+  "scope not relevant as method to measure abundance is not available"
 #
 #
 #
@@ -261,193 +294,167 @@ expr_area_1 <- '
 #
 table_base <- table_base_skeleton |>
   dplyr::rowwise() |>
-  #
-  # ----- step 1 ----------------------------------------
-  #
   dplyr::mutate(
     #
-    #  scope per species based on invasion stadium
+    # set scope to 1 ...
+    # ... per species based on invasion stadium
     scope_boolean = dplyr::case_when(
-      eval(parse(text = expr_stadium_1)) ~ 1,
+      eval(parse(text = stadium_scope_1_expr)) ~ 1,
+      TRUE ~ 0
+    ),
+    scope_boolean_motivation = dplyr::case_when(
+      eval(parse(text = stadium_scope_1_expr)) ~ scope_boolean_motivation,
+      TRUE ~
+        paste(scope_boolean_motivation, stadium_scope_0_motivation, sep = ",")
+    ),
+    # set scope to 0 ...
+    # .. per species based on whether surveillance area is known
+    scope_boolean = dplyr::case_when(
+      eval(parse(text = area_scope_0_expr)) ~ 0,
       TRUE ~ scope_boolean
-      ),
-    scope_motivation = dplyr::case_when(
-      eval(parse(text = expr_stadium_1)) ~ scope_motivation,
-      TRUE ~ paste(scope_motivation, "not invasion stadium", sep = ",") #"scope irrelevant due to invasion stadium", sep = ",")
-      ),
+    ),
+    scope_boolean_motivation = dplyr::case_when(
+      eval(parse(text = area_scope_0_expr)) ~
+        paste(scope_boolean_motivation, area_scope_0_motivation, sep = ","),
+      TRUE ~ scope_boolean_motivation
+    ),
+    # ... per species based on whether management exists
+    scope_boolean = dplyr::case_when(
+      eval(parse(text = management_exits_scope_0_expr)) ~ 0,
+      TRUE ~ scope_boolean
+    ),
+    scope_boolean_motivation = dplyr::case_when(
+      eval(parse(text = management_exits_scope_0_expr)) ~
+        paste(scope_boolean_motivation, management_exits_scope_0_motivation, sep = ","),
+      TRUE ~ scope_boolean_motivation
+    ),
+    # ... per species based on info necessary to evaluate management
+    scope_boolean = dplyr::case_when(
+      eval(parse(text = management_eval_scope_0_expr)) ~ 0,
+      TRUE ~ scope_boolean
+    ),
+    scope_boolean_motivation = dplyr::case_when(
+      eval(parse(text = management_eval_scope_0_expr)) ~
+        paste(scope_boolean_motivation, management_eval_scope_0_motivation, sep = ","),
+      TRUE ~ scope_boolean_motivation
+    ),
+    # ... per method based on whether method is suitable
+    scope_boolean = dplyr::case_when(
+      eval(parse(text = method_scope_0_expr)) ~ 0,
+      TRUE ~ scope_boolean
+    ),
+    scope_boolean_motivation = dplyr::case_when(
+      eval(parse(text = method_scope_0_expr)) ~
+        paste(scope_boolean_motivation, method_scope_0_motivation, sep = ","),
+      TRUE ~ scope_boolean_motivation
+    )
+  ) |>
+  dplyr::ungroup() |>
+  # clean scope_boolean_motivation
+  dplyr::mutate(
+    scope_boolean_motivation = gsub("NA,", "", scope_boolean_motivation)
+  )
+#
+#
+# --- define conditions for filtering base table (step 3) ---------------
+#
+#
+# set scope to low priority
+#
+#
+# ... per species based on monitoring available
+# monitoring_scope_lowprior_expr
+# monitoring_scope_lowprior_motivation
+#
+# ... per species for which opportunistic observations are representative
+observation_scope_lowprior_expr <- '
+  (grepl("hoge representativiteit", monitoring_opport) &
+     scope_boolean == 1)
+     '
+observation_scope_lowprior_motivation <-
+  "scope low priority as opportunistic observations are considered representative"
+#
+#
+# ... per species depending on whether surveillance area is known
+area_scope_lowprior_expr <- '
+  (((grepl("afwezig", stadium) &
+       grepl("detection", scope_type) &
+       grepl("ongekend|weet het niet", area_intro)) |
+      (grepl("sporadisch", stadium) &
+         grepl("detection", scope_type) &
+         grepl("ongekend|weet het niet", area_intro) &
+         grepl("niet voldoende gekend|weet het niet", area_dist)) |
+      (grepl("beperkt", stadium) &
+         grepl("distribution|abundance", scope_type) &
+         grepl("niet voldoende gekend|weet het niet", area_dist))) &
+     scope_boolean == 1)
+     '
+area_scope_lowprior_motivation <-
+  "scope low priority as surveillance area is not known"
+#
+#
+# ... per species depending on survey global priority score
+m_score_cutoff <- table_base_skeleton$m_score |> median()
+globalscore_scope_lowprior_expr <- '
+  (m_score < m_score_cutoff &
+     scope_boolean == 1)
+     '
+globalscore_scope_lowprior_motivation <-
+  "scope low priority as global priority score is smaller than cutoff"
+#
+#
+#
+# --- define filtered table ---------------
+#
+table_base_filtered <- table_base |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    scope_prior = dplyr::case_when(
+      scope_boolean == 1 ~ "highprior",
+      TRUE ~ NA_character_
+    ),
     #
-    # scope per species based on whether surveillance area is known
-    scope_boolean = dplyr::case_when(
-      eval(parse(text = expr_area_1)) ~ 1,
-      TRUE ~ scope_boolean
+    # set scope to low prior ...
+    # ... per species for which opportunistic observations are representative
+    scope_prior = dplyr::case_when(
+      eval(parse(text = observation_scope_lowprior_expr)) ~ "lowprior",
+      TRUE ~ scope_prior
     ),
-    scope_motivation = dplyr::case_when(
-      eval(parse(text = expr_area_1)) ~ scope_motivation,
-      TRUE ~ paste(scope_motivation, "not area", sep = ",")#"scope irrelevant due to surveillance area not being known", sep = ",")
+    scope_prior_motivation = dplyr::case_when(
+      eval(parse(text = observation_scope_lowprior_expr)) ~
+        paste(scope_prior_motivation, observation_scope_lowprior_motivation, sep = ","),
+      TRUE ~ scope_prior_motivation
+    ),
+    #
+    # ... per species depending on whether surveillance area is known
+    scope_prior = dplyr::case_when(
+      eval(parse(text = area_scope_lowprior_expr)) ~ "lowprior",
+      TRUE ~ scope_prior
+    ),
+    scope_prior_motivation = dplyr::case_when(
+      eval(parse(text = area_scope_lowprior_expr)) ~
+        paste(scope_prior_motivation, area_scope_lowprior_motivation, sep = ","),
+      TRUE ~ scope_prior_motivation
+    ),
+    #
+    # ... per species depending on survey global priority score
+    scope_prior = dplyr::case_when(
+      eval(parse(text = globalscore_scope_lowprior_expr)) ~ "lowprior",
+      TRUE ~ scope_prior
+    ),
+    scope_prior_motivation = dplyr::case_when(
+      eval(parse(text = globalscore_scope_lowprior_expr)) ~
+        paste(scope_prior_motivation, globalscore_scope_lowprior_motivation, sep = ","),
+      TRUE ~ scope_prior_motivation
     )
-    ) |>
+  ) |>
   dplyr::ungroup() |>
-  #
-  ##
-  ##
-  ##
-  ## OLD STUFF
+  # clean scope_prior_motivation
   dplyr::mutate(
-    dplyr::across(
-      tidyselect::all_of(c("detection", "inventory", "distribution", "abundance")),
-      \(x) dplyr::case_when(
-        x == 1 ~ method,
-        TRUE ~ NA_character_
-      )
-    )
-  ) |>
-  # remove cells based on suitability (scope) of method
-  dplyr::mutate(
-    abundance = dplyr::case_when(
-      grepl("aan- of afwezigheid", scope) ~ NA_character_,
-      is.na(scope) ~ NA_character_,
-      TRUE ~ abundance
-    )
-  ) |>
-  # remove cells based on status in conservation area
-  dplyr::full_join(
-    x = _,
-    y = table_area
-  ) |>
-  dplyr::mutate(
-    detection = dplyr::case_when(
-      grepl("NAT", prius_stadium) ~ NA_character_,
-      TRUE ~ detection
-    )
-  ) |>
-  dplyr::mutate(
-    dplyr::across(
-      tidyselect::all_of(c("distribution", "abundance")),
-      \(x) dplyr::case_when(
-        grepl("verspreiding is niet voldoende gekend|weet het niet", area_known) ~ NA_character_,
-        TRUE ~ x
-      )
-    )
-  ) |>
-  dplyr::select(
-    tidyselect::contains(c("name_nld","detection", "inventory", "distribution", "abundance", "species", "stadium"))
+    scope_prior_motivation = gsub("NA,", "", scope_prior_motivation)
   )
-
-
-# prepare for display
-table_base_upd <- table_base |>
-  dplyr::mutate(
-    dplyr::across(
-      tidyselect::contains(c("species", "stadium")),
-      \(x) kableExtra::cell_spec(
-        x = x,
-        color = "lightgrey"
-      )
-    )
-  )
-
-
-make_table <- function(
-    data_table
-) {
-  knitr::kable(
-    data_table,
-    format = "html",
-    escape = FALSE
-  ) |>
-    kableExtra::kable_styling(
-      bootstrap_options = c("condensed", "hover"),
-      full_width = FALSE,
-      position = "left",
-      font_size = 11
-    ) |>
-    kableExtra::column_spec(
-      column = 2,
-      background = "#FFFFAF"
-    ) |>
-    kableExtra::column_spec(
-      column = 3,
-      background = "#FFC5D6"
-    ) |>
-    kableExtra::column_spec(
-      column = 4,
-      background = "#DD9EDA"
-    ) |>
-    kableExtra::column_spec(
-      column = 5,
-      background = "#C9C9FB"
-    ) |>
-    kableExtra::collapse_rows(
-      columns = 1,
-      valign = "top"
-    )
-}
-
-make_table(table_base_upd)
-
-
-
 #
-#
-#
-# --- filter base table based on urgency ---------------
-#
-# calculate mean urgency
-res_urge <- res_comb_upd |>
-  dplyr::filter(
-    grepl("urge", score_crit)
-  ) |>
-  dplyr::group_by(species) |>
-  dplyr::mutate(m_urge = do.call("mean", list(response_score, na.rm = TRUE))) |>
-  dplyr::filter(dplyr::row_number() == 1) |>
-  dplyr::ungroup() |>
-  dplyr::select(tidyselect::starts_with(c("species","m","vern"))) |>
-  dplyr::arrange(dplyr::desc(m_urge))
-#
-#
-table_filtered_1 <- dplyr::full_join(
-  table_base,
-  res_urge
-) |>
-  # adapt cell appearance
-  dplyr::mutate(
-    color = dplyr::case_when(
-      m_urge >= 3.0 ~ "black",
-      TRUE ~ "grey50"
-    ),
-    bold = dplyr::case_when(
-      m_urge >= 3.0 ~ TRUE,
-      TRUE ~ FALSE
-    ),
-    strikeout = dplyr::case_when(
-      m_urge >= 3.0 ~ FALSE,
-      TRUE ~ TRUE
-    )
-  ) |> dplyr::mutate(
-    dplyr::across(
-      tidyselect::all_of(c("detection", "inventory", "distribution", "abundance")),
-      \(x) dplyr::case_when(
-        !is.na(x) ~ kableExtra::cell_spec(
-          x = x,
-          color = color,
-          bold = bold,
-          strikeout = strikeout
-        ),
-        is.na(x) ~ x
-      )
-    )
-  ) |>
-  dplyr::mutate(
-    dplyr::across(
-      tidyselect::contains(c("species", "stadium")),
-      \(x) kableExtra::cell_spec(
-        x = x,
-        color = "lightgrey"
-      )
-    )
-  ) |>
-  dplyr::select(-tidyselect::all_of(c("m_urge", "vern_name_eng", "color", "bold", "strikeout")))
-
-
-make_table(table_filtered_1)
-
+save(
+  table_base_filtered,
+  file = paste0(response_data_path, "tables/", "table_base_filtered.rda")
+)
