@@ -290,70 +290,83 @@ method_scope_0_motivation <-
 #
 #
 #
-# --- define base table ---------------
 #
-table_base <- table_base_skeleton |>
-  dplyr::rowwise() |>
-  dplyr::mutate(
-    #
-    # set scope to 1 ...
-    # ... per species based on invasion stadium
-    scope_boolean = dplyr::case_when(
-      eval(parse(text = stadium_scope_1_expr)) ~ 1,
-      TRUE ~ 0
-    ),
-    scope_boolean_motivation = dplyr::case_when(
-      eval(parse(text = stadium_scope_1_expr)) ~ scope_boolean_motivation,
-      TRUE ~
-        paste(scope_boolean_motivation, stadium_scope_0_motivation, sep = ",")
-    ),
-    # set scope to 0 ...
-    # .. per species based on whether surveillance area is known
-    scope_boolean = dplyr::case_when(
-      eval(parse(text = area_scope_0_expr)) ~ 0,
-      TRUE ~ scope_boolean
-    ),
-    scope_boolean_motivation = dplyr::case_when(
-      eval(parse(text = area_scope_0_expr)) ~
-        paste(scope_boolean_motivation, area_scope_0_motivation, sep = ","),
-      TRUE ~ scope_boolean_motivation
-    ),
-    # ... per species based on whether management exists
-    scope_boolean = dplyr::case_when(
-      eval(parse(text = management_exits_scope_0_expr)) ~ 0,
-      TRUE ~ scope_boolean
-    ),
-    scope_boolean_motivation = dplyr::case_when(
-      eval(parse(text = management_exits_scope_0_expr)) ~
-        paste(scope_boolean_motivation, management_exits_scope_0_motivation, sep = ","),
-      TRUE ~ scope_boolean_motivation
-    ),
-    # ... per species based on info necessary to evaluate management
-    scope_boolean = dplyr::case_when(
-      eval(parse(text = management_eval_scope_0_expr)) ~ 0,
-      TRUE ~ scope_boolean
-    ),
-    scope_boolean_motivation = dplyr::case_when(
-      eval(parse(text = management_eval_scope_0_expr)) ~
-        paste(scope_boolean_motivation, management_eval_scope_0_motivation, sep = ","),
-      TRUE ~ scope_boolean_motivation
-    ),
-    # ... per method based on whether method is suitable
-    scope_boolean = dplyr::case_when(
-      eval(parse(text = method_scope_0_expr)) ~ 0,
-      TRUE ~ scope_boolean
-    ),
-    scope_boolean_motivation = dplyr::case_when(
-      eval(parse(text = method_scope_0_expr)) ~
-        paste(scope_boolean_motivation, method_scope_0_motivation, sep = ","),
-      TRUE ~ scope_boolean_motivation
+# --- create base table ---------------
+#
+create_base_table <- function(
+    .table_base_skeleton,
+    .stadium_scope_1_expr = stadium_scope_1_expr,
+    .area_scope_0_expr = area_scope_0_expr,
+    .management_exits_scope_0_expr = management_exits_scope_0_expr,
+    .management_eval_scope_0_expr = management_eval_scope_0_expr,
+    .method_scope_0_expr = method_scope_0_expr
+){
+  .table_base_skeleton |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      #
+      # set scope to 1 ...
+      # ... per species based on invasion stadium
+      scope_boolean = dplyr::case_when(
+        eval(parse(text = .stadium_scope_1_expr)) ~ 1,
+        TRUE ~ 0
+      ),
+      scope_boolean_motivation = dplyr::case_when(
+        eval(parse(text = .stadium_scope_1_expr)) ~ scope_boolean_motivation,
+        TRUE ~
+          paste(scope_boolean_motivation, stadium_scope_0_motivation, sep = ",")
+      ),
+      # set scope to 0 ...
+      # .. per species based on whether surveillance area is known
+      scope_boolean = dplyr::case_when(
+        eval(parse(text = .area_scope_0_expr)) ~ 0,
+        TRUE ~ scope_boolean
+      ),
+      scope_boolean_motivation = dplyr::case_when(
+        eval(parse(text = .area_scope_0_expr)) ~
+          paste(scope_boolean_motivation, area_scope_0_motivation, sep = ","),
+        TRUE ~ scope_boolean_motivation
+      ),
+      # ... per species based on whether management exists
+      scope_boolean = dplyr::case_when(
+        eval(parse(text = .management_exits_scope_0_expr)) ~ 0,
+        TRUE ~ scope_boolean
+      ),
+      scope_boolean_motivation = dplyr::case_when(
+        eval(parse(text = .management_exits_scope_0_expr)) ~
+          paste(scope_boolean_motivation, management_exits_scope_0_motivation, sep = ","),
+        TRUE ~ scope_boolean_motivation
+      ),
+      # ... per species based on info necessary to evaluate management
+      scope_boolean = dplyr::case_when(
+        eval(parse(text = .management_eval_scope_0_expr)) ~ 0,
+        TRUE ~ scope_boolean
+      ),
+      scope_boolean_motivation = dplyr::case_when(
+        eval(parse(text = .management_eval_scope_0_expr)) ~
+          paste(scope_boolean_motivation, management_eval_scope_0_motivation, sep = ","),
+        TRUE ~ scope_boolean_motivation
+      ),
+      # ... per method based on whether method is suitable
+      scope_boolean = dplyr::case_when(
+        eval(parse(text = .method_scope_0_expr)) ~ 0,
+        TRUE ~ scope_boolean
+      ),
+      scope_boolean_motivation = dplyr::case_when(
+        eval(parse(text = .method_scope_0_expr)) ~
+          paste(scope_boolean_motivation, method_scope_0_motivation, sep = ","),
+        TRUE ~ scope_boolean_motivation
+      )
+    ) |>
+    dplyr::ungroup() |>
+    # clean scope_boolean_motivation
+    dplyr::mutate(
+      scope_boolean_motivation = gsub("NA,", "", scope_boolean_motivation)
     )
-  ) |>
-  dplyr::ungroup() |>
-  # clean scope_boolean_motivation
-  dplyr::mutate(
-    scope_boolean_motivation = gsub("NA,", "", scope_boolean_motivation)
-  )
+}
+table_base <- create_base_table(table_base_skeleton)
+#
+#
 #
 #
 # --- define conditions for filtering base table (step 3) ---------------
@@ -368,7 +381,7 @@ table_base <- table_base_skeleton |>
 #
 # ... per species for which opportunistic observations are representative
 observation_scope_lowprior_expr <- '
-  (grepl("hoge representativiteit", monitoring_opport) &
+  (grepl("^hoge representativiteit", monitoring_opport) &
      scope_boolean == 1)
      '
 observation_scope_lowprior_motivation <-
@@ -406,55 +419,359 @@ globalscore_scope_lowprior_motivation <-
 #
 # --- define filtered table ---------------
 #
-table_base_filtered <- table_base |>
-  dplyr::rowwise() |>
-  dplyr::mutate(
-    scope_prior = dplyr::case_when(
-      scope_boolean == 1 ~ "highprior",
-      TRUE ~ NA_character_
-    ),
-    #
-    # set scope to low prior ...
-    # ... per species for which opportunistic observations are representative
-    scope_prior = dplyr::case_when(
-      eval(parse(text = observation_scope_lowprior_expr)) ~ "lowprior",
-      TRUE ~ scope_prior
-    ),
-    scope_prior_motivation = dplyr::case_when(
-      eval(parse(text = observation_scope_lowprior_expr)) ~
-        paste(scope_prior_motivation, observation_scope_lowprior_motivation, sep = ","),
-      TRUE ~ scope_prior_motivation
-    ),
-    #
-    # ... per species depending on whether surveillance area is known
-    scope_prior = dplyr::case_when(
-      eval(parse(text = area_scope_lowprior_expr)) ~ "lowprior",
-      TRUE ~ scope_prior
-    ),
-    scope_prior_motivation = dplyr::case_when(
-      eval(parse(text = area_scope_lowprior_expr)) ~
-        paste(scope_prior_motivation, area_scope_lowprior_motivation, sep = ","),
-      TRUE ~ scope_prior_motivation
-    ),
-    #
-    # ... per species depending on survey global priority score
-    scope_prior = dplyr::case_when(
-      eval(parse(text = globalscore_scope_lowprior_expr)) ~ "lowprior",
-      TRUE ~ scope_prior
-    ),
-    scope_prior_motivation = dplyr::case_when(
-      eval(parse(text = globalscore_scope_lowprior_expr)) ~
-        paste(scope_prior_motivation, globalscore_scope_lowprior_motivation, sep = ","),
-      TRUE ~ scope_prior_motivation
+create_filtered_table <- function(
+    .table_base,
+    .observation_scope_lowprior_expr = observation_scope_lowprior_expr,
+    .area_scope_lowprior_expr = area_scope_lowprior_expr,
+    .globalscore_scope_lowprior_expr = globalscore_scope_lowprior_expr
+){
+  .table_base |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      scope_prior = dplyr::case_when(
+        scope_boolean == 1 ~ "highprior",
+        TRUE ~ NA_character_
+      ),
+      #
+      # set scope to low prior ...
+      # ... per species for which opportunistic observations are representative
+      scope_prior = dplyr::case_when(
+        eval(parse(text = .observation_scope_lowprior_expr)) ~ "lowprior",
+        TRUE ~ scope_prior
+      ),
+      scope_prior_motivation = dplyr::case_when(
+        eval(parse(text = .observation_scope_lowprior_expr)) ~
+          paste(scope_prior_motivation, observation_scope_lowprior_motivation, sep = ","),
+        TRUE ~ scope_prior_motivation
+      ),
+      #
+      # ... per species depending on whether surveillance area is known
+      scope_prior = dplyr::case_when(
+        eval(parse(text = .area_scope_lowprior_expr)) ~ "lowprior",
+        TRUE ~ scope_prior
+      ),
+      scope_prior_motivation = dplyr::case_when(
+        eval(parse(text = .area_scope_lowprior_expr)) ~
+          paste(scope_prior_motivation, area_scope_lowprior_motivation, sep = ","),
+        TRUE ~ scope_prior_motivation
+      ),
+      #
+      # ... per species depending on survey global priority score
+      scope_prior = dplyr::case_when(
+        eval(parse(text = .globalscore_scope_lowprior_expr)) ~ "lowprior",
+        TRUE ~ scope_prior
+      ),
+      scope_prior_motivation = dplyr::case_when(
+        eval(parse(text = .globalscore_scope_lowprior_expr)) ~
+          paste(scope_prior_motivation, globalscore_scope_lowprior_motivation, sep = ","),
+        TRUE ~ scope_prior_motivation
+      )
+    ) |>
+    dplyr::ungroup() |>
+    # clean scope_prior_motivation
+    dplyr::mutate(
+      scope_prior_motivation = gsub("NA,", "", scope_prior_motivation)
     )
+}
+table_base_filtered <- create_filtered_table(table_base)
+#
+#
+#
+#
+# --- illustrate table creation ---------------
+#
+# base table components
+#
+table_base_illu_stadium <- table_base_skeleton |>
+  dplyr::filter(eval(parse(text = stadium_scope_1_expr))) |>
+  dplyr::distinct(stadium)
+#
+table_base_illu_prius_stadium <- table_base_skeleton |>
+  dplyr::filter(grepl("wijd", stadium) & grepl("BUI", prius_stadium)) |>
+  dplyr::distinct(stadium, prius_stadium) |>
+  tibble::add_row() |>
+  tidyr::fill(stadium)
+#
+table_base_illu_area <- table_base_skeleton |>
+  dplyr::filter(eval(parse(text = area_scope_0_expr))) |>
+  dplyr::select(c(area_dist, stadium)) |>
+  dplyr::distinct(stadium, .keep_all = TRUE) |>
+  tibble::add_row() |>
+  tidyr::fill(stadium)
+#
+table_base_illu_management_exists <- table_base_skeleton |>
+  dplyr::filter(grepl("beperkt", stadium) &
+                  grepl("verspreiding is voldoende gekend", area_dist)) |>
+  dplyr::select(c(management_exists, stadium, area_dist)) |>
+  dplyr::distinct(management_exists, stadium, .keep_all = TRUE)
+#
+table_base_illu_management_eval <- table_base_skeleton |>
+  dplyr::filter(
+    eval(parse(text = management_eval_scope_0_expr)) &
+      !eval(parse(text = management_exits_scope_0_expr))
   ) |>
-  dplyr::ungroup() |>
-  # clean scope_prior_motivation
+  dplyr::select(c(management_evaluation, management_exists)) |>
+  dplyr::distinct(management_evaluation, .keep_all = TRUE)
+#
+table_base_illu_method <- table_base_skeleton |>
+  dplyr::filter(eval(parse(text = method_scope_0_expr)) &
+                  grepl("wijd", stadium)) |>
+  dplyr::select(c(method_scope, stadium)) |>
+  dplyr::distinct(method_scope, .keep_all = TRUE) |>
+  tibble::add_row() |>
+  tidyr::fill(stadium) |>
+  dplyr::mutate(prius_stadium = NA_character_)
+#
+#
+# filtered table components
+#
+table_filtered_illu_area <- table_base_skeleton |>
+  dplyr::filter(
+    (grepl("afwezig", stadium) &
+       grepl("detection", scope_type) &
+       grepl("ongekend|specifieke locaties", area_intro)) |
+      (grepl("sporadisch", stadium) & # zit er voorloopig niet in de data!
+         grepl("detection", scope_type) &
+         grepl("weet het niet", area_intro) &
+         grepl("weet het niet", area_dist))
+  ) |>
+  dplyr::distinct(area_intro, area_dist, stadium)
+#
+table_filtered_illu_obs <- table_base_skeleton |>
+  dplyr::filter(
+    grepl("^hoge|lage", monitoring_opport) &
+      grepl("beperkt", stadium) &
+      grepl("neen", management_exists)
+  ) |>
+  dplyr::select(c(monitoring_opport, stadium, management_exists)) |>
+  dplyr::distinct(monitoring_opport, .keep_all = TRUE)
+#
+# HERE globalscore_scope_lowprior_expr
+# add very large or very small values
+#
+#
+# skeleton table
+table_base_illu_skeleton_ <- table_base_illu_stadium |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_prius_stadium
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_area
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_filtered_illu_area
+  )|>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_management_exists
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_management_eval
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_filtered_illu_obs
+  ) |>
+  dplyr::left_join(
+    x = _,
+    y = table_base_illu_method
+  )|>
   dplyr::mutate(
-    scope_prior_motivation = gsub("NA,", "", scope_prior_motivation)
+    species = paste("species", dplyr::row_number())
+  )|>
+  tidyr::crossing(
+    method_all = c("method A")
+  ) |>
+  tidyr::crossing(
+    table_scope |> dplyr::distinct(dplyr::pick(tidyselect::starts_with("scope")))
   )
+
+
+
+
+args_create_base_table <- list(
+  .table_base_skeleton = table_base_illu_skeleton,
+  .stadium_scope_1_expr = stadium_scope_1_expr,
+  .area_scope_0_expr = "grepl('foo', stadium)",
+  .management_exits_scope_0_expr = "grepl('foo', stadium)",
+  .management_eval_scope_0_expr = "grepl('foo', stadium)",
+  .method_scope_0_expr = "grepl('foo', stadium)"
+)
+
+table_base_illu_1 <- do.call(
+  create_base_table,
+  args_create_base_table
+)
+table_base_illu_2 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr)
+)
+table_base_illu_3 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr) |>
+    purrr::modify_at(".management_exits_scope_0_expr", \(x) management_exits_scope_0_expr)
+)
+table_base_illu_4 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr) |>
+    purrr::modify_at(".management_exits_scope_0_expr", \(x) management_exits_scope_0_expr) |>
+    purrr::modify_at(".management_eval_scope_0_expr", \(x) management_eval_scope_0_expr)
+)
+table_base_illu_5 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr) |>
+    purrr::modify_at(".management_exits_scope_0_expr", \(x) management_exits_scope_0_expr) |>
+    purrr::modify_at(".management_eval_scope_0_expr", \(x) management_eval_scope_0_expr) |>
+    purrr::modify_at(".method_scope_0_expr", \(x) method_scope_0_expr)
+)
+table_base_illu_list <- list(
+  stadium = table_base_illu_1,
+  area = table_base_illu_2,
+  management_exists = table_base_illu_3,
+  management_eval = table_base_illu_4,
+  method = table_base_illu_5
+)
+#
+#
+# --- illustrate filtered table creation ---------------
+#
+#
+table_base_illu_stadium <- table_base_skeleton |>
+  dplyr::filter(eval(parse(text = stadium_scope_1_expr))) |>
+  dplyr::distinct(stadium)
+#
+table_base_illu_prius_stadium <- table_base_skeleton |>
+  dplyr::filter(grepl("wijd", stadium) & grepl("BUI", prius_stadium)) |>
+  dplyr::distinct(stadium, prius_stadium) |>
+  tibble::add_row() |>
+  tidyr::fill(stadium)
+#
+table_base_illu_area <- table_base_skeleton |>
+  dplyr::filter(eval(parse(text = area_scope_0_expr))) |>
+  dplyr::select(c(area_dist, stadium)) |>
+  dplyr::distinct(stadium, .keep_all = TRUE) |>
+  tibble::add_row() |>
+  tidyr::fill(stadium)
+#
+table_base_illu_management_exists <- table_base_skeleton |>
+  dplyr::filter(grepl("beperkt", stadium) &
+                  grepl("verspreiding is voldoende gekend", area_dist)) |>
+  dplyr::select(c(management_exists, stadium, area_dist)) |>
+  dplyr::distinct(management_exists, stadium, .keep_all = TRUE)
+#
+table_base_illu_management_eval <- table_base_skeleton |>
+  dplyr::filter(
+    eval(parse(text = management_eval_scope_0_expr)) &
+      !eval(parse(text = management_exits_scope_0_expr))
+  ) |>
+  dplyr::select(c(management_evaluation, management_exists)) |>
+  dplyr::distinct(management_evaluation, .keep_all = TRUE)
+#
+table_base_illu_method <- table_base_skeleton |>
+  dplyr::filter(eval(parse(text = method_scope_0_expr)) &
+                  grepl("wijd", stadium)) |>
+  dplyr::select(c(method_scope, stadium)) |>
+  dplyr::distinct(method_scope, .keep_all = TRUE) |>
+  tibble::add_row() |>
+  tidyr::fill(stadium) |>
+  dplyr::mutate(prius_stadium = NA_character_)
+#
+table_base_illu_skeleton <- table_base_illu_stadium |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_prius_stadium
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_area
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_management_exists
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_base_illu_management_eval
+  ) |>
+  dplyr::left_join(
+    x = _,
+    y = table_base_illu_method
+  )|>
+  dplyr::mutate(
+    species = paste("species", dplyr::row_number())
+  )|>
+  tidyr::crossing(
+    method_all = c("method A")
+  ) |>
+  tidyr::crossing(
+    table_scope |> dplyr::distinct(dplyr::pick(tidyselect::starts_with("scope")))
+  )
+
+args_create_base_table <- list(
+  .table_base_skeleton = table_base_illu_skeleton,
+  .stadium_scope_1_expr = stadium_scope_1_expr,
+  .area_scope_0_expr = "grepl('foo', stadium)",
+  .management_exits_scope_0_expr = "grepl('foo', stadium)",
+  .management_eval_scope_0_expr = "grepl('foo', stadium)",
+  .method_scope_0_expr = "grepl('foo', stadium)"
+)
+
+table_base_illu_1 <- do.call(
+  create_base_table,
+  args_create_base_table
+)
+table_base_illu_2 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr)
+)
+table_base_illu_3 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr) |>
+    purrr::modify_at(".management_exits_scope_0_expr", \(x) management_exits_scope_0_expr)
+)
+table_base_illu_4 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr) |>
+    purrr::modify_at(".management_exits_scope_0_expr", \(x) management_exits_scope_0_expr) |>
+    purrr::modify_at(".management_eval_scope_0_expr", \(x) management_eval_scope_0_expr)
+)
+table_base_illu_5 <- do.call(
+  create_base_table,
+  args_create_base_table |>
+    purrr::modify_at(".area_scope_0_expr", \(x) area_scope_0_expr) |>
+    purrr::modify_at(".management_exits_scope_0_expr", \(x) management_exits_scope_0_expr) |>
+    purrr::modify_at(".management_eval_scope_0_expr", \(x) management_eval_scope_0_expr) |>
+    purrr::modify_at(".method_scope_0_expr", \(x) method_scope_0_expr)
+)
+table_base_illu_list <- list(
+  stadium = table_base_illu_1,
+  area = table_base_illu_2,
+  management_exists = table_base_illu_3,
+  management_eval = table_base_illu_4,
+  method = table_base_illu_5
+)
+#
+#
+#
+#
+# --- save results ---------------
 #
 save(
   table_base_filtered,
   file = paste0(response_data_path, "tables/", "table_base_filtered.rda")
+)
+save(
+  table_base_illu_list,
+  file = paste0(response_data_path, "tables/", "table_base_illustration.rda")
 )
