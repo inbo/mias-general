@@ -4,29 +4,660 @@ author: "Janne Adolf"
 format: 
   html:
     toc: true
+    toc-location: left
     theme: lux
     number-sections: true
 execute: 
-  cache: true
+  echo: false
+  cache: false
 ---
 
-## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+```{r load-data-and-functions}
+#| cache: false
 
-## Running Code
+list.files("../../../functions", full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
 
-When you click the **Render** button a document will be generated that includes both content and the output of embedded code. You can embed code like this:
+options(knitr.kable.NA = '')
+options(knitr.table.format = "html") 
 
-```{r}
-1 + 1
+response_data_path <- "../../../../data/survey_experts/" 
+load(paste0(response_data_path, "tables/", "table_base_filtered.rda"))
+load(paste0(response_data_path, "tables/", "table_base_illustration.rda"))
+load(paste0(response_data_path, "tables/", "table_filtered_illustration.rda"))
+
 ```
 
-You can add options to executable code like this 
+```{r define-function-add-symbols}
 
-```{r}
-#| echo: false
-2 * 2
+add_symbols <- function(
+    .table_base_filtered,
+    .symbols_base_list = symbols_base_list,
+    .symbols_filtered_list = symbols_filtered_list
+){
+  .table_base_filtered |>
+    #
+    # add symbols for scope boolean motivation
+    dplyr::mutate(
+      scope_boolean_symbol = NA_character_,
+      .after = scope_boolean_motivation
+    ) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      scope_boolean_symbol = dplyr::case_when(
+        grepl("invasion stadium", scope_boolean_motivation) ~
+          paste(scope_boolean_symbol, .symbols_base_list$stadium, sep = ", "),
+        TRUE ~ scope_boolean_symbol
+      ),
+      scope_boolean_symbol = dplyr::case_when(
+        grepl("area is known", scope_boolean_motivation) ~
+          paste(scope_boolean_symbol, .symbols_base_list$area, sep = ", "),
+        TRUE ~ scope_boolean_symbol
+      ),
+      scope_boolean_symbol = dplyr::case_when(
+        grepl("not managed", scope_boolean_motivation) ~
+          paste(scope_boolean_symbol, .symbols_base_list$management_exists, sep = ", "),
+        TRUE ~ scope_boolean_symbol
+      ),
+      scope_boolean_symbol = dplyr::case_when(
+        grepl("evaluate management", scope_boolean_motivation) ~
+          paste(scope_boolean_symbol, .symbols_base_list$management_eval, sep = ", "),
+        TRUE ~ scope_boolean_symbol
+      ),
+      scope_boolean_symbol = dplyr::case_when(
+        grepl("measure abundance", scope_boolean_motivation) ~
+          paste(scope_boolean_symbol, .symbols_base_list$method, sep = ", "),
+        TRUE ~ scope_boolean_symbol
+      )
+    )|>
+    #
+    # add sumbols for scope prior motivation
+    dplyr::mutate(
+      scope_prior_symbol = NA_character_,
+      .after = scope_prior_motivation
+    ) |>
+    dplyr::rowwise() |>
+    dplyr::mutate(
+      scope_prior_symbol = dplyr::case_when(
+        grepl("opportunistic observations", scope_prior_motivation) ~
+          paste(scope_prior_symbol, .symbols_filtered_list$observation, sep = ", "),
+        TRUE ~ scope_prior_symbol
+      ),
+      scope_prior_symbol = dplyr::case_when(
+        grepl("area is not known", scope_prior_motivation) ~
+          paste(scope_prior_symbol, .symbols_filtered_list$area, sep = ", "),
+        TRUE ~ scope_prior_symbol
+      ),
+      scope_prior_symbol = dplyr::case_when(
+        grepl("global priority score", scope_prior_motivation) ~
+          paste(scope_prior_symbol, .symbols_filtered_list$globalscore, sep = ", "),
+        TRUE ~ scope_prior_symbol
+      )
+    )|>
+    #
+    # final formatting symbols
+    dplyr::mutate(
+      scope_boolean_symbol = gsub("NA, ", "", scope_boolean_symbol),
+      scope_boolean_symbol = dplyr::case_when(
+        !is.na(scope_boolean_symbol) ~ paste0("$", scope_boolean_symbol, "$"),
+        TRUE ~ NA_character_
+      ),
+      scope_prior_symbol = gsub("NA, ", "", scope_prior_symbol),
+      scope_prior_symbol = dplyr::case_when(
+        !is.na(scope_prior_symbol) ~ paste0("$", scope_prior_symbol, "$"),
+        TRUE ~ NA_character_
+      )
+    ) |>
+    dplyr::ungroup()
+}
+
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+```{r add-symbols}
+
+symbols_base_list <- list(
+  stadium = "\\circ",
+  area = "\\#",
+  management_exists = "\\dagger",
+  management_eval = "\\ddagger",
+  method = "\\bot"
+)
+symbols_filtered_list <- list(
+  observation = "\\triangle",
+  area = "\\times",
+  globalscore = "\\ast"
+)
+table_base_filtered_upd <- add_symbols(table_base_filtered)
+table_base_illu_list_upd <- lapply(table_base_illu_list, add_symbols)
+table_filtered_illu_list_upd <- lapply(table_filtered_illu_list, add_symbols)
+
+```
+
+```{r add-scope-verbose}
+
+# full table base
+table_base_upd <- table_base_filtered_upd |>
+  dplyr::mutate(
+    scope_verbose = dplyr::case_when(
+      scope_boolean == 1 ~ method_all,
+      scope_boolean == 0 ~ scope_boolean_symbol
+    ),
+    .after = scope_boolean
+  )
+#
+# illustration table base
+table_base_illu_list_upd <- lapply(
+  table_base_illu_list_upd,
+  \(x)
+  dplyr::mutate(.data = x,
+                scope_verbose = dplyr::case_when(
+                  scope_boolean == 1 ~ "",
+                  scope_boolean == 0 ~ scope_boolean_symbol
+                ),
+                .after = scope_boolean
+  )
+)
+#
+# full table filtered
+table_filtered_upd <- table_base_filtered_upd |>
+  dplyr::mutate(
+    scope_verbose = dplyr::case_when(
+      scope_boolean == 1 & grepl("highprior", scope_prior) ~ 
+        kableExtra::cell_spec(x = method_all, bold = TRUE),
+      scope_boolean == 1 & grepl("lowprior", scope_prior) ~ 
+        paste(scope_prior_symbol, kableExtra::cell_spec(x = method_all, color = "lightgrey")),
+      scope_boolean == 0 ~ 
+        kableExtra::cell_spec(x = scope_boolean_symbol, color = "lightgrey")
+    ),
+    .after = scope_prior
+  ) |>
+  dplyr::select(!tidyselect::starts_with("scope_boolean"))
+#
+# illustration table filtered
+table_filtered_illu_list_upd <- lapply(
+  table_filtered_illu_list_upd,
+  \(x) dplyr::mutate(
+    .data = x,
+    scope_verbose = dplyr::case_when(
+      scope_boolean == 1 & grepl("highprior", scope_prior) ~ 
+        kableExtra::cell_spec(x = method_all, bold = TRUE),
+      scope_boolean == 1 & grepl("lowprior", scope_prior) ~ 
+        scope_prior_symbol,
+      scope_boolean == 0 ~ 
+        kableExtra::cell_spec(x = scope_boolean_symbol, color = "lightgrey")
+    ),
+    .after = scope_prior
+  )
+)
+
+```
+
+```{r highlight-symbols-illustration}
+
+tmp_fun <- function(table, symbol){
+      dplyr::mutate(
+      .data = table,
+      scope_verbose = dplyr::case_when(
+        grepl(symbol, scope_verbose) ~ kableExtra::cell_spec(
+          x = scope_verbose,
+          color = "coral",
+          bold = TRUE
+        ),
+        TRUE ~ scope_verbose
+      )
+    )
+  
+}
+table_base_illu_list_upd <- mapply(
+  tmp_fun,
+  table_base_illu_list_upd,
+  symbols_base_list |>
+    purrr::modify_at("management_exists",
+                     \(x) paste0("\\", symbols_base_list$management_exists)) |>
+    purrr::modify_at("management_eval",
+                     \(x) paste0("\\", symbols_base_list$management_eval)) |>
+    purrr::modify_at("method",
+                     \(x) paste0("\\", symbols_base_list$method)),
+  SIMPLIFY = FALSE
+)
+#
+table_filtered_illu_list_upd <- mapply(
+  tmp_fun,
+  table_filtered_illu_list_upd,
+  symbols_filtered_list|>
+    purrr::modify_at("observation",
+                     \(x) paste0("\\", symbols_filtered_list$observation)) |>
+    purrr::modify_at("area",
+                     \(x) paste0("\\", symbols_filtered_list$area)) |>
+    purrr::modify_at("globalscore",
+                     \(x) paste0("\\", symbols_filtered_list$globalscore)),
+  SIMPLIFY = FALSE
+)
+
+```
+
+```{r define-table-footnotes}
+
+footnote_base <- table_base_upd |>
+  dplyr::filter(!grepl(",", scope_boolean_motivation)) |>
+  dplyr::select(c(scope_verbose, scope_motivation = scope_boolean_motivation)) |>
+  tidyr::drop_na() |>
+  dplyr::distinct(scope_motivation, .keep_all = TRUE) |>
+  dplyr::arrange(
+    match(
+      scope_verbose,
+      symbols_base_list |> unlist() |> unname() |> paste0("$", x = _, "$")
+    )
+  )
+footnote_filtered <- table_filtered_upd |> 
+  dplyr::filter(!grepl(",", scope_prior_motivation)) |>
+  dplyr::select(c(scope_verbose = scope_prior_symbol, scope_motivation = scope_prior_motivation)) |>
+  tidyr::drop_na() |>
+  dplyr::distinct(scope_motivation, .keep_all = TRUE) |>
+  dplyr::arrange(
+    match(
+      scope_verbose,
+      symbols_filtered_list |> unlist() |> unname() |> paste0("$", x = _, "$")
+    )
+  )
+```
+
+```{r factorize-data-for-display}
+
+args_factorize <- list(
+  varnames = c("scope_type", "stadium"),
+  varlevels = list(c("detection",
+                     "inventory",
+                     "distribution",
+                     "abundance",
+                     "distribution_management",
+                     "abundance_management"),
+                   c("afwezig",
+                     "sporadisch aanwezig",
+                     "beperkt gevestigd",
+                     "wijdverspreid")
+  )
+)
+#
+table_base_upd <- do.call("factorize", append(args_factorize, list(dataframe =   table_base_upd)))
+table_filtered_upd <- do.call("factorize", append(args_factorize, list(dataframe =   table_filtered_upd)))
+#
+table_base_illu_list_upd <- lapply(
+  table_base_illu_list_upd,
+  \(x) do.call("factorize", append(args_factorize, list(dataframe = x)))
+)
+table_filtered_illu_list_upd <- lapply(
+  table_filtered_illu_list_upd,
+  \(x) do.call("factorize", append(args_factorize, list(dataframe = x)))
+)
+
+```
+
+```{r define-function-make-table-display}
+
+make_table_display <- function(
+    data_table,
+    cols_id = c(
+      "species",
+      "vern_name_nld",
+      "stadium"
+    ),
+    cols_addon = c(
+      "m_score"
+    ),
+    footnote_data = footnote_base
+){
+  data_table_wide <- data_table |>
+    tidyr::pivot_wider(
+      id_cols = !tidyselect::starts_with("scope_"),
+      names_from = scope_type,
+      values_from = scope_verbose,
+      names_prefix = "scope_"
+    ) |>
+    dplyr::select(
+      tidyselect::all_of(cols_id) |
+        tidyselect::all_of(c(
+          "scope_detection",
+          "scope_inventory",
+          "scope_distribution",
+          "scope_abundance",
+          "scope_distribution_management",
+          "scope_abundance_management"
+        )) |
+        tidyselect::all_of(cols_addon)
+    )
+  #
+  knitr::kable(
+    x = data_table_wide,
+    format = "html",
+    escape = FALSE,
+    col.names = colnames(data_table_wide) |>
+      gsub(pattern = "scope_", replacement = "", x = _) |>
+      gsub(pattern = "_", replacement = " ", x = _) |>
+      stringr::str_wrap(width = nchar("distribution")),
+    table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+  ) |>
+    kableExtra::column_spec(
+      column = #grep("scope", colnames(data_table_wide)),
+        c(seq_along(cols_id), seq_along(cols_addon) + length(cols_id) + 6),
+      background = "grey97"
+    ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = c("condensed", "hover"),
+      full_width = FALSE,
+      position = "left",
+      font_size = 13
+    ) |>
+    kableExtra::collapse_rows(
+      columns = seq_along(cols_id),
+      valign = "top"
+    ) |>
+    kableExtra::add_header_above(
+      header = c(
+        " " = length(cols_id),
+        "scope" = grepl("scope", colnames(data_table_wide)) |> sum(),
+        " " = length(cols_addon)
+      ),
+      extra_css = "border-bottom: 2px solid"
+    ) |>
+    kableExtra::row_spec(
+      row = 0 ,
+      # align headers top 
+      extra_css = 'vertical-align: top !important; padding: 5px;'
+    ) |>
+    kableExtra::row_spec(
+      row = 1:nrow(data_table_wide),
+      # row height
+      extra_css = 'padding: 5px;'
+    ) |>
+    kableExtra::footnote(
+      symbol = footnote_data$scope_motivation,
+      symbol_manual = footnote_data$scope_verbose,
+      escape = FALSE
+    ) 
+}
+
+```
+
+
+## Approach
+
+### Steps
+
+### Illustration base table
+
+
+```{r make-base-table-illustration}
+#| cache: false
+
+table_base_illu_list_display <- mapply(
+  \(table, index) {
+    table |> 
+      dplyr::arrange(stadium) |>
+      make_table_display(
+        data_table = _,
+        cols_id = c("species", "stadium"),
+        cols_addon = NULL,
+        footnote_data = footnote_base[1:index,] |>
+          # color last row of footnote data
+          dplyr::mutate(
+            dplyr::across(
+              tidyselect::starts_with("scope"),
+              \(y) dplyr::case_when(
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = "coral"),
+                TRUE ~ y
+              )
+            )
+          )
+      )
+  },
+  table_base_illu_list_upd,
+  table_base_illu_list_upd |> seq_along(),
+  SIMPLIFY = FALSE
+)
+
+```
+
+#### Step 1-1
+
+```{r show-base-table-illustration-1}
+#| results: asis
+#| classes: .center-table
+
+# https://github.com/quarto-dev/quarto-cli/issues/1710
+table_base_illu_list_display$stadium |> unclass() |> cat()
+
+```
+
+#### Step 1-2
+
+```{r show-base-table-illustration-2}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_list_display$area |> unclass() |> cat()
+
+```
+
+#### Step 1-3
+
+```{r show-base-table-illustration-3}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_list_display$management_exists |> unclass() |> cat()
+
+```
+
+#### Step 1-4
+
+```{r show-base-table-illustration-4}
+#| results: asis
+#| classes: .center-table
+
+
+table_base_illu_list_display$management_eval |> unclass() |> cat()
+
+```
+
+#### Step 1-5
+
+```{r show-base-table-illustration-5}
+#| results: asis
+#| classes: .center-table
+
+
+table_base_illu_list_display$method |> unclass() |> cat()
+
+```
+
+
+```{r show-base-table-illustration-6}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_final <- table_base_illu_list_upd |> 
+  dplyr::last() |>
+  dplyr::mutate(
+    scope_verbose = dplyr::case_when(
+      scope_boolean == 1 ~ method_all,
+      TRUE ~ scope_verbose
+    ),
+    # don't highlight symbol
+    scope_verbose = gsub("coral", "black", scope_verbose)
+  ) |>
+  dplyr::arrange(stadium) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species", "stadium"),
+    cols_addon = NULL,
+    footnote_data = footnote_base
+  ) |> 
+  unclass() |> cat()
+
+```
+
+
+
+### Illustration filtered table
+
+
+```{r make-filtered-table-illustration}
+#| cache: false
+
+table_filtered_illu_list_display <- mapply(
+  \(table, index) {
+    table |>
+      dplyr::arrange(stadium) |>
+      make_table_display(
+        data_table = _,
+        cols_id = c("species", "stadium"),
+        cols_addon = NULL,
+        footnote_data = footnote_filtered[1:index,] |>
+          # color last row
+          dplyr::mutate(
+            dplyr::across(
+              tidyselect::starts_with("scope"),
+              \(y) dplyr::case_when(
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = "coral"),
+                TRUE ~ y
+              )
+            )
+          )
+      )
+  },
+  table_filtered_illu_list_upd,
+  table_filtered_illu_list_upd |> seq_along(),
+  SIMPLIFY = FALSE
+)
+
+```
+
+#### Step 2-1
+
+```{r show-filtered-table-illustration-1}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_list_display$observation |> unclass() |> cat()
+
+```
+
+#### Step 2-2
+
+```{r show-filtered-table-illustration-2}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_list_display$area |> unclass() |> cat()
+
+```
+
+#### Step 2-3
+
+```{r show-filtered-table-illustration-3}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_list_display$globalscore |> unclass() |> cat()
+
+```
+
+## Base tables
+
+```{r sort-base-table}
+
+table_base_upd <- table_base_upd |>
+  dplyr::arrange(
+    scope_boolean |> dplyr::desc(), 
+    scope_type, 
+    stadium, 
+    m_score |> dplyr::desc()
+  ) 
+
+``` 
+
+
+### Plants
+
+```{r make-base-table-display-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_base_upd |>
+  dplyr::filter(grepl("plant", kingdom)) |>
+  make_table_display(
+    data_table = _,
+    footnote_data = footnote_base
+  ) |> unclass() |> cat()
+
+```
+
+### Animals
+
+```{r make-base-table-display-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_base_upd |>
+  dplyr::filter(grepl("dier", kingdom)) |>
+  make_table_display(
+    data_table = _,
+    footnote_data = footnote_base
+  ) |> unclass() |> cat()
+
+```
+
+
+## Filtered tables
+
+
+```{r sort-filtered-table}
+
+table_filtered_upd <- table_filtered_upd |>
+  dplyr::arrange(
+    scope_prior,
+    scope_type,
+    stadium, # put this last here?
+    m_score |> dplyr::desc()
+  ) 
+
+``` 
+
+
+### Plants
+
+```{r make-filtered-table-display-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_upd |>
+  dplyr::filter(grepl("plant", kingdom)) |>
+  make_table_display(
+    data_table = _,
+    footnote_data = footnote_filtered
+  ) |> unclass() |> cat()
+
+```
+
+### Animals
+
+```{r make-filtered-table-display-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_upd |>
+  dplyr::filter(grepl("dier", kingdom)) |>
+  make_table_display(
+    data_table = _,
+    footnote_data = footnote_filtered
+  ) |> unclass() |> cat()
+
+```
+
