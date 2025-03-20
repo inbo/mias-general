@@ -33,7 +33,7 @@ species_sheet_id <- "1dClhdsk1QMHniYv6xcFVTKd6pLtWBDz-8avvK-xZHQ0"
 species_sheet_args <- list(
   sheet_id = species_sheet_id,
   tab_variablename = "soortengroep",
-  colnames_old = c("soort", "wetenschappelijke naam", "expert email 2", "expert voornaam 2", "expert achternaam 2"),
+  colnames_old = c("soort", "wetenschappelijke naam", "expert email 3", "expert voornaam 3", "expert achternaam 3"),
   colnames_new = c("species", "sci_name", "expert_email", "expert_firstname", "expert_lastname"),
   gbif_namevariable = "sci_name"
 )
