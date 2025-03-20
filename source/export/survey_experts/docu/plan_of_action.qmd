@@ -915,8 +915,8 @@ table_base_upd <- table_base_upd |>
 
 The following base tables for plants and animals are sorted as follows:
 
-- First, rows are sorted by scope type relying on the order: `r table_base_upd$scope_type |> levels()`.
-    - That is, all species for which (at least) detection is relevant/feasible come first, 
+- First, rows are sorted by scope type relying on the order of the table columns: `r table_base_upd$scope_type |> levels()`.
+    - That is, all species for which (at least) detection is relevant/feasible appear first, 
 followed by those for which (at least) inventory is relevant/feasible, 
 followed by those for which (at least) inventory is relevant/feasible etc., resulting in a stair step (?)/ blocked pattern.
 - Within (i.e., for each value of) scope type, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
@@ -981,7 +981,7 @@ The following filtered tables for plants and animals are sorted similarly to the
 
 - First, rows are sorted by scope priority, with high priority scopes on top.
 - Within (i.e., for each value of) scope priority, rows are sorted by scope type relying again on the order: `r table_base_upd$scope_type |> levels()`.
-    - That is, within the high priority scopes, all species for which (at least) detection is relevant/feasible come first, 
+    - That is, within the high/low priority scopes, all species for which (at least) detection is relevant/feasible appear first, 
 followed by those for which (at least) inventory is relevant/feasible, 
 followed by those for which (at least) inventory is relevant/feasible etc..
 - Within (i.e., for each value of) scope type, rows are again sorted by milieu according to the above order: `r table_base_upd$prius_milieu |> levels()`.
