@@ -40,7 +40,11 @@ species_sheet_args <- list(
 #
 # url of g-drive folder to save forms in
 # PRJ_MIUS/_overkoepelend/bevraging_soortenexperts/survey
-form_folder_url <- "https://drive.google.com/drive/folders/1_swosPhu5mWcLfhvBw8cg6rHUlneJfWc"
+form_folder_url <- ifelse(
+  lang == "NL",
+  "https://drive.google.com/drive/folders/1_swosPhu5mWcLfhvBw8cg6rHUlneJfWc",
+  "https://drive.google.com/drive/folders/1liGfolWzJlFJTgwsxkru70TUHErti-XK"
+)
 #
 # url of g-drive folder with form media
 media_folder_url <- "https://drive.google.com/drive/folders/1vvnnT_CKx4_Ph1k9rDc1_SXmdhdVMbqv"

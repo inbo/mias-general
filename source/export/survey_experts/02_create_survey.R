@@ -22,7 +22,7 @@ questions_wide <- get(load(questions_file))
 #
 # retrieve public url to overview pdf
 pdf_url <- googledrive::drive_find(
-  pattern = "overview_questions",
+  pattern = paste("overview_questions", lang, sep = "_"),
   type = "pdf",
   shared_drive = "PRJ_MIUS"
 ) |>
@@ -33,7 +33,7 @@ pdf_url <- googledrive::drive_find(
 #
 # list distribution map files on gdrive (filenames and -ids)
 maps_files <- googledrive::drive_ls(
-  path = map_folder_url, ### HERE: restriction for testing; update!
+  path = map_folder_url,
   shared_drive = "PRJ_MIUS"
 )
 #
@@ -74,7 +74,7 @@ tmp %in% maps_info$id
 introtext <- googledrive::drive_read_string(
   file = googledrive::drive_ls(
     path = media_folder_url |> googledrive::as_id(),
-    pattern = "introtext"
+    pattern = paste("introtext", lang, sep = "_")
   ) |>
     googledrive::as_id(),
   type = "text/plain"
@@ -88,7 +88,13 @@ maps_info <- maps_info |>
     species_formatted = gsub(pattern = "'", replacement = "\\\\'", species)
   )
 #
-# create app script (in 4 parts)
+# select species if lang EN
+if (lang == "EN") {
+  maps_info <- maps_info |>
+    dplyr::filter(grepl("Zostera", species))
+}
+#
+# create app script (in x parts)
 gform_baseargs <- list(
   data_qa = questions_wide |>
     dplyr::filter(
@@ -104,11 +110,11 @@ gform_baseargs <- list(
   name_qid = "question_id",
   name_areq = "response_required",
   gdrive_destfolder_id = form_folder_url |> googledrive::as_id(),
-  species_qtext = "Over welke soort rapporteert u?",
-  species_qtext_map = "Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
+  species_qtext =  "Which species are you reporting on?", #"Over welke soort rapporteert u?",
+  species_qtext_map = "Is the distribution of the species across Flanders sufficiently known?", #"Is de verspreiding van de soort over Vlaanderen voldoende gekend?",
   introtext = introtext_upd
 )
-nparts <- 6
+nparts <- ifelse(lang == "EN", 1, 6)
 nrows_parts <- nrow(maps_info)/nparts
 for (i in 1:nparts) {
   nrows_i <- seq(((i-1) * nrows_parts + 1), (i * nrows_parts))
@@ -123,10 +129,10 @@ for (i in 1:nparts) {
   # save script
   writeLines(
     appsscript_gform_i,
-    paste0(appscript_path, "appsscript_gform_",i,".gs")
+    paste0(appscript_path, "appsscript_gform_", lang, "_", i,".gs")
   )
   # update dynamic sections (hardcoded)
-  update_appsscript_dynsections(paste0(appscript_path, "appsscript_gform_",i,".gs"))
+  update_appsscript_dynsections(paste0(appscript_path, "appsscript_gform_", lang, "_", i,".gs"), lang)
 }
 #
 #
@@ -175,6 +181,7 @@ if (FALSE){
 # more specifically into a .gs file associated with the project
 # save the project
 # run the function
+# if lang EN: fix issues manually "species'" -> "species"
 #
 # manually (whenever forms have been created):
 # ---------------------------------------------------------------------

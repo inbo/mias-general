@@ -3,13 +3,25 @@ update_appsscript_dynsections <- function(
     #aoptions_updated,
     #section_to_move,
     #section_fu
-  path_to_appscript
+  path_to_appscript,
+  lang = "NL"
 ){
   appsscript <- readLines(path_to_appscript)
   #
   # split script
-  s1_lines <- grep("section introductievestiging", appsscript)
-  s2_lines <- grep("section verspreidingabundantie", appsscript)
+  s1_lines <- grep(
+    ifelse(
+      lang == "NL",
+      "section introductievestiging",
+      "section introductionestablishment"
+      ),
+    appsscript)
+  s2_lines <- grep(
+    ifelse(
+      lang == "NL",
+      "section verspreidingabundantie",
+      "section distributionabundance"),
+    appsscript)
   appsscript_begin <- appsscript[1 : (s1_lines[1] - 1)]
   appsscript_s1 <- appsscript[s1_lines[1] : s1_lines[2]]
   appsscript_s2 <- appsscript[s2_lines[1] : s2_lines[2]]
@@ -18,8 +30,16 @@ update_appsscript_dynsections <- function(
   # duplicate section introductievestiging & update
   appsscript_s1_dupl <- appsscript_s1 |>
     gsub(
-      pattern = "introductievestiging",
-      replacement = "introductievestigingdupl"
+      pattern = ifelse(
+          lang == "NL",
+          "introductievestiging",
+          "introductionestablishment"
+          ),
+      replacement = ifelse(
+          lang == "NL",
+          "introductievestigingdupl",
+          "introductionestablishmentdupl"
+          )
       )
   # duplicate section verspreidingabundantie & update
   #appsscript_s2_dupl <- appsscript_s2 |>
@@ -32,37 +52,87 @@ update_appsscript_dynsections <- function(
   # update answer options
   appsscript_begin <- appsscript_begin |>
     gsub(
-      pattern = "'afwezig'",
-      replacement = "'afwezig', introductievestiging"
+      pattern = ifelse(
+        lang == "NL",
+          "'afwezig'",
+          "'absent'"
+          ),
+      replacement = ifelse(
+        lang == "NL",
+          "'afwezig', introductievestiging",
+          "'absent', introductionestablishment"
+          )
     ) |>
     gsub(
-      pattern = "'sporadisch aanwezig'",
-      replacement = "'sporadisch aanwezig', introductievestigingdupl"
+      pattern = ifelse(
+        lang == "NL",
+                       "'sporadisch aanwezig'",
+                       "'sporadically present'"
+                       ),
+      replacement = ifelse(
+        lang == "NL",
+                           "'sporadisch aanwezig', introductievestigingdupl",
+                           "'sporadically present', introductionestablishmentdupl"
+                           )
     ) |>
     gsub(
-      pattern = "'beperkt gevestigd'",
-      replacement = "'beperkt gevestigd', verspreidingabundantie"
+      pattern = ifelse(
+        lang == "NL",
+        "'beperkt gevestigd'",
+        "'established to limited extend'"
+        ),
+      replacement = ifelse(
+        lang == "NL",
+        "'beperkt gevestigd', verspreidingabundantie",
+        "'established to limited extend', distributionabundance"
+        )
       ) |>
     gsub(
-      pattern = "'wijdverspreid'",
-      replacement = "'wijdverspreid', verspreidingabundantie"
+      pattern = ifelse(
+        lang == "NL",
+        "'wijdverspreid'",
+        "'widespread'"
+        ),
+      replacement = ifelse(
+        lang == "NL",
+        "'wijdverspreid', verspreidingabundantie",
+        "'widespread', distributionabundance"
+        )
     )
   #
   # insert section jumps
-  end_line <- grep("end section beheer", appsscript_end)
+  end_line <- grep(ifelse(
+    lang == "NL",
+    "end section beheer",
+    "end section management"
+    ),
+    appsscript_end)
   appsscript_end <- append(
     appsscript_end,
-    c(
-      "introductievestigingdupl.setGoToPage(impact);",
-      "introductievestiging.setGoToPage(verspreidingabundantie);",
-      "verspreidingabundantie.setGoToPage(verspreidingabundantie);"
-    ),
+    if ( lang == "NL") {
+      c(
+        "introductievestigingdupl.setGoToPage(impact);",
+        "introductievestiging.setGoToPage(verspreidingabundantie);",
+        "verspreidingabundantie.setGoToPage(verspreidingabundantie);"
+      )
+    } else {
+      c(
+        "introductionestablishmentdupl.setGoToPage(impact);",
+        "introductionestablishment.setGoToPage(distributionabundance);",
+        "distributionabundance.setGoToPage(distributionabundance);"
+      )
+    },
     after = end_line
   )
   #
   # recombine script
   appsscript_beginend <- c(appsscript_begin, appsscript_end)
-  q_line <- grep("In welk invasiestadium befindt zich de soort in Vlaanderen?", appsscript_beginend)
+  q_line <- grep(ifelse(
+    lang == "NL",
+    "In welk invasiestadium befindt zich de soort in Vlaanderen?",
+    "Which invasion stage is the species in in Flanders?"
+    ),
+    appsscript_beginend)
   appsscript_begin_new <- appsscript_beginend[1:q_line]
   appsscript_end_new <- appsscript_beginend[(q_line+1):length(appsscript_beginend)]
   appsscript_upd <- c(
