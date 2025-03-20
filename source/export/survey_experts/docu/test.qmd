@@ -247,7 +247,7 @@ footnote_base <- table_base_upd |>
   dplyr::arrange(
     match(
       scope_verbose,
-      symbols_base_list |> unlist() |> unname() |> paste0("$", x = _, "$")
+      symbols_base_list |> unlist() |> unname() 
     )
   )
 footnote_filtered <- table_filtered_upd |> 
@@ -258,7 +258,7 @@ footnote_filtered <- table_filtered_upd |>
   dplyr::arrange(
     match(
       scope_verbose,
-      symbols_filtered_list |> unlist() |> unname() |> paste0("$", x = _, "$")
+      symbols_filtered_list |> unlist() |> unname() 
     )
   )
 ```
