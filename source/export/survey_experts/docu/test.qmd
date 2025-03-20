@@ -409,10 +409,88 @@ make_table_display <- function(
 
 ## Approach
 
-### Steps
+### Potential surveillance/monitoring schemes for IAS
 
-### Illustration base table
+Following the EU IAS regulation, the IAS of (future) union concern can in theory be subjected to surveillance/monitoring schemes of different scopes.
+We distinguish 6 surveillance/monitoring scopes:
 
+- Detection
+- Inventory
+- (Change in) Distribution
+- (Change in) Abundance
+- (Change in) Distribution after management
+- (Change in) Abundance after management
+
+We employ the following working definitions:
+
+
+::: {.callout-note icon="false"}
+## Detection
+
+- *Purpose*:
+    - Early identification of new invasive species in Flanders
+    - Maximize chance of detection (through probability of presence and probability of detection)
+    - Enable rapid responses
+- *Methods*:
+    - *high sensitivity* required relative to costs; this can also be high sensitivity accumulated over repeated measurements if costs are very low
+    - *high specificity* not required as false positives less problematic than false negatives; some procedure of confirmation of initial detections needs to be in place though
+    - provide at least presence/absence information
+    - e.g., eDNA, remote sensing methods
+- *Spatial and temporal coverage/resolution*:
+    - focused surveillance area at/around known/potential places of introduction and sites of sporadic occurrence; possibly also in/around conservation area
+    - complemented by broad (scale of Flanders?) "surveillance" via opportunistic observations?
+    - near-continuous measurement in space and time; this can but need not be achieved through high spatial/temporal frequency sampling: methods with low costs and/or sampling effort (e.g., remote sensing) can be used with dense sampling schemes; methods that have lower specificity in time and space (e.g., eDNA) could substitute for near-continuous sampling
+
+:::
+
+::: {.callout-note icon="false"}
+## Inventory
+Definition here.
+:::
+
+::: {.callout-note icon="false"}
+## (Change in) Distribution
+Definition here.
+:::
+
+
+::: {.callout-note icon="false"}
+## (Change in) Abundance
+Definition here.
+:::
+
+::: {.callout-note icon="false"}
+## (Change in) Distribution after management
+Definition here.
+:::
+
+::: {.callout-note icon="false"}
+## (Change in) Abundance after management
+Definition here.
+:::
+
+
+Combining the IAS of union concern (here species A - N for purposes of illustration) with all surveillance/monitoring scopes results in a table of *potential combinations* of the form:
+
+
+```{r show-empty-table}
+#| results: asis
+#| classes: .center-table
+#| 
+table_base_illu_list_upd$stadium |> 
+  dplyr::mutate(
+    scope_verbose = NA_character_
+  )|>
+  dplyr::arrange(species) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species"),
+    cols_addon = NULL,
+    footnote = NULL) |> 
+  unclass() |> cat()
+
+
+```
 
 ```{r make-base-table-illustration}
 #| cache: false
