@@ -420,7 +420,7 @@ make_table_display <- function(
 table_base_illu_list_display <- mapply(
   \(table, index) {
     table |> 
-      dplyr::arrange(stadium) |>
+      dplyr::arrange(stadium, species) |>
       make_table_display(
         data_table = _,
         cols_id = c("species", "stadium"),
@@ -518,7 +518,7 @@ table_base_illu_list_upd |>
         paste(x = _, collapse = ", "), 
       scope_verbose)
   ) |>
-  dplyr::arrange(stadium) |>
+  dplyr::arrange(stadium, species) |>
   make_table_display(
     data_table = _,
     cols_id = c("species", "stadium"),
@@ -540,7 +540,7 @@ table_base_illu_list_upd |>
 table_filtered_illu_list_display <- mapply(
   \(table, index) {
     table |>
-      dplyr::arrange(stadium) |>
+      dplyr::arrange(stadium, species) |>
       make_table_display(
         data_table = _,
         cols_id = c("species", "stadium"),
