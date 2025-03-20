@@ -332,8 +332,8 @@ area_scope_lowprior_expr <- '
        grepl("ongekend|weet het niet", area_intro)) |
       (grepl("sporadisch", stadium) &
          grepl("detection", scope_type) &
-         grepl("ongekend|weet het niet", area_intro) &
-         grepl("niet voldoende gekend|weet het niet", area_dist)) |
+         (grepl("ongekend|weet het niet", area_intro) |
+         grepl("niet voldoende gekend|weet het niet", area_dist))) |
       (grepl("beperkt", stadium) &
          grepl("distribution|abundance", scope_type) &
          grepl("niet voldoende gekend|weet het niet", area_dist))) &
