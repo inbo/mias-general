@@ -284,7 +284,18 @@ args_factorize <- list(
                    c("afwezig",
                      "sporadisch aanwezig",
                      "beperkt gevestigd",
-                     "wijdverspreid")
+                     "wijdverspreid"),
+                   c(
+                     "freshwater",
+                     "freshwater, brackishwater",
+                     "freshwater, brackishwater, marine",
+                     "freshwater, terrestrial",
+                     "terrestrial",
+                     "terrestrial, brackishwater",
+                     "terrestrial, freshwater, brackishwater",
+                     "marine",
+                     "brackishwater, marine"
+                   )
   )
 )
 #
