@@ -176,7 +176,9 @@ table_filtered_illu_list_upd <- lapply(
       scope_boolean == 1 & grepl("highprior", scope_prior) ~ 
         kableExtra::cell_spec(x = method_all, bold = TRUE),
       scope_boolean == 1 & grepl("lowprior", scope_prior) ~ 
-        scope_prior_symbol,
+        # setup so that later highlighting does not break
+        paste0(kableExtra::cell_spec(x = method_all, color = "lightgrey"), ", ", scope_prior_symbol ),
+        #scope_prior_symbol,
       scope_boolean == 0 ~ 
         kableExtra::cell_spec(x = scope_boolean_symbol, color = "lightgrey")
     ),
@@ -189,44 +191,49 @@ table_filtered_illu_list_upd <- lapply(
 ```{r highlight-symbols-illustration}
 
 tmp_fun <- function(table, symbol){
-      dplyr::mutate(
-      .data = table,
-      scope_verbose = dplyr::case_when(
-        grepl(symbol, scope_verbose) ~ kableExtra::cell_spec(
-          x = scope_verbose,
-          color = "coral",
+  dplyr::mutate(
+    .data = table,
+    scope_verbose = dplyr::case_when(
+      grepl(symbol, scope_verbose) ~ paste0(
+        # remove text after last comma
+        sub("([^,]*)$"," ", scope_verbose),
+        kableExtra::cell_spec(
+          # remove text before and including last comma
+          x = sub('.*\\,', "", scope_verbose),
+          color = color_hl,
           bold = TRUE
-        ),
-        TRUE ~ scope_verbose
-      )
+        )
+      ),
+      TRUE ~ scope_verbose
     )
+  )
   
 }
 table_base_illu_list_upd <- mapply(
   tmp_fun,
   table_base_illu_list_upd,
+  # prep for grepl
   symbols_base_list |>
-    purrr::modify_at("management_exists",
-                     \(x) paste0("\\", symbols_base_list$management_exists)) |>
-    purrr::modify_at("management_eval",
-                     \(x) paste0("\\", symbols_base_list$management_eval)) |>
-    purrr::modify_at("method",
-                     \(x) paste0("\\", symbols_base_list$method)),
+    lapply(X = _, FUN = \(x) 
+           gsub(pattern = "\\$", replacement = "", x = x) |>
+             gsub(pattern = "\\\\d", replacement = "\\\\\\\\d", x = _) |>
+             gsub(pattern = "\\\\b", replacement = "\\\\\\\\b", x = _)
+           ),
   SIMPLIFY = FALSE
 )
-#
 table_filtered_illu_list_upd <- mapply(
   tmp_fun,
   table_filtered_illu_list_upd,
-  symbols_filtered_list|>
-    purrr::modify_at("observation",
-                     \(x) paste0("\\", symbols_filtered_list$observation)) |>
-    purrr::modify_at("area",
-                     \(x) paste0("\\", symbols_filtered_list$area)) |>
-    purrr::modify_at("globalscore",
-                     \(x) paste0("\\", symbols_filtered_list$globalscore)),
+  # prep for grepl
+  symbols_filtered_list |>
+    lapply(X = _, FUN = \(x) 
+           gsub(pattern = "\\$", replacement = "", x = x) |>
+             gsub(pattern = "\\\\t", replacement = "\\\\\\\\t", x = _) |>
+             gsub(pattern = "\\\\a", replacement = "\\\\\\\\a", x = _)
+           ),
   SIMPLIFY = FALSE
 )
+
 
 ```
 
