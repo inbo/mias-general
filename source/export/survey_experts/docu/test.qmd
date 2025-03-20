@@ -484,7 +484,7 @@ table_base_illu_list_display$method |> unclass() |> cat()
 #| results: asis
 #| classes: .center-table
 
-table_base_illu_final <- table_base_illu_list_upd |> 
+table_base_illu_list_upd |> 
   dplyr::last() |>
   dplyr::mutate(
     scope_verbose = dplyr::case_when(
@@ -492,7 +492,12 @@ table_base_illu_final <- table_base_illu_list_upd |>
       TRUE ~ scope_verbose
     ),
     # don't highlight symbol
-    scope_verbose = gsub("coral", "black", scope_verbose)
+    scope_verbose = gsub(
+      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |> 
+        paste(x = _, collapse = ", "), 
+      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |> 
+        paste(x = _, collapse = ", "), 
+      scope_verbose)
   ) |>
   dplyr::arrange(stadium) |>
   make_table_display(
