@@ -30,6 +30,14 @@ load(paste0(response_data_path, "tables/", "table_filtered_illustration.rda"))
 
 ```
 
+```{r define-colors}
+
+color_hl = "#FA8775"
+color_meth_a = "#0000FF"
+color_meth_b = "#FFB14E" # "#CD34B5"
+
+```
+
 ```{r define-function-add-symbols}
 
 add_symbols <- function(
@@ -412,7 +420,7 @@ table_base_illu_list_display <- mapply(
             dplyr::across(
               tidyselect::starts_with("scope"),
               \(y) dplyr::case_when(
-                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = "coral"),
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = color_hl),
                 TRUE ~ y
               )
             )
@@ -532,7 +540,7 @@ table_filtered_illu_list_display <- mapply(
             dplyr::across(
               tidyselect::starts_with("scope"),
               \(y) dplyr::case_when(
-                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = "coral"),
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = color_hl),
                 TRUE ~ y
               )
             )
