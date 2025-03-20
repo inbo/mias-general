@@ -211,7 +211,11 @@ levels_milieu <- c(
   "freshwater, brackishwater, marine",
   "freshwater, terrestrial",
   "terrestrial",
-  "terrestrial, brackishwater")
+  "terrestrial, brackishwater",
+  "terrestrial, freshwater, brackishwater",
+  "marine",
+  "brackishwater, marine"
+)
 #
 # colors stadium (cols4all - palette: met.lakota)
 cols_stadium <- data.frame(
