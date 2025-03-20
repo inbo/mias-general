@@ -22,7 +22,6 @@ assertthat::are_equal(
   res_meth_recoded$species |> unique() |> sort(),
   res_comb_upd$species |> unique() |> sort()
   )
-
 #
 #
 #
@@ -232,9 +231,9 @@ table_base_skeleton <- dplyr::full_join(
   x = _,
   y = table_scores
 ) |> dplyr::full_join(
-    x = _,
-    y = table_method
-  )
+  x = _,
+  y = table_method
+)
 #
 #
 # --- define conditions for base table (step 1) ---------------
@@ -493,7 +492,7 @@ create_base_filtered_table <- function(
 #
 #
 # --- create base table ---------------
-
+#
 table_base <- create_base_filtered_table(
   .table_base_skeleton = table_base_skeleton
   )
@@ -631,11 +630,20 @@ table_base_illu_skeleton <- table_base_illu_stadium |>
       TRUE ~ 1000
     )
   ) |>
+  dplyr::arrange(
+    match(stadium, c("afwezig",
+                     "sporadisch aanwezig",
+                     "beperkt gevestigd",
+                     "wijdverspreid"))
+    ) |>
   dplyr::mutate(
-    species = paste("species", dplyr::row_number())
+    species = paste("species", LETTERS[dplyr::row_number()])
   ) |>
-  tidyr::crossing(
-    method_all = c("method A")
+  dplyr::mutate(
+    method_all = dplyr::case_when(
+      dplyr::row_number() < 10 ~ "methode A",
+      TRUE ~ "methode B"
+      )
   ) |>
   tidyr::crossing(
     table_scope |> dplyr::distinct(dplyr::pick(tidyselect::starts_with("scope")))
