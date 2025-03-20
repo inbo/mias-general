@@ -278,7 +278,7 @@ footnote_filtered <- table_filtered_upd |>
 ```{r factorize-data-for-display}
 
 args_factorize <- list(
-  varnames = c("scope_type", "stadium"),
+  varnames = c("scope_type", "stadium", "prius_milieu"),
   varlevels = list(c("detection",
                      "inventory",
                      "distribution",
@@ -298,6 +298,7 @@ args_factorize <- list(
                      "terrestrial, brackishwater",
                      "terrestrial, freshwater, brackishwater",
                      "marine",
+                     "marine, brackisch, freshwater",
                      "brackishwater, marine"
                    )
   )
