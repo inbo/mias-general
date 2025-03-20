@@ -52,6 +52,17 @@ table_scope <- res_comb_upd |>
 #
 #
 #
+# --- create table: impact in conservation areas ---------------
+#
+#
+table_impact <- res_comb_upd |>
+  dplyr::filter(grepl("C2", question_id), !grepl("followup", question_text)) |>
+  # impact in natuurgebieden
+  dplyr::rename(impact_nat = "response_text") |>
+  dplyr::select(tidyselect::all_of(c("species", "stadium", "prius_stadium", "impact_nat")))
+#
+#
+#
 # --- create table: monitoring area ---------------
 #
 #
@@ -210,6 +221,9 @@ table_base_skeleton <- dplyr::full_join(
   y = table_area
 ) |> dplyr::full_join(
   x = _,
+  y = table_impact
+) |> dplyr::full_join(
+  x = _,
   y = table_management
 ) |> dplyr::full_join(
   x = _,
@@ -238,7 +252,9 @@ stadium_scope_1_expr <- '
      grepl("distribution|abundance", scope_type)) |
   (grepl("wijd", stadium) &
      grepl("detection", scope_type) &
-     grepl("BUI", prius_stadium))
+     grepl("BUI", prius_stadium) &
+     grepl("vooral in natuur|zowel binnen als buiten natuur", impact_nat)
+     )
      '
 stadium_scope_0_motivation <-
   "scope not relevant due to invasion stadium"
@@ -502,8 +518,11 @@ table_base_illu_stadium <- table_base_skeleton |>
   dplyr::distinct(stadium)
 #
 table_base_illu_prius_stadium <- table_base_skeleton |>
-  dplyr::filter(grepl("wijd", stadium) & grepl("BUI", prius_stadium)) |>
-  dplyr::distinct(stadium, prius_stadium) |>
+  dplyr::filter(grepl("wijd", stadium) &
+                  grepl("BUI", prius_stadium) &
+                  grepl("vooral in natuur|zowel binnen als buiten natuur", impact_nat)
+                  ) |>
+  dplyr::distinct(stadium, prius_stadium, impact_nat) |>
   tibble::add_row() |>
   tidyr::fill(stadium)
 #
