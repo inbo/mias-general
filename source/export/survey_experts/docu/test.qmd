@@ -1,13 +1,17 @@
 ---
-title: "test"
-author: "Janne Adolf"
+title: "Plan of action"
+author: "Janne Adolf, Diederik Strubbe, Tim Adriaens, Thierry Onkelinx"
 format: 
   html:
     toc: true
     toc-location: left
-    theme: lux
+    toc-depth: 4
+    toc-expand: true
+    theme: yeti
     number-sections: true
+    number-depth: 3
 execute: 
+  eval: true
   echo: false
   cache: false
 ---
