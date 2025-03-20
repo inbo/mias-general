@@ -1025,3 +1025,44 @@ table_filtered_upd |>
 
 ```
 
+## Synergies
+
+
+### Plants
+
+```{r synergies-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+
+
+tmp <- table_filtered_upd |> 
+  dplyr::filter(grepl("plant", kingdom) & grepl("highprior", scope_prior))
+
+
+```
+
+
+### Animals
+
+```{r synergies-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+
+tmp <- table_filtered_upd |> 
+  dplyr::filter(grepl("dier", kingdom) & grepl("highprior", scope_prior)) |>
+  tidyr::pivot_wider(
+    id_cols = c(scope_type, prius_milieu),
+    names_from = method_all,
+    values_from = vern_name_nld
+    ) |> 
+  tidyr::unnest(
+    data = _,
+    cols = kreeftenvallen # c(`environmental DNA: water`)
+    )
+
+
+```
