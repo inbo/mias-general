@@ -4,10 +4,12 @@ factorize <- function(
     varlevels
 ) {
   for (i in seq_along(varnames)) {
-    dataframe  <- dataframe  |>
-      dplyr::mutate(
-        !!varnames[i] := factor(get(varnames[i]), levels = varlevels[[i]])
-      )
+    if (varnames[i] %in% colnames(dataframe)) {
+      dataframe  <- dataframe  |>
+        dplyr::mutate(
+          !!varnames[i] := factor(get(varnames[i]), levels = varlevels[[i]])
+        )
+    }
   }
   return(dataframe)
 }
