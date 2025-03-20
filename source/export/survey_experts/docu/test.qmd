@@ -100,15 +100,7 @@ add_symbols <- function(
     # final formatting symbols
     dplyr::mutate(
       scope_boolean_symbol = gsub("NA, ", "", scope_boolean_symbol),
-      scope_boolean_symbol = dplyr::case_when(
-        !is.na(scope_boolean_symbol) ~ paste0("$", scope_boolean_symbol, "$"),
-        TRUE ~ NA_character_
-      ),
-      scope_prior_symbol = gsub("NA, ", "", scope_prior_symbol),
-      scope_prior_symbol = dplyr::case_when(
-        !is.na(scope_prior_symbol) ~ paste0("$", scope_prior_symbol, "$"),
-        TRUE ~ NA_character_
-      )
+      scope_prior_symbol = gsub("NA, ", "", scope_prior_symbol)#,
     ) |>
     dplyr::ungroup()
 }
@@ -118,16 +110,16 @@ add_symbols <- function(
 ```{r add-symbols}
 
 symbols_base_list <- list(
-  stadium = "\\circ",
-  area = "\\#",
-  management_exists = "\\dagger",
-  management_eval = "\\ddagger",
-  method = "\\bot"
+  stadium = "$\\circ$", 
+  area = "$\\#$", 
+  management_exists = "$\\dagger$", 
+  management_eval = "$\\ddagger$",
+  method = "$\\bot$"
 )
 symbols_filtered_list <- list(
-  observation = "\\triangle",
-  area = "\\times",
-  globalscore = "\\ast"
+  observation = "$\\triangle$",
+  area = "$\\times$",
+  globalscore = "$\\ast$"
 )
 table_base_filtered_upd <- add_symbols(table_base_filtered)
 table_base_illu_list_upd <- lapply(table_base_illu_list, add_symbols)
