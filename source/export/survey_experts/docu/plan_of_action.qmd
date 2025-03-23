@@ -1029,41 +1029,236 @@ table_filtered_upd |>
 ## Synergies
 
 
-### Plants
-
-```{r synergies-plants}
-#| results: asis
-#| cache: false
-#| classes: .center-table
-
-
-
-tmp <- table_filtered_upd |> 
-  dplyr::filter(grepl("plant", kingdom) & grepl("highprior", scope_prior))
-
-
-```
-
-
 ### Animals
 
-```{r synergies-animals}
-#| results: asis
-#| cache: false
-#| classes: .center-table
+```{r synergies-animals-prep}
+#| warning: false
+#| message: false
+#| 
+table_filtered_animals <- table_filtered_upd |> 
+  dplyr::filter(grepl("dier", kingdom) & grepl("highprior", scope_prior)) 
+methods_animals <- setNames(
+  object = table_filtered_animals$method_all |> unique() |> as.list(),
+  nm = table_filtered_animals$method_all |> unique() |> 
+    gsub("\\:", "", x = _) |> gsub("\\s", "_", x = _)
+)
+#
+# reshape to dataframe with species list per scope type and method
+table_grouped_animals <- lapply(
+  as.list(methods_animals),
+  function(table, method) {
+    table |> 
+      tidyr::pivot_wider(
+        id_cols = c(scope_type, prius_milieu),
+        names_from = method_all,
+        values_from = species
+      ) |> 
+      dplyr::select(
+        tidyselect::all_of(c("scope_type", "prius_milieu", method))
+      ) |>
+      tidyr::unnest(data = _, cols = method) |>
+      dplyr::rename( species = method) |> 
+      dplyr::mutate(
+        method = method,
+        n_species = dplyr::n(),
+        .by = scope_type
+      )
+  },
+  table = table_filtered_animals
+) |> 
+  dplyr::bind_rows() |>
+  dplyr::left_join(
+    x = _,
+    y = table_filtered_animals |> 
+      dplyr::distinct(species, vern_name_nld)
+  )
+#
+# arrange according to scope_type and n_species in method
+table_grouped_animals <- do.call(
+  what = factorize, 
+  args = args_factorize |> append(list(dataframe = table_grouped_animals))
+  ) |>
+  dplyr::arrange(
+    scope_type,
+    n_species |> dplyr::desc()
+  )
+# 
+# reshape to list containing a (species , milieu) x methods data frame per scope 
+scope_type_list <- setNames(
+  object = table_grouped_animals$scope_type |> levels() |> as.list(),
+  nm = table_grouped_animals$scope_type |> levels()
+)
+table_grouped_animals_list <- lapply(
+  scope_type_list, 
+  function(scope, table){
+    table |> 
+      dplyr::filter(scope_type == scope) |>
+      tidyr::pivot_wider(
+        id_cols = c(scope_type, species, vern_name_nld, prius_milieu),
+        names_from = method,
+        names_prefix = "method_",
+        values_from = n_species
+      )
+  },
+  table = table_grouped_animals
+)
 
+```
 
-tmp <- table_filtered_upd |> 
-  dplyr::filter(grepl("dier", kingdom) & grepl("highprior", scope_prior)) |>
-  tidyr::pivot_wider(
-    id_cols = c(scope_type, prius_milieu),
-    names_from = method_all,
-    values_from = vern_name_nld
-    ) |> 
-  tidyr::unnest(
-    data = _,
-    cols = kreeftenvallen # c(`environmental DNA: water`)
+```{r define-function-make-table-synergies-display}
+
+make_table_syn_display <- function(
+    data_table,
+    cols_id = c(
+      "species",
+      "vern_name_nld",
+      "prius_milieu"
     )
+) {
+  
+  table_i <- data_table |>
+    dplyr::select(-scope_type) |>
+    dplyr::arrange(prius_milieu) |>
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::starts_with("method_"),
+        \(x) dplyr::case_when(
+          !is.na(x) ~ kableExtra::cell_spec(
+            x = x,
+            color = "white",
+            background = color_hl
+          ),
+          TRUE ~ NA_character_
+        )
+      )
+    ) 
+  colnames_upd <- c(
+    colnames(table_i[seq_along(cols_id)]),
+    LETTERS[1:(ncol(table_i) - length(cols_id))]
+  )
+  footnote_i <- c(
+    grep("method_", colnames(table_i), value = TRUE) |> gsub("method_", "", x = _)
+  )
+  table_i |>
+    knitr::kable(
+      x = _,
+      format = "html",
+      escape = FALSE,
+      col.names = colnames_upd,
+      table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+    ) |>
+    # background of id cols
+    kableExtra::column_spec(
+      column = seq_along(cols_id),
+      background = "grey97",
+      width_min = "220px",
+    ) |>
+    # borders of method cols
+    #  width
+    kableExtra::column_spec(
+      column = (length(cols_id) + 1):ncol(table_i),
+      width_min = "20px",
+      width_max = "20px",
+      include_thead = TRUE,
+      border_right = "2px solid #f7f7f7"
+    ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = c("condensed", "hover"), # "responsive"
+      full_width = FALSE,
+      position = "left",
+      font_size = 11
+    ) |>
+    kableExtra::collapse_rows(
+      columns = seq_along(cols_id),
+      valign = "top"
+    ) |>
+    kableExtra::add_header_above(
+      header = c(
+        " " = 3,
+        "method" = ncol(table_i) - length(cols_id)
+      ),
+      extra_css = "border-bottom: 1.5px solid"
+    ) |>
+    #kableExtra::row_spec(
+    #  row = 0, 
+    #  angle = -90
+    #  #extra_css = 'transform-origin: bottom left; text-align: left; padding: 10px'
+    #extra_css = 
+    #  'transform: rotate(-90deg); height: 200px;'
+    #) |>
+    kableExtra::row_spec(
+      row = 1:nrow(table_i),
+      # row height
+      extra_css = 'padding: 4px;'
+    ) |>
+    kableExtra::footnote(
+      symbol = footnote_i,
+      symbol_manual = LETTERS[1:(ncol(table_i) - length(cols_id))]
+    ) 
+}
 
 
 ```
+
+
+```{r synergies-animals-make-tables}
+#| warning: false
+#| message: false
+#| cache: false
+
+table_grouped_animals_display_list <- lapply(
+  scope_type_list,
+  \(x) make_table_syn_display(data_table = table_grouped_animals_list[[x]])
+)
+
+```
+
+
+#### Synergies between high-priority species
+
+Per surveillance/monitoring scope, the following tables reveal method-related synergies between species.
+If a species is covered by one of the methods reported for the respective scope, the table cell is highighted and the total number of species covered by that method is displayed.
+
+We might use these tables to identify the x largest species groups covered by the same method within similar habitats.
+For these x groups we could proceed with the detailed planning of surveillance/monitoring schemes.
+
+Examples in the following tables:
+
+- Table for scope **detection**: 
+    - We see that **eDNA** (here method 'A') is suited for the detection of 7 species (crayfish and fish) that (also) occur in **freshwater habitats**
+    - **Electrofishing and/or trapping** (here methods 'C', 'D', 'E') could be used for putting positive findings to a more specific test
+
+- Table for scope **distribution**:
+    - We see that **eDNA** (here method 'B') is suited for determining the distribution of 6 species that (also) occur in **freshwater habitats** (4 crayfish, crab, and fish, 2 mammals)
+        - the method could again be backed-up by **electrofishing and/or trapping** (here methods 'D', 'E', 'G') or by **cameratraps** (here method 'C')
+    - We also see that **camera traps** could be used for 4 (also) **terrestrial** species
+
+- Table for scope **abundance**:
+    - We see that **visual surveys** (here method 'A') are suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 crayfish, 1 mammal) 
+    - We see that **eDNA** (here method 'B') is suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 crab, 1 fish) 
+    - We see that **electrofishing** (here method 'C') is suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 crayfish, 1 fish) 
+    - We see that **trapping** (here method 'D') is suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 fish, 1 crab) 
+    - We see that **passive acoustic monitoring** (here method 'E') is suited to determine the abundance of 3 (also) terrestrial species (3 mammals) 
+    
+- Table for scope **abundance after management**:
+    - We see that **eDNA** (here method 'A') is suited to determine the abundance after management of 3 (also) freshwater species (1 amphibian, 1 crab, 1 mammal) 
+    
+It is again possible to use the survey-derived global priority scores to rank order these groups.
+
+
+```{r synergies-animals-print}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+for (i in scope_type_list |> names()){
+  cat(stringr::str_glue("##### Scope: {i}<br>"))
+  table_grouped_animals_display_list[[i]] |>
+    unclass() |> 
+    cat()
+  cat("<br>")
+}
+
+```
+
