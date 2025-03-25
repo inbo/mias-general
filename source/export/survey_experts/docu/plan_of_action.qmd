@@ -1213,52 +1213,126 @@ table_grouped_animals_display_list <- lapply(
 
 ```
 
-
 #### Synergies between high-priority species
 
 Per surveillance/monitoring scope, the following tables reveal method-related synergies between species.
-If a species is covered by one of the methods reported for the respective scope, the table cell is highighted and the total number of species covered by that method is displayed.
+If a species is covered by one of the methods reported for the respective scope, the table cell is filled and the total number of species covered by that method is displayed.
 
 We might use these tables to identify the x largest species groups covered by the same method within similar habitats.
 For these x groups we could proceed with the detailed planning of surveillance/monitoring schemes.
 
-Examples in the following tables:
+<br>
 
-- Table for scope **detection**: 
-    - We see that **eDNA** (here method 'A') is suited for the detection of 7 species (crayfish and fish) that (also) occur in **freshwater habitats**
-    - **Electrofishing and/or trapping** (here methods 'C', 'D', 'E') could be used for putting positive findings to a more specific test
-
-- Table for scope **distribution**:
-    - We see that **eDNA** (here method 'B') is suited for determining the distribution of 6 species that (also) occur in **freshwater habitats** (4 crayfish, crab, and fish, 2 mammals)
-        - the method could again be backed-up by **electrofishing and/or trapping** (here methods 'D', 'E', 'G') or by **cameratraps** (here method 'C')
-    - We also see that **camera traps** could be used for 4 (also) **terrestrial** species
-
-- Table for scope **abundance**:
-    - We see that **visual surveys** (here method 'A') are suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 crayfish, 1 mammal) 
-    - We see that **eDNA** (here method 'B') is suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 crab, 1 fish) 
-    - We see that **electrofishing** (here method 'C') is suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 crayfish, 1 fish) 
-    - We see that **trapping** (here method 'D') is suited to determine the abundance of 3 (also) freshwater species (1 amphibian, 1 fish, 1 crab) 
-    - We see that **passive acoustic monitoring** (here method 'E') is suited to determine the abundance of 3 (also) terrestrial species (3 mammals) 
-    
-- Table for scope **abundance after management**:
-    - We see that **eDNA** (here method 'A') is suited to determine the abundance after management of 3 (also) freshwater species (1 amphibian, 1 crab, 1 mammal) 
-    
-It is again possible to use the survey-derived global priority scores to rank order these groups.
+##### Scope detection
 
 
-```{r synergies-animals-print}
+```{r synergies-animals-display-detection}
+#| results: asis
+#| cache: false
+#| eval: true
+
+table_grouped_animals_display_list$detection 
+
+```
+
+- We see that **eDNA** is suited for the detection of 8 species (crayfish, fish, 1 mammal) that occur in (partly) **freshwater** habitats
+    - **Electrofishing** and/or **trapping** could be used for putting positive findings to a more specific test
+- Also, **visual surveys** are suited for the detection of 5 (6-1) (partly) **terrestrial** species
+- Finally, **cameratraps** are suited for the detection of 3 (partly) **terrestrial** species
+
+<br>
+
+##### Scope inventory
+
+```{r synergies-animals-display-inventory}
 #| results: asis
 #| cache: false
 #| classes: .center-table
 #| eval: true
 
-for (i in scope_type_list |> names()){
-  cat(stringr::str_glue("##### Scope: {i}<br>"))
-  table_grouped_animals_display_list[[i]] |>
-    unclass() |> 
-    cat()
-  cat("<br>")
-}
+table_grouped_animals_display_list$inventory
 
 ```
+
+- This inventory will be a result of craywatch
+
+<br>
+
+##### Scope distribution
+
+```{r synergies-animals-display-distribution}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_animals_display_list$distribution
+
+```
+
+- We see that **visual surveys** could be used for at least 5 (partly) **terrestrial** species
+- Also, **eDNA** is suited for determining the distribution of 6 species that occur in (partly) **freshwater** habitats (1 amphibian, 1 crayfish, 1 fish, 1 crab, 2 mammals)
+    - the method could again be backed-up by **electrofishing** and/or **trapping** (in case of the non-mammals) or by **camera traps** (in case of the mammals)
+- Finally, **camera traps** could also be used for 5 (partly) **terrestrial** species
+
+<br>
+
+##### Scope abundance
+
+```{r synergies-animals-display-abundance}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_animals_display_list$abundance
+
+```
+
+- We see that **visual surveys** are suited to determine the abundance of 2 **terrestrial** species
+- Also, **eDNA** is suited to determine the abundance of 3 (partly) **freshwater** species (1 amphibian, 1 crab, 1 fish) 
+- Also, **trapping** is suited to determine the abundance of 3 (partly) **freshwater** species
+- Also, **electrofishing** is suited to determine the abundance of 3 (partly) **freshwater** species (1 amphibian, 1 fish, 1 crab)
+
+<br>
+
+##### Scope distribution after management
+
+```{r synergies-animals-display-distribution-management}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_animals_display_list$distribution_management
+
+```
+
+- We see that **visual surveys** are suited to determine the distribution after management of 2 (partly) **terrestrial** species
+- Also, **camera traps** are suited to determine the distribution after management of 2 (partly) **terrestrial** species
+
+<br>
+
+##### Scope abundance after management
+
+```{r synergies-animals-display-abundance-management}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_animals_display_list$abundance_management
+
+```
+
+- We see that **visual surveys** are suited to determine the abundance after management of 2 **terrestrial** species
+- Also, **eDNA** is suited to determine the abundance after management of 2 (partly) **freshwater** species (1 amphibian, 1 crab) 
+- Also, **trapping** is suited to determine the abundance after management of 2 (partly) **freshwater** species 
+- Also, **camera traps** are suited to determine the abundance after management of 2 **terrestrial** species
+
+<br>
+
+#### Synergies between high- and low-priority species
+
+Once we have identified x high-priority species groups to tackle, we can search for method-related synergies between the chosen high-priority and low-priority species.
 
