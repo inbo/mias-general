@@ -166,7 +166,11 @@ table_method <- dplyr::full_join(
     ),
   y = table_method_best_upd
 ) |>
-  dplyr::select(tidyselect::contains(c("species", "method")))
+  dplyr::select(tidyselect::contains(c("species", "method"))) |>
+  # fill method scope for non-best methods for more conservative filtering
+  dplyr::group_by(species) |>
+  tidyr::fill(method_scope, .direction = "downup") |>
+  dplyr::ungroup()
 #
 #
 #
