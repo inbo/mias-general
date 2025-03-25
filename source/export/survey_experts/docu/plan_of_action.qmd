@@ -434,7 +434,7 @@ We employ the following working definitions:
 ## Detection
 
 - *Purpose*:
-    - Early identification of new invasive species in Flanders
+    - Early identification of new invasive alien species
     - Maximize chance of detection (through probability of presence and probability of detection)
     - Enable rapid responses
 - *Methods*:
@@ -456,23 +456,39 @@ Definition here.
 
 ::: {.callout-note icon="false"}
 ## (Change in) Distribution
-Definition here.
+
+- *Purpose*:
+    - Assessing the status (and trend) of the spatial distribution of an invasive alien species
+- ...
+
 :::
 
 
 ::: {.callout-note icon="false"}
 ## (Change in) Abundance
-Definition here.
+
+- *Purpose*:
+    - Assessing the status (and trend) of the population size of an invasive alien species in its distribution area
+- ...
+
 :::
 
 ::: {.callout-note icon="false"}
 ## (Change in) Distribution after management
-Definition here.
+
+- *Purpose*:
+    - Assessing the status (and trend) of the spatial distribution of an invasive alien species within a defined area after managment has taken place
+- ...
+
 :::
 
 ::: {.callout-note icon="false"}
 ## (Change in) Abundance after management
-Definition here.
+
+- *Purpose*:
+    - Assessing the status (and trend) of the population size of an invasive alien species within a defined area after managment has taken place
+- ...
+
 :::
 
 
@@ -668,6 +684,7 @@ At this stage, we consider a method not suitable, if it *cannot measure the desi
 
 - If a method reported in the survey can **only measure presence-absence** but not relative/absolute abundance of a species,
 the scopes related to abundance become infeasible
+    - Strictly speaking, we only have this information of the 'most relevant' but not other methods listed; here we take a conservative approach assuming that if the 'most relevant' method cannot measure abundance then none of the other methods can (debatable)
 
 Having considered the suitability of methods the table looks like this:
 
@@ -1046,7 +1063,7 @@ methods_animals <- setNames(
 #
 # reshape to dataframe with species list per scope type and method
 table_grouped_animals <- lapply(
-  as.list(methods_animals),
+  methods_animals,
   function(table, method) {
     table |> 
       tidyr::pivot_wider(
