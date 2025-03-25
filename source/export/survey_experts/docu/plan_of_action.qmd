@@ -1133,11 +1133,9 @@ make_table_syn_display <- function(
       )
     ) 
   colnames_upd <- c(
-    colnames(table_i[seq_along(cols_id)]),
-    LETTERS[1:(ncol(table_i) - length(cols_id))]
-  )
-  footnote_i <- c(
-    grep("method_", colnames(table_i), value = TRUE) |> gsub("method_", "", x = _)
+    colnames(table_i)[seq_along(cols_id)],
+    colnames(table_i)[(length(cols_id) + 1): ncol(table_i)] |> 
+      gsub(pattern = "method_", replacement = "", x = _)
   )
   table_i |>
     knitr::kable(
@@ -1179,22 +1177,16 @@ make_table_syn_display <- function(
       ),
       extra_css = "border-bottom: 1.5px solid"
     ) |>
-    #kableExtra::row_spec(
-    #  row = 0, 
-    #  angle = -90
-    #  #extra_css = 'transform-origin: bottom left; text-align: left; padding: 10px'
-    #extra_css = 
-    #  'transform: rotate(-90deg); height: 200px;'
-    #) |>
+    kableExtra::row_spec(
+      row = 0,
+      extra_css = 
+      "writing-mode: vertical-lr;  transform: rotate(180deg); white-space: nowrap; padding: 5px;"
+    ) |>
     kableExtra::row_spec(
       row = 1:nrow(table_i),
       # row height
       extra_css = 'padding: 4px;'
-    ) |>
-    kableExtra::footnote(
-      symbol = footnote_i,
-      symbol_manual = LETTERS[1:(ncol(table_i) - length(cols_id))]
-    ) 
+    )  
 }
 
 
