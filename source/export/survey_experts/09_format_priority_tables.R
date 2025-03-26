@@ -314,7 +314,8 @@ make_table_display <- function(
       "stadium"
     ),
     cols_addon = c(
-      "m_score"
+      "m_score_feas",
+      "m_score_urge"
     ),
     footnote_data = footnote_base
 ){

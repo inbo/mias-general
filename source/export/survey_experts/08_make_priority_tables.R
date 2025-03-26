@@ -207,14 +207,34 @@ table_monitoring <- dplyr::full_join(
 # --- create table: survey priority scores ---------------
 #
 # calculate mean response scores
-table_scores <- res_comb_upd |>
+table_scores_feasurge <- res_comb_upd |>
   dplyr::filter(question_scored |> as.logical(), !section_skipped) |>
-  dplyr::group_by(species) |>
-  dplyr::mutate(m_score = mean(response_score, na.rm = TRUE)) |>
-  dplyr::filter(dplyr::row_number() == 1) |>
-  dplyr::ungroup() |>
-  dplyr::select(tidyselect::all_of(c("species", "m_score"))) |>
-  dplyr::arrange(dplyr::desc(m_score))
+  summarize(res_data = _, cols_id_prefix = "species") |>
+  dplyr::rename(
+    m_score = "m_feas|urge"
+  )
+table_scores_feas <- res_comb_upd |>
+  dplyr::filter(question_scored |> as.logical(), !section_skipped) |>
+  summarize(res_data = _, cols_id_prefix = "species", grepl_crit = "feas") |>
+  dplyr::rename(
+    m_score_feas = "m_feas"
+  )
+table_scores_urge <- res_comb_upd |>
+  dplyr::filter(question_scored |> as.logical(), !section_skipped) |>
+  summarize(res_data = _, cols_id_prefix = "species", grepl_crit = "urge") |>
+  dplyr::rename(
+    m_score_urge = "m_urge"
+  )
+#
+table_scores <- table_scores_feasurge |>
+  dplyr::full_join(
+    x = _,
+    y = table_scores_feas
+  ) |>
+  dplyr::full_join(
+    x = _,
+    y = table_scores_urge
+  )
 #
 # --- create base table skeleton ---------------
 #
@@ -346,14 +366,35 @@ area_scope_lowprior_motivation <-
   "scope low priority as surveillance area is not known"
 #
 #
-# ... per species depending on survey global priority score
-m_score_cutoff <- table_base_skeleton$m_score |> median()
-globalscore_scope_lowprior_expr <- '
-  (m_score < m_score_cutoff &
+# ... per species depending on survey priority scores
+m_score_feas_cutoff <- table_base_skeleton$m_score_feas |> median()
+m_score_urge_cutoff <- table_base_skeleton$m_score_urge |> median()
+score_scope_lowprior_expr_a <- '
+  (m_score_feas < m_score_feas_cutoff &
+     m_score_urge < m_score_urge_cutoff &
      scope_boolean == 1)
      '
-globalscore_scope_lowprior_motivation <-
-  "scope low priority as global priority score is smaller than cutoff"
+score_scope_lowprior_motivation_a <-
+  "scope low priority as both feasibility and urgency scores are smaller than cutoff"
+#
+score_scope_lowprior_expr_b <- '
+  (m_score_feas < m_score_feas_cutoff &
+     m_score_urge > m_score_urge_cutoff &
+     scope_boolean == 1)
+     '
+score_scope_lowprior_motivation_b <-
+  "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
+#
+score_scope_lowprior_expr_c <- '
+  (m_score_feas > m_score_feas_cutoff &
+     m_score_urge < m_score_urge_cutoff &
+     scope_boolean == 1)
+     '
+#
+score_scope_lowprior_motivation_c <-
+  "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+#
+#
 #
 #
 #
@@ -368,13 +409,17 @@ create_base_filtered_table <- function(
     .method_scope_0_expr = method_scope_0_expr,
     .observation_scope_lowprior_expr = observation_scope_lowprior_expr,
     .area_scope_lowprior_expr = area_scope_lowprior_expr,
-    .globalscore_scope_lowprior_expr = globalscore_scope_lowprior_expr,
+    .score_scope_lowprior_expr_a = score_scope_lowprior_expr_a,
+    .score_scope_lowprior_expr_b = score_scope_lowprior_expr_b,
+    .score_scope_lowprior_expr_c = score_scope_lowprior_expr_c,
     .base = TRUE
 ){
   if (.base){
     .observation_scope_lowprior_expr = "grepl('foo', stadium)"
     .area_scope_lowprior_expr = "grepl('foo', stadium)"
-    .globalscore_scope_lowprior_expr = "grepl('foo', stadium)"
+    .score_scope_lowprior_expr_a = "grepl('foo', stadium)"
+    .score_scope_lowprior_expr_b = "grepl('foo', stadium)"
+    .score_scope_lowprior_expr_c = "grepl('foo', stadium)"
   }
 
   .table_base_skeleton |>
@@ -475,14 +520,20 @@ create_base_filtered_table <- function(
         TRUE ~ scope_prior_motivation
       ),
       #
-      # ... per species depending on survey global priority score
+      # ... per species depending on survey priority scores
       scope_prior = dplyr::case_when(
-        eval(parse(text = .globalscore_scope_lowprior_expr)) ~ "lowprior",
+        eval(parse(text = .score_scope_lowprior_expr_a)) ~ "lowprior",
+        eval(parse(text = .score_scope_lowprior_expr_b)) ~ "lowprior",
+        eval(parse(text = .score_scope_lowprior_expr_c)) ~ "lowprior",
         TRUE ~ scope_prior
       ),
       scope_prior_motivation = dplyr::case_when(
-        eval(parse(text = .globalscore_scope_lowprior_expr)) ~
-          paste(scope_prior_motivation, globalscore_scope_lowprior_motivation, sep = ","),
+        eval(parse(text = .score_scope_lowprior_expr_a)) ~
+          paste(scope_prior_motivation, score_scope_lowprior_motivation_a, sep = ","),
+        eval(parse(text = .score_scope_lowprior_expr_b)) ~
+          paste(scope_prior_motivation, score_scope_lowprior_motivation_b, sep = ","),
+        eval(parse(text = .score_scope_lowprior_expr_c)) ~
+          paste(scope_prior_motivation, score_scope_lowprior_motivation_c, sep = ","),
         TRUE ~ scope_prior_motivation
       )
     ) |>
@@ -625,7 +676,15 @@ table_base_illu_skeleton <- table_base_illu_stadium |>
     y = table_base_illu_method
   )|>
   dplyr::mutate(
-    m_score = dplyr::case_when(
+    m_score_feas = dplyr::case_when(
+      (grepl("weet het niet", management_exists)|
+         grepl("zowel specifieke als ook wijdverspreide", area_intro) |
+         grepl("sporadisch", stadium) |
+         grepl("absolute populatiegrootte", management_evaluation)
+      ) ~ 0,
+      TRUE ~ 1000
+    ),
+    m_score_urge = dplyr::case_when(
       (grepl("weet het niet", management_exists)|
          grepl("zowel specifieke als ook wijdverspreide", area_intro) |
          grepl("sporadisch", stadium) |
@@ -663,7 +722,9 @@ args_create_base_filtered_table <- list(
   .method_scope_0_expr = "grepl('foo', stadium)",
   .observation_scope_lowprior_expr = "grepl('foo', stadium)",
   .area_scope_lowprior_expr = "grepl('foo', stadium)",
-  .globalscore_scope_lowprior_expr = "grepl('foo', stadium)"
+  .score_scope_lowprior_expr_a = "grepl('foo', stadium)",
+  .score_scope_lowprior_expr_b = "grepl('foo', stadium)",
+  .score_scope_lowprior_expr_c = "grepl('foo', stadium)"
 )
 
 table_base_illu_1 <- do.call(
@@ -716,7 +777,9 @@ table_filtered_illu_2 <- do.call(
   args_create_base_filtered_table
 )
 
-args_create_base_filtered_table$.globalscore_scope_lowprior_expr <- globalscore_scope_lowprior_expr
+args_create_base_filtered_table$.score_scope_lowprior_expr_a <- score_scope_lowprior_expr_a
+args_create_base_filtered_table$.score_scope_lowprior_expr_b <- score_scope_lowprior_expr_b
+args_create_base_filtered_table$.score_scope_lowprior_expr_c <- score_scope_lowprior_expr_c
 table_filtered_illu_3 <- do.call(
   create_base_filtered_table,
   args_create_base_filtered_table
@@ -725,7 +788,7 @@ table_filtered_illu_3 <- do.call(
 table_filtered_illu_list <- list(
   observation = table_filtered_illu_1,
   area = table_filtered_illu_2,
-  globalscore = table_filtered_illu_3
+  score = table_filtered_illu_3
 )
 
 # --- save results ---------------

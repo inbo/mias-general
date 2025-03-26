@@ -584,7 +584,7 @@ table_base_upd |>
   make_table_display(
     data_table = _,
     cols_id = c("species", "vern_name_nld", "prius_milieu", "stadium"),
-    cols_addon = c("m_score"),
+    cols_addon = c("m_score_feas", "m_score_urge"),
     footnote_data = footnote_base
   ) |> unclass() |> cat()
 
@@ -602,7 +602,7 @@ table_filtered_upd <- table_filtered_upd |>
     scope_type, 
     prius_milieu,
     stadium,
-    m_score |> dplyr::desc()
+    m_score_feas |> dplyr::desc()
   ) 
 
 ``` 
@@ -632,7 +632,7 @@ table_filtered_upd |>
   make_table_display(
     data_table = _,
     cols_id = c("species", "vern_name_nld", "prius_milieu", "stadium"),
-    cols_addon = c("m_score"),
+    cols_addon = c("m_score_feas", "m_score_urge"),
     footnote_data = footnote_combined
   ) |> unclass() |> cat()
 
@@ -650,7 +650,7 @@ table_filtered_upd |>
   make_table_display(
     data_table = _,
     cols_id = c("species", "vern_name_nld", "prius_milieu", "stadium"),
-    cols_addon = c("m_score"),
+    cols_addon = c("m_score_feas", "m_score_urge"),
     footnote_data = footnote_combined
   ) |> unclass() |> cat()
 
