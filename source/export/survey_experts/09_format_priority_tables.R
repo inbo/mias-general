@@ -5,9 +5,9 @@ options(knitr.kable.NA = '')
 options(knitr.table.format = "html")
 
 if (!exists("functions_path")) {
-  functions_path <- "data/survey_experts/"
+  functions_path <- "source/functions/"
 }
-list.files("source/functions", full.names = TRUE) |>
+list.files(functions_path, full.names = TRUE) |>
   lapply(source) |>
   invisible()
 
