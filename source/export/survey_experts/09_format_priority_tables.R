@@ -278,6 +278,74 @@ footnote_filtered <- table_filtered_upd |>
 footnote_combined <- dplyr::bind_rows(footnote_base, footnote_filtered)
 #
 
+#
+#
+# --- define background colors scope verbose ---------------
+#
+color_bg_1 <- "#D4D4FA"
+color_bg_2 <- "#FFC5F7"
+color_bg_3 <- "#FEFDD1"
+#
+colors_base_list <- setNames(
+  list(color_bg_1, color_bg_1, color_bg_1, color_bg_1, color_bg_2),
+  symbols_base_list |> unlist() |> unname()
+)
+colors_filtered_list <- setNames(
+  list(color_hl, color_hl, color_hl, color_hl, color_hl),
+  symbols_filtered_list |> unlist() |> unname()
+)
+#
+define_background <- function(
+    .string,
+    patternlist = colors_base_list
+){
+  i <- purrr::map(names(patternlist), ~ which(
+    stringr::str_starts(
+      .string |>
+        gsub(pattern = "\\$", replacement = "", x = _ )|>
+        gsub(pattern = "\\\\", replacement = "", x = _ ),
+      .x |>
+        gsub(pattern = "\\$", replacement = "", x = _ )|>
+        gsub(pattern = "\\\\", replacement = "", x = _ ),
+    ) == 1
+  )
+  ) |>
+    as.integer() |>
+    na.omit()
+  patternlist[[i]]
+}
+#
+#
+#
+# --- add colors scope verbose ---------------
+#
+# FIX coloring not working
+if (FALSE) {
+  # full table base
+  table_base_upd <- table_base_upd |>
+    dplyr::rowwise() |>
+    # add background color
+    # https://stackoverflow.com/questions/76520944/how-to-use-case-when-with-rowwise-for-evaluating-missing-values
+    dplyr::mutate(
+      scope_verbose_background = ifelse(
+        scope_boolean == 1,
+        "white",
+        define_background(.string = scope_boolean_symbol, patternlist = colors_base_list)
+      )
+    ) |>
+    dplyr::mutate(
+      dplyr::case_when(
+        scope_boolean == 0 ~ kableExtra::cell_spec(
+          x = scope_verbose,
+          background = scope_verbose_background
+        ),
+        scope_boolean == 0 ~ scope_verbose
+      )
+    )
+}
+#
+#
+#
 # --- factorize-data-for-display ---------------
 
 args_factorize <- list(
