@@ -47,7 +47,7 @@ assertthat::are_equal(
 #
 species_upd_tmp1 <- species |>
   dplyr::rename(sci_name_gsheet = "sci_name") |>
-  dplyr::select(dplyr::contains(c("unielijst", "kingdom", "int_groep", "species", "milieu", "sci_name", "gbif")))
+  dplyr::select(dplyr::contains(c("unielijst", "kingdom", "taxon", "int_groep", "species", "milieu", "sci_name", "gbif")))
 #
 #
 #
@@ -183,6 +183,7 @@ species_list <- list(
     variablename = c(
       "on_unionlist",
       "kingdom",
+      "taxon",
       "prius_stadium",
       "prius_milieu",
       "sci_name_gsheet",
@@ -204,6 +205,7 @@ species_list <- list(
     content = c(
       "whether the species is currently (see date) on the union list",
       "kingdom of species",
+      "taxon of species",
       "stadium in Flanders according to prius report",
       "milieu according to prius report",
       "scientific name in original gsheet",
@@ -230,6 +232,8 @@ save(species_list, file = paste0("data/processed/", Sys.Date(), "_species_list.R
 #
 #
 # --- create gsheet for review ---------------
+#
+load(paste0("data/processed/", Sys.Date(), "_species_list.Rda"))
 #
 # sheet name
 review_sheet_name <- paste0(Sys.Date(), "_CONTROL_species_list")
