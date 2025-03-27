@@ -348,14 +348,14 @@ observation_scope_lowprior_motivation <-
   "scope low priority as opportunistic observations are considered representative"
 #
 #
-# ... per species depending on whether surveillance area is known
+# ... per species depending on whether (specific) surveillance area is known
 area_scope_lowprior_expr <- '
   (((grepl("afwezig", stadium) &
        grepl("detection", scope_type) &
-       grepl("ongekend|weet het niet", area_intro)) |
+       grepl("ongekend|weet het niet|groot aantal wijdverspreide locaties", area_intro)) |
       (grepl("sporadisch", stadium) &
          grepl("detection", scope_type) &
-         (grepl("ongekend|weet het niet", area_intro) |
+         (grepl("ongekend|weet het niet|groot aantal wijdverspreide locaties", area_intro) |
          grepl("niet voldoende gekend|weet het niet", area_dist))) |
       (grepl("beperkt", stadium) &
          grepl("distribution|abundance", scope_type) &
@@ -712,6 +712,7 @@ table_base_illu_skeleton <- table_base_illu_stadium |>
     table_scope |> dplyr::distinct(dplyr::pick(tidyselect::starts_with("scope")))
   )
 #
+# create list of base tables for illustration
 #
 args_create_base_filtered_table <- list(
   .table_base_skeleton = table_base_illu_skeleton,
@@ -763,6 +764,8 @@ table_base_illu_list <- list(
   management_eval = table_base_illu_4,
   method = table_base_illu_5
 )
+#
+# create list of filtered tables for illustration
 #
 args_create_base_filtered_table$.base = FALSE
 args_create_base_filtered_table$.observation_scope_lowprior_expr <- observation_scope_lowprior_expr
