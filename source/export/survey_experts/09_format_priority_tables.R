@@ -1,5 +1,8 @@
+## this script is sourced in: docu/plan_of_action.qmd
 
 # --- load-data-and-functions ---------------
+
+# rm(list = ls())
 
 options(knitr.kable.NA = '')
 options(knitr.table.format = "html")
@@ -81,7 +84,7 @@ add_symbols <- function(
       )
     )|>
     #
-    # add sumbols for scope prior motivation
+    # add symbols for scope prior motivation
     dplyr::mutate(
       scope_prior_symbol = NA_character_,
       .after = scope_prior_motivation
@@ -116,11 +119,10 @@ add_symbols <- function(
     ) |>
     dplyr::ungroup()
 }
-
 #
-
-# --- add-symbols ---------------
-
+#
+# --- define symbols ---------------
+#
 symbols_base_list <- list(
   stadium = "$\\circ$",
   area = "$\\#$",
@@ -135,14 +137,17 @@ symbols_filtered_list <- list(
   score_b = "$u\\ast$",
   score_c = "$f\\ast$"
 )
+#
+#
+# --- add symbols ---------------
+#
 table_base_filtered_upd <- add_symbols(table_base_filtered)
 table_base_illu_list_upd <- lapply(table_base_illu_list, add_symbols)
 table_filtered_illu_list_upd <- lapply(table_filtered_illu_list, add_symbols)
-
 #
-
+#
 # --- add-scope-verbose ---------------
-
+#
 # full table base
 table_base_upd <- table_base_filtered_upd |>
   dplyr::mutate(
@@ -151,7 +156,9 @@ table_base_upd <- table_base_filtered_upd |>
       scope_boolean == 0 ~ scope_boolean_symbol
     ),
     .after = scope_boolean
-  )
+  ) |>
+  dplyr::ungroup()
+
 #
 # illustration table base
 table_base_illu_list_upd <- lapply(
@@ -166,7 +173,7 @@ table_base_illu_list_upd <- lapply(
   )
 )
 #
-# full table filtered
+# full table filtered (FIX colors later)
 table_filtered_upd <- table_base_filtered_upd |>
   dplyr::mutate(
     scope_verbose = dplyr::case_when(
@@ -181,7 +188,7 @@ table_filtered_upd <- table_base_filtered_upd |>
   ) |>
   dplyr::select(!tidyselect::starts_with("scope_boolean"))
 #
-# illustration table filtered
+# illustration table filtered  (FIX colors later)
 table_filtered_illu_list_upd <- lapply(
   table_filtered_illu_list_upd,
   \(x) dplyr::mutate(
@@ -199,11 +206,10 @@ table_filtered_illu_list_upd <- lapply(
     .after = scope_prior
   )
 )
-
 #
-
+#
 # --- highlight-symbols-illustration ---------------
-
+#
 tmp_fun <- function(table, symbol){
   dplyr::mutate(
     .data = table,
@@ -240,6 +246,7 @@ table_filtered_illu_list_upd <- mapply(
   table_filtered_illu_list_upd,
   # prep for grepl
   symbols_filtered_list |>
+    magrittr::extract(x = _, seq_along(table_filtered_illu_list_upd)) |>
     lapply(X = _, FUN = \(x)
            gsub(pattern = "\\$", replacement = "", x = x) |>
              gsub(pattern = "\\\\t", replacement = "\\\\\\\\t", x = _) |>
@@ -277,7 +284,6 @@ footnote_filtered <- table_filtered_upd |>
   )
 footnote_combined <- dplyr::bind_rows(footnote_base, footnote_filtered)
 #
-
 #
 #
 # --- define background colors scope verbose ---------------
