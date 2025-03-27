@@ -46,18 +46,18 @@ We employ the following working definitions:
 ## Detection
 
 - *Purpose*:
-    - Early identification of new invasive alien species
-    - Maximize chance of detection (through probability of presence and probability of detection)
-    - Enable rapid responses
+- Early identification of new invasive alien species
+- Maximize chance of detection (through probability of presence and probability of detection)
+- Enable rapid responses
 - *Methods*:
-    - *high sensitivity* required relative to costs; this can also be high sensitivity accumulated over repeated measurements if costs are very low
-    - *high specificity* not required as false positives less problematic than false negatives; some procedure of confirmation of initial detections needs to be in place though
-    - provide at least presence/absence information
-    - e.g., eDNA, remote sensing methods
+- *high sensitivity* required relative to costs; this can also be high sensitivity accumulated over repeated measurements if costs are very low
+- *high specificity* not required as false positives less problematic than false negatives; some procedure of confirmation of initial detections needs to be in place though
+- provide at least presence/absence information
+- e.g., eDNA, remote sensing methods
 - *Spatial and temporal coverage/resolution*:
-    - focused surveillance area at/around known/potential places of introduction and sites of sporadic occurrence; possibly also in/around conservation area
-    - complemented by broad (scale of Flanders?) "surveillance" via opportunistic observations?
-    - near-continuous measurement in space and time; this can but need not be achieved through high spatial/temporal frequency sampling: methods with low costs and/or sampling effort (e.g., remote sensing) can be used with dense sampling schemes; methods that have lower specificity in time and space (e.g., eDNA) could substitute for near-continuous sampling
+- focused surveillance area at/around known/potential places of introduction and sites of sporadic occurrence; possibly also in/around conservation area
+- complemented by broad (scale of Flanders?) "surveillance" via opportunistic observations?
+- near-continuous measurement in space and time; this can but need not be achieved through high spatial/temporal frequency sampling: methods with low costs and/or sampling effort (e.g., remote sensing) can be used with dense sampling schemes; methods that have lower specificity in time and space (e.g., eDNA) could substitute for near-continuous sampling
 
 :::
 
@@ -70,7 +70,7 @@ Definition here.
 ## (Change in) Distribution
 
 - *Purpose*:
-    - Assessing the status (and trend) of the spatial distribution of an invasive alien species
+- Assessing the status (and trend) of the spatial distribution of an invasive alien species
 - ...
 
 :::
@@ -80,7 +80,7 @@ Definition here.
 ## (Change in) Abundance
 
 - *Purpose*:
-    - Assessing the status (and trend) of the population size of an invasive alien species in its distribution area
+- Assessing the status (and trend) of the population size of an invasive alien species in its distribution area
 - ...
 
 :::
@@ -89,7 +89,7 @@ Definition here.
 ## (Change in) Distribution after management
 
 - *Purpose*:
-    - Assessing the status (and trend) of the spatial distribution of an invasive alien species within a defined area after managment has taken place
+- Assessing the status (and trend) of the spatial distribution of an invasive alien species within a defined area after managment has taken place
 - ...
 
 :::
@@ -98,7 +98,7 @@ Definition here.
 ## (Change in) Abundance after management
 
 - *Purpose*:
-    - Assessing the status (and trend) of the population size of an invasive alien species within a defined area after managment has taken place
+- Assessing the status (and trend) of the population size of an invasive alien species within a defined area after managment has taken place
 - ...
 
 :::
@@ -137,14 +137,14 @@ We thereby mainly rely on the information gathered via the expert survey on IAS 
 Complementing the expert judgements with additional information will probably be required occasionally.
 
 - **Step 1**: **Indicate cells that will definitively not be covered**, because...
-    - ... a *scope is irrelevant* for a species (e.g., detection is the only relevant scope for absent species, detection in conservation areas is only needed if a species is absent from the conservation area, if a species is not managed then monitoring after management is not needed)
-    - ... there is *no method available* to implement a scope (e.g., if available methods can only measure presence/absence of a species, but not numbers, abundance cannot be monitored)
+- ... a *scope is irrelevant* for a species (e.g., detection is the only relevant scope for absent species, detection in conservation areas is only needed if a species is absent from the conservation area, if a species is not managed then monitoring after management is not needed)
+- ... there is *no method available* to implement a scope (e.g., if available methods can only measure presence/absence of a species, but not numbers, abundance cannot be monitored)
 - **Step 2**:  **Obtain a ‘base’ table**
-    - Fill the remaining cells with the *reported methods* and *existing surveillance/monitoring schemes*
+- Fill the remaining cells with the *reported methods* and *existing surveillance/monitoring schemes*
 - **Step 3**: **Indicate cells that have higher vs. lower priority**
-    - e.g., species that reach a *critical urgency and feasibility* value can be given priority
+- e.g., species that reach a *critical urgency and feasibility* value can be given priority
 - **Step 4**: **Look for synergies based on method-overlap within scopes**
-    - Between *prior* species, as well as between *prior and non-prior* species
+- Between *prior* species, as well as between *prior and non-prior* species
 
 In the following, we detail these steps and provide a schematic illustration of how the initially presented table will change.
 
@@ -207,14 +207,14 @@ Depending on the invasion stadium (in conservation areas) only certain scopes ma
 - For **absent species**, the (potential) scope is detection (ideally) at / around places of introduction
 - For **sporadically present species** the (potential) scope is detection (ideally) at / around places of introduction and known sites  
 - For **limited established species**, the (potential) scopes are
-    - inventory,
-    - (change in) distribution (after management) at / around places of distribution and/or management,
-    - (change in) abundance (after management) at places of distribution and/or management
+- inventory,
+- (change in) distribution (after management) at / around places of distribution and/or management,
+- (change in) abundance (after management) at places of distribution and/or management
 - For **widely established species**, the (potential) scopes are
-    - detection in conservation areas if the species is not yet present/established there and is expected to have an impact,
-    - (change in) distribution (after management) at and around places of distribution and/or management,
-    - (change in) abundance (after management) at places of distribution and/or management;
-    - inventory is not considered as the distribution of widely established species is generally known (see survey results so far)
+- detection in conservation areas if the species is not yet present/established there and is expected to have an impact,
+- (change in) distribution (after management) at and around places of distribution and/or management,
+- (change in) abundance (after management) at places of distribution and/or management;
+- inventory is not considered as the distribution of widely established species is generally known (see survey results so far)
 
 Having considered the invasion stadium the table looks like this:
 
@@ -296,7 +296,7 @@ At this stage, we consider a method not suitable, if it *cannot measure the desi
 
 - If a method reported in the survey can **only measure presence-absence** but not relative/absolute abundance of a species,
 the scopes related to abundance become infeasible
-    - Strictly speaking, we only have this information of the 'most relevant' but not other methods listed; here we take a conservative approach assuming that if the 'most relevant' method cannot measure abundance then none of the other methods can (debatable)
+- Strictly speaking, we only have this information of the 'most relevant' but not other methods listed; here we take a conservative approach assuming that if the 'most relevant' method cannot measure abundance then none of the other methods can (debatable)
 
 Having considered the suitability of methods the table looks like this:
 
@@ -421,8 +421,8 @@ If the area is reported as unknown the following cells are marked as having low 
 - For **absent species** the detection scope is marked as having low priority if the introduction places are reported as unknown
 - For **sporadically present species** the detection scope is marked as having low priority if the introduction places or the distribution area are reported as unknown
 - For **limited established species**, if the distribution area is reported as unknown, 
-    - the distribution- and abundance-related scopes are marked as low priority (conditional on inventory), 
-    - while the inventory scope is marked as high priority
+- the distribution- and abundance-related scopes are marked as low priority (conditional on inventory), 
+- while the inventory scope is marked as high priority
 
 Having considered whether the surveillance/monitoring area is known the table looks like this:
 
@@ -443,7 +443,7 @@ Finally, we consider the survey’s global priority scores reflecting the *exper
 For now we calculate these scores as the grand mean across all scored questions per species, which means that each question gets the same weight.
 
 - One (or even multiple) critical value(s) can be defined in an absolute or relative (percentile) manner. 
-    - Currently, the median is employed as as a critical value(s) 
+- Currently, the median is employed as as a critical value(s) 
 - Cells associated with species that *do not reach the critical value* are marked as having low priority
 
 Having considered the global prirority score the table looks like this:
@@ -453,7 +453,7 @@ Having considered the global prirority score the table looks like this:
 #| results: asis
 #| classes: .center-table
 
-table_filtered_illu_list_display$globalscore |> unclass() |> cat()
+table_filtered_illu_list_display$score |> unclass() |> cat()
 
 ```
 
@@ -468,8 +468,8 @@ Synergies can occur...
 
 - ... between prior species resulting in groups with multiple prior species,
 - ... between prior and non-prior species. In this case we...
-    - ... indicate non-prior species that are potential ‘free riders’ under surveillance/monitoring schemes for prior species.
-    - One priority species per group can thereby be sufficient.
+- ... indicate non-prior species that are potential ‘free riders’ under surveillance/monitoring schemes for prior species.
+- One priority species per group can thereby be sufficient.
 
 
 Starting from the filtered table...
@@ -478,6 +478,7 @@ Starting from the filtered table...
 #| results: asis
 #| classes: .center-table
 
+# HERE symbols score disappeared
 table_filtered_illu_final <- table_filtered_illu_list_upd |> 
   dplyr::last() |>
   dplyr::mutate(
@@ -507,6 +508,7 @@ table_filtered_illu_final |>
 #| results: asis
 #| classes: .center-table
 
+# FIX symbols score disappeared
 table_filtered_illu_final |>
   dplyr::mutate(
     scope_verbose = dplyr::case_when(
@@ -547,13 +549,13 @@ table_base_upd <- table_base_upd |>
 The following base tables for plants and animals are sorted as follows:
 
 - First, rows are sorted by scope type relying on the order of the table columns: `r table_base_upd$scope_type |> levels()`.
-    - That is, all species for which (at least) detection is relevant/feasible appear first, 
+- That is, all species for which (at least) detection is relevant/feasible appear first, 
 followed by those for which (at least) inventory is relevant/feasible, 
 followed by those for which (at least) inventory is relevant/feasible etc., resulting in a stair step (?)/ blocked pattern.
 - Within (i.e., for each value of) scope type, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
 - Within (i.e., for each value of) milieu, rows are sorted by invasion stadium, from "absent" to "widely established".
-- Within (i.e., for each value of) invasion stadium, rows are sorted by priority score from high to low.
-
+- Within (i.e., for each value of) invasion stadium, rows are again sorted by taxon according to the order: `r table_base_upd$taxon |> levels()`.
+- Within (i.e., for each value of) taxon, rows are again sorted by feasibility priority score from high to low.
 
 ### Plants
 
@@ -603,6 +605,7 @@ table_filtered_upd <- table_filtered_upd |>
     scope_type, 
     prius_milieu,
     stadium,
+    taxon,
     m_score_feas |> dplyr::desc()
   ) 
 
@@ -612,12 +615,13 @@ The following filtered tables for plants and animals are sorted similarly to the
 
 - First, rows are sorted by scope priority, with high priority scopes on top.
 - Within (i.e., for each value of) scope priority, rows are sorted by scope type relying again on the order: `r table_base_upd$scope_type |> levels()`.
-    - That is, within the high/low priority scopes, all species for which (at least) detection is relevant/feasible appear first, 
+- That is, within the high/low priority scopes, all species for which (at least) detection is relevant/feasible appear first, 
 followed by those for which (at least) inventory is relevant/feasible, 
 followed by those for which (at least) inventory is relevant/feasible etc..
-- Within (i.e., for each value of) scope type, rows are again sorted by milieu according to the above order: `r table_base_upd$prius_milieu |> levels()`.
+- Within (i.e., for each value of) scope type, rows are again sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
 - Within (i.e., for each value of) milieu, rows are again sorted by invasion stadium, from "absent" to "widely established".
-- Within (i.e., for each value of) invasion stadium, rows are again sorted by priority score from high to low.
+- Within (i.e., for each value of) invasion stadium, rows are again sorted by taxon according to the order: `r table_base_upd$taxon |> levels()`.
+- Within (i.e., for each value of) taxon, rows are again sorted by feasibility priority score from high to low.
 
 
 
@@ -1091,6 +1095,10 @@ table_grouped_animals_display_list <- lapply(
 
 
 
+
+#### Scope detection
+
+
 ```{r synergies-animals-display-detection}
 #| results: asis
 #| cache: false
@@ -1100,14 +1108,9 @@ table_grouped_animals_display_list$detection
 
 ```
 
-- We see that **eDNA** is suited for the detection of 8 species (crayfish, fish, 1 mammal) that occur in (partly) **freshwater** habitats
-    - **Electrofishing** and/or **trapping** could be used for putting positive findings to a more specific test
-- Also, **visual surveys** are suited for the detection of 5 (6-1) (partly) **terrestrial** species
-- Finally, **cameratraps** are suited for the detection of 3 (partly) **terrestrial** species
-
 <br>
 
-##### Scope inventory
+#### Scope inventory
 
 ```{r synergies-animals-display-inventory}
 #| results: asis
@@ -1119,11 +1122,10 @@ table_grouped_animals_display_list$inventory
 
 ```
 
-- This inventory will be a result of craywatch
 
 <br>
 
-##### Scope distribution
+#### Scope distribution
 
 ```{r synergies-animals-display-distribution}
 #| results: asis
@@ -1135,14 +1137,10 @@ table_grouped_animals_display_list$distribution
 
 ```
 
-- We see that **visual surveys** could be used for at least 5 (partly) **terrestrial** species
-- Also, **eDNA** is suited for determining the distribution of 6 species that occur in (partly) **freshwater** habitats (1 amphibian, 1 crayfish, 1 fish, 1 crab, 2 mammals)
-    - the method could again be backed-up by **electrofishing** and/or **trapping** (in case of the non-mammals) or by **camera traps** (in case of the mammals)
-- Finally, **camera traps** could also be used for 5 (partly) **terrestrial** species
 
 <br>
 
-##### Scope abundance
+#### Scope abundance
 
 ```{r synergies-animals-display-abundance}
 #| results: asis
@@ -1154,14 +1152,10 @@ table_grouped_animals_display_list$abundance
 
 ```
 
-- We see that **visual surveys** are suited to determine the abundance of 2 **terrestrial** species
-- Also, **eDNA** is suited to determine the abundance of 3 (partly) **freshwater** species (1 amphibian, 1 crab, 1 fish) 
-- Also, **trapping** is suited to determine the abundance of 3 (partly) **freshwater** species
-- Also, **electrofishing** is suited to determine the abundance of 3 (partly) **freshwater** species (1 amphibian, 1 fish, 1 crab)
 
 <br>
 
-##### Scope distribution after management
+#### Scope distribution after management
 
 ```{r synergies-animals-display-distribution-management}
 #| results: asis
@@ -1173,12 +1167,10 @@ table_grouped_animals_display_list$distribution_management
 
 ```
 
-- We see that **visual surveys** are suited to determine the distribution after management of 2 (partly) **terrestrial** species
-- Also, **camera traps** are suited to determine the distribution after management of 2 (partly) **terrestrial** species
 
 <br>
 
-##### Scope abundance after management
+#### Scope abundance after management
 
 ```{r synergies-animals-display-abundance-management}
 #| results: asis
@@ -1190,14 +1182,7 @@ table_grouped_animals_display_list$abundance_management
 
 ```
 
-- We see that **visual surveys** are suited to determine the abundance after management of 2 **terrestrial** species
-- Also, **eDNA** is suited to determine the abundance after management of 2 (partly) **freshwater** species (1 amphibian, 1 crab) 
-- Also, **trapping** is suited to determine the abundance after management of 2 (partly) **freshwater** species 
-- Also, **camera traps** are suited to determine the abundance after management of 2 **terrestrial** species
-
 <br>
 
-#### Synergies between high- and low-priority species
 
-Once we have identified x high-priority species groups to tackle, we can search for method-related synergies between the chosen high-priority and low-priority species.
 
