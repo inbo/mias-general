@@ -99,8 +99,12 @@ add_symbols <- function(
         TRUE ~ scope_prior_symbol
       ),
       scope_prior_symbol = dplyr::case_when(
-        grepl("global priority score", scope_prior_motivation) ~
-          paste(scope_prior_symbol, .symbols_filtered_list$globalscore, sep = ", "),
+        grepl("feasibility and urgency scores are smaller", scope_prior_motivation) ~
+          paste(scope_prior_symbol, .symbols_filtered_list$score_a, sep = ", "),
+        grepl("urgency score is larger but feasibility score is smaller", scope_prior_motivation) ~
+          paste(scope_prior_symbol, .symbols_filtered_list$score_b, sep = ", "),
+        grepl("feasibility score is larger but urgency score is smaller", scope_prior_motivation) ~
+          paste(scope_prior_symbol, .symbols_filtered_list$score_c, sep = ", "),
         TRUE ~ scope_prior_symbol
       )
     )|>
@@ -127,7 +131,9 @@ symbols_base_list <- list(
 symbols_filtered_list <- list(
   observation = "$\\triangle$",
   area = "$\\times$",
-  globalscore = "$\\ast$"
+  score_a = "$\\ast\\ast$",
+  score_b = "$u\\ast$",
+  score_c = "$f\\ast$"
 )
 table_base_filtered_upd <- add_symbols(table_base_filtered)
 table_base_illu_list_upd <- lapply(table_base_illu_list, add_symbols)
