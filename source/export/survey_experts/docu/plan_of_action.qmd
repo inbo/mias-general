@@ -657,118 +657,174 @@ table_filtered_upd |>
 
 ```
 
+
 ## Synergies
 
 
-### Animals
-
-```{r synergies-animals-prep}
+```{r define-function-prep-data-synergies}
 #| warning: false
 #| message: false
-#| 
-table_filtered_animals <- table_filtered_upd |> 
-  dplyr::filter(grepl("dier", kingdom) & grepl("highprior", scope_prior)) 
-methods_animals <- setNames(
-  object = table_filtered_animals$method_all |> unique() |> as.list(),
-  nm = table_filtered_animals$method_all |> unique() |> 
-    gsub("\\:", "", x = _) |> gsub("\\s", "_", x = _)
-)
-#
-# reshape to dataframe with species list per scope type and method
-table_grouped_animals <- lapply(
-  methods_animals,
-  function(table, method) {
-    table |> 
-      tidyr::pivot_wider(
-        id_cols = c(scope_type, prius_milieu),
-        names_from = method_all,
-        values_from = species
-      ) |> 
-      dplyr::select(
-        tidyselect::all_of(c("scope_type", "prius_milieu", method))
-      ) |>
-      tidyr::unnest(data = _, cols = method) |>
-      dplyr::rename( species = method) |> 
-      dplyr::mutate(
-        method = method,
-        n_species = dplyr::n(),
-        .by = scope_type
-      )
-  },
-  table = table_filtered_animals
-) |> 
-  dplyr::bind_rows() |>
-  dplyr::left_join(
-    x = _,
-    y = table_filtered_animals |> 
-      dplyr::distinct(species, vern_name_nld)
+
+make_table_syn_list <- function(
+    table_filtered,
+    cols_addon = c("stadium", "prius_stadium", "taxon", "on_unionlist")
+){
+  methods <- setNames(
+    object = table_filtered$method_all |> unique() |> as.list(),
+    nm = table_filtered$method_all |> unique() |> 
+      gsub("\\:", "", x = _) |> gsub("\\s", "_", x = _)
   )
-#
-# arrange according to scope_type and n_species in method
-table_grouped_animals <- do.call(
-  what = factorize, 
-  args = args_factorize |> append(list(dataframe = table_grouped_animals))
+  #
+  # reshape to dataframe with species list per scope type and method
+  table_grouped <- lapply(
+    methods,
+    function(table, method) {
+      table |> 
+        tidyr::pivot_wider(
+          id_cols = c(scope_type, prius_milieu),
+          names_from = method_all,
+          values_from = species
+        ) |> 
+        dplyr::select(
+          tidyselect::all_of(c("scope_type", "prius_milieu", method))
+        ) |>
+        tidyr::unnest(data = _, cols = method) |>
+        dplyr::rename(species = method) |> 
+        dplyr::mutate(
+          method = method,
+          n_species = dplyr::n(),
+          .by = scope_type
+        )
+    },
+    table = table_filtered
+  ) |> 
+    dplyr::bind_rows() |>
+    dplyr::left_join(
+      x = _,
+      y = table_filtered |> 
+        dplyr::distinct(
+          dplyr::across(
+            tidyselect::all_of(
+              c("species", "vern_name_nld", cols_addon)
+            )
+          )
+        )
+    )
+  #
+  # arrange according to scope_type and n_species in method
+  table_grouped <- do.call(
+    what = factorize, 
+    args = args_factorize |> append(list(dataframe = table_grouped))
   ) |>
-  dplyr::arrange(
-    scope_type,
-    n_species |> dplyr::desc()
+    dplyr::arrange(
+      scope_type,
+      n_species |> dplyr::desc()
+    )
+  # 
+  # reshape to list containing a (species , milieu) x methods data frame per scope 
+  scope_type_list <- setNames(
+    object = table_grouped$scope_type |> levels() |> as.list(),
+    nm = table_grouped$scope_type |> levels()
   )
-# 
-# reshape to list containing a (species , milieu) x methods data frame per scope 
-scope_type_list <- setNames(
-  object = table_grouped_animals$scope_type |> levels() |> as.list(),
-  nm = table_grouped_animals$scope_type |> levels()
-)
-table_grouped_animals_list <- lapply(
-  scope_type_list, 
-  function(scope, table){
-    table |> 
-      dplyr::filter(scope_type == scope) |>
-      tidyr::pivot_wider(
-        id_cols = c(scope_type, species, vern_name_nld, prius_milieu),
-        names_from = method,
-        names_prefix = "method_",
-        values_from = n_species
-      )
-  },
-  table = table_grouped_animals
-)
+  table_grouped_list <- lapply(
+    scope_type_list, 
+    function(scope, table){
+      table |> 
+        dplyr::filter(scope_type == scope) |>
+        tidyr::pivot_wider(
+          id_cols = c("scope_type", "species", "vern_name_nld", "prius_milieu", cols_addon),
+          names_from = method,
+          names_prefix = "method_",
+          values_from = n_species
+        )
+    },
+    table = table_grouped
+  )
+  
+}
+
 
 ```
 
-```{r define-function-make-table-synergies-display}
+```{r define-functions-make-table-synergies-display}
 
-make_table_syn_display <- function(
-    data_table,
-    cols_id = c(
-      "species",
-      "vern_name_nld",
-      "prius_milieu"
-    )
+make_table_syn_display_prep <- function(
+    table,
+    cols_id = c("species", "vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu"),
+    color = color_hl
 ) {
-  
-  table_i <- data_table |>
-    dplyr::select(-scope_type) |>
-    dplyr::arrange(prius_milieu) |>
+  table_prep <- table |>
+    dplyr::select(tidyselect::all_of(cols_id), tidyselect::starts_with("method_"))
+  # move number of species to added last row
+  added_row <- table_prep |> 
+    tibble::add_row(.before = 1) |>
+    tidyr::fill(tidyselect::starts_with("method_"), .direction = "downup") |>
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::starts_with("method_"), paste0
+      )
+    ) |> 
+    dplyr::slice(1) |>
+    dplyr::mutate(
+      species = kableExtra::cell_spec(
+        x = "Number of species covered",
+        italic = TRUE
+      )
+    ) 
+  table_prep <- table_prep |>
+    dplyr::arrange(
+      prius_milieu,
+      taxon
+      ) |>
     dplyr::mutate(
       dplyr::across(
         tidyselect::starts_with("method_"),
         \(x) dplyr::case_when(
           !is.na(x) ~ kableExtra::cell_spec(
-            x = x,
-            color = "white",
-            background = color_hl
+            x = " ",
+            background = color,
+            # fill entire cell (4px )
+            extra_css = paste(
+              "margin: -4px",
+              "padding: 8px",
+              "display: flex",
+              NULL,
+              sep = "; "
+            )
           ),
           TRUE ~ NA_character_
         )
       )
-    ) 
+    )
+  if (nrow(table_prep) > 0){
+    table_prep <- table_prep |>
+      dplyr::bind_rows(x = _, y = added_row)
+  }
+}
+make_table_syn_display <- function(
+    table_prior,
+    table_secondary,
+    cols_id = c("species", "vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+) {
+  # combine tables
+  table_comb <- if (!is.null(table_secondary)) {
+    dplyr::bind_rows(table_prior, table_secondary)
+  } else {
+    table_prior
+  }
+  
+  # update column names (not rotate the id_cols)
   colnames_upd <- c(
-    colnames(table_i)[seq_along(cols_id)],
-    colnames(table_i)[(length(cols_id) + 1): ncol(table_i)] |> 
+    colnames(table_comb)[seq_along(cols_id)] |> kableExtra::cell_spec(
+      x = _,
+      extra_css = "writing-mode: horizontal-tb !important;  transform: rotate(180deg) !important;"
+    ),
+    colnames(table_comb)[(length(cols_id) + 1): ncol(table_comb)] |> 
       gsub(pattern = "method_", replacement = "", x = _)
   )
-  table_i |>
+  #
+  #
+  table_comb |>
     knitr::kable(
       x = _,
       format = "html",
@@ -780,12 +836,13 @@ make_table_syn_display <- function(
     kableExtra::column_spec(
       column = seq_along(cols_id),
       background = "grey97",
-      width_min = "220px",
+      #width_min = "220px",
+      extra_css = "white-space: nowrap;"
     ) |>
     # borders of method cols
     #  width
     kableExtra::column_spec(
-      column = (length(cols_id) + 1):ncol(table_i),
+      column = (length(cols_id) + 1):ncol(table_comb),
       width_min = "20px",
       width_max = "20px",
       include_thead = TRUE,
@@ -803,40 +860,49 @@ make_table_syn_display <- function(
     ) |>
     kableExtra::add_header_above(
       header = c(
-        " " = 3,
-        "method" = ncol(table_i) - length(cols_id)
+        " " = length(cols_id),
+        "method" = ncol(table_comb) - length(cols_id)
       ),
       extra_css = "border-bottom: 1.5px solid"
     ) |>
+    # rotate column names pertaining to methods
     kableExtra::row_spec(
       row = 0,
       extra_css = 
-      "writing-mode: vertical-lr;  transform: rotate(180deg); white-space: nowrap; padding: 5px;"
+        "writing-mode: vertical-lr;  transform: rotate(180deg); white-space: nowrap; padding: 5px;"
     ) |>
+    # adjust row height
     kableExtra::row_spec(
-      row = 1:nrow(table_i),
-      # row height
+      row = 1:nrow(table_comb),
       extra_css = 'padding: 4px;'
-    )  
+    ) |>
+    # uncolor summary rows
+    kableExtra::row_spec(
+      row = c(nrow(table_prior), nrow(table_comb)),
+      background = "white"
+    ) |>
+    kableExtra::group_rows(
+      group_label = "Primary species",
+      start_row = 1,
+      end_row = nrow(table_prior)
+    ) |>
+    (\(x)
+     if (!is.null(table_secondary)) {
+       x |>
+         kableExtra::group_rows(
+           group_label = "Secondary species",
+           start_row = nrow(table_prior) + 1,
+           end_row = nrow(table_comb)
+         )
+     } else {
+       x
+       }
+    )()
 }
 
 
 ```
 
-
-```{r synergies-animals-make-tables}
-#| warning: false
-#| message: false
-#| cache: false
-
-table_grouped_animals_display_list <- lapply(
-  scope_type_list,
-  \(x) make_table_syn_display(data_table = table_grouped_animals_list[[x]])
-)
-
-```
-
-#### Synergies between high-priority species
 
 Per surveillance/monitoring scope, the following tables reveal method-related synergies between species.
 If a species is covered by one of the methods reported for the respective scope, the table cell is filled and the total number of species covered by that method is displayed.
@@ -844,9 +910,185 @@ If a species is covered by one of the methods reported for the respective scope,
 We might use these tables to identify the x largest species groups covered by the same method within similar habitats.
 For these x groups we could proceed with the detailed planning of surveillance/monitoring schemes.
 
+Once we have identified x high-priority species groups to tackle, we can search for method-related synergies between the chosen high-priority and low-priority species.
+
+
+
+### Plants
+
+
+```{r synergies-plants-make-tables}
+#| warning: false
+#| message: false
+#| cache: false
+
+table_plants_prior_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |> 
+    dplyr::filter(
+      grepl("plant", kingdom) & 
+        grepl("highprior", scope_prior) 
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep
+  )
+table_plants_secondary_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |> 
+    dplyr::filter(
+      grepl("plant", kingdom) & 
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+tmp <- vctrs::list_drop_empty(table_plants_prior_list)
+scope_type_list_plants <- setNames(
+  object = tmp |> names() |> as.list(),
+  nm = tmp |> names() 
+)
+table_grouped_plants_display_list <- lapply(
+  scope_type_list_plants,
+  \(x) make_table_syn_display(
+    table_prior = table_plants_prior_list[[x]],
+    table_secondary = table_plants_secondary_list[[x]]
+  )
+)
+
+```
+
+
+#### Scope detection
+
+
+```{r synergies-plants-display-detection}
+#| results: asis
+#| cache: false
+#| eval: true
+
+table_grouped_plants_display_list$detection 
+
+```
+
 <br>
 
-##### Scope detection
+
+
+#### Scope distribution
+
+```{r synergies-plants-display-distribution}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_plants_display_list$distribution
+
+```
+
+
+<br>
+
+#### Scope abundance
+
+```{r synergies-plants-display-abundance}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_plants_display_list$abundance
+
+```
+
+
+<br>
+
+#### Scope distribution after management
+
+```{r synergies-plants-display-distribution-management}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_plants_display_list$distribution_management
+
+```
+
+
+<br>
+
+#### Scope abundance after management
+
+```{r synergies-plants-display-abundance-management}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+#| eval: true
+
+table_grouped_plants_display_list$abundance_management
+
+```
+
+<br>
+
+
+
+
+### Animals
+
+
+
+```{r synergies-animals-make-tables}
+#| warning: false
+#| message: false
+#| cache: false
+
+
+table_animals_prior_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |> 
+    dplyr::filter(
+      grepl("dier", kingdom) & 
+        grepl("highprior", scope_prior) 
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep
+  )
+table_animals_secondary_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |> 
+    dplyr::filter(
+      grepl("dier", kingdom) & 
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+tmp <- vctrs::list_drop_empty(table_animals_prior_list)
+scope_type_list_animals <- setNames(
+  object = tmp |> names() |> as.list(),
+  nm = tmp |> names() 
+)
+table_grouped_animals_display_list <- lapply(
+  scope_type_list_animals,
+  \(x) make_table_syn_display(
+    table_prior = table_animals_prior_list[[x]],
+    table_secondary = table_animals_secondary_list[[x]]
+  )
+)
+
+```
+
 
 
 ```{r synergies-animals-display-detection}
