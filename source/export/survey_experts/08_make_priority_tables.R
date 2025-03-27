@@ -29,7 +29,7 @@ assertthat::are_equal(
 #
 table_scope <- res_comb_upd |>
   dplyr::select(tidyselect::all_of(
-    c("species", "vern_name_nld", "kingdom", "prius_milieu", "stadium", "prius_stadium")
+    c("species", "vern_name_nld", "kingdom", "taxon", "on_unionlist", "prius_milieu", "stadium", "prius_stadium")
     )) |>
   dplyr::distinct(species, .keep_all = TRUE) |>
   tidyr::crossing(

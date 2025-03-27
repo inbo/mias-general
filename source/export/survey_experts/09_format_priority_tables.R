@@ -264,7 +264,7 @@ footnote_combined <- dplyr::bind_rows(footnote_base, footnote_filtered)
 # --- factorize-data-for-display ---------------
 
 args_factorize <- list(
-  varnames = c("scope_type", "stadium", "prius_milieu"),
+  varnames = c("scope_type", "stadium", "prius_milieu", "taxon"),
   varlevels = list(c("detection",
                      "inventory",
                      "distribution",
@@ -286,6 +286,20 @@ args_factorize <- list(
                      "marine",
                      "marine, brackisch, freshwater",
                      "brackishwater, marine"
+                   ),
+                   c(
+                     "plant",
+                     "bruinwier",
+                     "kreeftachtige",
+                     "vis",
+                     "stekelhuidige",
+                     "zoogdier",
+                     "vogel",
+                     "reptiel",
+                     "amfibie",
+                     "weekdier",
+                     "platworm",
+                     "insect"
                    )
   )
 )
