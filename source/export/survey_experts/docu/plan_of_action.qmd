@@ -10,6 +10,7 @@ format:
     theme: yeti
     number-sections: true
     number-depth: 3
+    embed-resources: true
 execute: 
   eval: true
   echo: false
