@@ -26,7 +26,18 @@ color_meth_a = "#0000FF"
 color_meth_b = "#FFB14E" # "#CD34B5"
 
 #
-
+#
+# --- round priority scores to 2 digits ---------------
+#
+table_base_filtered <- table_base_filtered |>
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::all_of(c("m_score", "m_score_feas", "m_score_urge")),
+      \(x) round(x, digits = 2)
+    )
+  )
+#
+#
 # --- define-function-add-symbols ---------------
 
 add_symbols <- function(
