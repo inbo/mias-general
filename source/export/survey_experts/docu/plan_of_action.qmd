@@ -4,8 +4,8 @@ author: "Janne Adolf, Diederik Strubbe, Tim Adriaens, Thierry Onkelinx"
 format: 
   html:
     toc: true
-    toc-location: left
-    toc-depth: 4
+    toc-location: left-body
+    toc-depth: 3
     toc-expand: true
     theme: yeti
     number-sections: true
