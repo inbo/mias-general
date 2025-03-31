@@ -2,10 +2,13 @@
 title: "docu_presentation"
 ---
 
-## Quarto
+## Overview
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+- point 1
+- point 2
+- point 3
 
-```{r}
-1 + 1
-```
+
+{{< include sections/_survey_setup.qmd >}}
+
+{{< include sections/_survey_results.qmd >}}
