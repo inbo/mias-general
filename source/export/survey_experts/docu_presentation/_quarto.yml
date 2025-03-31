@@ -20,7 +20,7 @@ format:
 
 flandersqmd:
   entity: INBO
-  level: 1
+  level: 2
   title: Presentation title
   author:
     - name:
