@@ -1,0 +1,34 @@
+project:
+  type: default
+  preview:
+    port: 4201
+    browser: true
+  render:
+    - "*.md"
+    - "*.qmd"
+    - "!LICENSE.md" #ignore LICENSE.md
+    - "!README.md" #ignore README.md
+  output-dir: ../../../../output/survey_experts/docu_presentation
+
+execute:
+  echo: false
+
+lang: en-GB
+
+format:
+  flandersqmd-revealjs: default
+
+flandersqmd:
+  entity: INBO
+  level: 1
+  title: Presentation title
+  author:
+    - name:
+        given: Janne
+        family: Adolf
+      orcid: 0000-0000-0000-0000
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+  cover: media/pexels-pixabay-355887.jpg #Photo by Pixabay: https://www.pexels.com/photo/plants-under-starry-sky-355887/
+
+
