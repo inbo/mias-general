@@ -409,7 +409,7 @@ table_filtered_illu_list_upd <- lapply(
 
 #
 
-# --- define-function-make-table-display ---------------
+# --- define function to make base or filtered tables for display ---------------
 
 make_table_display <- function(
     data_table,
@@ -500,5 +500,619 @@ make_table_display <- function(
       escape = FALSE
     )
 }
+
+# --- create list of cumulative illustrative base tables for display ---------------
+
+table_base_illu_list_display <- mapply(
+  \(table, index) {
+    table |>
+      dplyr::arrange(stadium, species) |>
+      make_table_display(
+        data_table = _,
+        cols_id = c("species", "stadium"),
+        cols_addon = NULL,
+        footnote_data = footnote_base[1:index,] |>
+          # color last row of footnote data
+          dplyr::mutate(
+            dplyr::across(
+              tidyselect::starts_with("scope"),
+              \(y) dplyr::case_when(
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = color_hl),
+                TRUE ~ y
+              )
+            )
+          )
+      )
+  },
+  table_base_illu_list_upd,
+  table_base_illu_list_upd |> seq_along(),
+  SIMPLIFY = FALSE
+)
+
+# --- create final illustrative base table for display ---------------
+
+
+table_base_illu_final_display <- table_base_illu_list_upd |>
+  dplyr::last() |>
+  dplyr::mutate(
+    scope_verbose = dplyr::case_when(
+      scope_boolean == 1 ~ method_all,
+      TRUE ~ scope_verbose
+    ),
+    # don't highlight symbol
+    scope_verbose = gsub(
+      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      scope_verbose)
+  ) |>
+  dplyr::arrange(stadium, species) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species", "stadium"),
+    cols_addon = NULL,
+    footnote_data = footnote_base
+  )
+
+# --- create list of cumulative illustrative filtered tables for display ---------------
+
+table_filtered_illu_list_display <- mapply(
+  \(table, index) {
+    table |>
+      dplyr::arrange(stadium, species) |>
+      make_table_display(
+        data_table = _,
+        cols_id = c("species", "stadium"),
+        cols_addon = NULL,
+        footnote_data = footnote_filtered[1:index,] |>
+          # color last row of footnote
+          dplyr::mutate(
+            dplyr::across(
+              tidyselect::starts_with("scope"),
+              \(y) dplyr::case_when(
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = color_hl),
+                TRUE ~ y
+              )
+            )
+          )
+      )
+  },
+  table_filtered_illu_list_upd,
+  table_filtered_illu_list_upd |> seq_along(),
+  SIMPLIFY = FALSE
+)
+
+# --- create final illustrative filtered table for display ---------------
+
+# HERE symbols score disappeared
+table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
+  dplyr::last() |>
+  dplyr::mutate(
+    # don't highlight symbol
+    scope_verbose = gsub(
+      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      scope_verbose)
+  ) |>
+  dplyr::arrange(stadium, species) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species", "stadium"),
+    cols_addon = NULL,
+    footnote_data = footnote_filtered
+  )
+
+
+# --- create full base table for display ---------------
+
+# sort base table
+table_base_upd <- table_base_upd |>
+  dplyr::arrange(
+    scope_boolean |> dplyr::desc(),
+    scope_type,
+    prius_milieu,
+    stadium,
+    taxon,
+    m_score_feas |> dplyr::desc()
+  )
+
+
+kingdom_list <- setNames(
+  list("plant", "dier"),
+  c("plant", "dier")
+)
+id_cols_display <- c("species", "vern_name_nld", "taxon", "on_unionlist",  "prius_milieu", "stadium")
+
+table_base_upd_display_list <- lapply(
+  kingdom_list,
+  \(x){
+    table_base_upd |>
+      dplyr::filter(grepl(x, kingdom)) |>
+      make_table_display(
+        data_table = _,
+        cols_id = id_cols_display,
+        cols_addon = c("m_score_feas", "m_score_urge"),
+        footnote_data = footnote_base
+      )
+  }
+)
+
+# --- create full filtered table for display ---------------
+
+# sort filtered table
+table_filtered_upd <- table_filtered_upd |>
+  dplyr::arrange(
+    scope_prior,
+    scope_type,
+    prius_milieu,
+    stadium,
+    taxon,
+    m_score_feas |> dplyr::desc()
+  )
+
+
+table_filtered_upd_display_list <- lapply(
+  kingdom_list,
+  \(x){
+    table_filtered_upd |>
+      dplyr::filter(grepl(x, kingdom)) |>
+      make_table_display(
+        data_table = _,
+        cols_id = id_cols_display,
+        cols_addon = c("m_score_feas", "m_score_urge"),
+        footnote_data = footnote_combined
+      )
+  }
+)
+
+# --- define functions to prepare and display synergy tables ---------------
+#
+#
+id_cols_syn_display <- c("species", "vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+#
+# make list with data frames containing a (species , milieu) x methods per scope
+make_table_syn_list <- function(
+    table_filtered,
+    cols_addon = c("stadium", "prius_stadium", "taxon", "on_unionlist")
+){
+  methods <- setNames(
+    object = table_filtered$method_all |> unique() |> as.list(),
+    nm = table_filtered$method_all |> unique() |>
+      gsub("\\:", "", x = _) |> gsub("\\s", "_", x = _)
+  )
+  #
+  # reshape to dataframe with species list per scope type and method
+  table_grouped <- lapply(
+    methods,
+    function(table, method) {
+      table |>
+        tidyr::pivot_wider(
+          id_cols = c(scope_type, prius_milieu),
+          names_from = method_all,
+          values_from = species
+        ) |>
+        dplyr::select(
+          tidyselect::all_of(c("scope_type", "prius_milieu", method))
+        ) |>
+        tidyr::unnest(data = _, cols = method) |>
+        dplyr::rename(species = method) |>
+        dplyr::mutate(
+          method = method,
+          n_species = dplyr::n(),
+          .by = scope_type
+        )
+    },
+    table = table_filtered
+  ) |>
+    dplyr::bind_rows() |>
+    dplyr::left_join(
+      x = _,
+      y = table_filtered |>
+        dplyr::distinct(
+          dplyr::across(
+            tidyselect::all_of(
+              c("species", "vern_name_nld", cols_addon)
+            )
+          )
+        )
+    )
+  #
+  # arrange according to scope_type and n_species in method
+  table_grouped <- do.call(
+    what = factorize,
+    args = args_factorize |> append(list(dataframe = table_grouped))
+  ) |>
+    dplyr::arrange(
+      scope_type,
+      n_species |> dplyr::desc()
+    )
+  #
+  # reshape to list containing a (species , milieu) x methods data frame per scope
+  scope_type_list <- setNames(
+    object = table_grouped$scope_type |> levels() |> as.list(),
+    nm = table_grouped$scope_type |> levels()
+  )
+  table_grouped_list <- lapply(
+    scope_type_list,
+    function(scope, table){
+      table |>
+        dplyr::filter(scope_type == scope) |>
+        tidyr::pivot_wider(
+          id_cols = c("scope_type", "species", "vern_name_nld", "prius_milieu", cols_addon),
+          names_from = method,
+          names_prefix = "method_",
+          values_from = n_species
+        )
+    },
+    table = table_grouped
+  )
+
+}
+#
+# format data frames for display
+# add row with number of species displayed per method
+make_table_syn_display_prep <- function(
+    table,
+    cols_id = id_cols_syn_display,
+    color = color_hl
+) {
+  table_prep <- table |>
+    dplyr::select(tidyselect::all_of(cols_id), tidyselect::starts_with("method_"))
+  # move number of species to added last row
+  added_row <- table_prep |>
+    tibble::add_row(.before = 1) |>
+    tidyr::fill(tidyselect::starts_with("method_"), .direction = "downup") |>
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::starts_with("method_"), paste0
+      )
+    ) |>
+    dplyr::slice(1) |>
+    dplyr::mutate(
+      species = kableExtra::cell_spec(
+        x = "Number of species covered",
+        italic = TRUE
+      )
+    )
+  table_prep <- table_prep |>
+    dplyr::arrange(
+      prius_milieu,
+      taxon
+    ) |>
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::starts_with("method_"),
+        \(x) dplyr::case_when(
+          !is.na(x) ~ kableExtra::cell_spec(
+            x = " ",
+            background = color,
+            # fill entire cell (4px )
+            extra_css = paste(
+              "margin: -4px",
+              "padding: 8px",
+              "display: flex",
+              NULL,
+              sep = "; "
+            )
+          ),
+          TRUE ~ NA_character_
+        )
+      )
+    )
+  if (nrow(table_prep) > 0){
+    table_prep <- table_prep |>
+      dplyr::bind_rows(x = _, y = added_row)
+  }
+}
+#
+# function to display tables
+make_table_syn_display <- function(
+    table_prior,
+    table_secondary,
+    table_tertiary = NULL,
+    table_rest = NULL,
+    cols_id = id_cols_syn_display
+) {
+  # combine tables
+  table_12 <- if (!is.null(table_secondary)) {
+    dplyr::bind_rows(table_prior, table_secondary)
+  } else {
+    table_prior
+  }
+  table_123 <- if (!is.null(table_tertiary)) {
+    dplyr::bind_rows(table_12, table_tertiary)
+  } else {
+    table_12
+  }
+  table_1234 <- if (!is.null(table_rest)) {
+    dplyr::bind_rows(table_123, table_rest)
+  } else {
+    table_123
+  }
+  table_comb <- table_1234
+  #
+  #
+  # update column names (not rotate the id_cols)
+  colnames_upd <- c(
+    colnames(table_comb)[seq_along(cols_id)] |> kableExtra::cell_spec(
+      x = _,
+      extra_css = "writing-mode: horizontal-tb !important;  transform: rotate(180deg) !important;"
+    ),
+    colnames(table_comb)[(length(cols_id) + 1): ncol(table_comb)] |>
+      gsub(pattern = "method_", replacement = "", x = _)
+  )
+  #
+  #
+  table_comb |>
+    knitr::kable(
+      x = _,
+      format = "html",
+      escape = FALSE,
+      col.names = colnames_upd,
+      table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+    ) |>
+    # background of id cols
+    kableExtra::column_spec(
+      column = seq_along(cols_id),
+      background = "grey97",
+      #width_min = "220px",
+      extra_css = "white-space: nowrap;"
+    ) |>
+    # borders of method cols
+    #  width
+    kableExtra::column_spec(
+      column = (length(cols_id) + 1):ncol(table_comb),
+      width_min = "20px",
+      width_max = "20px",
+      include_thead = TRUE,
+      border_right = "2px solid #f7f7f7"
+    ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = c("condensed", "hover"), # "responsive"
+      full_width = FALSE,
+      position = "left",
+      font_size = 11
+    ) |>
+    kableExtra::collapse_rows(
+      columns = seq_along(cols_id),
+      valign = "top"
+    ) |>
+    kableExtra::add_header_above(
+      header = c(
+        " " = length(cols_id),
+        "method" = ncol(table_comb) - length(cols_id)
+      ),
+      extra_css = "border-bottom: 1.5px solid"
+    ) |>
+    # rotate column names pertaining to methods
+    kableExtra::row_spec(
+      row = 0,
+      extra_css =
+        "writing-mode: vertical-lr;  transform: rotate(180deg); white-space: nowrap; padding: 5px;"
+    ) |>
+    # adjust row height
+    kableExtra::row_spec(
+      row = 1:nrow(table_comb),
+      extra_css = 'padding: 4px;'
+    ) |>
+    # uncolor summary rows
+    kableExtra::row_spec(
+      row = c(
+        nrow(table_prior),
+        if(!is.null(table_secondary)) nrow(table_12),
+        if(!is.null(table_tertiary)) nrow(table_123),
+        nrow(table_comb)
+        ),
+      background = "white"
+    ) |>
+    kableExtra::group_rows(
+      group_label = "Primary species",
+      start_row = 1,
+      end_row = nrow(table_prior)
+    ) |>
+    (\(x)
+     if (!is.null(table_secondary)) {
+       x |>
+         kableExtra::group_rows(
+           group_label = "Secondary species",
+           start_row = nrow(table_prior) + 1,
+           end_row = nrow(table_12)
+         )
+     } else {
+       x
+     }
+    )() |>
+    (\(x)
+     if (!is.null(table_tertiary)) {
+       x |>
+         kableExtra::group_rows(
+           group_label = "Tertiary species",
+           start_row = nrow(table_12) + 1,
+           end_row = nrow(table_123)
+         )
+     } else {
+       x
+     }
+    )() |>
+    (\(x)
+     if (!is.null(table_rest)) {
+       x |>
+         kableExtra::group_rows(
+           group_label = "Remaining species",
+           start_row = nrow(table_123) + 1,
+           end_row = nrow(table_1234)
+         )
+     } else {
+       x
+     }
+    )()
+}
+
+
+# --- create full synergy tables for display - plants ---------------
+
+# FIX
+#
+# define kingdom
+.kingdom <- "plant"
+
+# high prior species
+table_kingdom_prior_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("highprior", scope_prior)
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep
+  )
+# low prior species with m_urge < cutoff but m_feas > cutoff
+table_kingdom_secondary_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+# low prior species with m_urge > cutoff but m_feas < cutoff
+# FIX: automatize
+if (FALSE) {
+  table_kingdom_tertiary_list <- make_table_syn_list(
+    table_filtered = table_filtered_upd |>
+      dplyr::filter(
+        grepl(.kingdom, kingdom) &
+          grepl("lowprior", scope_prior) &
+          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
+      )
+  ) |>
+    lapply(
+      X = _,
+      FUN = make_table_syn_display_prep,
+      color = "gray"
+    )
+}
+# rest
+table_kingdom_rest_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation != "scope low priority as urgency score is larger but feasibility score is smaller than cutoff" &
+        scope_prior_motivation != "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+#
+tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
+scope_type_list_kingdom <- setNames(
+  object = tmp |> names() |> as.list(),
+  nm = tmp |> names()
+)
+table_grouped_kingdom_display_list <- lapply(
+  scope_type_list_kingdom,
+  \(x) make_table_syn_display(
+    table_prior = table_kingdom_prior_list[[x]],
+    table_secondary = table_kingdom_secondary_list[[x]],
+    table_rest = table_kingdom_rest_list[[x]]
+  )
+)
+
+
+table_syn_plants_display_list <- table_grouped_kingdom_display_list
+
+# --- create full synergy tables for display - animals ---------------
+
+
+# define kingdom
+.kingdom <- "dier"
+
+# high prior species
+table_kingdom_prior_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("highprior", scope_prior)
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep
+  )
+# low prior species with m_urge < cutoff but m_feas > cutoff
+table_kingdom_secondary_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+# low prior species with m_urge > cutoff but m_feas < cutoff
+table_kingdom_tertiary_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+# rest
+table_kingdom_rest_list <- make_table_syn_list(
+  table_filtered = table_filtered_upd |>
+    tidyr::drop_na(method_all) |> # no best method for gewone koningsslang
+    dplyr::filter(
+      grepl(.kingdom, kingdom) &
+        grepl("lowprior", scope_prior) &
+        scope_prior_motivation != "scope low priority as urgency score is larger but feasibility score is smaller than cutoff" &
+        scope_prior_motivation != "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+    )
+) |>
+  lapply(
+    X = _,
+    FUN = make_table_syn_display_prep,
+    color = "gray"
+  )
+#
+tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
+scope_type_list_kingdom <- setNames(
+  object = tmp |> names() |> as.list(),
+  nm = tmp |> names()
+)
+table_grouped_kingdom_display_list <- lapply(
+  scope_type_list_kingdom,
+  \(x) make_table_syn_display(
+    table_prior = table_kingdom_prior_list[[x]],
+    table_secondary = table_kingdom_secondary_list[[x]],
+    table_tertiary = table_kingdom_tertiary_list[[x]],
+    table_rest = table_kingdom_rest_list[[x]]
+  )
+)
+
+table_syn_animals_display_list <- table_grouped_kingdom_display_list
 
 #
