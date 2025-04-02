@@ -552,209 +552,242 @@ for (i in names(table_syn_animals_display_list)){
 ```
 
 
+##  Scenarios
+
+### ANB priority species
 
 
-#### Scope distribution
+The ANB priority species we have collected survey data for are:
 
-```{r synergies-plants-display-distribution}
+
+```{r scenario-1-data-present}
+#| results: asis
+#| classes: .center-table
+
+species_anb_display |> unclass() |> cat()
+
+```
+
+
+#### Plants
+
+For the plants, applying our survey-based prioritization to the ANB priority species we have data for results in the following filtered table variant: 
+
+```{r scenario-1-make-filtered-table-plants}
 #| results: asis
 #| cache: false
 #| classes: .center-table
-#| eval: true
 
-table_grouped_plants_display_list$distribution
+table_filtered_anb_display_list$plant |> unclass() |> cat()
 
 ```
 
 
 <br>
+Looking at method-related synergies between species (see tables in the following), we see a clear group emerging:
+For 4 to 5 (partly) freshwater plants we might be able to fill in the scopes distribution, abundance, and abundance after management relying on aquatic eDNA and/or visual surveys.
+We suggest to analyse for these plants as a group which scopes can be filled in how, at which costs.
 
-#### Scope abundance
+Aandachtspunten, nog te bekijken: 
 
-```{r synergies-plants-display-abundance}
+- Hebben de soorten een voldoende gelijkaardige ecologie zodat er kans op een kleiner aantal meetnetten dan de aantal soorten bestaat voor minstens een van de scopes? Indien ja, vermelden.
+- Zijn de toepassingen van dezelfde methode binnen een groep vergelijkbaar genoeg om synergiën tijdens het plannen te verwachten? Daarmee ook rekening houden.
+- Zijn er projecten aan het INBO waarop we kunnen bouwen, maar voldoende complementair zijn? Indien ja vermelden. Indien overlap te groot (nieuwe projecten?), vermelden en niet voorstellen.
+- Denken we dat die soorten haalbaar zijn om vlot te analyseren?
+- Zijn er al meetnetten op die we kunnen voortbouwen? Indien ja, vermelden. Dat zou dan ook deel uitmaken van de analyse.
+- Er klopt iets niet met de tabellen voor de niet-prioritaire soorten, moet nog bekijken wat
+
+
+
+```{r scenario-1-synergies-plants-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_anb_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_anb_plants_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+#### Animals
+
+
+For the animals, applying our survey-based prioritization to the ANB priority species we have data for results in the following filtered table variant: 
+
+```{r scenario-1-make-filtered-table-animals}
 #| results: asis
 #| cache: false
 #| classes: .center-table
-#| eval: true
 
-table_grouped_plants_display_list$abundance
+table_filtered_anb_display_list$dier |> unclass() |> cat()
 
 ```
 
 
 <br>
+Looking at method-related synergies between species (see tables in the following), we see a larger groups emerging for the scope distribution:
+For 4 (partly) terrestrial mammals we might be able to fill in the scope distribution relying on visual surveys or camera traps.
+If camera traps are used, there is 1 secondary mammal that could be considered during planning as well.
+For 3 (partly) freshwater species, we might be able to fill in the scope distribution relying on aquatic eDNA.
+There is 1 secondary crayfish that could be considered during planning as well.
+This latter group is however very heterogeneous and it is unclear whether a grouped analysis is feasible.
+We thus suggest to focus on the first group of mammals here. 
 
-#### Scope distribution after management
+Looking at the other scopes, we do not see clear synergies emerge as groups remain small, often consisting of only 1 species.
 
-```{r synergies-plants-display-distribution-management}
+One of the species occurring frequently across scopes is the chinese muntjak. We thus suggest to use this as a focus species, for which we 
+suggest to analyse which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs.
+For the scope distribution we also consider the additional mammals included in the above-mentioned group.
+
+Another species occurring frequenty across scopes is the afrikaanse klauwkikker. 
+We suggest to analyse which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs.
+
+
+
+<br>
+Aandachtspunten, noch te bekijken: zie planten.
+
+
+
+
+```{r scenario-1-synergies-animals-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_anb_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_anb_animals_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+### Focus on species for which detection is relevant
+
+
+Out of the prioritized species we select those for which the surveillance/monitoring detection is (also) relevant.
+
+
+#### Plants
+
+For the plants we get the following filtered table variant: 
+
+```{r scenario-2-make-filtered-table-plants}
 #| results: asis
 #| cache: false
 #| classes: .center-table
-#| eval: true
 
-table_grouped_plants_display_list$distribution_management
+table_filtered_det_display_list$plant |> unclass() |> cat()
+
+```
+
+In terms of method-related synergies we get:
+
+```{r scenario-2-synergies-plants-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_det_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_det_plants_display_list[[i]] |> unclass() |> cat()
+}
 
 ```
 
 
-<br>
+#### Animals
 
-#### Scope abundance after management
 
-```{r synergies-plants-display-abundance-management}
+For the animals we get the following filtered table variant:
+
+```{r scenario-2-make-filtered-table-animals}
 #| results: asis
 #| cache: false
 #| classes: .center-table
-#| eval: true
 
-table_grouped_plants_display_list$abundance_management
-
-```
-
-<br>
-
-
-
-
-### Animals
-
-
-
-```{r synergies-animals-make-tables}
-#| warning: false
-#| message: false
-#| cache: false
-
-
-table_animals_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |> 
-    dplyr::filter(
-      grepl("dier", kingdom) & 
-        grepl("highprior", scope_prior) 
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-table_animals_secondary_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |> 
-    dplyr::filter(
-      grepl("dier", kingdom) & 
-        grepl("lowprior", scope_prior) &
-        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-tmp <- vctrs::list_drop_empty(table_animals_prior_list)
-scope_type_list_animals <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names() 
-)
-table_grouped_animals_display_list <- lapply(
-  scope_type_list_animals,
-  \(x) make_table_syn_display(
-    table_prior = table_animals_prior_list[[x]],
-    table_secondary = table_animals_secondary_list[[x]]
-  )
-)
+table_filtered_det_display_list$dier |> unclass() |> cat()
 
 ```
 
+In terms of method-related synergies we get:
 
-
-
-#### Scope detection
-
-
-```{r synergies-animals-display-detection}
+```{r scenario-2-synergies-animals-display}
 #| results: asis
 #| cache: false
-#| eval: true
 
-table_grouped_animals_display_list$detection 
+for (i in names(table_syn_det_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_det_animals_display_list[[i]] |> unclass() |> cat()
+}
 
 ```
 
-<br>
 
-#### Scope inventory
 
-```{r synergies-animals-display-inventory}
+### Focus on species for which (also) distribution is relevant
+
+Out of the prioritized species we select those for which the surveillance/monitoring distribution is (also) relevant.
+
+#### Plants
+
+For the plants we get the following filtered table variant: 
+
+```{r scenario-3-make-filtered-table-plants}
 #| results: asis
 #| cache: false
 #| classes: .center-table
-#| eval: true
 
-table_grouped_animals_display_list$inventory
+table_filtered_dist_display_list$plant |> unclass() |> cat()
+
+```
+
+In terms of method-related synergies we get:
+
+```{r scenario-3-synergies-plants-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_dist_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_dist_plants_display_list[[i]] |> unclass() |> cat()
+}
 
 ```
 
 
-<br>
+#### Animals
 
-#### Scope distribution
 
-```{r synergies-animals-display-distribution}
+For the animals we get the following filtered table variant:
+
+```{r scenario-3-make-filtered-table-animals}
 #| results: asis
 #| cache: false
 #| classes: .center-table
-#| eval: true
 
-table_grouped_animals_display_list$distribution
+table_filtered_dist_display_list$dier |> unclass() |> cat()
 
 ```
 
+In terms of method-related synergies we get:
 
-<br>
-
-#### Scope abundance
-
-```{r synergies-animals-display-abundance}
+```{r scenario-3-synergies-animals-display}
 #| results: asis
 #| cache: false
-#| classes: .center-table
-#| eval: true
-
-table_grouped_animals_display_list$abundance
-
-```
 
 
-<br>
 
-#### Scope distribution after management
-
-```{r synergies-animals-display-distribution-management}
-#| results: asis
-#| cache: false
-#| classes: .center-table
-#| eval: true
-
-table_grouped_animals_display_list$distribution_management
+for (i in names(table_syn_dist_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_dist_animals_display_list[[i]] |> unclass() |> cat()
+}
 
 ```
-
-
-<br>
-
-#### Scope abundance after management
-
-```{r synergies-animals-display-abundance-management}
-#| results: asis
-#| cache: false
-#| classes: .center-table
-#| eval: true
-
-table_grouped_animals_display_list$abundance_management
-
-```
-
-<br>
-
-
-
