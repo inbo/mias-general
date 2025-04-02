@@ -2,13 +2,14 @@
 title: "docu_presentation"
 ---
 
-## Overview
+{{< include sections/00_intro.qmd >}}
 
-- point 1
-- point 2
-- point 3
+{{< include sections/01_outline.qmd >}}
+
+{{< include sections/10_survey.qmd >}}
+
+{{< include sections/20_prioritization.qmd >}}
+
+{{< include sections/30_scenarios.qmd >}}
 
 
-{{< include sections/_survey_setup.qmd >}}
-
-{{< include sections/_survey_results.qmd >}}

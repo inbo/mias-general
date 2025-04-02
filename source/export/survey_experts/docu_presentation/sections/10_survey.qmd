@@ -1,0 +1,30 @@
+# Survey 
+
+## Purpose
+
+- Take expert's expertise into account when planning future surveillance schemes for invasive alien species in Flanders
+    - 'outsource' the collection of information for prioritization
+- constructed to assess the feasiblity and urgency of surveillance systems per species
+- expert judgement
+
+## Distribution & return
+
+- questionnaires for 122 IAS 
+    - of union concern and possible future union concern 
+- sent to X experts (in a first round)
+- return: 
+    - questionnaire completed for 105 species
+    - all IAS of union concern covered (?)
+
+## Questions
+
+- questions on a species'
+    - (probability of) introduction and/or establishment
+    - distribution and abundance
+    - impact
+    - surveillance/monitoring
+    - management
+- full list of questions [here](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing)
+
+## Scoring
+
