@@ -5,7 +5,7 @@ format:
   html:
     toc: true
     toc-location: left-body
-    toc-depth: 3
+    toc-depth: 4
     toc-expand: true
     theme: yeti
     number-sections: true
@@ -44,8 +44,8 @@ We distinguish 6 surveillance/monitoring scopes:
 We employ the following working definitions:
 
 
-::: {.callout-note icon="false"}
-## Detection
+
+#### Detection
 
 - *Purpose*:
 - Early identification of new invasive alien species
@@ -61,49 +61,32 @@ We employ the following working definitions:
 - complemented by broad (scale of Flanders?) "surveillance" via opportunistic observations?
 - near-continuous measurement in space and time; this can but need not be achieved through high spatial/temporal frequency sampling: methods with low costs and/or sampling effort (e.g., remote sensing) can be used with dense sampling schemes; methods that have lower specificity in time and space (e.g., eDNA) could substitute for near-continuous sampling
 
-:::
-
-::: {.callout-note icon="false"}
-## Inventory
+#### Inventory
 Definition here.
-:::
 
-::: {.callout-note icon="false"}
-## (Change in) Distribution
+#### (Change in) Distribution
 
 - *Purpose*:
 - Assessing the status (and trend) of the spatial distribution of an invasive alien species
 - ...
 
-:::
-
-
-::: {.callout-note icon="false"}
-## (Change in) Abundance
+#### (Change in) Abundance
 
 - *Purpose*:
 - Assessing the status (and trend) of the population size of an invasive alien species in its distribution area
 - ...
 
-:::
-
-::: {.callout-note icon="false"}
-## (Change in) Distribution after management
+#### (Change in) Distribution after management
 
 - *Purpose*:
 - Assessing the status (and trend) of the spatial distribution of an invasive alien species within a defined area after managment has taken place
 - ...
 
-:::
-
-::: {.callout-note icon="false"}
-## (Change in) Abundance after management
+#### (Change in) Abundance after management
 
 - *Purpose*:
 - Assessing the status (and trend) of the population size of an invasive alien species within a defined area after managment has taken place
 - ...
-
-:::
 
 
 Combining the IAS of union concern (here species A - N for purposes of illustration) with all surveillance/monitoring scopes results in a table of *potential combinations* of the form:
