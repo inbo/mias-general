@@ -1,0 +1,13 @@
+# Outro/Conclusion
+
+## Next steps
+
+- [list next steps here] 
+
+::: {.notes}
+
+nota's: 
+
+- titel sectie aanpassen
+
+:::

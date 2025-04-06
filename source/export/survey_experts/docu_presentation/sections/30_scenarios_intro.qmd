@@ -1,0 +1,30 @@
+# Scenarios
+
+## Purpose
+
+- Select a limited number of species (groups) to procede with planning of surveillance/monitoring schemes
+  - Planning relies on the INBO methodology ("Leidraad") 
+- Focus on method-based synergies between species
+  - Synergies for planning
+
+::: {.notes}
+- synergien tijdens de planning, niet noodzakelijk voor de implementatie
+
+:::
+  
+
+## Scenarios
+
+- Scenario 1: ANB priority species 
+- Scenario 2: Focus on detection
+- Scenario 3: Focus on distribution
+
+::: {.notes}
+- Scenario 1: Overlap between ANB priority species and our priority species 
+- Scenario 2: Focus on species for which detection is (also) relevant
+- Scenario 3: Focus on species for which distribution is (also) relevant
+- 2 en 3 zijn redelijk complementair
+
+:::
+
+

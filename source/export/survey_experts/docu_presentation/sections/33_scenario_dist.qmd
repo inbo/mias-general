@@ -1,0 +1,181 @@
+## Scenario 3: Focus on distribution {.smaller}
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+
+- High priority species for which distribution is (also) relevant
+
+
+```{r scenario-dist-species}
+#| results: "asis"
+
+species_dist |> 
+  dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
+    x = vern_name_nld,
+    color = dplyr::case_when(
+      grepl("plant", kingdom) ~ col_plants,
+      grepl("dier", kingdom) ~ col_animals
+    )
+  )) |>
+  dplyr::arrange(vern_name_nld) |>
+  dplyr::pull(vern_name_nld_col) |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+
+```
+
+
+:::
+
+::::
+
+
+
+## Scenario 3: Focus on distribution (plants)
+
+- Method synergies under scopes detection, distribution after management
+
+```{r scenario-dist-priorities-syn-plants-det}
+#| results: asis
+
+table_syn_dist_plants_display_list$detection |> unclass() |> cat()
+
+```
+
+
+## Scenario 3: Focus on distribution (plants)
+
+- Method synergies under scopes distribution, abundance 
+
+```{r scenario-dist-priorities-syn-plants-dist}
+#| results: asis
+
+table_syn_dist_plants_display_list$distribution |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 3: Focus on distribution (plants)
+
+- Method synergies under scope abundance after management
+
+```{r scenario-dist-priorities-syn-plants-abd-after}
+#| results: asis
+
+table_syn_dist_plants_display_list$abundance_management |> unclass() |> cat()
+
+```
+
+## Scenario 3: Focus on distribution (plants) 
+
+- Cf. scenario 1: 
+  - 4 to 5 (partly) freshwater plants
+  - Scopes distribution, abundance, and abundance after management
+  - Aquatic eDNA, visual surveys
+- We suggest to analyse for these plants as a group which scopes can be filled in how, at which costs
+
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+
+:::
+
+
+
+## Scenario 3: Focus on distribution (animals)
+
+- Method synergies under scope detection
+
+```{r scenario-dist-priorities-syn-animals-det}
+#| results: asis
+
+table_syn_dist_animals_display_list$detection |> unclass() |> cat()
+
+```
+
+## Scenario 3: Focus on distribution (animals)
+
+- Method synergies under scope inventory
+
+```{r scenario-dist-priorities-syn-animals-inv}
+#| results: asis
+
+table_syn_dist_animals_display_list$inventory |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 3: Focus on distribution (animals)
+
+- Method synergies under scope distribution
+
+```{r scenario-dist-priorities-syn-animals-dist}
+#| results: asis
+
+table_syn_dist_animals_display_list$distribution |> unclass() |> cat()
+
+```
+
+## Scenario 3: Focus on distribution (animals)
+
+- Method synergies under scope abundance
+
+```{r scenario-dist-priorities-syn-animals-abd}
+#| results: asis
+
+table_syn_dist_animals_display_list$abundance |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 3: Focus on distribution (animals)
+
+- Method synergies under scope distribution after management
+
+```{r scenario-dist-priorities-syn-animals-dist-after}
+#| results: asis
+
+table_syn_dist_animals_display_list$distribution_management |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 3: Focus on distribution (animals)
+
+- Method synergies under scope abundance after management
+
+```{r scenario-dist-priorities-syn-animals-abd-after}
+#| results: asis
+
+table_syn_dist_animals_display_list$abundance_management |> unclass() |> cat()
+
+```
+
+## Scenario 3: Focus on distribution (animals)
+
+- Similiar groups as under scenario 1
+  - Scope distribution
+    - Group 1 (scenario 1)
+    - Group 2 (scenario 1 & Stone moroko) 
+  - Scopes abundance
+    - Chinese muntjac & African clawed (scenario 1) & Stone moroko
+    - Unique method synergies for African clawed & Stone moroko  
+- Possibility to group African clawed & Stone moroko in addition to suggestions under scenario 1 (?)
+
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+
+:::

@@ -2,14 +2,59 @@
 title: "docu_presentation"
 ---
 
-{{< include sections/00_intro.qmd >}}
+```{r setup}
+#| warning: false
 
-{{< include sections/01_outline.qmd >}}
+# mode for sourcing below r scripts
+mode_source <- "presentation"
+# language for survey data 
+lang <- "NL" 
+
+response_data_path <- "../../../../data/survey_experts/"
+functions_path <- "../../../functions/"
+questions_path <- paste0("../questions_", lang)
+
+source("../09_survey_make_plots.R", local = knitr::knit_global())
+source("../09_format_priority_tables.R", local = knitr::knit_global())
+
+
+col_plants <- "#247D3F"
+col_animals <- "black"
+
+
+``` 
+
+
+```{css}
+code {
+  font-size: 20pt;
+}
+h2 {
+  font-size: 40pt !important;
+}
+ul li {
+  font-size: 24pt !important;
+}
+
+
+```
+
+
+
+{{< include sections/00_intro.qmd >}}
 
 {{< include sections/10_survey.qmd >}}
 
 {{< include sections/20_prioritization.qmd >}}
 
-{{< include sections/30_scenarios.qmd >}}
+{{< include sections/30_scenarios_intro.qmd >}}
 
+{{< include sections/31_scenario_anb.qmd >}}
 
+{{< include sections/32_scenario_det.qmd >}}
+
+{{< include sections/33_scenario_dist.qmd >}}
+
+{{< include sections/36_scenarios_outro.qmd >}}
+
+{{< include sections/40_outro.qmd >}}

@@ -1,30 +1,292 @@
-# Survey 
+# Expert survey 
+
+## Outline
+
+- Purpose
+- Distribution & return
+- Questions
+- Scoring
+
+
+::: {.notes}
+nota's:
+
+- overzicht hier nuttig?
+
+:::
+
+
 
 ## Purpose
 
-- Take expert's expertise into account when planning future surveillance schemes for invasive alien species in Flanders
-    - 'outsource' the collection of information for prioritization
-- constructed to assess the feasiblity and urgency of surveillance systems per species
-- expert judgement
+- Draw on expert's expertise during planning IAS surveillance schemes in Flanders
+  - Evaluation of information via expert judgement 
+- Assess feasiblity and urgency of surveillance schemes per species
+- Use survey results to prioritize species (groups) for further analysis
+
+::: {.notes}
+- niet enkel informatie verzamelen maar vooral ook inschatting/aggregatie/evaluatie door experts gewenst
+- ook om het voor ons haalbaar te houden
+
+:::
+
 
 ## Distribution & return
 
-- questionnaires for 122 IAS 
-    - of union concern and possible future union concern 
-- sent to X experts (in a first round)
-- return: 
-    - questionnaire completed for 105 species
-    - all IAS of union concern covered (?)
+- Questionnaires for 122 IAS via Google forms
+    - IAS of (possible future) union concern 
+- Sent to 57 experts
+- Return: 
+    - Questionnaire completed for 105 species
+    - All IAS of union concern covered (?)
+
+
+::: {.notes}
+- voor sommige soorten (van sommige experts) moeilijk om antwoord te krijgen
+- we hebben meerdere pogingen gedaan, of bij dezelfde expert of bij verschillende experts
+
+:::
+
 
 ## Questions
 
-- questions on a species'
-    - (probability of) introduction and/or establishment
-    - distribution and abundance
-    - impact
-    - surveillance/monitoring
-    - management
-- full list of questions [here](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing)
+- Questions on a species':
 
-## Scoring
+```{r survey-questions-sections}
+#| results: "asis"
 
+section_list <- list(
+  "introduction and establishment",
+  "distribution and abundance",
+  "impact",
+  "surveillance/monitoring",
+  "management"
+)
+section_list |>
+  unlist() |>
+  stringr::str_to_sentence() |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+- Adaptive design
+  - Questions based on reported invasion stadium 
+- Full list of questions [here](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing)
+
+::: {.notes}
+Adaptief: 
+
+- vragen over introductie enkel indien soort afwezig/sporadisch aanwezig (mogelijk niet de meest optimale keuze)
+- vragen over verspreiding niet indien soort afwezig
+
+:::
+
+
+```{r survey-questions-sections-display}
+#| results: "asis"
+#| eval: false
+
+for (i in seq_along(section_list)){
+  cat("## Questions ", section_list[[i]], "\n")
+  res_comb_upd |> 
+  dplyr::filter(section_no == i) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+}
+
+```
+
+
+
+## Questions introduction and establishment
+
+
+```{r survey-questions-section-2}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 2) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+::: {.notes}
+
+nota's:
+
+- deze en de volgende slides mogelijk eruit halen
+- meteen naar sectie ‘Scoring Questions’ en vragen aan de hand van de mogelijke antwoordopties toelichten
+
+
+:::
+
+
+
+## Questions distribution and abundance
+
+
+```{r survey-questions-section-3}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 3) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+## Questions distribution and abundance
+
+
+![Example occurrence map based on GBIF data](media/muntiacus_reevesi_(ogilby,_1839).png){width=70%}
+
+
+::: {.notes}
+Text survey:
+De bovenstaande verspreidingskaart baseert zich op GBIF gegevens. Voor het Vlaams Gewest (gebied binnen de vaste lijn) en een 30 km brede bufferzone (gebied tussen vaste en stippellijn) zijn die hokken (EEA Reference grid, 1 x 1 km) rood gemarkeerd waarbinnen de soort tijdens de laatste 10 jaar is waargenomen.
+
+:::
+
+## Questions impact
+
+
+```{r survey-questions-section-4}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 4) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+
+## Questions surveillance/monitoring
+
+```{r survey-questions-section-5}
+#| results: "asis"
+#| 
+res_comb_upd |> 
+  dplyr::filter(section_no == 5) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+
+## Questions management
+
+```{r survey-questions-section-6}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 6) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+```
+
+
+## Scoring questions 
+
+- Majority of questions is scored
+- Each scored question is either an indicator for *feasibility* or *urgency*, e.g.,
+  - Accessibility of introduction sites -> feasibility
+  - Probability of establishment -> urgency
+- Scores
+  - from 1 (low feasibility/urgency) to 4 (high feasibility/urgency)
+  - not visible to experts
+- Scores used for prioritization
+
+::: {.notes}
+- de toegekende scores gaan we dan voor de prioritering gebruiken
+- we zullen straks zien hoe
+
+:::
+
+
+
+## Scoring questions introduction and establishment
+
+
+```{r survey-questions-scoring-section-2}
+#| fig-width: 11
+#| fig-height: 5
+
+`%+%` <- ggplot2::`%+%`
+plot_scoring %+% (q_plot |> dplyr::filter(section_number == 2))
+
+```
+
+::: {.notes}
+nota's: 
+
+- als er tijd is ga ik de plots door tabellen vervangen
+- als plots te klein zijn: Ik heb de 'lightbox'-optie gactiveerd, dus je kunt op een afbeelding klikken en ziet ze groter
+
+:::
+
+
+## Scoring questions distribution and abundance
+
+
+```{r survey-questions-scoring-section-3}
+#| fig-width: 11
+#| fig-height: 5
+
+plot_scoring %+% (q_plot |> dplyr::filter(section_number == 3))
+
+```
+
+## Scoring questions impact
+
+
+```{r survey-questions-scoring-section-4}
+#| fig-width: 11
+#| fig-height: 5
+
+plot_scoring %+% (q_plot |> dplyr::filter(section_number == 4))
+
+```
+
+
+## Scoring questions surveillance/monitoring 
+
+
+```{r survey-questions-scoring-section-5}
+#| fig-width: 11
+#| fig-height: 5
+
+plot_scoring %+% (q_plot |> dplyr::filter(section_number == 5))
+
+```
+
+## Scoring questions management
+
+
+```{r survey-questions-scoring-section-6}
+#| fig-width: 11
+#| fig-height: 5
+
+plot_scoring %+% (q_plot |> dplyr::filter(section_number == 6))
+
+```

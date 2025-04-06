@@ -16,7 +16,9 @@ execute:
 lang: en-GB
 
 format:
-  flandersqmd-revealjs: default
+  flandersqmd-revealjs:
+    link-external-newwindow: true
+    transition-speed: fast
 
 flandersqmd:
   entity: INBO
@@ -26,9 +28,28 @@ flandersqmd:
     - name:
         given: Janne
         family: Adolf
-      orcid: 0000-0000-0000-0000
+      orcid: 0000-0001-6064-9803
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+    - name:
+        given: Diederik
+        family: Strubbe
+      orcid: 0000-0002-2613-4985
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+    - name:
+        given: Tim
+        family: Adriaens
+      orcid: 0000-0001-7268-4200
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+    - name:
+        given: Thierry
+        family: Onkelinx
+      orcid: 0000-0001-8804-4216
       affiliation:
         - Research Institute for Nature and Forest (INBO)
   cover: media/pexels-pixabay-355887.jpg #Photo by Pixabay: https://www.pexels.com/photo/plants-under-starry-sky-355887/
 
 
+lightbox: true

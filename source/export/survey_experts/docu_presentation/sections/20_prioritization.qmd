@@ -1,7 +1,233 @@
 # Prioritization
 
-## Scopes
-
 ## Approach
 
-Text
+- Question:
+  - Which surveillance/monitoring scopes are *relevant*/*feasible* and have *high priority* for which species?
+- Propose a range of scopes
+  - detection, distribution, abundance etc.
+- Determine relevance/feasibility & priority based on survey results
+- Present result scenarios to facilitate decision making
+
+::: {.notes}
+- aanpak in grote lijnen
+- vertrokken van deze vraag
+- om die te kunnen beantwoorden moesten we eerst een aantal scopes voorstellen
+  - deze deels gebaseerd op de EU regulatie en deels op typische meetnet toepassingen 
+  - in short: ..., straks meer informatie
+  - hier wel input van de opdrachgever nodig, dus we willen hier graag jullie feedback
+
+:::
+
+## Surveillance/monitoring scopes
+
+- Detection
+- Inventory
+- (Change in) Distribution
+- (Change in) Abundance 
+- (Change in) Distribution after managenment
+- (Change in) Abundance after management
+
+::: {.notes}
+- Wat zouden concrete invullingen van deze scopes zijn?
+
+notas: 
+
+- Ik verander in het vervolg de volgorde en begin met de (voor mij) duidelijke scopes
+  - De invullingen van de latere bouwen ook deels verder op die van de vroegere
+- Dit zou ik hier zeker ook vermelden om verwarring te vorkomen
+- Het is natuurlijk ook mogelijk om de volgorde op deze overzichtsslide aan te passen
+  - (enkel in de tabellen later zou ik dat niet doen)
+
+
+:::
+
+
+## Scope distribution
+
+- *status distribution area* 
+  - size of area
+  - presence and absence in Flanders or potential distribution area
+    - distribution area deduced from presence/absence in 10x10 km grid cells
+  - reported every X years, with X $\leq$ 6
+- *trend distribution area*
+  - changes (relative size and direction) in size of area
+  - meaningful/critical changes to be defined 
+
+
+::: {.notes}
+- potential distribution area: known distribution area plus buffer
+- buffer depends on the presence of potential habitats neighboring the area of distribution, mobility of the species
+- 10 x 10 km grid cells of e.g. the EEA reference grid (~185 across Flanders)
+- alternatives: 5 x 5 km (~740 across Flanders); 1 x 1 km (~1850 across Flanders)
+- EU: "including information regarding migratory or reproductive patterns"?
+- possibility to complement ad hoc data with structured observations in grid cells where the species has not been found present in ad hoc data
+- distribution area needs to be known (e.g., previously reported), if that's not the case ...
+:::
+
+## Scope inventory
+
+- *status of distribution area*
+-   determine location of (potential) distribution area
+    - candidate areas via list of all possible habitats (e.g., expert judgement)
+    - presence and absence in candidate areas
+- analogies with scope distribution
+
+
+::: {.notes}
+- status w.r.t. location of area
+- analogies with distribution surveillance
+  - area divided into grid cells/resolution in terms of grid cells
+  - certain search effort required
+
+:::
+
+## Scope abundance
+
+- *status abundance*
+  - population size (relative or absolute)
+  - in a distribution or other selected area(s)
+- *trend abundance*
+  - changes (size and direction) in population size
+
+
+::: {.notes}
+- population is defined as the set of individuals of a species present in a biogeographical region within Flanders
+- selected areas: e.g., invasion hotspot, area of management
+
+:::
+
+## Scope distribution after management
+
+- status and/or trend in size of area
+  - cf. scope distribution
+- 'after management'
+  - evaluating temporal and spatial correlates
+- *Eradication*
+  - absence in confined area of management with confined follow-up period
+  - limited in space and time
+- *Containment*
+  - status and/or trend of size of distribution area within confined area of management
+  - limited in space, but not time 
+
+::: {.notes}
+- 'after management':
+  - continuum from determining a causal effect of a measure to evaluating temporal and spatial correlates (assuming some causal effect of a measure)
+  - we will probably rather be close to the latter end than the former
+- containment opvolgen: mogelijk op langere termijn
+
+:::
+
+
+
+## Scope abundance after management
+
+- status and/or trend in size of population
+  - cf. scope abundance
+- 'after management'
+  - cf. scope distribution after management
+- *Eradication*
+  - cf. distribution after management
+- *Population control*
+  - status and/or trend of size of population within confined area of management
+  - limited in space, but not time
+
+
+## Scope detection
+
+- presence in defined area
+  - around known (potential) places of introduction and sites of sporadic occurrence
+  - possibly also in/around conservation area
+- analogies with scope distribution
+
+
+::: {.notes}
+- in/around conservation area: 
+  - in conservation area
+  - periphery of conservation area
+  - buffer area around conservation area
+- analogies with scope distribution
+  - area divided into grid cells/resolution in terms of grid cells
+  - certain search effort required
+
+:::
+
+
+::: {.notes}
+- Feedback re scopes?
+  - Wilt de stuurgroep aanpassingen/zijn er suggesties?
+
+:::
+
+
+## Species-scope table illustration
+
+```{r species-scope-table}
+#| results: asis
+
+table_base_illu_list_upd$stadium |> 
+  dplyr::mutate(
+    scope_verbose = NA_character_
+  )|>
+  dplyr::arrange(species) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species"),
+    cols_addon = NULL,
+    footnote = NULL) |> 
+  unclass() |> cat()
+
+```
+
+
+
+## Exclusion criteria
+
+- Exclude species-scope combinations that are irrelevant or infeasible
+  - Invasion stadium
+  - Distribution area known (exclusion inventory)
+  - Species not managed
+  - Information (presence-absence/abundance) not relevant to evaluate management
+  - No method to measure abundance
+- Exclude species-scope combinations with low priority
+  - Opportunistic data are considered representative
+  - Introduction sites/distribution area unknown
+  - Global feasibility & urgency scores reach critical value
+ 
+
+::: {.notes}
+- we gebruiken bepaalde individuele survey vragen om uit te sluiten
+- maar ook de overal survey score (drempel-waarde mediaan)
+
+nota's: 
+
+- hier misschien een diagram/visualisatie ipv. tekst?
+
+:::
+
+
+## Species-scope table illustration
+
+```{r species-scope-table-filled}
+#| results: asis
+
+table_filtered_illu_final_display |> unclass() |> cat()
+
+```
+
+
+
+::: {.notes}
+nota's: 
+
+- hier genoeg tijd voor uitleg nemen
+
+:::
+
+
+
+## Species-scope table
+
+- [show full tables in html document]
+- [include link here]
+

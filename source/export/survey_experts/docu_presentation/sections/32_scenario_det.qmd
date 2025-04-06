@@ -1,0 +1,133 @@
+## Scenario 2: Focus on detection {.smaller} 
+
+
+:::: {.columns}
+
+::: {.column width="100%"}
+
+
+- High priority species for which detection is (also) relevant
+
+
+```{r scenario-det-species}
+#| results: "asis"
+
+species_det |> 
+  dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
+    x = vern_name_nld,
+    color = dplyr::case_when(
+      grepl("plant", kingdom) ~ col_plants,
+      grepl("dier", kingdom) ~ col_animals
+    )
+  )) |>
+  dplyr::arrange(vern_name_nld) |>
+  dplyr::pull(vern_name_nld_col) |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+
+```
+
+:::
+
+::::
+
+## Scenario 2: Focus on detection (plants)
+
+- Method synergies under scope detection
+
+```{r scenario-det-priorities-syn-plants-det}
+#| results: asis
+
+table_syn_det_plants_display_list$detection |> unclass() |> cat()
+
+```
+
+
+## Scenario 2: Focus on detection (plants)
+
+- Method synergies under scopes distribution, abundance, distribution after management
+
+```{r scenario-det-priorities-syn-plants-dist}
+#| results: asis
+
+table_syn_det_plants_display_list$distribution |> unclass() |> cat()
+
+```
+
+
+## Scenario 2: Focus on detection (plants) 
+
+- Again clear group: 
+  - 3 (partly) terrestrial plants
+  - Scope detection
+  - Visual surveys
+- We suggest to analyse for these plants as a group how and at which costs scope detection can be filled in
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+
+:::
+
+
+
+## Scenario 2: Focus on detection (animals)
+
+- Method synergies under scope detection
+
+```{r scenario-det-priorities-syn-animals-det}
+#| results: asis
+
+table_syn_det_animals_display_list$detection |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 2: Focus on detection (animals)
+
+- Method synergies under scope distribution
+
+```{r scenario-det-priorities-syn-animals-dist}
+#| results: asis
+
+table_syn_det_animals_display_list$distribution |> unclass() |> cat()
+
+```
+
+## Scenario 2: Focus on detection (animals)
+
+- Method synergies under scope abundance
+
+```{r scenario-det-priorities-syn-animals-abd}
+#| results: asis
+
+table_syn_det_animals_display_list$abundance |> unclass() |> cat()
+
+```
+
+
+## Scenario 2: Focus on detection (animals)
+
+- Larger groups for scope detection
+  - Group 1
+    - 4 (partly) freshwater species (3 fish, Muskrat)
+    - Aquatic eDNA, and for the fish electric fishing, trapping & netting
+    - Heterogeneous group, unclear to what extent synergies will play out
+  - Group 2
+    - 4 (partly) terrestrial species (Muskrat, Small asian mongoose, Chital, House crow)
+    - Camera traps, and partly visual surveys
+  - We suggest to analyse for both groups how and at which costs scope detection can be filled in
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+- indische mangoeste via aquatic eDNA?
+    
+:::
+
+

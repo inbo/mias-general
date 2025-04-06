@@ -1,8 +1,20 @@
-## Introduction
+# Introduction
 
-Text
+## Purpose of today's meeting
 
+- [summarize purpose of meeting] 
 
 ::: {.notes}
-speaker notes here
+
+nota's: 
+
+- volgorde auteurs?
+
 :::
+
+
+## Outline
+
+- [outline of presentation]
+
+

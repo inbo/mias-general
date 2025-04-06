@@ -1,0 +1,256 @@
+## Scenario 1: ANB priority species {.smaller}
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+- High priority in survey
+
+```{r scenario-anb-priorities-species-high}
+#| results: "asis"
+
+species_anb |> 
+  dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
+    x = vern_name_nld,
+    color = dplyr::case_when(
+      grepl("plant", kingdom) ~ col_plants,
+      grepl("dier", kingdom) ~ col_animals
+    )
+  )) |>
+  dplyr::filter(grepl("highprior", scope_prior)) |>
+  dplyr::arrange(vern_name_nld) |>
+  dplyr::pull(vern_name_nld_col) |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+
+```
+
+:::
+
+::: {.column width="50%"}
+
+- Low priority in survey
+
+```{r scenario-anb-priorities-species-low}
+#| results: "asis"
+
+species_anb |> 
+    dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
+    x = vern_name_nld,
+    color = dplyr::case_when(
+      grepl("plant", kingdom) ~ col_plants,
+      grepl("dier", kingdom) ~ col_animals
+    )
+  )) |>
+  dplyr::filter(grepl("lowprior", scope_prior)) |>
+  dplyr::arrange(vern_name_nld) |>
+  dplyr::pull(vern_name_nld_col) |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+
+```
+
+:::
+
+::::
+
+::: {.notes}
+
+nota's: 
+
+- hier evtl. 'filtered table' voor anb soorten tonen (zie html document 'plan of action')
+- zo duidelijk welke soorten er waarom uitvallen
+- tekst kleiner
+
+:::
+
+
+
+## Scenario 1: ANB priority species (plants)
+
+- Method synergies under scopes detection
+
+```{r scenario-anb-priorities-syn-plants-det}
+#| results: asis
+#| tab.cap: "Method synergies under scopes detection"
+
+table_syn_anb_plants_display_list$detection |> unclass() |> cat()
+
+```
+
+::: {.notes}
+
+nota's: 
+
+- tekst als caption aan tabel toevoegen
+- ik heb de latijnse namen hier verwijders om plaats te besparen
+- de column headers zijn als 'left-aligned' gedefineerd, ik weet niet waarom ze hier naar rechts verschuiven
+  - indien nog tijd probeer ik dit nog op te lossen
+- "Number of species covered" in presentatie-mode verwijderen en mondeling toelichten
+
+:::
+
+
+
+
+## Scenario 1: ANB priority species (plants)
+
+- Method synergies under scopes distribution, abundance, abundance after management
+
+```{r scenario-anb-priorities-syn-plants-dist}
+#| results: asis
+
+table_syn_anb_plants_display_list$distribution |> unclass() |> cat()
+
+```
+
+
+## Scenario 1: ANB priority species (plants) 
+
+- Clear group: 
+  - 4 to 5 (partly) freshwater plants
+  - Scopes distribution, abundance, and abundance after management
+  - Aquatic eDNA, visual surveys
+- We suggest to analyse for these plants as a group which scopes can be filled in how, at which costs
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+- de suggesties voor de verschillende scenarios nog eens vergelijkend tonen
+  - op slide?
+  - flipchart? -> misschien handiger
+
+:::
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Method synergies under scope detection
+
+```{r scenario-anb-priorities-syn-animals-det}
+#| results: asis
+
+table_syn_anb_animals_display_list$detection |> unclass() |> cat()
+
+```
+
+## Scenario 1: ANB priority species (animals)
+
+- Method synergies under scope inventory
+
+```{r scenario-anb-priorities-syn-animals-inv}
+#| results: asis
+
+table_syn_anb_animals_display_list$inventory |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Method synergies under scope distribution
+
+```{r scenario-anb-priorities-syn-animals-dist}
+#| results: asis
+
+table_syn_anb_animals_display_list$distribution |> unclass() |> cat()
+
+```
+
+::: {.notes}
+
+nota's: 
+
+- tekst als table caption -> tabel volledig zichtbaar (wasbeer)
+
+:::
+
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Method synergies under scopes abundance, abundance after management
+
+```{r scenario-anb-priorities-syn-animals-abd}
+#| results: asis
+
+table_syn_anb_animals_display_list$abundance |> unclass() |> cat()
+
+```
+
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Method synergies under scope distribution after management
+
+```{r scenario-anb-priorities-syn-animals-dist-after}
+#| results: asis
+
+table_syn_anb_animals_display_list$distribution_management |> unclass() |> cat()
+
+```
+
+
+
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Larger groups for scope distribution
+  - Group 1
+    - 4 (partly) terrestrial mammals (Nutria, Muskrat, Siberian chipmunk, Chinese muntjac)
+    - Visual surveys, camera traps
+    - 1 secondary mammal (Racoon) as potential free rider
+  - Group 2
+    - 3 (partly) freshwater species (African clawed frog, Nutria, Muskrat)
+    - Aquatic eDNA
+    - 1 secondary crayfish as free rider
+    - Heterogenous group, unclear to what extent synergies will play out
+  - We suggest to prioritize group 1
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+
+:::
+
+## Scenario 1: ANB priority species (animals)
+
+- Smaller groups for remaining scopes
+  - Scopes abundance, abundance after management, e.g.,
+    - Chinese muntjac & Racoon (free rider) via visual surveys, camera traps
+    - Chinese muntjac & African clawed frog via visual surveys, passive acoustic monitoring
+  - Scope distribution after management
+    - Nutria & Racoon (free rider) via visual surveys, camera traps
+- Chinese muntjac & African clawed frog frequently involved
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+
+:::
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Suggestion for the animals in total
+  - Analyse for Chinese muntjac which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs
+    - For scope distribution also consider Nutria, Muskrat, Siberian chipmunk in addition to Chinese muntjac
+  - Analyse for African clawed frog which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs
+
+::: {.notes}
+
+nota's: 
+
+- hier graag jullie input
+- alternatief: start with scope distribution and group?
+:::
