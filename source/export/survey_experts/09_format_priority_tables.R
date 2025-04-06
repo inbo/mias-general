@@ -950,171 +950,127 @@ make_table_syn_display <- function(
      }
     )()
 }
-
-
-# --- create full synergy tables for display - plants ---------------
-
-# FIX
 #
-# define kingdom
-.kingdom <- "plant"
-
-# high prior species
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("highprior", scope_prior)
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-table_kingdom_secondary_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("lowprior", scope_prior) &
-        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_tertiary_list <- make_table_syn_list(
-    table_filtered = table_filtered_upd |>
-      dplyr::filter(
-        grepl(.kingdom, kingdom) &
-          grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-      )
+# function to make list of tables to display, across scopes
+make_table_syn_display_list <- function(
+    .table_filtered,
+    .kingdom,
+    rest = FALSE,
+    .remove_n_1 = FALSE
+) {
+  # high prior species
+  table_kingdom_prior_list <- make_table_syn_list(
+    table_filtered = .table_filtered |>
+      dplyr::filter(grepl(.kingdom, kingdom)) |>
+      dplyr::filter(grepl("highprior", scope_prior)),
+    remove_n_1 = .remove_n_1
   ) |>
     lapply(
       X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
+      FUN = make_table_syn_display_prep
     )
+  # low prior species with m_urge < cutoff but m_feas > cutoff
+  table_kingdom_secondary_list <- try(
+    make_table_syn_list(
+      table_filtered = .table_filtered |>
+        dplyr::filter(grepl(.kingdom, kingdom)) |>
+        dplyr::filter(
+          grepl("lowprior", scope_prior) &
+            scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+        ),
+      remove_n_1 = .remove_n_1
+    ) |>
+      lapply(
+        X = _,
+        FUN = make_table_syn_display_prep,
+        color = "gray"
+      ),
+    silent = TRUE
+  )
+  # low prior species with m_urge > cutoff but m_feas < cutoff
+  table_kingdom_tertiary_list <- try(
+    make_table_syn_list(
+      table_filtered = .table_filtered |>
+        dplyr::filter(grepl(.kingdom, kingdom)) |>
+        dplyr::filter(
+          grepl("lowprior", scope_prior) &
+            scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
+        ),
+      remove_n_1 = .remove_n_1
+    ) |>
+      lapply(
+        X = _,
+        FUN = make_table_syn_display_prep,
+        color = "gray"
+      ),
+    silent = TRUE
+  )
+  # remaining species
+  table_kingdom_rest_list <- if (rest) {
+    try(
+      make_table_syn_list(
+        table_filtered = .table_filtered |>
+          tidyr::drop_na(method_all) |> # no best method for gewone koningsslang
+          dplyr::filter(
+            grepl(.kingdom, kingdom) &
+              grepl("lowprior", scope_prior) &
+              scope_prior_motivation != "scope low priority as urgency score is larger but feasibility score is smaller than cutoff" &
+              scope_prior_motivation != "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
+          ),
+        remove_n_1 = .remove_n_1
+      ) |>
+        lapply(
+          X = _,
+          FUN = make_table_syn_display_prep,
+          color = "gray"
+        ),
+      silent = TRUE
+    )
+  } else {
+    NULL
+  }
+  #
+  tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
+  scope_type_list_kingdom <- setNames(
+    object = tmp |> names() |> as.list(),
+    nm = tmp |> names()
+  )
+  table_grouped_kingdom_display_list <- lapply(
+    scope_type_list_kingdom,
+    \(x) make_table_syn_display(
+      table_prior = table_kingdom_prior_list[[x]],
+      table_secondary = if (inherits(table_kingdom_secondary_list, "try-error")) {
+        NULL
+      } else {
+        table_kingdom_secondary_list[[x]]
+      },
+      table_tertiary = if (inherits(table_kingdom_tertiary_list, "try-error")) {
+        NULL
+      } else {
+        table_kingdom_tertiary_list[[x]]
+      },
+      table_rest = if (inherits(table_kingdom_rest_list, "try-error")) {
+        NULL
+      } else {
+        table_kingdom_rest_list[[x]]
+      }
+    )
+  )
+  return(table_grouped_kingdom_display_list)
 }
-# rest
-table_kingdom_rest_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("lowprior", scope_prior) &
-        scope_prior_motivation != "scope low priority as urgency score is larger but feasibility score is smaller than cutoff" &
-        scope_prior_motivation != "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
+
+# --- create full synergy tables for display - plants & animals ---------------
+
+table_syn_plants_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_upd,
+  .kingdom = "plant",
+  rest = TRUE
 )
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = table_kingdom_secondary_list[[x]],
-    table_rest = table_kingdom_rest_list[[x]]
-  )
+table_syn_animals_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_upd,
+  .kingdom = "dier",
+  rest = TRUE
 )
-
-
-table_syn_plants_display_list <- table_grouped_kingdom_display_list
-
-# --- create full synergy tables for display - animals ---------------
-
-
-# define kingdom
-.kingdom <- "dier"
-
-# high prior species
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("highprior", scope_prior)
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-table_kingdom_secondary_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("lowprior", scope_prior) &
-        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-# low prior species with m_urge > cutoff but m_feas < cutoff
-table_kingdom_tertiary_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("lowprior", scope_prior) &
-        scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-# rest
-table_kingdom_rest_list <- make_table_syn_list(
-  table_filtered = table_filtered_upd |>
-    tidyr::drop_na(method_all) |> # no best method for gewone koningsslang
-    dplyr::filter(
-      grepl(.kingdom, kingdom) &
-        grepl("lowprior", scope_prior) &
-        scope_prior_motivation != "scope low priority as urgency score is larger but feasibility score is smaller than cutoff" &
-        scope_prior_motivation != "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
-)
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = table_kingdom_secondary_list[[x]],
-    table_tertiary = table_kingdom_tertiary_list[[x]],
-    table_rest = table_kingdom_rest_list[[x]]
-  )
-)
-
-table_syn_animals_display_list <- table_grouped_kingdom_display_list
-
 
 # --- define-function-make-table-species-display ---------------
 
@@ -1240,143 +1196,38 @@ table_filtered_anb_display_list <- lapply(
       )
   }
 )
-
-# --- scenario 1 - ANB priorities - synergy tables - plants ---------------
-
-# FIX
-#
-# define kingdom
-.kingdom <- "plant"
-
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_anb |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("highprior", scope_prior
-      ))
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
+if (FALSE){
+  #select scopes: any of
+  table_filtered_anb_prior_display_list <- lapply(
+    kingdom_list,
+    \(x){ table_filtered_anb_prior |>
+        dplyr::filter(grepl(x, kingdom)) |>
+        make_table_display(
+          data_table = _,
+          cols_id = id_cols_display,
+          cols_addon = c("m_score_feas", "m_score_urge"),
+          footnote_data = footnote_combined
+        )
+    }
   )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_secondary_list <- make_table_syn_list(
-    table_filtered = table_filtered_anb |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
 }
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_tertiary_list <- make_table_syn_list(
-    table_filtered = table_filtered_anb |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
+
+
+
+# --- scenario 1 - ANB priorities - synergy tables - plants & animals ---------------
+
+
+table_syn_anb_plants_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_anb,
+  .kingdom = "plant",
+  .remove_n_1 = FALSE
 )
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = NULL,
-    table_tertiary = NULL
-  )
+table_syn_anb_animals_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_anb,
+  .kingdom = "dier",
+  .remove_n_1 = FALSE
 )
 
-table_syn_anb_plants_display_list <- table_grouped_kingdom_display_list
-
-
-# --- scenario 1 - ANB priorities - synergy tables - animals ---------------
-
-
-# FIX
-#
-# define kingdom
-.kingdom <- "dier"
-
-# high prior species
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_anb |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("highprior", scope_prior
-      ))
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-# FIX: automatize
-table_kingdom_secondary_list <- make_table_syn_list(
-  table_filtered = table_filtered_anb |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("lowprior", scope_prior) &
-        scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-table_kingdom_tertiary_list <- make_table_syn_list(
-  table_filtered = table_filtered_anb |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("lowprior", scope_prior) &
-        scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-    )
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep,
-    color = "gray"
-  )
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
-)
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = table_kingdom_secondary_list[[x]],
-    table_tertiary = table_kingdom_tertiary_list[[x]]
-  )
-)
-
-table_syn_anb_animals_display_list <- table_grouped_kingdom_display_list
 
 # --- scenario 2 - detection - get species ---------------
 #
@@ -1411,145 +1262,18 @@ table_filtered_det_display_list <- lapply(
   }
 )
 #
-# --- scenario 2 - detection - synergy tables - plants ---------------
+# --- scenario 2 - detection - synergy tables - plants & animals ---------------
 #
-# FIX
-#
-# define kingdom
-.kingdom <- "plant"
-
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_det |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("highprior", scope_prior
-      ))
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_secondary_list <- make_table_syn_list(
-    table_filtered = table_filtered_det |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_tertiary_list <- make_table_syn_list(
-    table_filtered = table_filtered_det |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
+table_syn_det_plants_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_det,
+  .kingdom = "plant",
+  .remove_n_1 = FALSE
 )
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = NULL,
-    table_tertiary = NULL
-  )
+table_syn_det_animals_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_det,
+  .kingdom = "dier",
+  .remove_n_1 = FALSE
 )
-
-table_syn_det_plants_display_list <- table_grouped_kingdom_display_list
-
-#
-# --- scenario 2 - detection - synergy tables - animals ---------------
-#
-# FIX
-#
-# define kingdom
-.kingdom <- "dier"
-
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_det |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("highprior", scope_prior
-      ))
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_secondary_list <- make_table_syn_list(
-    table_filtered = table_filtered_det |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_tertiary_list <- make_table_syn_list(
-    table_filtered = table_filtered_det |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
-)
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = NULL,
-    table_tertiary = NULL
-  )
-)
-
-table_syn_det_animals_display_list <- table_grouped_kingdom_display_list
-
 #
 # --- scenario 3 - distribution /not detection - get species ---------------
 #
@@ -1582,145 +1306,14 @@ table_filtered_dist_display_list <- lapply(
 )
 
 #
-# --- scenario 3 - distribution /not detection - synergy tables - plants ---------------
+# --- scenario 3 - distribution / not detection - synergy tables - plants & plants ---------------
 #
-#
-# FIX
-#
-# define kingdom
-.kingdom <- "plant"
-
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_dist |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("highprior", scope_prior
-      ))
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_secondary_list <- make_table_syn_list(
-    table_filtered = table_filtered_dist |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_tertiary_list <- make_table_syn_list(
-    table_filtered = table_filtered_dist |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
+table_syn_dist_plants_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_dist,
+  .kingdom = "plant"
 )
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = NULL,
-    table_tertiary = NULL
-  )
+table_syn_dist_animals_display_list  <- make_table_syn_display_list(
+  .table_filtered = table_filtered_dist,
+  .kingdom = "dier"
 )
 
-table_syn_dist_plants_display_list <- table_grouped_kingdom_display_list
-
-#
-#
-# --- scenario 3 - distribution /not detection - synergy tables - animals ---------------
-
-
-#
-# FIX
-#
-# define kingdom
-.kingdom <- "dier"
-
-table_kingdom_prior_list <- make_table_syn_list(
-  table_filtered = table_filtered_dist |>
-    dplyr::filter(grepl(.kingdom, kingdom)) |>
-    dplyr::filter(
-      grepl("highprior", scope_prior
-      ))
-) |>
-  lapply(
-    X = _,
-    FUN = make_table_syn_display_prep
-  )
-# low prior species with m_urge < cutoff but m_feas > cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_secondary_list <- make_table_syn_list(
-    table_filtered = table_filtered_dist |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as feasibility score is larger but urgency score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-# low prior species with m_urge > cutoff but m_feas < cutoff
-# FIX: automatize
-if (FALSE) {
-  table_kingdom_tertiary_list <- make_table_syn_list(
-    table_filtered = table_filtered_dist |>
-      dplyr::filter(grepl(.kingdom, kingdom)) |>
-      dplyr::filter(
-        grepl("lowprior", scope_prior) &
-          scope_prior_motivation == "scope low priority as urgency score is larger but feasibility score is smaller than cutoff"
-      )
-  ) |>
-    lapply(
-      X = _,
-      FUN = make_table_syn_display_prep,
-      color = "gray"
-    )
-}
-#
-tmp <- vctrs::list_drop_empty(table_kingdom_prior_list)
-scope_type_list_kingdom <- setNames(
-  object = tmp |> names() |> as.list(),
-  nm = tmp |> names()
-)
-table_grouped_kingdom_display_list <- lapply(
-  scope_type_list_kingdom,
-  \(x) make_table_syn_display(
-    table_prior = table_kingdom_prior_list[[x]],
-    table_secondary = NULL,
-    table_tertiary = NULL
-  )
-)
-
-table_syn_dist_animals_display_list <- table_grouped_kingdom_display_list
