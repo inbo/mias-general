@@ -699,6 +699,9 @@ make_table_syn_list <- function(
         ) |>
         tidyr::unnest(data = _, cols = method) |>
         dplyr::rename(species = method) |>
+        # needed in case cells are not lists (no method-overlap)
+        # to parallel keep_empty = FALSE in unnest
+        tidyr::drop_na(species) |>
         dplyr::mutate(
           method = method,
           n_species = dplyr::n(),
