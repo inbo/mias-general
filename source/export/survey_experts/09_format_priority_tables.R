@@ -24,10 +24,25 @@ load(paste0(response_data_path, "tables/", "table_filtered_illustration.rda"))
 
 # --- define-colors ---------------
 
-color_hl = "#FA8775"
+color_hl = if (exists("mode_source") && grepl("presentation", mode_source)) {
+  "#FFB14E"
+} else {
+  "#FA8775"
+}
 color_meth_a = "#0000FF"
 color_meth_b = "#FFB14E" # "#CD34B5"
-
+#
+#
+#
+#
+# --- define-font-size---------------
+#
+.font_size <- if (exists("mode_source") && grepl("presentation", mode_source)) {
+  15
+} else {
+  11
+}
+#
 #
 #
 # --- round priority scores to 2 digits ---------------
@@ -470,7 +485,7 @@ make_table_display <- function(
       bootstrap_options = c("condensed", "hover"), # "responsive"
       full_width = FALSE,
       position = "left",
-      font_size = 11
+      font_size = .font_size
     ) |>
     kableExtra::collapse_rows(
       columns = seq_along(cols_id),
@@ -671,12 +686,17 @@ table_filtered_upd_display_list <- lapply(
 # --- define functions to prepare and display synergy tables ---------------
 #
 #
-id_cols_syn_display <- c("species", "vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+id_cols_syn_display <- if (exists("mode_source") && grepl("presentation", mode_source)) {
+  c("vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+} else {
+  c("species", "vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+}
 #
 # make list with data frames containing a (species , milieu) x methods per scope
 make_table_syn_list <- function(
     table_filtered,
-    cols_addon = c("stadium", "prius_stadium", "taxon", "on_unionlist")
+    cols_addon = c("stadium", "prius_stadium", "taxon", "on_unionlist"),
+    remove_n_1 = FALSE
 ){
   methods <- setNames(
     object = table_filtered$method_all |> unique() |> as.list(),
@@ -733,6 +753,14 @@ make_table_syn_list <- function(
       n_species |> dplyr::desc()
     )
   #
+  # remove species if there is no method overap
+  if (remove_n_1){
+    table_grouped <- table_grouped |>
+      dplyr::filter(
+        n_species > 1
+      )
+  }
+  #
   # reshape to list containing a (species , milieu) x methods data frame per scope
   scope_type_list <- setNames(
     object = table_grouped$scope_type |> levels() |> as.list(),
@@ -775,9 +803,13 @@ make_table_syn_display_prep <- function(
     ) |>
     dplyr::slice(1) |>
     dplyr::mutate(
-      species = kableExtra::cell_spec(
-        x = "Number of species covered",
-        italic = TRUE
+      dplyr::across(1,
+                    \(x){
+                      x = kableExtra::cell_spec(
+                        x = "Number of species covered",
+                        italic = TRUE
+                      )
+                    }
       )
     )
   table_prep <- table_prep |>
@@ -877,7 +909,7 @@ make_table_syn_display <- function(
       bootstrap_options = c("condensed", "hover"), # "responsive"
       full_width = FALSE,
       position = "left",
-      font_size = 11
+      font_size = .font_size
     ) |>
     kableExtra::collapse_rows(
       columns = seq_along(cols_id),
@@ -908,7 +940,7 @@ make_table_syn_display <- function(
         if(!is.null(table_secondary)) nrow(table_12),
         if(!is.null(table_tertiary)) nrow(table_123),
         nrow(table_comb)
-        ),
+      ),
       background = "white"
     ) |>
     kableExtra::group_rows(
@@ -1088,7 +1120,7 @@ make_table_species_display <- function(
       "stadium",
       "prius_stadium",
       "prius_milieu"
-      ),
+    ),
     cols_addon = c(
       "m_score_feas",
       "m_score_urge"
@@ -1112,7 +1144,7 @@ make_table_species_display <- function(
       bootstrap_options = c("condensed", "hover"), # "responsive"
       full_width = FALSE,
       position = "left",
-      font_size = 11
+      font_size = .font_size
     ) |>
     kableExtra::collapse_rows(
       columns = seq_along(cols_id),
@@ -1181,11 +1213,12 @@ species_anb_display <- species_anb |>
 #
 
 table_filtered_anb <- table_filtered_upd |>
-   dplyr::filter(grepl(
+  dplyr::filter(grepl(
     paste(species_anb$vern_name_nld, collapse = "|"),
     vern_name_nld
   ))
-
+table_filtered_anb_prior <- table_filtered_anb |>
+  dplyr::filter(grepl("highprior", scope_prior))
 
 table_filtered_anb_display_list <- lapply(
   kingdom_list,
@@ -1278,7 +1311,7 @@ table_syn_det_animals_display_list  <- make_table_syn_display_list(
   .remove_n_1 = FALSE
 )
 #
-# --- scenario 3 - distribution /not detection - get species ---------------
+# --- scenario 3 - distribution / not detection - get species ---------------
 #
 species_dist <- table_filtered_upd |>
   dplyr::filter(
@@ -1287,7 +1320,7 @@ species_dist <- table_filtered_upd |>
   ) |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
 
-# --- scenario 3 - distribution /not detection - filtered tables ---------------
+# --- scenario 3 - distribution / not detection - filtered tables ---------------
 #
 table_filtered_dist <- table_filtered_upd |>
   dplyr::filter(grepl(
