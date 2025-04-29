@@ -2938,16 +2938,23 @@
     },
     "trackdown": {
       "Package": "trackdown",
-      "Version": "1.1.1",
-      "Source": "Repository",
-      "Repository": "CRAN",
+      "Version": "1.5.1",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "trackdown",
+      "RemoteUsername": "claudiozandonella",
+      "RemoteSha": "242d7ff615721eca613937c3765d7fbcc6b9c0b7",
       "Requirements": [
         "R",
         "cli",
+        "gargle",
         "googledrive",
+        "lifecycle",
+        "rlang",
         "rmarkdown"
       ],
-      "Hash": "fa056d0f4d10dcb3779b37812c282800"
+      "Hash": "9012d96b66483720adc780fbabd079ce"
     },
     "triebeard": {
       "Package": "triebeard",
