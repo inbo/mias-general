@@ -9,7 +9,7 @@ gis_data_path <- "data"
 # -----------------------------------------------------------------------------
 #
 # define polygon flanders + buffer
-buffer <- 1000*30 # in meters
+buffer <- 1000 * 30 # in meters
 fla <- sf::st_read("data/gis/prius/flanders_wgs84.geojson") # flanders
 fla_buffer <- sf::st_buffer(x = fla, dist = buffer)
 if (FALSE) {
@@ -51,13 +51,16 @@ species_upd <- species |>
       TRUE ~ sci_name_gbif_acc
         ),
     key_acc_gbif = dplyr::case_when(
-      grepl("Vespa velutina", sci_name_gbif_acc) ~ rgbif::name_backbone(vespa_velutina_name)$usageKey,
+      grepl("Vespa velutina", sci_name_gbif_acc) ~
+        rgbif::name_backbone(vespa_velutina_name)$usageKey,
       TRUE ~ key_acc_gbif
     )
   )
 #
 species_upd <- species_upd |>
-  dplyr::select(dplyr::intersect(dplyr::contains("gbif"), dplyr::contains("acc")))
+  dplyr::select(
+    dplyr::intersect(dplyr::contains("gbif"), dplyr::contains("acc"))
+    )
 #
 # define remaining sql parameters
 year_end <- lubridate::year(Sys.Date())
@@ -115,4 +118,3 @@ if (!file.exists(occ_file)) {
         exdir = occcubes_data_path)
   file.remove(zip_file)
 }
-

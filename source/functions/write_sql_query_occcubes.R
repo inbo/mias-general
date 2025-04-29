@@ -3,7 +3,7 @@ write_sql_query_occcubes <- function(
     year_begin,
     year_end,
     polygon_wtk
-){
+) {
   polygon_wtk_formatted <- gsub(
     pattern = ",",
     replacement = paste0(",\n", paste0(rep(" ", 5), collapse = "")),
@@ -31,9 +31,15 @@ write_sql_query_occcubes <- function(
     speciesKey,
     species,
     COUNT(*) AS occurrences,
-    MIN(COALESCE(coordinateUncertaintyInMeters, 1000)) AS minCoordinateUncertaintyInMeters,
-    MIN(GBIF_TemporalUncertainty(eventDate)) AS minTemporalUncertainty,
-    IF(ISNULL(classKey), NULL, SUM(COUNT(*)) OVER (PARTITION BY classKey)) AS classCount
+    MIN(
+      COALESCE(coordinateUncertaintyInMeters, 1000)
+    ) AS minCoordinateUncertaintyInMeters,
+    MIN(
+      GBIF_TemporalUncertainty(eventDate)
+    ) AS minTemporalUncertainty,
+    IF(
+      ISNULL(classKey), NULL, SUM(COUNT(*)) OVER (PARTITION BY classKey)
+    ) AS classCount
   FROM
     occurrence
   WHERE
@@ -78,4 +84,5 @@ AND (LOWER(identificationVerificationStatus) NOT IN (
     eeaCellCode ASC,
     speciesKey ASC;
   ")
+  return(sql_query)
 }

@@ -7,14 +7,18 @@ gis_data_path <- "data/gis"
 # -------------------------------------------------------------
 #
 # get map data
-map_fla_1km <- sf::st_read(file.path(gis_data_path, "prius/vla_1km.geojson"))
-map_fla_borders <- sf::st_read(file.path(gis_data_path, "prius/flanders_wgs84.geojson"))
-#map_prov_borders <- sf::st_read("data/gis/prius/Provincies.geojson")
-#ps_vglrl <- sf::st_read("data/gis/prius/ps_vglrl.geojson")
-#ps_hbtrl_deel <- sf::st_read("data/gis/prius/ps_hbtrl_deel.geojson")
-#map_water <- sf::st_read(file.path(gis_data_path, "prius/waterlopen.geojson"))
-map_bg <- sf::st_read(file.path(gis_data_path, "eea_fla_30000m.shp"))
-map_bg_borders <- sf::st_read(file.path(gis_data_path, "fla_buffer_30000m.shp"))
+map_fla_1km <- sf::st_read(
+  file.path(gis_data_path, "prius/vla_1km.geojson")
+  )
+map_fla_borders <- sf::st_read(
+  file.path(gis_data_path, "prius/flanders_wgs84.geojson")
+  )
+map_bg <- sf::st_read(
+  file.path(gis_data_path, "eea_fla_30000m.shp")
+  )
+map_bg_borders <- sf::st_read(
+  file.path(gis_data_path, "fla_buffer_30000m.shp")
+  )
 #
 #
 # check crs
@@ -31,7 +35,8 @@ map_bg_wgs84 <- map_bg |> sf::st_transform(
 )
 #
 # get occurrence cube data
-# GBIF.org (17 December 2024) GBIF Occurrence Download https://doi.org/10.15468/dl.63mdsh
+# GBIF.org (17 December 2024)
+# GBIF Occurrence Download https://doi.org/10.15468/dl.63mdsh
 cube <- readr::read_tsv(file = "data/gbif_occcubes/0037665-241126133413365.csv")
 cube_poly <- cube |> dplyr::filter(withinpolygon == TRUE)
 #
@@ -59,13 +64,17 @@ species_upd <- species |>
       TRUE ~ sci_name_gbif_acc
     ),
     key_acc_gbif = dplyr::case_when(
-      grepl("Vespa velutina", sci_name_gbif_acc) ~ rgbif::name_backbone(vespa_velutina_name)$usageKey,
+      grepl("Vespa velutina", sci_name_gbif_acc) ~
+        rgbif::name_backbone(vespa_velutina_name)$usageKey,
       TRUE ~ key_acc_gbif
     )
   )
 #
 # check species
-keys_common <- intersect(cube_poly$specieskey |> unique(), species_upd$key_acc_gbif )
+keys_common <- intersect(
+  cube_poly$specieskey |> unique(),
+  species_upd$key_acc_gbif
+  )
 assertthat::are_equal(keys_common, cube_poly$specieskey |> unique()) # same
 assertthat::are_equal(keys_common, species_upd$key_acc_gbif) # not the same
 #
@@ -93,7 +102,8 @@ assertthat::are_equal(
 cube_knotweed_sum <- cube_knotweed |> dplyr::summarise(
   occurrences = sum(occurrences),
   .by = eeacellcode
-) |> dplyr::mutate(
+) |>
+  dplyr::mutate(
   sci_name_gbif_acc = paste(knotweed_names, collapse = ", ")
 )
 species_upd <- species_upd |>
@@ -108,7 +118,7 @@ species_upd <- species_upd |>
 # final cube: sum and add knotweed
 cube_sum <- dplyr::bind_rows(
   cube_upd |>
-    dplyr::filter(!specieskey %in% knotweed_keys)|>
+    dplyr::filter(!specieskey %in% knotweed_keys) |>
     dplyr::summarise(
       occurrences = sum(occurrences),
       .by = c(eeacellcode, sci_name_gbif_acc)
@@ -127,21 +137,30 @@ plot_map  <- function(
     plot_subtitle,
     col_occ = "#EA5F94",
     transform = FALSE
-){
-  if (transform){
+) {
+  if (transform) {
   # transform to epsg:3857 used by open street maps
   data_cube <- sf::st_transform(x = data_cube, crs = "EPSG:3857")
   data_bg_borders <- sf::st_transform(x = data_bg_borders, crs = "EPSG:3857")
   data_fla_borders <- sf::st_transform(x = data_fla_borders, crs = "EPSG:3857")
   }
   ggplot2::ggplot() +
-    ggspatial::annotation_map_tile(type = "cartolight", zoom = 9, cachedir = tempdir(), alpha = .8) +
-    ggplot2::geom_sf(data = data_bg_borders, fill = NA, size = 0.2, color = "black", linetype = "dashed") +
-    ggplot2::geom_sf(data = data_fla_borders, fill = NA, size = 0.2, color = "black", linetype = "solid") +
-    ggplot2::geom_sf(data = data_cube, colour = col_occ, fill = col_occ, alpha = 1, size = 1) +
+    ggspatial::annotation_map_tile(
+      type = "cartolight", zoom = 9, cachedir = tempdir(), alpha = .8
+      ) +
+    ggplot2::geom_sf(
+      data = data_bg_borders,
+      fill = NA, size = 0.2, color = "black", linetype = "dashed"
+      ) +
+    ggplot2::geom_sf(
+      data = data_fla_borders,
+      fill = NA, size = 0.2, color = "black", linetype = "solid"
+      ) +
+    ggplot2::geom_sf(
+      data = data_cube,
+      colour = col_occ, fill = col_occ, alpha = 1, size = 1
+      ) +
     ggplot2::theme_void() + # remove axes
-    #ggplot2::theme(legend.position = "bottom", legend.title = ggplot2::element_blank()) +
-    #ggplot2::theme(plot.margin=grid::unit(c(0,0,0,0), "mm"))+
     ggplot2::coord_sf() +
     ggplot2::labs(title = plot_title, subtitle = plot_subtitle)
 }
@@ -193,6 +212,4 @@ for (species_i in species_upd$sci_name_gbif_acc){
     data.frame(species = species_i, path_to_map =  filepath_i)
     )
 }
-save(plot_filepaths, file = "source/gbif_occ_maps/plot_filepaths.rda")
-#
-#
+save(plot_filepaths, file = "source/gbif_occ_maps/plot_filepaths.Rda")
