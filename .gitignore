@@ -24,3 +24,7 @@ data/raw/*
 data/gis/*
 data/gbif_occcubes/*
 media/
+
+# temporary gitignore
+data/survey_experts/*
+source/export/survey_experts/*
