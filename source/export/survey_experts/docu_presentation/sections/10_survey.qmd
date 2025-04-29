@@ -229,42 +229,68 @@ res_comb_upd |>
 
 
 ```{r survey-questions-scoring-section-2}
-#| fig-width: 11
-#| fig-height: 5
 
-`%+%` <- ggplot2::`%+%`
-plot_scoring %+% (q_plot |> dplyr::filter(section_number == 2))
+col_feas = col_hl
+col_urge = col_plants
 
-```
+data_table_scoring_upd <- data_table_scoring |> 
+  dplyr::mutate(
+    question_text_short = dplyr::case_when(
+      grepl("feas", score_category) ~ 
+        kableExtra::cell_spec(x = question_text_short, color = col_feas),
+      grepl("urge", score_category) ~ 
+        kableExtra::cell_spec(x = question_text_short, color = col_urge)
+    )
+  )  
 
-::: {.notes}
-nota's: 
+make_scoring_table <- function(
+    .data_table_scoring
+){
+  knitr::kable(
+  x = .data_table_scoring,
+  format = "html",
+  escape = FALSE,
+  col.names = c("Question", paste(1:4)),
+  table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("condensed", "hover"), 
+    full_width = FALSE,
+    position = "left",
+    font_size = .font_size
+  ) |> 
+  kableExtra::column_spec(
+    column = 2:ncol(.data_table_scoring),
+    width = "170px"
+  ) |>
+  kableExtra::collapse_rows(
+    columns = seq_along(colnames(.data_table_scoring)),
+    valign = "middle"
+  ) |>
+  kableExtra::add_header_above(
+    header = c(
+      " " = 1,
+      "low feasibility/urgency" = 1,
+      " " = 2,
+      "high feasibility/urgency" = 1
+    ),
+    align = "justify"
+  )
+}
 
-- als er tijd is ga ik de plots door tabellen vervangen
-- als plots te klein zijn: Ik heb de 'lightbox'-optie gactiveerd, dus je kunt op een afbeelding klikken en ziet ze groter
-
-:::
-
-
-## Scoring questions distribution and abundance
-
-
-```{r survey-questions-scoring-section-3}
-#| fig-width: 11
-#| fig-height: 5
-
-plot_scoring %+% (q_plot |> dplyr::filter(section_number == 3))
-
-```
-
-## Scoring questions impact
-
-
-```{r survey-questions-scoring-section-4}
-#| fig-width: 11
-#| fig-height: 5
-
-plot_scoring %+% (q_plot |> dplyr::filter(section_number == 4))
+make_scoring_table(
+  data_table_scoring_upd  |>
+  dplyr::filter(section_number == 2) |>
+  dplyr::select(-c("section_number", "score_category")) 
+) |> gsub(
+  pattern = "feasibility",
+  replacement = kableExtra::cell_spec(x = "feasibility", color = col_feas),
+  x = _
+) |> gsub(
+  pattern = "urgency",
+  replacement = kableExtra::cell_spec(x = "urgency", color = col_urge),
+  x = _
+)
 
 ```
 

@@ -534,6 +534,31 @@ plot_scoring <- ggplot2::ggplot(
     legend.title = ggplot2::element_blank(),
     legend.position = "bottom"
   )
+#
+# prep data for display in table
+#
+data_table_scoring <- q_plot |>
+  dplyr::left_join(
+    x = _,
+    y = q_long |>
+      dplyr::select(
+        tidyselect::contains(c("question_id", "score_response", "response_option"))
+        ),
+    by = c("score" = "score_response_option", "question_id")
+  ) |>
+  dplyr::mutate(
+    response_option_no= 1:dplyr::n(),
+    .by = c(question_id, score)
+  ) |>
+  tidyr::pivot_wider(
+    id_cols = c(question_text_short, response_option_no, section_number, score_category),
+    names_from = score,
+    values_from = response_option
+  ) |>
+  dplyr::select(-response_option_no) |>
+  dplyr::group_by(question_text_short) |>
+  tidyr::fill(tidyselect::everything()) |>
+  dplyr::ungroup()
 
 #
 #
@@ -598,3 +623,4 @@ plot_scoredist <- ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
   )
 
 }
+
