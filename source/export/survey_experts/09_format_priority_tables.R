@@ -853,17 +853,29 @@ make_table_syn_display <- function(
 ) {
   # combine tables
   table_12 <- if (!is.null(table_secondary)) {
-    dplyr::bind_rows(table_prior, table_secondary)
+    dplyr::bind_rows(
+      table_prior,
+      table_secondary |>
+        dplyr::select(tidyselect::any_of(colnames(table_prior)))
+      )
   } else {
     table_prior
   }
   table_123 <- if (!is.null(table_tertiary)) {
-    dplyr::bind_rows(table_12, table_tertiary)
+    dplyr::bind_rows(
+      table_12,
+      table_tertiary |>
+        dplyr::select(tidyselect::any_of(colnames(table_prior)))
+    )
   } else {
     table_12
   }
   table_1234 <- if (!is.null(table_rest)) {
-    dplyr::bind_rows(table_123, table_rest)
+    dplyr::bind_rows(
+      table_123,
+      table_rest |>
+        dplyr::select(tidyselect::any_of(colnames(table_prior)))
+    )
   } else {
     table_123
   }
