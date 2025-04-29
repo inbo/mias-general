@@ -5,7 +5,7 @@ format:
   html:
     toc: true
     toc-location: left-body
-    toc-depth: 4
+    toc-depth: 3
     toc-expand: true
     theme: yeti
     number-sections: true
