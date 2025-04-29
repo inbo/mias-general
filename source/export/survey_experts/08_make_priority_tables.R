@@ -704,8 +704,8 @@ table_base_illu_skeleton <- table_base_illu_stadium |>
   ) |>
   dplyr::mutate(
     method_all = dplyr::case_when(
-      dplyr::row_number() < 10 ~ "methode A",
-      TRUE ~ "methode B"
+      dplyr::row_number() < 10 ~ "method A",
+      TRUE ~ "method B"
       )
   ) |>
   tidyr::crossing(

@@ -509,6 +509,10 @@ make_table_display <- function(
       # row height
       extra_css = 'padding: 4px;'
     ) |>
+    kableExtra::row_spec(
+      row = nrow(data_table_wide),
+      extra_css = "border-bottom: 1.5px solid"
+    ) |>
     kableExtra::footnote(
       symbol = footnote_data$scope_motivation,
       symbol_manual = footnote_data$scope_verbose,
@@ -600,7 +604,7 @@ table_filtered_illu_list_display <- mapply(
 
 # --- create final illustrative filtered table for display ---------------
 
-# HERE symbols score disappeared
+
 table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
   dplyr::last() |>
   dplyr::mutate(
@@ -613,11 +617,24 @@ table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
       scope_verbose)
   ) |>
   dplyr::arrange(stadium, species) |>
+  (\(x)
+   if (exists("mode_source") && grepl("presentation", mode_source)) {
+     x |>
+       dplyr::filter(!grepl("M|N", species)) |>
+       dplyr::select(-"stadium")
+   } else {
+     x
+   }
+  )() |>
   make_table_display(
     data_table = _,
-    cols_id = c("species", "stadium"),
+    cols_id = if (exists("mode_source") && grepl("presentation", mode_source)) {
+      c("species")
+      } else{
+        c("species", "stadium")
+      } ,
     cols_addon = NULL,
-    footnote_data = footnote_filtered
+    footnote_data = footnote_combined
   )
 
 
@@ -958,7 +975,8 @@ make_table_syn_display <- function(
     kableExtra::group_rows(
       group_label = "Primary species",
       start_row = 1,
-      end_row = nrow(table_prior)
+      end_row = nrow(table_prior),
+      background = "white"
     ) |>
     (\(x)
      if (!is.null(table_secondary)) {
@@ -966,7 +984,8 @@ make_table_syn_display <- function(
          kableExtra::group_rows(
            group_label = "Secondary species",
            start_row = nrow(table_prior) + 1,
-           end_row = nrow(table_12)
+           end_row = nrow(table_12),
+           background = "white"
          )
      } else {
        x
@@ -978,7 +997,8 @@ make_table_syn_display <- function(
          kableExtra::group_rows(
            group_label = "Tertiary species",
            start_row = nrow(table_12) + 1,
-           end_row = nrow(table_123)
+           end_row = nrow(table_123),
+           background = "white"
          )
      } else {
        x
@@ -990,7 +1010,8 @@ make_table_syn_display <- function(
          kableExtra::group_rows(
            group_label = "Remaining species",
            start_row = nrow(table_123) + 1,
-           end_row = nrow(table_1234)
+           end_row = nrow(table_1234),
+           background = "white"
          )
      } else {
        x
@@ -1197,7 +1218,7 @@ species_strings_anb <- c("modderkruiper",
                          "Beverrat",
                          "Muskusrat"
 )
-species_anb <- table_base_filtered |>
+species_anb_tmp <- table_base_filtered |>
   dplyr::filter(
     grepl(
       paste(species_strings_anb, collapse = "|"),
@@ -1205,7 +1226,16 @@ species_anb <- table_base_filtered |>
       ignore.case = TRUE
     ) | (kingdom == "plant" & grepl("freshwater|marine", prius_milieu))
   ) |>
+  dplyr::filter(grepl("highprior|lowprior", scope_prior))
+species_anb <- species_anb_tmp |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
+species_anb_highprior <- species_anb_tmp |>
+  dplyr::filter(grepl("highprior", scope_prior)) |>
+  dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
+species_anb_lowprior <- species_anb_tmp |>
+  dplyr::filter(grepl("lowprior", scope_prior)) |>
+  dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
+
 
 species_anb_display <- species_anb |>
   dplyr::arrange(
@@ -1283,8 +1313,8 @@ table_syn_anb_animals_display_list  <- make_table_syn_display_list(
 species_det <- table_filtered_upd |>
   dplyr::filter(
     grepl("detection", scope_type) &
-      grepl("highprior", scope_prior)
-  ) |>
+      grepl("highprior|lowprior", scope_prior)
+    ) |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
 #
 #
@@ -1328,9 +1358,10 @@ table_syn_det_animals_display_list  <- make_table_syn_display_list(
 species_dist <- table_filtered_upd |>
   dplyr::filter(
     !grepl("detection", scope_type) &
-      grepl("highprior", scope_prior)
+      grepl("highprior|lowprior", scope_prior)
   ) |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
+
 
 # --- scenario 3 - distribution / not detection - filtered tables ---------------
 #
