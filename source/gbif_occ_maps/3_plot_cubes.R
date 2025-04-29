@@ -49,7 +49,7 @@ species_sheetid_args <- list(
   gbif_namevariable = "sci_name"
 )
 species <- do.call(
-  process_expertsheet,
+  process_speciessheet,
   species_sheetid_args
 )
 #
@@ -63,34 +63,34 @@ species_upd <- species |>
       grepl("Vespa velutina", sci_name_gbif_acc) ~ vespa_velutina_name,
       TRUE ~ sci_name_gbif_acc
     ),
-    key_acc_gbif = dplyr::case_when(
+    key_gbif_acc = dplyr::case_when(
       grepl("Vespa velutina", sci_name_gbif_acc) ~
         rgbif::name_backbone(vespa_velutina_name)$usageKey,
-      TRUE ~ key_acc_gbif
+      TRUE ~ key_gbif_acc
     )
   )
 #
 # check species
 keys_common <- intersect(
   cube_poly$specieskey |> unique(),
-  species_upd$key_acc_gbif
+  species_upd$key_gbif_acc
   )
 assertthat::are_equal(keys_common, cube_poly$specieskey |> unique()) # same
-assertthat::are_equal(keys_common, species_upd$key_acc_gbif) # not the same
+assertthat::are_equal(keys_common, species_upd$key_gbif_acc) # not the same
 #
 # merge occurrence cube and additional species data
 cube_upd <- dplyr::left_join(
   cube_poly,
   species_upd,
-  by = c("specieskey" = "key_acc_gbif")
+  by = c("specieskey" = "key_gbif_acc")
 )
 #
 # keys invasieve duizendknopen
 knotweed_keys <- species_upd |>
   dplyr::filter(grepl("duizendknopen", opmerking)) |>
-  dplyr::pull(key_acc_gbif)
+  dplyr::pull(key_gbif_acc)
 knotweed_names <- species_upd |>
-  dplyr::filter(key_acc_gbif %in% knotweed_keys) |>
+  dplyr::filter(key_gbif_acc %in% knotweed_keys) |>
   dplyr::pull(sci_name_gbif_acc)
 #
 # summarize knotweed occurrences
@@ -109,7 +109,7 @@ cube_knotweed_sum <- cube_knotweed |> dplyr::summarise(
 species_upd <- species_upd |>
   dplyr::mutate(
     sci_name_gbif_acc = dplyr::case_when(
-      key_acc_gbif %in% knotweed_keys ~ paste(knotweed_names, collapse = ", "),
+      key_gbif_acc %in% knotweed_keys ~ paste(knotweed_names, collapse = ", "),
       TRUE ~ sci_name_gbif_acc
     )
   ) |>
