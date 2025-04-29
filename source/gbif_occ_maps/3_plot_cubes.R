@@ -22,17 +22,17 @@ map_bg_borders <- sf::st_read(
 #
 #
 # check crs
-sf::st_crs(map_fla_1km)$input
-sf::st_crs(map_fla_borders)$input
-sf::st_crs(map_water)$input
-sf::st_crs(map_bg)$input
-sf::st_crs(map_bg_borders)$input
+sf::st_crs(map_fla_1km)$Name
+sf::st_crs(map_fla_borders)$Name
+sf::st_crs(map_bg)$Name
+sf::st_crs(map_bg_borders)$Name
 #
 # transform to wgs84
 map_bg_wgs84 <- map_bg |> sf::st_transform(
   x = _,
   crs = paste0("EPSG:", sf::st_crs(map_fla_1km)$epsg)
 )
+sf::st_crs(map_bg_wgs84)$Name
 #
 # get occurrence cube data
 # GBIF.org (17 December 2024)

@@ -43,7 +43,7 @@ map_list <- lapply(countries, function(x) {
 #
 # check coordinate reference system
 crs_check <- lapply(map_list, function(x) {
-  sf::st_crs(x)$input
+  sf::st_crs(x)$Name
 })
 crs_check
 #
