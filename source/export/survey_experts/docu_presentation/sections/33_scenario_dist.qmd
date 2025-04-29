@@ -1,41 +1,43 @@
+## Scenario 3: Focus on distribution
+
+- Focus on species for which (also) scope distribution is relevant
+  - Limited and widespread species
+
+- Motivation
+  - EU IAS regulation clearly requires reporting of distribution
+
+::: notes
+- scenario redelijk gelijkaardig aan scenario anb 
+    - soorten komen redelijk sterk overeen
+
+:::
+
+
 ## Scenario 3: Focus on distribution {.smaller}
 
-:::: {.columns}
 
-::: {.column width="100%"}
+::::: columns
+::: {.column width="50%"}
 
-
-- High priority species for which distribution is (also) relevant
+High priority in survey
 
 
 ```{r scenario-dist-species}
 #| results: "asis"
 
 species_dist |> 
-  dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
-    x = vern_name_nld,
-    color = dplyr::case_when(
-      grepl("plant", kingdom) ~ col_plants,
-      grepl("dier", kingdom) ~ col_animals
-    )
-  )) |>
-  dplyr::arrange(vern_name_nld) |>
-  dplyr::pull(vern_name_nld_col) |>
-  paste(x = "  -", y = _) |>
-  cat(x = _, sep = "\n")
+  dplyr::filter(grepl("highprior", scope_prior)) |>
+  make_list_species_display()
 
 ```
 
-
 :::
-
-::::
-
+:::::
 
 
 ## Scenario 3: Focus on distribution (plants)
 
-- Method synergies under scopes detection, distribution after management
+- Method synergies under scopes detection, distribution under management
 
 ```{r scenario-dist-priorities-syn-plants-det}
 #| results: asis
@@ -43,6 +45,11 @@ species_dist |>
 table_syn_dist_plants_display_list$detection |> unclass() |> cat()
 
 ```
+
+::: notes
+- for scopes detection, distribution under management: Hemelboon
+- geen synergien dus
+:::
 
 
 ## Scenario 3: Focus on distribution (plants)
@@ -56,11 +63,20 @@ table_syn_dist_plants_display_list$distribution |> unclass() |> cat()
 
 ```
 
+::: notes
+- for scopes distribution en abundance:
+- mogelijke synergie voor een groep van 5 zoetwater planten 
+  - visuele surveys voor alle 5
+  - eDNA: water voor 4 (mogelijk 5)
+- die groep zagen we ook al onder scenario 1
+
+:::
+
 
 
 ## Scenario 3: Focus on distribution (plants)
 
-- Method synergies under scope abundance after management
+- Method synergies under scope abundance under management
 
 ```{r scenario-dist-priorities-syn-plants-abd-after}
 #| results: asis
@@ -69,22 +85,20 @@ table_syn_dist_plants_display_list$abundance_management |> unclass() |> cat()
 
 ```
 
-## Scenario 3: Focus on distribution (plants) 
-
-- Cf. scenario 1: 
-  - 4 to 5 (partly) freshwater plants
-  - Scopes distribution, abundance, and abundance after management
-  - Aquatic eDNA, visual surveys
-- We suggest to analyse for these plants as a group which scopes can be filled in how, at which costs
-
-
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
+::: notes
+- en voor scope abundance under management zien we die groep hier ook terug
 
 :::
+
+
+## Scenario 3: Focus on distribution (plants) 
+
+- Clear group (cf. scenario 1):
+  - 4 to 5 (partly) freshwater plants
+  - Scopes distribution, abundance, and abundance under management all relevant
+    - Focus on distribution most sensible
+  - Aquatic eDNA, visual surveys
+- We suggest to analyse for these plants as a group how the scope distribution could be filled in
 
 
 
@@ -99,6 +113,14 @@ table_syn_dist_animals_display_list$detection |> unclass() |> cat()
 
 ```
 
+
+::: notes
+- detectie in natuurgebieden:
+- kleine groep, muskrat en blauwband
+
+:::
+
+
 ## Scenario 3: Focus on distribution (animals)
 
 - Method synergies under scope inventory
@@ -111,8 +133,15 @@ table_syn_dist_animals_display_list$inventory |> unclass() |> cat()
 ```
 
 
+::: notes
+- synergie onder scope inventory zagen we ook al onder anb scenario
+- blijft weinig realtistisch en de combinatie scope-soorten ook niet relevant 
 
-## Scenario 3: Focus on distribution (animals)
+::: 
+
+
+
+## Scenario 3: Focus on distribution (animals) {.scrollable}
 
 - Method synergies under scope distribution
 
@@ -123,7 +152,19 @@ table_syn_dist_animals_display_list$distribution |> unclass() |> cat()
 
 ```
 
-## Scenario 3: Focus on distribution (animals)
+
+::: notes
+- situatie heel gelijkaardig aan situatie onder anb scenario voor scope distribution:
+  - synergien tussen 4 prioritaire zoetwater soorten (Blauwband is er hier bij gekomen) en gevlekte rivierkreeft als secundaire en chinese krab (ook nieuw hier) als tertiaire soort
+  - via eDNA
+- synergien tussen 2 terrestrische soorten en tertiaire soort wasbeer
+  - cameravallen of visuele surveys
+
+::: 
+
+
+
+## Scenario 3: Focus on distribution (animals) {.scrollable}
 
 - Method synergies under scope abundance
 
@@ -134,11 +175,17 @@ table_syn_dist_animals_display_list$abundance |> unclass() |> cat()
 
 ```
 
+::: notes
+- hier ook weer gelijkenissen met anb scenario wat synergie tussen muntjak en wasbeer betreft (visuele surveys, cameravallen)
+- blauwband en chinese krab mogelijk nog combineerbaar (?)
+
+:::
+
 
 
 ## Scenario 3: Focus on distribution (animals)
 
-- Method synergies under scope distribution after management
+- Method synergies under scope distribution under management
 
 ```{r scenario-dist-priorities-syn-animals-dist-after}
 #| results: asis
@@ -147,11 +194,17 @@ table_syn_dist_animals_display_list$distribution_management |> unclass() |> cat(
 
 ```
 
+::: notes
+- exact dezelfde situatie als onder anb scenario
+- synergie tussen beverrat en wasbeer weinig realistisch wegens verschillend habitat
+
+:::
+
 
 
 ## Scenario 3: Focus on distribution (animals)
 
-- Method synergies under scope abundance after management
+- Method synergies under scope abundance under management
 
 ```{r scenario-dist-priorities-syn-animals-abd-after}
 #| results: asis
@@ -160,22 +213,18 @@ table_syn_dist_animals_display_list$abundance_management |> unclass() |> cat()
 
 ```
 
-## Scenario 3: Focus on distribution (animals)
-
-- Similiar groups as under scenario 1
-  - Scope distribution
-    - Group 1 (scenario 1)
-    - Group 2 (scenario 1 & Stone moroko) 
-  - Scopes abundance
-    - Chinese muntjac & African clawed (scenario 1) & Stone moroko
-    - Unique method synergies for African clawed & Stone moroko  
-- Possibility to group African clawed & Stone moroko in addition to suggestions under scenario 1 (?)
-
-
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
+::: notes
+- zoals in anb scenario mogelijke synergien tussen muntjak en wasbeer (visuele surveys, cameravallen)
+- nieuw is de mogelijke combinatie klauwkikker & chinese krab (eDNA)oor abundance en abundance under management
 
 :::
+
+
+## Scenario 3: Focus on distribution (animals)
+
+
+- Similiar groups as under scenario 1
+  - Largest groups under scope distribution
+    - Group 1: 3 terrestrial mammals (Aziatische grondeekhoorn, Chinese muntjak, Wasbeer) via visual surveys and camera traps
+    - Group 2: 6 freshwater species (Afrikaanse klauwkikker, Beverrat, Muskusrat, Blauwband, Gevlekte rivierkreeft, Chinese krab) via eDNA
+- We suggest to analyse for group 2 how the scope distribution could be filled in

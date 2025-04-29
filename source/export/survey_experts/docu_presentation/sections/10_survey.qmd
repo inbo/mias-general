@@ -1,32 +1,17 @@
 # Expert survey 
 
-## Outline
-
-- Purpose
-- Distribution & return
-- Questions
-- Scoring
-
-
-::: {.notes}
-nota's:
-
-- overzicht hier nuttig?
-
-:::
-
-
-
 ## Purpose
 
-- Draw on expert's expertise during planning IAS surveillance schemes in Flanders
+- Draw on expert's expertise during planning IAS monitoring schemes in Flanders
+  - Collect tailored information
   - Evaluation of information via expert judgement 
-- Assess feasiblity and urgency of surveillance schemes per species
+- Assess feasiblity and urgency of monitoring schemes per species
 - Use survey results to prioritize species (groups) for further analysis
 
 ::: {.notes}
-- niet enkel informatie verzamelen maar vooral ook inschatting/aggregatie/evaluatie door experts gewenst
-- ook om het voor ons haalbaar te houden
+- bedoeling van deze survey
+  - informatie zo gericht mogelijk verzamelen
+  - niet enkel informatie verzamelen maar vooral ook inschatting/aggregatie/evaluatie door experts gewenst
 
 :::
 
@@ -34,23 +19,34 @@ nota's:
 ## Distribution & return
 
 - Questionnaires for 122 IAS via Google forms
-    - IAS of (possible future) union concern 
+    - IAS of (possible future) union concern
 - Sent to 57 experts
 - Return: 
     - Questionnaire completed for 105 species
-    - All IAS of union concern covered (?)
+    - 81 IAS of union concern covered
 
 
 ::: {.notes}
-- voor sommige soorten (van sommige experts) moeilijk om antwoord te krijgen
-- we hebben meerdere pogingen gedaan, of bij dezelfde expert of bij verschillende experts
+- elke soort een google form aangemaakt, dus 122 forms
+- uitgestuurd naar 57 experten binnen en buiten INBO
+- uiteindelijk hebben we antwoorden voor 105 soorten gekregen, daarvan 81 op de unilijst
+- voor sommige soorten moeilijk om antwoord te krijgen
+  - we hebben hierbij altijd meerdere pogingen gedaan, of bij dezelfde expert of bij verschillende experts
+- unilijst IAS voor die we geen data hebben
+  - heilige ibis
+  - amerikaanse voseekhoorn
+  - grijze eekhoorn
+  - perziche berenklauw
+  - reuzenbalsemien
+  - reuzenberenklauw
+  - roze rimpelgras
 
 :::
 
 
 ## Questions
 
-- Questions on a species':
+- Questions on a species' ([full list](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing)):
 
 ```{r survey-questions-sections}
 #| results: "asis"
@@ -59,7 +55,7 @@ section_list <- list(
   "introduction and establishment",
   "distribution and abundance",
   "impact",
-  "surveillance/monitoring",
+  "monitoring",
   "management"
 )
 section_list |>
@@ -72,15 +68,21 @@ section_list |>
 ```
 
 - Adaptive design
-  - Questions based on reported invasion stadium 
-- Full list of questions [here](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing)
+  - Selection of questions based on reported invasion stadium 
+
 
 ::: {.notes}
-Adaptief: 
-
-- vragen over introductie enkel indien soort afwezig/sporadisch aanwezig (mogelijk niet de meest optimale keuze)
-- vragen over verspreiding niet indien soort afwezig
-
+- vragen uit 5 rubrieken gesteld
+  - introductie en vestiging
+  - verspreiding en abundantie
+  - impact
+  - monitoring
+  - management
+- het design was adaptief
+  - vragen over verspreiding niet gesteld indien soort afwezig
+  - vragen over introductie enkel gesteld indien soort afwezig/sporadisch aanwezig 
+  (mogelijk niet de meest optimale keuze)
+  
 :::
 
 
@@ -102,7 +104,7 @@ for (i in seq_along(section_list)){
 
 
 
-## Questions introduction and establishment
+## Questions introduction and establishment {visibility="hidden"}
 
 
 ```{r survey-questions-section-2}
@@ -118,19 +120,8 @@ res_comb_upd |>
 
 ```
 
-::: {.notes}
 
-nota's:
-
-- deze en de volgende slides mogelijk eruit halen
-- meteen naar sectie ‘Scoring Questions’ en vragen aan de hand van de mogelijke antwoordopties toelichten
-
-
-:::
-
-
-
-## Questions distribution and abundance
+## Questions distribution and abundance {visibility="hidden"}
 
 
 ```{r survey-questions-section-3}
@@ -146,19 +137,8 @@ res_comb_upd |>
 
 ```
 
-## Questions distribution and abundance
 
-
-![Example occurrence map based on GBIF data](media/muntiacus_reevesi_(ogilby,_1839).png){width=70%}
-
-
-::: {.notes}
-Text survey:
-De bovenstaande verspreidingskaart baseert zich op GBIF gegevens. Voor het Vlaams Gewest (gebied binnen de vaste lijn) en een 30 km brede bufferzone (gebied tussen vaste en stippellijn) zijn die hokken (EEA Reference grid, 1 x 1 km) rood gemarkeerd waarbinnen de soort tijdens de laatste 10 jaar is waargenomen.
-
-:::
-
-## Questions impact
+## Questions impact {visibility="hidden"}
 
 
 ```{r survey-questions-section-4}
@@ -175,7 +155,7 @@ res_comb_upd |>
 ```
 
 
-## Questions surveillance/monitoring
+## Questions surveillance/monitoring {visibility="hidden"}
 
 ```{r survey-questions-section-5}
 #| results: "asis"
@@ -191,7 +171,7 @@ res_comb_upd |>
 ```
 
 
-## Questions management
+## Questions management {visibility="hidden"}
 
 ```{r survey-questions-section-6}
 #| results: "asis"
@@ -209,7 +189,7 @@ res_comb_upd |>
 ## Scoring questions 
 
 - Majority of questions is scored
-- Each scored question is either an indicator for *feasibility* or *urgency*, e.g.,
+- Each scored question is either an indicator of *feasibility* or *urgency*, e.g.,
   - Accessibility of introduction sites -> feasibility
   - Probability of establishment -> urgency
 - Scores
@@ -218,15 +198,19 @@ res_comb_upd |>
 - Scores used for prioritization
 
 ::: {.notes}
-- de toegekende scores gaan we dan voor de prioritering gebruiken
-- we zullen straks zien hoe
+- voor een grootdeel van de vragen kennen we op basis van de antwoorden scores toe
+  - daarnaast ook aantal open vragen voor wat meer flexibiliteit
+- elke gescoorde vraag is of een indicatoor for haalbaarheid of voor nood van mogelijk meetnet
+- scores variëren telkens van 1 - 4 en zijn niet zichtbaar voor de experts
+- we gebruiken ze voor een prioritering van de soorten, we zullen straks zien hoe
 
 :::
 
 
 
-## Scoring questions introduction and establishment
+## Scoring questions 
 
+Introduction and establishment
 
 ```{r survey-questions-scoring-section-2}
 
@@ -294,25 +278,18 @@ make_scoring_table(
 
 ```
 
+::: {.notes}
 
-## Scoring questions surveillance/monitoring 
+Om voorbeeld te geven:
 
+- vraag: hoeveel introductieplaatsen en hoe verspreid?
+- lage haalbaarheid indien introductieplaaten onbekend zijn
+- hoge haalbaarheid indien beperkte aantaal specifieke plaatsen
 
-```{r survey-questions-scoring-section-5}
-#| fig-width: 11
-#| fig-height: 5
-
-plot_scoring %+% (q_plot |> dplyr::filter(section_number == 5))
-
-```
-
-## Scoring questions management
+- vraag: kans op introductie
+- lagere nood indien onbekend of klein
+- hogere nood indien grote kans
 
 
-```{r survey-questions-scoring-section-6}
-#| fig-width: 11
-#| fig-height: 5
+:::
 
-plot_scoring %+% (q_plot |> dplyr::filter(section_number == 6))
-
-```

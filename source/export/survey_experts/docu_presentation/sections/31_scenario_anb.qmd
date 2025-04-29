@@ -1,16 +1,16 @@
 ## Scenario 1: ANB priority species {.smaller}
 
 
-:::: {.columns}
-
+::::: columns
 ::: {.column width="50%"}
-
-- High priority in survey
+High priority in survey
 
 ```{r scenario-anb-priorities-species-high}
 #| results: "asis"
 
-species_anb |> 
+make_list_species_display <- function(.species){
+  .species_tmp <- .species |> 
+  dplyr::arrange(kingdom |> dplyr::desc(), vern_name_nld) |>
   dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
     x = vern_name_nld,
     color = dplyr::case_when(
@@ -18,58 +18,57 @@ species_anb |>
       grepl("dier", kingdom) ~ col_animals
     )
   )) |>
-  dplyr::filter(grepl("highprior", scope_prior)) |>
-  dplyr::arrange(vern_name_nld) |>
-  dplyr::pull(vern_name_nld_col) |>
-  paste(x = "  -", y = _) |>
-  cat(x = _, sep = "\n")
+  dplyr::select(vern_name_nld_col, kingdom) |>
+  dplyr::mutate(id = dplyr::row_number(), .by = kingdom) |>
+  tidyr::pivot_wider(
+    id_cols = id,
+    names_from = kingdom, values_from = vern_name_nld_col, 
+    values_fill = NA
+    ) |>
+  dplyr::select(-id)
+.species_tmp |> 
+  knitr::kable(
+    format = "html",
+    escape = FALSE,
+    col.names = c("plant", "animal"),
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) |> kableExtra::kable_styling(
+      bootstrap_options = c("condensed", "hover"), 
+      full_width = FALSE,
+      position = "left",
+      font_size = .font_size
+    ) |>
+  kableExtra::row_spec(
+    row = .species_tmp |> nrow() |> seq_len(),
+    extra_css = "border-bottom: 0px"
+  )
+}
+
+species_anb_highprior |> make_list_species_display()
 
 ```
-
 :::
 
 ::: {.column width="50%"}
-
-- Low priority in survey
+Low priority in survey
 
 ```{r scenario-anb-priorities-species-low}
 #| results: "asis"
 
-species_anb |> 
-    dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
-    x = vern_name_nld,
-    color = dplyr::case_when(
-      grepl("plant", kingdom) ~ col_plants,
-      grepl("dier", kingdom) ~ col_animals
-    )
-  )) |>
-  dplyr::filter(grepl("lowprior", scope_prior)) |>
-  dplyr::arrange(vern_name_nld) |>
-  dplyr::pull(vern_name_nld_col) |>
-  paste(x = "  -", y = _) |>
-  cat(x = _, sep = "\n")
+species_anb_lowprior |> make_list_species_display()
 
 ```
-
 :::
+:::::
 
-::::
-
-::: {.notes}
-
-nota's: 
-
-- hier evtl. 'filtered table' voor anb soorten tonen (zie html document 'plan of action')
-- zo duidelijk welke soorten er waarom uitvallen
-- tekst kleiner
-
+::: notes
+- voor de rest geen data
+- reden low priority in survey: zie html document
 :::
-
-
 
 ## Scenario 1: ANB priority species (plants)
 
-- Method synergies under scopes detection
+-   Method synergies under scopes detection
 
 ```{r scenario-anb-priorities-syn-plants-det}
 #| results: asis
@@ -79,24 +78,16 @@ table_syn_anb_plants_display_list$detection |> unclass() |> cat()
 
 ```
 
-::: {.notes}
+::: notes
 
-nota's: 
-
-- tekst als caption aan tabel toevoegen
-- ik heb de latijnse namen hier verwijders om plaats te besparen
-- de column headers zijn als 'left-aligned' gedefineerd, ik weet niet waarom ze hier naar rechts verschuiven
-  - indien nog tijd probeer ik dit nog op te lossen
-- "Number of species covered" in presentatie-mode verwijderen en mondeling toelichten
+- geen synergien 
+- moeraslantaarn enige ANB-plant voor die detectie relevant (en we data hebben)
 
 :::
 
-
-
-
 ## Scenario 1: ANB priority species (plants)
 
-- Method synergies under scopes distribution, abundance, abundance after management
+-   Method synergies under scopes distribution, abundance, abundance under management
 
 ```{r scenario-anb-priorities-syn-plants-dist}
 #| results: asis
@@ -105,30 +96,31 @@ table_syn_anb_plants_display_list$distribution |> unclass() |> cat()
 
 ```
 
+::: notes
+- voor scopes distribution, abundance, abundance under management zien we altijd dezelfde groep planten 
+  - al die scopes dus relevant
+- groep van 5 zoetwater planten (deels terrestrisch)
+- synergie: 
+  - visuele surveys voor alle 5
+  - eDNA: water voor 4 (mogelijk 5)
 
-## Scenario 1: ANB priority species (plants) 
+::: 
 
-- Clear group: 
-  - 4 to 5 (partly) freshwater plants
-  - Scopes distribution, abundance, and abundance after management
+
+## Scenario 1: ANB priority species (plants)
+
+- Clear group:
+  - 4 - 5 (partly) freshwater plants
+  - Scopes distribution, abundance, and abundance under management are all relevant
+    - Focus on management-related scopes most sensible 
   - Aquatic eDNA, visual surveys
-- We suggest to analyse for these plants as a group which scopes can be filled in how, at which costs
+- We suggest to analyse for these plants as a group how the scope abundance under management could be filled in
 
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
-- de suggesties voor de verschillende scenarios nog eens vergelijkend tonen
-  - op slide?
-  - flipchart? -> misschien handiger
-
-:::
 
 
 ## Scenario 1: ANB priority species (animals)
 
-- Method synergies under scope detection
+-   Method synergies under scope detection
 
 ```{r scenario-anb-priorities-syn-animals-det}
 #| results: asis
@@ -137,9 +129,18 @@ table_syn_anb_animals_display_list$detection |> unclass() |> cat()
 
 ```
 
+::: notes
+- mogelijke synergiën tussen 1 prioritaire en of 1 secundaire of 1 tertiaire soort
+  - muskusrat & rivierkreeft via eDNA meest realistisch
+  - we weerhouden dus de synergie met de rivierkreeft, maar niet met de eekhoorn op basis van te verschillend habitat
+
+::: 
+
+
+
 ## Scenario 1: ANB priority species (animals)
 
-- Method synergies under scope inventory
+-   Method synergies under scope inventory
 
 ```{r scenario-anb-priorities-syn-animals-inv}
 #| results: asis
@@ -148,11 +149,17 @@ table_syn_anb_animals_display_list$inventory |> unclass() |> cat()
 
 ```
 
+::: notes
+- synergie rode amerikaanse rivierkreeft met tijgermug weinig realistisch wegens verschil in habitat 
+- bovendien zouden we beide soorten buiten beschouwing laten 
+  - tijgermug: Vlaams en nationaal plan, waaraan gewerkt wordt
+  - rivierkreeft: craywatch is bedoeld als inhaalslag en loop nog
 
+::: 
 
-## Scenario 1: ANB priority species (animals)
+## Scenario 1: ANB priority species (animals) {.scrollable}
 
-- Method synergies under scope distribution
+-   Method synergies under scope distribution
 
 ```{r scenario-anb-priorities-syn-animals-dist}
 #| results: asis
@@ -161,19 +168,18 @@ table_syn_anb_animals_display_list$distribution |> unclass() |> cat()
 
 ```
 
-::: {.notes}
+::: notes
 
-nota's: 
-
-- tekst als table caption -> tabel volledig zichtbaar (wasbeer)
+- synergien tussen 3 prioritaire zoetwater soorten en gevlekte rivierkreeft als secundaire soort
+  - via eDNA
+- synergien tussen 2 terrestrische soorten en tertiaire soort wasbeer
+  - cameravallen of visuele surveys
 
 :::
 
-
-
 ## Scenario 1: ANB priority species (animals)
 
-- Method synergies under scopes abundance, abundance after management
+-   Method synergies under scopes abundance, abundance under management
 
 ```{r scenario-anb-priorities-syn-animals-abd}
 #| results: asis
@@ -183,10 +189,17 @@ table_syn_anb_animals_display_list$abundance |> unclass() |> cat()
 ```
 
 
+::: notes
+- dezelfde soorten voor abundance en abundance under management
+- vooral synergie tussen muntjak en wasbeer realistisch (?)
+  - visuele surveys, cameravallen
+
+:::
+
 
 ## Scenario 1: ANB priority species (animals)
 
-- Method synergies under scope distribution after management
+-   Method synergies under scope distribution under management
 
 ```{r scenario-anb-priorities-syn-animals-dist-after}
 #| results: asis
@@ -195,62 +208,43 @@ table_syn_anb_animals_display_list$distribution_management |> unclass() |> cat()
 
 ```
 
-
-
-
-
-## Scenario 1: ANB priority species (animals)
-
-- Larger groups for scope distribution
-  - Group 1
-    - 4 (partly) terrestrial mammals (Nutria, Muskrat, Siberian chipmunk, Chinese muntjac)
-    - Visual surveys, camera traps
-    - 1 secondary mammal (Racoon) as potential free rider
-  - Group 2
-    - 3 (partly) freshwater species (African clawed frog, Nutria, Muskrat)
-    - Aquatic eDNA
-    - 1 secondary crayfish as free rider
-    - Heterogenous group, unclear to what extent synergies will play out
-  - We suggest to prioritize group 1
-
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
-
-:::
-
-## Scenario 1: ANB priority species (animals)
-
-- Smaller groups for remaining scopes
-  - Scopes abundance, abundance after management, e.g.,
-    - Chinese muntjac & Racoon (free rider) via visual surveys, camera traps
-    - Chinese muntjac & African clawed frog via visual surveys, passive acoustic monitoring
-  - Scope distribution after management
-    - Nutria & Racoon (free rider) via visual surveys, camera traps
-- Chinese muntjac & African clawed frog frequently involved
-
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
+::: notes
+- mogelijke synergie tussen beverrat en wasbeer, maar weinig realistisch wegens verschil in habitat
 
 :::
 
 
 ## Scenario 1: ANB priority species (animals)
 
-- Suggestion for the animals in total
-  - Analyse for Chinese muntjac which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs
-    - For scope distribution also consider Nutria, Muskrat, Siberian chipmunk in addition to Chinese muntjac
-  - Analyse for African clawed frog which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs
+-   Larger groups for scope distribution
+    -   Group 1
+        -   2 terrestrial mammals (Aziatische grondeekhoorn, Chinese muntjak)
+        -   Visual surveys, camera traps
+        -   1 tertiary mammal (Wasbeer) as potential free rider
+    -   Group 2
+        -   3 (partly) freshwater species (Afrikaanse klauwkikker, Beverrat, Muskusrat)
+        -   Aquatic eDNA
+        -   1 secondary crayfish as free rider
 
-::: {.notes}
+::: notes
 
-nota's: 
+- Maar wel focus op beheer en we zien deze goepen dan nog eens terugkomen onder scenario 3,
+  - waar ze hun kans krijgen
 
-- hier graag jullie input
-- alternatief: start with scope distribution and group?
+:::
+
+## Scenario 1: ANB priority species (animals)
+
+-   Smaller groups for remaining scopes
+    -   Scopes abundance, abundance under management, e.g.,
+        -   Chinese muntjak & Wasbeer (free rider) via visual surveys, camera traps
+        -   Chinese muntjak & Afrikaanse klauwkikker via visual surveys, passive acoustic monitoring
+    -   Scope distribution under management
+        -   Beverrat & Wasbeer (free rider) via visual surveys, camera traps
+- We suggest to analyse for Chinese muntjak & Afrikaanse klauwkikker how the scope abundance under management could be filled in
+
+::: notes
+
+- Of eerder Chinese muntjak & Wasbeer?
+
 :::

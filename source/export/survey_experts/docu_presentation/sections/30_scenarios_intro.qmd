@@ -2,13 +2,25 @@
 
 ## Purpose
 
-- Select a limited number of species (groups) to procede with planning of surveillance/monitoring schemes
-  - Planning relies on the INBO methodology ("Leidraad") 
-- Focus on method-based synergies between species
-  - Synergies for planning
+- Select a limited number of species to procede with planning of monitoring schemes
+  - Planning relies on INBO methodology<br>(*Leidraad voor de meetnetontwerper*/*opdrachtgever*) 
+- Account for *potential synergies* between species
+  - Method-based
+  - Concern planning, not necessarily implementation of monitoring
+  - Between primary and primary(/secondary/tertiary species)
+  - Further research needed
 
 ::: {.notes}
-- synergien tijdens de planning, niet noodzakelijk voor de implementatie
+synergien:
+
+- kunnen gelijkaardige methoden op een gelijkaardige manier ingezet worden voor verschillende soorten?
+  - bijkomend: geen te drastische verschillen in ecologie / habitat
+- synergien tijdens de planning, niet noodzakelijk voor de implementatie van meetnetten (niet noodzakelijk een meetnet)
+- tussen welke soorten?
+  - prioritair: hoge prioriteit in survey
+  - secundair: lage prioriteit in survey, maar enkel omdat urgency score onder drempel
+  - tertiair: lage prioriteit in survey, maar enkel omdat feasibility score onder drempel
+- nog eens benadrukken dat het om mogelijke synergien gaat, meer gedetailleerd onderzoek nodig
 
 :::
   
@@ -20,10 +32,16 @@
 - Scenario 3: Focus on distribution
 
 ::: {.notes}
-- Scenario 1: Overlap between ANB priority species and our priority species 
-- Scenario 2: Focus on species for which detection is (also) relevant
-- Scenario 3: Focus on species for which distribution is (also) relevant
-- 2 en 3 zijn redelijk complementair
+
+- Verschillende scenario's bekeken
+- Elk scenario komt met een focus op een bepaalde scope
+- Scenario 1: Focus op de voor ANB prioritaire soorten
+  - Overlap tussen de ANB soorten en soorten die als prioritair uit onze survey komen
+  - focus eerder op beheer
+- Scenario 2: Focus op soorten voor die (ook) detectie relevant
+- Scenario 3: Focus op soorten voor die (ook) distributie relevant
+- scenario's 2 en 3 zijn redelijk complementair, zekere soorten overlap tussen 1 en 3 
+
 
 :::
 

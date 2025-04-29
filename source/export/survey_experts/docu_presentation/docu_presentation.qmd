@@ -13,6 +13,7 @@ lang <- "NL"
 response_data_path <- "../../../../data/survey_experts/"
 functions_path <- "../../../functions/"
 questions_path <- paste0("../questions_", lang)
+questions_path_EN <- paste0("../questions_", "EN")
 
 source("../09_survey_make_plots.R", local = knitr::knit_global())
 source("../09_format_priority_tables.R", local = knitr::knit_global())
@@ -55,6 +56,10 @@ ul li {
 
 {{< include sections/33_scenario_dist.qmd >}}
 
-{{< include sections/36_scenarios_outro.qmd >}}
+{{< include sections/34_scenarios_outro.qmd >}}
 
-{{< include sections/40_outro.qmd >}}
+{{< include sections/40_scopes.qmd >}}
+
+{{< include sections/50_outro.qmd >}}
+
+{{< include sections/60_backup.qmd >}}

@@ -1,0 +1,158 @@
+#  
+
+## Scoring questions
+
+Distribution and abundance
+
+
+```{r survey-questions-scoring-section-3}
+
+make_scoring_table(
+  data_table_scoring_upd  |>
+  dplyr::filter(section_number == 3) |>
+  dplyr::select(-c("section_number", "score_category")) 
+) |> gsub(
+  pattern = "feasibility",
+  replacement = kableExtra::cell_spec(x = "feasibility", color = col_feas),
+  x = _
+) |> gsub(
+  pattern = "urgency",
+  replacement = kableExtra::cell_spec(x = "urgency", color = col_urge),
+  x = _
+)
+
+```
+
+
+
+## Scoring questions
+
+Impact
+
+
+```{r survey-questions-scoring-section-4}
+
+make_scoring_table(
+  data_table_scoring_upd  |>
+  dplyr::filter(section_number == 4) |>
+  dplyr::select(-c("section_number", "score_category")) 
+) |> gsub(
+  pattern = "feasibility",
+  replacement = kableExtra::cell_spec(x = "feasibility", color = col_feas),
+  x = _
+) |> gsub(
+  pattern = "urgency",
+  replacement = kableExtra::cell_spec(x = "urgency", color = col_urge),
+  x = _
+)
+
+```
+
+
+## Scoring questions
+
+Monitoring 
+
+
+```{r survey-questions-scoring-section-5}
+
+make_scoring_table(
+  data_table_scoring_upd  |>
+  dplyr::filter(section_number == 5) |>
+  dplyr::select(-c("section_number", "score_category")) 
+) |> gsub(
+  pattern = "feasibility",
+  replacement = kableExtra::cell_spec(x = "feasibility", color = col_feas),
+  x = _
+) |> gsub(
+  pattern = "urgency",
+  replacement = kableExtra::cell_spec(x = "urgency", color = col_urge),
+  x = _
+)
+
+```
+
+## Scoring questions
+
+Management
+
+
+```{r survey-questions-scoring-section-6}
+
+make_scoring_table(
+  data_table_scoring_upd  |>
+  dplyr::filter(section_number == 6) |>
+  dplyr::select(-c("section_number", "score_category")) 
+) |> gsub(
+  pattern = "feasibility",
+  replacement = kableExtra::cell_spec(x = "feasibility", color = col_feas),
+  x = _
+) |> gsub(
+  pattern = "urgency",
+  replacement = kableExtra::cell_spec(x = "urgency", color = col_urge),
+  x = _
+)
+
+```
+
+
+
+
+## Scope distribution (EU)
+
+
+:::: {.columns}
+
+::: {.column width="50%"}
+
+![Gap closure algorithm (EU guidelines)](media/EU_habitatdir_guidelines_fig4.svg){height=400}
+
+:::
+
+::: {.column width="50%"}
+
+![Occurrence, distribution, range (EU guidelines)](media/EU_habitatdir_guidelines_fig3.svg){height=400}
+
+:::
+
+::::
+
+
+::: {.notes}
+- hoe wordt de range bepaald?
+- daarvoor gebruik gemaakt van een spatiale algorithme, met naam 'gap closure'
+- 'gap distance'
+- range continuity: distance between 2 distribution grids < 'gap distance'
+- range discontinuity: distance between 2 distribution grids > 'gap distance'
+- tool beschikbaar
+- deduced range is in a second step adapted using information on unsuitable areas 
+  - e.g., marine areas in range of terrestrial species
+  - e.g., areas without freshwater bodies for freshwater species
+- relationship occurrence, distribution, range
+
+:::
+
+
+
+## Scope distribution (EU)
+
+
+![Species-specific 'gap distances' (EU guidelines)](media/EU_habitatdir_guidelines_tab7.svg){height=300}
+
+- Optimize study design for given 'gap distance'
+
+::: {.notes}
+- 'gap distances' are species-specific and should reflect ecological characteristics of the species (e.g., mobility)
+- 'gap distances' belangrijk omdat die bepaald hoe een geoptimaliseerd design eruit zou zien,
+    - ruimtelijke resolutie die nodig is om data te verzamelen die de nodige informatie bevat
+    - hokken daartussen / hokken in hogere resolutie hebben geen impact op range en kunnen bv. met ad-hoc data ingevuld worden
+
+:::
+
+
+## Data quality
+
+![Types of data collection (De Knijf et al., 2014)](media/dataquality.svg){height=500}
+
+
+

@@ -23,7 +23,7 @@ format:
 flandersqmd:
   entity: INBO
   level: 2
-  title: Presentation title
+  title: MIUS | First executive committee meeting
   author:
     - name:
         given: Janne
@@ -49,7 +49,7 @@ flandersqmd:
       orcid: 0000-0001-8804-4216
       affiliation:
         - Research Institute for Nature and Forest (INBO)
-  cover: media/pexels-pixabay-355887.jpg #Photo by Pixabay: https://www.pexels.com/photo/plants-under-starry-sky-355887/
+  cover: media/pexels-jimmykamballur-5722348.png #Photo by Pixabay: https://www.pexels.com/photo/plants-under-starry-sky-355887/
 
 
 lightbox: true

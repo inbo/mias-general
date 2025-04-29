@@ -2,19 +2,42 @@
 
 ## Purpose of today's meeting
 
-- [summarize purpose of meeting] 
+- Determine ...
+  - a selection of most important IAS 
+  - and corresponding monitoring needs
+- ...to start planning monitoring schemes.  
 
 ::: {.notes}
 
-nota's: 
+Vandaag gat het erom...
 
-- volgorde auteurs?
+- selectie maken van set meest prioritaire IAS en bijbehorende monitoringnoden bepalen
+- Zodat we voor deze soorten/noden aan gedetaileerde planning van meetnetten kunnen beginnen. 
 
 :::
 
 
 ## Outline
 
-- [outline of presentation]
+- Expert Survey
+- Prioritization of species-monitoring scope combinations
+- Scenarios for further planning
+- Monitoring scopes
 
 
+::: {.notes}
+
+We hebben al enkele stappen genomen om tot zo een selectie van soorten en monitoringsnoden te komen,
+en dat is ook wat we in het vervolg gaan voorstellen:
+
+- Eerst expert survey opgezet (gericht informatie verzamelen over IAS)
+- Op basis van resultaten al een prioritering doorlopen
+- Resultaten daarvan gaan we vandaag in vorm van aantal scenario's voor mogelijke meetnetten voorstellen
+- Als we dan een beslissing hebben genomen mbt soorten en monitoringnoden, 
+zullen we nog eens terugkomen op monitoringnoden (scopes) om daar ook al zo veel duidelijkheid als mogelijk te scheppen
+
+- Ik zal 1 en 2 doen, dan nemen we wat tijd voor discussie
+- Dan neemt Diederik over, waarna we dan weer een discussie zullen inlassen
+- Voordat we uiteindelijk op de scopes terugkomen
+
+:::

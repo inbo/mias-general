@@ -1,0 +1,13 @@
+## Summary scenario's
+
+- Scenario 1: ANB priority species (scope abundance under management)
+  - 4 - 5 freshwater plants: aquatic eDNA & visual surveys
+  - Chinese muntjak & Afrikaanse klauwkikker: visual surveys & passive acoustic monitoring
+- Scenario 2: Focus on detection (scope detection)
+  - 5 terrestrial plants: visual surveys
+  - 6 aquatic species: aquatic eDNA
+- Scenario 3: Focus on distribution (scope distribution)
+  - 4 - 5 freshwater plants: aquatic eDNA & visual surveys
+  - 6 freshwater species: aquatic eDNA
+
+

@@ -1,35 +1,41 @@
+## Scenario 2: Focus on detection
+
+- Focus on species for which (also) scope detection is relevant
+  - Absent & sporadically present species
+  - Widespread species absent from conservation areas (prius-stadium 'REL-AAN-GEV-VER-BUI')
+
+- Motivation
+  - Importance of intervening in early vs. late invasion stage
+  - EU IAS regulation highlights early detection & rapid response ('surveillance')
+    - But: responsibility of federal government for detection
+
+
+::: {.notes}
+- INBO: enkel detectie indien soort in natuur opduikt
+- introductieplaatsen moeten gekend zijn en voldoende specifiek en lokaal (ook al als filter criterium gebruikt)
+- detectie in natuurgebieden moet van belang zijn
+
+:::
+
+
 ## Scenario 2: Focus on detection {.smaller} 
 
+::::: columns
+::: {.column width="50%"}
 
-:::: {.columns}
-
-::: {.column width="100%"}
-
-
-- High priority species for which detection is (also) relevant
-
+High priority in survey
 
 ```{r scenario-det-species}
 #| results: "asis"
 
 species_det |> 
-  dplyr::mutate(vern_name_nld_col = kableExtra::cell_spec(
-    x = vern_name_nld,
-    color = dplyr::case_when(
-      grepl("plant", kingdom) ~ col_plants,
-      grepl("dier", kingdom) ~ col_animals
-    )
-  )) |>
-  dplyr::arrange(vern_name_nld) |>
-  dplyr::pull(vern_name_nld_col) |>
-  paste(x = "  -", y = _) |>
-  cat(x = _, sep = "\n")
+  dplyr::filter(grepl("highprior", scope_prior)) |> 
+  make_list_species_display()
 
 ```
-
 :::
+:::::
 
-::::
 
 ## Scenario 2: Focus on detection (plants)
 
@@ -42,10 +48,17 @@ table_syn_det_plants_display_list$detection |> unclass() |> cat()
 
 ```
 
+::: notes
+
+- Mogelijke synergien tussen een aantal prioritaire en secundaire terrestrische soorten
+- via visuele surveys
+
+:::
+
 
 ## Scenario 2: Focus on detection (plants)
 
-- Method synergies under scopes distribution, abundance, distribution after management
+- Method synergies under scopes distribution, abundance, distribution under management
 
 ```{r scenario-det-priorities-syn-plants-dist}
 #| results: asis
@@ -55,25 +68,25 @@ table_syn_det_plants_display_list$distribution |> unclass() |> cat()
 ```
 
 
-## Scenario 2: Focus on detection (plants) 
+::: notes
 
-- Again clear group: 
-  - 3 (partly) terrestrial plants
-  - Scope detection
-  - Visual surveys
-- We suggest to analyse for these plants as a group how and at which costs scope detection can be filled in
-
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
+- voor de andere scopes houden we enkel de hemelboom over
+- enige prioritaire plant die wijdverspreid buiten natuurgebieden is
 
 :::
 
 
+## Scenario 2: Focus on detection (plants) 
 
-## Scenario 2: Focus on detection (animals)
+- Again clear group: 
+  - 5 terrestrial plants
+  - Scope detection
+  - Visual surveys
+- We suggest to analyse for these plants as a group how the scope detection could be filled in
+
+
+
+## Scenario 2: Focus on detection (animals) {.scrollable}
 
 - Method synergies under scope detection
 
@@ -84,6 +97,15 @@ table_syn_det_animals_display_list$detection |> unclass() |> cat()
 
 ```
 
+::: notes
+
+- realistische synergiën:
+- voor een aantal aquatische soorten (primair & secundair) via eDNA
+- voor een aantal terrestrische zoogdieren (primair en tertiar) via cameravallen, visuele surveys
+  - vogels (primair en secundair) mogelijk erbij, maar ad hoc data vaak bruikbaar
+  - andere (bv. insecten, platworm) weinig realistisch 
+
+:::
 
 
 ## Scenario 2: Focus on detection (animals)
@@ -97,6 +119,10 @@ table_syn_det_animals_display_list$distribution |> unclass() |> cat()
 
 ```
 
+::: notes
+- Muskusrat & blauwband via eDNA
+:::
+
 ## Scenario 2: Focus on detection (animals)
 
 - Method synergies under scope abundance
@@ -108,26 +134,22 @@ table_syn_det_animals_display_list$abundance |> unclass() |> cat()
 
 ```
 
+::: notes
+- geen
+:::
+
 
 ## Scenario 2: Focus on detection (animals)
 
 - Larger groups for scope detection
   - Group 1
-    - 4 (partly) freshwater species (3 fish, Muskrat)
+    - 6 aquatic species (3 fish, Muskusrat, Californische rivierkreeft, Noord-atlantische zeester)
     - Aquatic eDNA, and for the fish electric fishing, trapping & netting
-    - Heterogeneous group, unclear to what extent synergies will play out
   - Group 2
-    - 4 (partly) terrestrial species (Muskrat, Small asian mongoose, Chital, House crow)
+    - A number of terrestrial species (mammals, birds, other)
     - Camera traps, and partly visual surveys
-  - We suggest to analyse for both groups how and at which costs scope detection can be filled in
+    - Heterogeneous group
+- We suggest to analyse for the aquatic group how the scope detection could be filled in
 
-::: {.notes}
-
-nota's: 
-
-- hier graag jullie input
-- indische mangoeste via aquatic eDNA?
-    
-:::
 
 
