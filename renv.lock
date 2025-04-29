@@ -2718,6 +2718,19 @@
       ],
       "Hash": "d44e2fcd2e4e076f0aac540208559d1d"
     },
+    "trackdown": {
+      "Package": "trackdown",
+      "Version": "1.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Requirements": [
+        "R",
+        "cli",
+        "googledrive",
+        "rmarkdown"
+      ],
+      "Hash": "fa056d0f4d10dcb3779b37812c282800"
+    },
     "triebeard": {
       "Package": "triebeard",
       "Version": "0.4.1",
