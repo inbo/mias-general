@@ -14,7 +14,9 @@ if (!exists("response_data_path")) {
 }
 if (!exists("questions_path")) {
   questions_path <- paste0("source/export/survey_experts/", "questions_", lang)
+  questions_path_EN <- paste0("source/export/survey_experts/", "questions_", "EN")
 }
+
 
 list.files(functions_path, full.names = TRUE) |>
   lapply(source) |>
@@ -414,14 +416,48 @@ plot_stadium_dist <- ggplot2::ggplot(
 #
 # --- plotting - scoring of questions ---------------------------------------------------
 #
-
-# get questions
+# get questions (EN)
 q_file <- list.files(
-  questions_path,
+  questions_path_EN,
   pattern = "long.rda",
   full.names = TRUE
 )
 q_long <- get(load(q_file))
+#
+# English translation short questions:
+res_scored_EN <- res_scored |>
+  dplyr::mutate(
+    question_text_short = dplyr::case_match(
+      question_id,
+      "A1" ~ "Configuration introduction sites?",
+      "A2" ~ "Introduction sites accessible?",
+      "A4" ~ "Special introduction sites?",
+      "A5" ~ "Probability of introduction?",
+      "A6" ~ "Probability of establishment?",
+      "B1" ~ "Distribution known?",
+      "B2" ~ "Distribution pattern?",
+      "B3" ~ "Which population density?",
+      "B4" ~ "Change in distribution sites?",
+      "B5" ~ "Distribution sites accessible?",
+      "B7" ~ "Special distribution sites?",
+      "C1" ~ "Impact biodiversity?",
+      "C2" ~ "Impact biodiversity conservation areas?",
+      "C3" ~ "Impact other sectors?",
+      "D1" ~ "Which surveillance techniques?",
+      "D2" ~ "Most relevant surveillance technique?",
+      "D3" ~ "Sensitivity surveillance technique?",
+      "D4" ~ "Specificity surveillance technique?",
+      "D5" ~ "Cost surveillance technique?",
+      "D6" ~ "Scope surveillance technique?",
+      "D7" ~ "Field protocol available?",
+      "D8" ~ "Relevant surveillance schemes?",
+      "D9" ~ "Picked up by surveillance schemes?",
+      "D10" ~ "Opportunistic observations representative?",
+      "E1" ~ "Species managed?",
+      "E2" ~ "Information management evaluation?",
+    ),
+    .after = question_text
+  )
 #
 #
 # prepare data for plotting
@@ -429,7 +465,7 @@ q_plot_tmp <- q_long |>
   # filter rows
   dplyr::filter(question_include_in_form == 1, question_use_for_ranking == 1) |>
   tidyr::drop_na(score_response_option) |>
-  # insert line breaks & shorten responses
+  # shorten responses & insert line breaks within still long responses
   dplyr::rowwise() |>
   dplyr::mutate(
     response_option = response_option |>
@@ -455,7 +491,7 @@ q_plot_tmp <- q_long |>
   # add question text short
   dplyr::left_join(
     x = _,
-    y = res_scored |>
+    y = res_scored_EN |>
       dplyr::select(tidyselect::contains(c("question_id", "question_text_short"))) |>
       dplyr::distinct(question_id, .keep_all = TRUE)
   )
