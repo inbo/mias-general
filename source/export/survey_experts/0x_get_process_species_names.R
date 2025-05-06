@@ -7,30 +7,17 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- get species list from survey expert sheet ---------------
 #
-# either from file "experts_bevraging.gsheet"
-# g-drive path: PRJ_MIUS\_overkoepelend\bevraging_soortenexperts\distribution
-#
-if (FALSE) {
-  species_sheetid_args <- list(
-    sheet_id = "1dClhdsk1QMHniYv6xcFVTKd6pLtWBDz-8avvK-xZHQ0",
-    tab_variablename = "soortengroep",
-    colnames_old = c("soort", "wetenschappelijke naam"),
-    colnames_new = c("species", "sci_name"),
-    gbif_namevariable = "sci_name"
-  )
-}
-# or from file "Prius_data_modified_extended.gsheet"
+# from file "Prius_data_modified_extended.gsheet"
 # g-drive path: PRJ_MIUS\_overkoepelend\data
 #
-if (TRUE) {
-  species_sheetid_args <- list(
-    sheet_id = "1sd-AXrETsRI01XIry5YU2V8Vl-_UU9y2CwgM3y01fTk",
-    tab_variablename = NULL,
-    colnames_old = c("soort", "species", "groep"),
-    colnames_new = c("species", "sci_name", "kingdom"),
-    gbif_namevariable = "sci_name"
-  )
-}
+species_sheetid_args <- list(
+  sheet_id = "1sd-AXrETsRI01XIry5YU2V8Vl-_UU9y2CwgM3y01fTk",
+  tab_variablename = NULL,
+  colnames_old = c("soort", "species", "groep"),
+  colnames_new = c("species", "sci_name", "kingdom"),
+  gbif_namevariable = "sci_name"
+)
+
 #
 # 'sci_name_gbif_acc' and 'key_gbif_acc' identical for both options
 species <- do.call(
@@ -166,6 +153,7 @@ species_upd <- species_upd_tmp3 |>
       TRUE ~ NA_character_
     )
   ) |>
+  dplyr::select(-tidyselect::all_of("code int_groep")) |>
   dplyr::relocate(sci_name_gbif_acc_alt, .before = key_gbif_acc) |>
   dplyr::relocate(key_gbif_acc_alt, .after = key_gbif_acc) |>
   dplyr::relocate(vern_name_gbif_eng_alt, .after = vern_name_gbif_eng) |>
