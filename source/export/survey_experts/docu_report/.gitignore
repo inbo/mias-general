@@ -1,1 +1,10 @@
 /.quarto/
+*.png
+*.jpg
+*.eps
+*.pdf
+*.sty
+*.tex
+!_extensions/*
+site_libs
+
