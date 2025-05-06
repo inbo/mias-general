@@ -179,7 +179,7 @@ if (FALSE) {
 #
 # get g-sheet that documents emails sent
 tmp <- googledrive::drive_find(
-  pattern = "CONTROL emails sent 2024-12-20", # 2024-12-20 & 2025-01-31
+  pattern = "CONTROL emails sent 2025-01-31", # 2024-12-20 & 2025-01-31
   shared_drive = "PRJ_MIUS",
   type = "spreadsheet"
 ) |>
@@ -262,10 +262,10 @@ tmp <- googledrive::drive_find(
 # print tmp to see options to compare
 #
 tmp_id1 <- tmp |>
-  dplyr::filter(grepl("2025-03-15", name)) |>
+  dplyr::filter(grepl("2025-03-24", name)) |>
   googledrive::as_id()
 tmp_id2 <- tmp |>
-  dplyr::filter(grepl("2025-03-24", name)) |>
+  dplyr::filter(grepl("2025-04-30", name)) |>
   googledrive::as_id()
 #
 ctrl1 <- googlesheets4::read_sheet(ss = tmp_id1)
@@ -274,3 +274,53 @@ generics::setdiff(ctrl2, ctrl1) |> View()
 
 # check both: 2024-12-20 & 2025-01-31
 ctrl2 |> View()
+#
+#
+#
+# --- check for which species forms are completed --------------------------------
+#
+# get list of results files
+res_files <- list.files(
+  response_data_path,
+  pattern = "long.rda",
+  full.names = TRUE
+) |> sort()
+#
+# compare 2 results files at 2 time points
+res_file_1 <- res_files |>
+  grep(pattern = "2025_03_24", x = _, value = TRUE)
+res_file_2 <- res_files |>
+  grep(pattern = "2025_04_30", x = _, value = TRUE)
+res_long_1 <- get(load(res_file_1))
+res_long_2 <- get(load(res_file_2))
+#
+# number of species
+res_long_1$species |> unique() |> sort()
+res_long_2$species |> unique() |> sort()
+#
+# view species added in between
+generics::setdiff(res_long_2, res_long_1) |>
+  dplyr::distinct(species, .keep_all = TRUE) |>
+  View()
+#
+# compare results to full species list
+res_reference <- res_long_1
+species_list_file <- list.files(
+  "data/processed/",
+  pattern = "species_list.Rda",
+  full.names = TRUE
+) |>
+  # sort & select most recent
+  sort(decreasing = TRUE) |>
+    _[1]
+species_list <- get(load(species_list_file))$data
+species_list |>
+  dplyr::filter(
+    !sci_name_gbif_acc %in% (res_reference$species |> unique())
+  ) |>
+  dplyr::filter(on_unionlist) |>
+  dplyr::pull(vern_name_gbif_nld) |>
+  sort()
+
+
+
