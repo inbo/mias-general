@@ -377,10 +377,10 @@ args_factorize <- list(
                      "abundance",
                      "distribution_management",
                      "abundance_management"),
-                   c("afwezig",
-                     "sporadisch aanwezig",
-                     "beperkt gevestigd",
-                     "wijdverspreid"),
+                   c("absent",
+                     "sporadically present",
+                     "established to limited extend",
+                     "widespread"),
                    c(
                      "freshwater",
                      "freshwater, brackishwater",
@@ -395,16 +395,16 @@ args_factorize <- list(
                    ),
                    c(
                      "plant",
-                     "bruinwier",
-                     "kreeftachtige",
-                     "vis",
-                     "stekelhuidige",
-                     "zoogdier",
-                     "vogel",
-                     "reptiel",
-                     "amfibie",
-                     "weekdier",
-                     "platworm",
+                     "brownweed",
+                     "crustacean",
+                     "fish",
+                     "echinoderm",
+                     "mammal",
+                     "bird",
+                     "reptile",
+                     "amphibian",
+                     "mollusk",
+                     "flatworm",
                      "insect"
                    )
   )
@@ -653,8 +653,8 @@ table_base_upd <- table_base_upd |>
 
 
 kingdom_list <- setNames(
-  list("plant", "dier"),
-  c("plant", "dier")
+  list("plant", "animal"),
+  c("plant", "animal")
 )
 id_cols_display <- c("species", "vern_name_nld", "taxon", "on_unionlist",  "prius_milieu", "stadium")
 
@@ -1136,7 +1136,7 @@ table_syn_plants_display_list  <- make_table_syn_display_list(
 )
 table_syn_animals_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_upd,
-  .kingdom = "dier",
+  .kingdom = "animal",
   rest = TRUE
 )
 
@@ -1302,7 +1302,7 @@ table_syn_anb_plants_display_list  <- make_table_syn_display_list(
 )
 table_syn_anb_animals_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_anb,
-  .kingdom = "dier",
+  .kingdom = "animal",
   .remove_n_1 = FALSE
 )
 
@@ -1349,7 +1349,7 @@ table_syn_det_plants_display_list  <- make_table_syn_display_list(
 )
 table_syn_det_animals_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_det,
-  .kingdom = "dier",
+  .kingdom = "animal",
   .remove_n_1 = FALSE
 )
 #
@@ -1393,6 +1393,6 @@ table_syn_dist_plants_display_list  <- make_table_syn_display_list(
 )
 table_syn_dist_animals_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_dist,
-  .kingdom = "dier"
+  .kingdom = "animal"
 )
 

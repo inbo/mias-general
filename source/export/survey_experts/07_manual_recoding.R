@@ -6,6 +6,7 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- definitions ---------------
 #
+lang <- "EN"
 source('source/export/survey_experts/00_definitions.R')
 #
 # define folder for recoding sourced out to g-sheets
@@ -23,41 +24,41 @@ load(paste0(response_data_path, "results_combined.rda"))
 #
 res_comb_upd <- res_comb |>
   dplyr::mutate(
-    question_text_short = dplyr::case_match(
+    question_text_short_EN = dplyr::case_match(
       question_id,
-      "A1" ~ "Configuratie introductieplaatsen?",
-      "A2" ~ "Introductieplaatsen toegankelijk?",
-      "A4" ~ "Bijzondere introductieplaatsen?",
-      "A5" ~ "Kans op introductie?",
-      "A6" ~ "Kans op vestiging?",
-      "B1" ~ "Verspreiding gekend?",
-      "B2" ~ "Verspreidingspatroon?",
-      "B3" ~ "Welke populatiedichtheid?",
-      "B4" ~ "Verandering verspreidingsgebieden?",
-      "B5" ~ "Verspreidingsgebieden toegankelijk?",
-      "B7" ~ "Bijzondere verspreidingsgebieden?",
-      "C1" ~ "Impact biodiversiteit?",
-      "C2" ~ "Impact biodiversiteit natuurgebieden?",
-      "C3" ~ "Impact andere sectoren?",
-      "D1" ~ "Welke bemonsteringsmethoden?",
-      "D2" ~ "Meest relevante methode?",
-      "D3" ~ "Sensitiviteit methode?",
-      "D4" ~ "Specificiteit methode?",
-      "D5" ~ "Kosten methode?",
-      "D6" ~ "Scope methode?",
-      "D7" ~ "Veldprotocol beschikbaar?",
-      "D8" ~ "Relevante meetnetten?",
-      "D9" ~ "Door meetnetten opgepikt?",
-      "D10" ~ "Losse waarnemingen representatief?",
-      "E1" ~ "Soort beheerd?",
-      "E2" ~ "Informatie beheersevaluatie?",
+      "A1" ~ "Configuration introduction sites?",
+      "A2" ~ "Introduction sites accessible?",
+      "A4" ~ "Special introduction sites?",
+      "A5" ~ "Probability of introduction?",
+      "A6" ~ "Probability of establishment?",
+      "B1" ~ "Distribution known?",
+      "B2" ~ "Distribution pattern?",
+      "B3" ~ "Which population density?",
+      "B4" ~ "Change in distribution sites?",
+      "B5" ~ "Distribution sites accessible?",
+      "B7" ~ "Special distribution sites?",
+      "C1" ~ "Impact biodiversity?",
+      "C2" ~ "Impact biodiversity conservation areas?",
+      "C3" ~ "Impact other sectors?",
+      "D1" ~ "Which surveillance techniques?",
+      "D2" ~ "Most relevant surveillance technique?",
+      "D3" ~ "Sensitivity surveillance technique?",
+      "D4" ~ "Specificity surveillance technique?",
+      "D5" ~ "Cost surveillance technique?",
+      "D6" ~ "Scope surveillance technique?",
+      "D7" ~ "Field protocol available?",
+      "D8" ~ "Relevant surveillance schemes?",
+      "D9" ~ "Picked up by surveillance schemes?",
+      "D10" ~ "Opportunistic observations representative?",
+      "E1" ~ "Species managed?",
+      "E2" ~ "Information management evaluation?",
     ),
-    .after = question_text
+    .after = question_text_EN
   )
 #
 #
 #
-# --- manually recode methods ---------------
+# --- manually recode methods (NL) ---------------
 #
 #
 # export to g-sheet for manual recoding
@@ -136,7 +137,7 @@ meth_recoded <- googlesheets4::read_sheet(ss = tmp_id)
 #
 #
 #
-# --- manually recode monitoring schemes ---------------
+# --- manually recode monitoring schemes (NL) ---------------
 #
 #
 # export to g-sheet for manual recoding
@@ -229,15 +230,17 @@ res_comb_upd <- dplyr::full_join(
 #
 #
 #
+#
+#
 # --- save updated response data ---------------
 #
 save(res_comb_upd, file = paste0(response_data_path, "results_combined_upd.rda"))
 #
 #
 #
-# --- process recoded data for methods ---------------
+# --- process recoded data for methods & translate ---------------
 #
-# add methods listed as "other"
+# add methods listed as "other" (NL)
 res_meth_recoded <- res_comb_upd |>
   dplyr::filter(grepl("D1$|D2", question_id)) |>
   dplyr::arrange(question_id, species) |>
@@ -273,36 +276,60 @@ res_meth_recoded <- res_comb_upd |>
     .after = response_text
   )
 #
+# (write and) get method dictionary
+if (FALSE) {
+  # get all possible listed response options for methods (EN & NL)
+  q_file <- list.files(questions_path, pattern = "long.rda", full.names = TRUE)
+  q_long <- get(load(q_file))
+  res_meth_options <- q_long |>
+    dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
+    dplyr::select(response_option) |>
+    # recode case which is otherwise missed
+    dplyr::mutate(
+      response_option = dplyr::case_when(
+        grepl("passieve akoestische monitoring", response_option) ~ "passieve akoestische monitoring",
+        TRUE ~ response_option
+      )
+    ) |>
+    dplyr::pull(response_option)
+  #
+  # get "other" methods listed
+  res_meth_options_other <- res_meth_recoded |>
+    dplyr::pull(helper_response_other) |>
+    na.omit() |>
+    paste(x = _, collapse = ", ") |>
+    stringr::str_split_1(string = _, pattern = ",") |>
+    trimws() |>
+    unique()
+  #
+  # manually update g-sheet 'methods_EN_NL' for method_type_EN == 'other'
+}
+# import method dictionary from g-sheet
+tmp <- googledrive::drive_find(
+  pattern = "methods_NL_EN",
+  shared_drive = "PRJ_MIUS",
+  type = "spreadsheet"
+) |>
+  dplyr::arrange(dplyr::desc(name))
+tmp_id <- tmp[1,] |>
+  googledrive::as_id()
+meth_dict <- googlesheets4::read_sheet(ss = tmp_id)
 #
-# get all possible listed response options for methods
-q_file <- list.files(questions_path, pattern = "long.rda", full.names = TRUE)
-q_long <- get(load(q_file))
-res_meth_options <- q_long |>
-  dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
-  dplyr::select(response_option) |>
-  # recode case which is otherwise missed
+# translate response_text_final
+meth_dict_upd <- meth_dict$method_EN
+names(meth_dict_upd) <- meth_dict$method_NL
+res_meth_recoded <- res_meth_recoded |>
+  dplyr::rowwise() |>
   dplyr::mutate(
-    response_option = dplyr::case_when(
-      grepl("passieve akoestische monitoring", response_option) ~ "passieve akoestische monitoring",
-      TRUE ~ response_option
-    )
+    response_text_final_EN = stringr::str_replace_all(
+      response_text_final,
+      pattern = meth_dict_upd
+    ),
+    .after = response_text_final
   ) |>
-  dplyr::pull(response_option)
-#
-# get "other" methods listed
-res_meth_options_other <- res_meth_recoded |>
-  dplyr::pull(helper_response_other) |>
-  na.omit() |>
-  paste(x = _, collapse = ", ") |>
-  stringr::str_split_1(string = _, pattern = ",") |>
-  trimws() |>
-  unique()
-#
-# combine response options methods
-res_meth_options_upd <- append(res_meth_options, res_meth_options_other)
-#
-# check for duplicates
-duplicated(res_meth_options_upd) |> any()
+  dplyr::mutate(
+    response_text_final_EN = gsub(" \\(dmv. automatische opnames\\)", "", response_text_final_EN)
+  )
 #
 # add methods categories
 categories <- c(
@@ -317,19 +344,19 @@ categories <- c(
   "other" #9
 )
 res_meth_options_data <- data.frame(
-  response_options = res_meth_options_upd,
+  response_options = meth_dict$method_EN |> unique(),
   response_options_cat = NA
 ) |> dplyr::mutate(
   response_options_cat = dplyr::case_when(
-    grepl("surveys|sporen", response_options) ~ categories[1],
+    grepl("surveys|trace", response_options) ~ categories[1],
     grepl("environmental DNA", response_options) ~ categories[2],
-    grepl("camera|passieve", response_options) ~ categories[5],
-    grepl("fuik|vallen|trap|netten", response_options) ~ categories[3],
-    grepl("elektrovisserij", response_options) ~ categories[4],
-    grepl("experten|genetische|stalen", response_options) ~ categories[6],
-    grepl("burger", response_options) ~ categories[7],
-    grepl("honden", response_options) ~ categories[8],
-    grepl("andere", response_options) ~ categories[9]
+    grepl("camera|passive", response_options) ~ categories[5],
+    grepl("trap|nets", response_options) ~ categories[3],
+    grepl("electrofishing", response_options) ~ categories[4],
+    grepl("expert|genetic|samples", response_options) ~ categories[6],
+    grepl("citizen|opportunistic|traffic", response_options) ~ categories[7],
+    grepl("dogs", response_options) ~ categories[8],
+    grepl("other", response_options) ~ categories[9]
   )
 ) |>
   dplyr::arrange(match(response_options_cat, categories))
@@ -375,25 +402,56 @@ res_moni_recoded <- res_comb_upd |>
 # here: filter fu question
 #
 #
-# get all possible listed response options for monitoring
-res_moni_options <- q_long |>
-  dplyr::filter(grepl("D8", question_id), !grepl("followup", question_text)) |>
-  dplyr::pull(response_option)
+# (write and) get monitoring dictionary
+if (FALSE) {
+  # get all possible listed response options for monitoring
+  res_moni_options <- q_long |>
+    dplyr::filter(grepl("D8", question_id), !grepl("followup", question_text)) |>
+    dplyr::pull(response_option)
+  #
+  # get "other" methods listed
+  res_moni_options_other <- res_moni_recoded |>
+    dplyr::pull(helper_response_other) |>
+    na.omit() |>
+    paste(x = _, collapse = ", ") |>
+    stringr::str_split_1(string = _, pattern = ",") |>
+    trimws() |>
+    unique()
+  #
+  # manually update g-sheet 'monitoring_EN_NL' for monitoring_type_EN == 'other'
+}
+# import method dictionary from g-sheet
+tmp <- googledrive::drive_find(
+  pattern = "monitoring_NL_EN",
+  shared_drive = "PRJ_MIUS",
+  type = "spreadsheet"
+) |>
+  dplyr::arrange(dplyr::desc(name))
+tmp_id <- tmp[1,] |>
+  googledrive::as_id()
+moni_dict <- googlesheets4::read_sheet(ss = tmp_id)
 #
-# get "other" methods listed
-res_moni_options_other <- res_moni_recoded |>
-  dplyr::pull(helper_response_other) |>
-  na.omit() |>
-  paste(x = _, collapse = ", ") |>
-  stringr::str_split_1(string = _, pattern = ",") |>
-  trimws() |>
-  unique()
+# translate response_text_final
+moni_dict_upd <- moni_dict$monitoring_EN
+names(moni_dict_upd) <- moni_dict$monitoring_NL
+res_moni_recoded <- res_moni_recoded |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    response_text_final_EN = stringr::str_replace_all(
+      response_text_final,
+      pattern = moni_dict_upd
+    ),
+    .after = response_text_final
+  )  |>
+  dplyr::mutate(
+    response_text_final_EN = gsub("\\?\\?", "\\?", response_text_final_EN)
+  )
 #
-# combine response options monitoring
-res_moni_options_upd <- append(res_moni_options, res_moni_options_other)
+# get all response options monitoring
+res_moni_options_upd <- moni_dict$monitoring_EN |> unique()
 #
-# check for duplicates
-duplicated(res_moni_options_upd) |> any()
+#
+#
 #
 # save data sets
 save(res_moni_recoded, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))

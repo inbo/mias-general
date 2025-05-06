@@ -56,7 +56,7 @@ table_scope <- res_comb_upd |>
 #
 table_impact <- res_comb_upd |>
   dplyr::filter(grepl("C2", question_id), !grepl("followup", question_text)) |>
-  # impact in natuurgebieden
+  # impact in conservation areas
   dplyr::rename(impact_nat = "response_text") |>
   dplyr::select(tidyselect::all_of(c("species", "stadium", "prius_stadium", "impact_nat")))
 #
@@ -112,6 +112,12 @@ res_meth_options <- res_meth_options |>
   dplyr::rename(
     method_all = "response_options",
     method_category = "response_options_cat"
+  ) |>
+  dplyr::mutate(
+    method_all = dplyr::case_when(
+      method_all == "traps" ~ "^traps|\\, traps",
+      TRUE ~ method_all
+  )
   )
 #
 # cross species and method options and get methods per species (long format)
@@ -122,7 +128,13 @@ table_method_all <- res_meth_recoded |>
   dplyr::rowwise() |>
   dplyr::filter(grepl(pattern = method_all, x = method_tmp)) |>
   dplyr::ungroup() |>
-  dplyr::select(tidyselect::all_of(c("question_id", "species", "method_all", "method_category")))
+  dplyr::select(tidyselect::all_of(c("question_id", "species", "method_all", "method_category"))) |>
+  dplyr::mutate(
+    method_all = dplyr::case_when(
+      method_all == "^traps|\\, traps" ~ "traps",
+      TRUE ~ method_all
+    )
+  )
 #
 # get best methods per species
 table_method_best <- table_method_all |>
@@ -138,11 +150,11 @@ table_method_best_info <- res_comb_upd |>
   dplyr::filter(!grepl("followup", question_text)) |>
   dplyr::mutate(
     property = dplyr::case_when(
-      grepl("Sensitiviteit", question_text_short) ~ "method_sensitivity",
-      grepl("Specificiteit", question_text_short) ~ "method_specificity",
-      grepl("Kosten", question_text_short) ~ "method_costs",
+      grepl("Sensitivity", question_text_short) ~ "method_sensitivity",
+      grepl("Specificity", question_text_short) ~ "method_specificity",
+      grepl("Cost", question_text_short) ~ "method_costs",
       grepl("Scope", question_text_short) ~ "method_scope",
-      grepl("Veldprotocol", question_text_short) ~ "method_protocol"
+      grepl("Field protocol", question_text_short) ~ "method_protocol"
     )
   ) |>
   tidyr::pivot_wider(
@@ -267,16 +279,16 @@ table_base_skeleton <- dplyr::full_join(
 #
 # ... per species based on invasion stadium (and 0 otherwise)
 stadium_scope_1_expr <- '
-  (grepl("afwezig|sporadisch", stadium) &
+  (grepl("absent|sporadically", stadium) &
      grepl("detection", scope_type)) |
-  (grepl("beperkt", stadium) &
+  (grepl("limited", stadium) &
      grepl("inventory|distribution|abundance", scope_type)) |
-  (grepl("wijd", stadium) &
+  (grepl("widespread", stadium) &
      grepl("distribution|abundance", scope_type)) |
-  (grepl("wijd", stadium) &
+  (grepl("widespread", stadium) &
      grepl("detection", scope_type) &
      grepl("BUI", prius_stadium) &
-     grepl("vooral in natuur|zowel binnen als buiten natuur", impact_nat)
+     grepl("mainly in conservation|both inside and outside conservation", impact_nat)
      )
      '
 stadium_scope_0_motivation <-
@@ -288,8 +300,8 @@ stadium_scope_0_motivation <-
 #
 # ... per species based on whether surveillance area is known
 area_scope_0_expr <- '
-  (grepl("beperkt", stadium) &
-     grepl("verspreiding is voldoende gekend", area_dist) &
+  (grepl("limited", stadium) &
+     grepl("distribution is sufficiently known", area_dist) &
      grepl("inventory", scope_type))
      '
 area_scope_0_motivation <-
@@ -298,7 +310,7 @@ area_scope_0_motivation <-
 #
 # ... per species based on whether management exists
 management_exits_scope_0_expr <- '
-  (!grepl("ja", management_exists) &
+  (!grepl("yes", management_exists) &
      grepl("management", scope_type))
      '
 management_exits_scope_0_motivation <-
@@ -307,10 +319,10 @@ management_exits_scope_0_motivation <-
 #
 # ... per species based on info necessary to evaluate management
 management_eval_scope_0_expr <- '
-  (grepl("aan- of afwezigheid", management_evaluation) &
+  (grepl("presence or absence", management_evaluation) &
      grepl("management", scope_type) &
      grepl("abundance", scope_type)) |
-  (grepl("populatiegrootte", management_evaluation) &
+  (grepl("population size", management_evaluation) &
      grepl("management", scope_type) &
      grepl("distribution", scope_type)
   )
@@ -321,7 +333,7 @@ management_eval_scope_0_motivation <-
 #
 # ... per method based on whether method is suitable
 method_scope_0_expr <- '
-  (grepl("aan- of afwezigheid", method_scope) &
+  (grepl("presence or absence", method_scope) &
      grepl("abundance", scope_type))
      '
 method_scope_0_motivation <-
@@ -341,7 +353,7 @@ method_scope_0_motivation <-
 #
 # ... per species for which opportunistic observations are representative
 observation_scope_lowprior_expr <- '
-  (grepl("^hoge representativiteit", monitoring_opport) &
+  (grepl("high representativeness", monitoring_opport) &
      scope_boolean == 1)
      '
 observation_scope_lowprior_motivation <-
@@ -350,16 +362,16 @@ observation_scope_lowprior_motivation <-
 #
 # ... per species depending on whether (specific) surveillance area is known
 area_scope_lowprior_expr <- '
-  (((grepl("afwezig", stadium) &
+  (((grepl("absent", stadium) &
        grepl("detection", scope_type) &
-       grepl("ongekend|weet het niet|groot aantal wijdverspreide locaties", area_intro)) |
-      (grepl("sporadisch", stadium) &
+       grepl("unknown|do not know|large number of widespread locations", area_intro)) |
+      (grepl("sporadically", stadium) &
          grepl("detection", scope_type) &
-         (grepl("ongekend|weet het niet|groot aantal wijdverspreide locaties", area_intro) |
-         grepl("niet voldoende gekend|weet het niet", area_dist))) |
-      (grepl("beperkt", stadium) &
+         (grepl("unknown|do not know|large number of widespread locations", area_intro) |
+         grepl("not sufficiently known|do not know", area_dist))) |
+      (grepl("limited", stadium) &
          grepl("distribution|abundance", scope_type) &
-         grepl("niet voldoende gekend|weet het niet", area_dist))) &
+         grepl("not sufficiently known|do not know", area_dist))) &
      scope_boolean == 1)
      '
 area_scope_lowprior_motivation <-
@@ -572,9 +584,9 @@ table_base_illu_stadium <- table_base_skeleton |>
   dplyr::distinct(stadium)
 #
 table_base_illu_prius_stadium <- table_base_skeleton |>
-  dplyr::filter(grepl("wijd", stadium) &
+  dplyr::filter(grepl("widespread", stadium) &
                   grepl("BUI", prius_stadium) &
-                  grepl("vooral in natuur|zowel binnen als buiten natuur", impact_nat)
+                  grepl("mainly in conservation|both inside and outside conservation", impact_nat)
                   ) |>
   dplyr::distinct(stadium, prius_stadium, impact_nat) |>
   tibble::add_row() |>
@@ -589,8 +601,8 @@ table_base_illu_area <- table_base_skeleton |>
 #
 table_base_illu_management_exists <- table_base_skeleton |>
   # show for limited established species with known distribution only
-  dplyr::filter(grepl("beperkt", stadium) &
-                  grepl("verspreiding is voldoende gekend", area_dist)) |>
+  dplyr::filter(grepl("limited", stadium) &
+                  grepl("distribution is sufficiently known", area_dist)) |>
   dplyr::select(c(management_exists, stadium, area_dist)) |>
   # management_exists != "yes": duplicated / 2 options (1 used for m_score)
   dplyr::distinct(management_exists, stadium, .keep_all = TRUE)
@@ -607,7 +619,7 @@ table_base_illu_management_eval <- table_base_skeleton |>
 table_base_illu_method <- table_base_skeleton |>
   dplyr::filter(eval(parse(text = method_scope_0_expr)) &
                   # show for widely spread species only
-                  grepl("wijd", stadium)) |>
+                  grepl("widespread", stadium)) |>
   dplyr::select(c(method_scope, stadium)) |>
   dplyr::distinct(method_scope, .keep_all = TRUE) |>
   tibble::add_row() |>
@@ -620,16 +632,15 @@ table_base_illu_method <- table_base_skeleton |>
 table_filtered_illu_area <- table_base_skeleton |>
   # manual reduction/adaption of area_scope_lowprior_expr
   dplyr::filter(
-    (grepl("afwezig", stadium) &
+    (grepl("absent", stadium) &
        grepl("detection", scope_type) &
        # 2nd option replaces NA value due to add_row
-       # grepl("wijdverspreid", area_intro): duplicated / 2 options (1 for m_score)
-       grepl("ongekend|wijdverspreid", area_intro)) |
+       grepl("unknown|widespread locations", area_intro)) |
       # this combination currently not in data and thus not shown
-      (grepl("sporadisch", stadium) &
+      (grepl("sporadically", stadium) &
          grepl("detection", scope_type) &
-         grepl("weet het niet", area_intro) &
-         grepl("weet het niet", area_dist))
+         grepl("do not know", area_intro) &
+         grepl("do not know", area_dist))
   ) |>
   dplyr::distinct(area_intro, area_dist, stadium)
 #
@@ -637,10 +648,10 @@ table_filtered_illu_obs <- table_base_skeleton |>
   dplyr::filter(
     # manual reduction/adaption of observation_scope_lowprior_expr
     # 2nd option replaces NA value due to add_row
-    grepl("^hoge|lage", monitoring_opport) &
+    grepl("high|low", monitoring_opport) &
       # show for limited established, not managed species only
-      grepl("beperkt", stadium) &
-      grepl("neen", management_exists)
+      grepl("limited", stadium) &
+      grepl("no", management_exists)
   ) |>
   dplyr::select(c(monitoring_opport, stadium, management_exists)) |>
   dplyr::distinct(monitoring_opport, .keep_all = TRUE)
@@ -677,27 +688,27 @@ table_base_illu_skeleton <- table_base_illu_stadium |>
   )|>
   dplyr::mutate(
     m_score_feas = dplyr::case_when(
-      (grepl("weet het niet", management_exists)|
-         grepl("zowel specifieke als ook wijdverspreide", area_intro) |
-         grepl("sporadisch", stadium) |
-         grepl("absolute populatiegrootte", management_evaluation)
+      (grepl("do not know", management_exists)|
+         grepl("both specific and widespread", area_intro) |
+         grepl("sporadically", stadium) |
+         grepl("absolute population size", management_evaluation)
       ) ~ 0,
       TRUE ~ 1000
     ),
     m_score_urge = dplyr::case_when(
-      (grepl("weet het niet", management_exists)|
-         grepl("zowel specifieke als ook wijdverspreide", area_intro) |
-         grepl("sporadisch", stadium) |
-         grepl("absolute populatiegrootte", management_evaluation)
+      (grepl("do not know", management_exists)|
+         grepl("both specific and widespread", area_intro) |
+         grepl("sporadically", stadium) |
+         grepl("absolute population size", management_evaluation)
       ) ~ 0,
       TRUE ~ 1000
     )
   ) |>
   dplyr::arrange(
-    match(stadium, c("afwezig",
-                     "sporadisch aanwezig",
-                     "beperkt gevestigd",
-                     "wijdverspreid"))
+    match(stadium, c("absent",
+                     "sporadically present",
+                     "established to limited extend",
+                     "widespread"))
     ) |>
   dplyr::mutate(
     species = paste("species", LETTERS[dplyr::row_number()])

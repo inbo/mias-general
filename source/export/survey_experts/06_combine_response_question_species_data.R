@@ -4,14 +4,35 @@ list.files("source/functions", full.names = TRUE) |>
   invisible()
 #
 #
-# --- definitions ---------------
+# --- load EN questions & reshape ---------------
 #
+# definitions
+lang <- "EN"
 source('source/export/survey_experts/00_definitions.R')
 #
+# load questions
+q_file_EN <- list.files(
+  questions_path,
+  pattern = "long.rda",
+  full.names = TRUE
+)
+q_long_EN <- get(load(q_file_EN))
+#
+# reshape questions according to structure of responses
+q_upd_list_EN <- reshape_question_data(
+  .q_long = q_long_EN,
+  .lang = lang
+)
 #
 #
-# --- load questions and response data and species list ---------------
 #
+# --- load NL questions & reshape
+#
+# definitions
+lang <- "NL"
+source('source/export/survey_experts/00_definitions.R')
+#
+# load questions
 q_file <- list.files(
   questions_path,
   pattern = "long.rda",
@@ -19,14 +40,24 @@ q_file <- list.files(
 )
 q_long <- get(load(q_file))
 #
+# reshape questions according to structure of responses
+q_upd_list <- reshape_question_data(
+  .q_long = q_long,
+  .lang = lang
+)
+#
+#
+#
+# --- load response data and species list ---------------
+#
+
+#
 res_file <- list.files(
   response_data_path,
   pattern = "long.rda",
   full.names = TRUE
 ) |>
-  # sort & select most recent
-  sort(decreasing = TRUE) |>
-  _[1]
+  grep(pattern = "2025_03_24", x = _, value = TRUE)
 res_long <- get(load(res_file))
 #
 species_list_file <- list.files(
@@ -34,88 +65,17 @@ species_list_file <- list.files(
   pattern = "species_list",
   full.names = TRUE
 ) |>
-  # sort & select most recent
-  sort(decreasing = TRUE) |>
-  _[1]
-species_list <- get(load(species_list_file))
-species_list <- species_list$data
-#
-#
-# --- reshape questions according to structure of responses ---------------
-#
-q_long_upd_tmp <- q_long |>
-  # filter relevant questions
-  dplyr::filter(
-    question_include_in_form |> as.logical(),
-    !grepl("Vooraf", section_title)
-  ) |>
-  # organize questions and questions_followup in long format
-  dplyr::mutate(
-    question_text_fu = dplyr::case_when(
-      !is.na(question_explanation_follow_up) ~ paste("followup", question_text),
-      TRUE ~ NA_character_
-    ),
-    .after = question_text
-  ) |>
-  tidyr::pivot_longer(
-    cols = starts_with("question_text"),
-    names_to = "tmp",
-    values_to = "q_text"
-  ) |>
-  dplyr::mutate(
-    response_score = dplyr::case_when(
-      grepl("followup", q_text) ~ NA_real_,
-      TRUE ~ score_response_option
-    ),
-    response_required = dplyr::case_when(
-      grepl("followup", q_text) ~ 0,
-      TRUE ~ response_required
-    ),
-    question_use_for_ranking = dplyr::case_when(
-      grepl("followup", q_text) ~ 0,
-      TRUE ~ question_use_for_ranking
-    )
-  ) |>
-  tidyr::drop_na(q_text) |>
-  # adapt question text to format in responses
-  dplyr::mutate(
-    q_text_upd = q_text |>
-      gsub(pattern = "\\s+|-", replacement = "_", x = _) |>
-      tolower())
-#
-# isolate meta data
-q_meta <- q_long_upd_tmp |>
-  dplyr::select(
-    c("question_id", "question_use_for_ranking", "response_required", "score_category", "section_title", "section_number", "q_text_upd")
-    ) |>
-  dplyr::distinct(q_text_upd, .keep_all = TRUE)
-q_long_upd <- q_long_upd_tmp |>
-  dplyr::select(
-    c("q_text_upd", "response_option", "response_score")
-  )
-#
-# modify meta data
-q_meta <- q_meta |>
-  # fix error in original question data
-  dplyr::mutate(
-    question_use_for_ranking = dplyr::case_when(
-      grepl("welke_bemonsteringsmethoden", q_text_upd) ~ 0,
-      TRUE ~ question_use_for_ranking
-    )
-  ) |>
-  # rename
-  dplyr::rename(
-    score_crit = "score_category",
-    section_no = "section_number"
-  )
+  grep(pattern = "2025-04-30", x = _, value = TRUE)
+species_list <- get(load(species_list_file))$data
 #
 #
 #
-# --- join questions and responses ---------------
+# --- join NL questions and responses ---------------
 #
 res_comb_tmp <- dplyr::left_join(
   x = res_long,
-  y = q_long_upd |> dplyr::select(-dplyr::contains("section")),
+  # HERE
+  y = q_upd_list$q_upd |> dplyr::select(-dplyr::contains("section")),
   by = c(
     "question_upd" = "q_text_upd",
     "response" = "response_option"
@@ -123,7 +83,7 @@ res_comb_tmp <- dplyr::left_join(
 ) |>
   dplyr::left_join(
     x = _,
-    y = q_meta,
+    y = q_upd_list$q_meta,
     by = c("question_upd" = "q_text_upd")
   ) |>
   # add indicator whether section was skipped
@@ -180,6 +140,92 @@ res_comb <- dplyr::left_join(
 # test whether join was successfull
 assertthat::noNA(res_comb$vern_name_eng)
 assertthat::noNA(res_comb$vern_name_nld)
+#
+#
+#
+# --- add english translation ---------------
+#
+#
+#
+# join questions EN & NL
+colnames(q_upd_list_EN$q_upd) <- paste0(colnames(q_upd_list_EN$q_upd), "_EN")
+q_upd <- cbind(
+  q_upd_list$q_upd,
+  q_upd_list_EN$q_upd
+)
+q_meta <- dplyr::full_join(
+  q_upd_list$q_meta,
+  q_upd_list_EN$q_meta |>
+    dplyr::rename(
+      "section_title_EN" = "section_title",
+      "q_text_upd_EN" = "q_text_upd"
+    ),
+  by = c("question_id", "question_use_for_ranking", "response_required", "score_crit", "section_no")
+)
+
+#
+# question text
+q_text_NL_EN <- q_meta |>
+  dplyr::select(tidyselect::contains("q_text")) |>
+  dplyr::rename_with(~gsub("q_text_upd", "question_text", .x))
+res_comb_tmp <- dplyr::left_join(
+  res_comb,
+  q_text_NL_EN
+) |> dplyr::relocate(
+  "question_text_EN",
+  .after = "question_text"
+)
+#
+# response text
+r_option_NL_EN <- q_upd |>
+  dplyr::select(tidyselect::contains("response_option")) |>
+  dplyr::distinct() |>
+  dplyr::rename_with(~gsub("response_option", "response_text", .x))
+res_comb_tmp <- dplyr::left_join(
+  res_comb_tmp,
+  r_option_NL_EN
+) |> dplyr::relocate(
+  "response_text_EN",
+  .after = "response_text"
+)
+#
+# stadium
+stadium_NL_EN <- q_long |>
+  dplyr::filter(grepl("_3", question_id)) |>
+  dplyr::select(response_option) |>
+  cbind(
+    x = _,
+    y = q_long_EN |>
+      dplyr::filter(grepl("_3", question_id)) |>
+      dplyr::select(response_option) |>
+      dplyr::rename("response_option_EN" = "response_option")
+  ) |>
+  dplyr::rename_with(~gsub("response_option", "stadium", .x))
+res_comb_tmp <- dplyr::left_join(
+  res_comb_tmp,
+  stadium_NL_EN
+) |> dplyr::relocate(
+  "stadium_EN",
+  .after = "stadium"
+)
+
+# section title
+s_title_NL_EN <- q_meta |>
+  dplyr::select(tidyselect::contains("section_title")) |>
+  dplyr::distinct()
+res_comb_tmp <- dplyr::left_join(
+  res_comb_tmp,
+  s_title_NL_EN
+) |> dplyr::relocate(
+  "section_title_EN",
+  .after = "section_title"
+)
+#
+assertthat::are_equal(
+  res_comb,
+  res_comb_tmp |> dplyr::select(-tidyselect::contains("EN", ignore.case = FALSE))
+)
+res_comb <- res_comb_tmp
 #
 #
 #

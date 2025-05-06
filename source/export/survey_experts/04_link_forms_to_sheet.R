@@ -6,6 +6,7 @@ list.files("source/functions", full.names = TRUE) |>
 #
 # --- definitions ---------------
 #
+lang <- "NL"
 source('source/export/survey_experts/00_definitions.R')
 #
 #

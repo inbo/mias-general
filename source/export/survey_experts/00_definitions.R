@@ -1,10 +1,4 @@
 #
-# --- definitions questions -------------
-#
-# language
-lang <- "NL"
-#
-#
 # --- definitions questions ---------------
 #
 # id of sheet with questions to be asked in form
