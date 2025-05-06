@@ -1,23 +1,79 @@
 project:
-  type: book
-
-book:
-  title: "docu_report"
-  author: "Norah Jones"
-  date: "6/5/2025"
-  chapters:
-    - index.qmd
-    - intro.qmd
-    - summary.qmd
-    - references.qmd
-
-bibliography: references.bib
+  type: flandersqmd-book
+  preview:
+    port: 4201
+    browser: true
+  render:
+    - "*.md"
+    - "*.qmd"
+    - "!LICENSE.md" #ignore LICENSE.md
+    - "!README.md" #ignore README.md
+  output-dir:  ../../../../output/survey_experts/docu_report
 
 format:
-  html:
-    theme: cosmo
-  pdf:
-    documentclass: scrreprt
+  flandersqmd-book-html: default
+  flandersqmd-book-pdf: default
 
+flandersqmd:
+  entity: INBO
+  level: 1
+  title: Title report
+  subtitle: Subtitle report
+  author:
+  - name:
+      given: Janne
+      family: Adolf
+    email: janne.adolf@inbo.be
+    corresponding: true
+    orcid: 0000-0001-6064-9803
+    affiliation:
+      - Research Institute for Nature and Forest (INBO)
+  reviewer:
+  - name:
+      given: John
+      family: Doe
+    email: john.doe.email
+    orcid: 0000-0000-0000-0000
+    affiliation:
+       - Research Institute for Nature and Forest (INBO)
+  public_report: false
+  colophon: true
+  year: 2025
 
+book:
+  downloads: pdf
+  open-graph: true
+  sidebar:
+    logo: cover.png
+  body-footer: '{{< footer >}}'
+  navbar:
+    left:
+      - text: Cover
+        file: index.md
+    right:
+      - icon: mastodon
+        href: https://mastodon.online/@inbo
+      - icon: facebook
+        href: https://www.facebook.com/INBOVlaanderen/
+      - icon: github
+        menu:
+          - text: Source Code
+            url:  https://github.com/inbo
+          - text: Report a Bug
+            url:  https://github.com/inbo
+    pinned: true
+  date: "28/4/2025"
+  chapters:
+    - index.md
+    - sections/10_intro.qmd
+    - sections/20_summary.qmd
+    - sections/99_references.qmd
+  appendices:
+    - appendices/appendix_a.qmd
 
+execute:
+  echo: false
+
+lang: en-GB
+
+bibliography: references.bib
