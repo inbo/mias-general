@@ -67,20 +67,6 @@ summarize <- function(
     dplyr::rename_with(~ paste0("m_", crit), "m")
 }
 #
-# function to factorize variables
-factorize <- function(
-    res,
-    varnames,
-    varlevels
-) {
-  for (i in seq_along(varnames)) {
-    res  <- res  |>
-      dplyr::mutate(
-        !!varnames[i] := factor(get(varnames[i]), levels = varlevels[[i]])
-      )
-  }
-  return(res)
-}
 #
 # function to highlight labels
 highlight_labs <- function(
@@ -235,7 +221,7 @@ res_plot_tmp <- res_m_allspec |>
     )
   )
 res_plot <- factorize(
-  res = res_plot_tmp,
+  dataframe = res_plot_tmp,
   varnames = c("species", "vern_name_eng", "vern_name_nld",
                "on_unionlist_upd", "stadium"),
   varlevels = list(
