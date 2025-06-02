@@ -4,7 +4,7 @@
 
 # language
 if (!exists("lang")) {
-  lang <- "NL"
+  lang <- "EN"
 }
 if (!exists("functions_path")) {
   functions_path <- "source/functions/"
@@ -13,8 +13,7 @@ if (!exists("response_data_path")) {
   response_data_path <- "data/survey_experts/"
 }
 if (!exists("questions_path")) {
-  questions_path <- paste0("source/export/survey_experts/", "questions_", lang)
-  questions_path_EN <- paste0("source/export/survey_experts/", "questions_", "EN")
+  questions_path <- paste0("source/export/survey_experts/", "questions_", lang, "/")
 }
 
 
@@ -143,7 +142,7 @@ res_m_allspec <- dplyr::full_join(
   dplyr::arrange(dplyr::desc(m_feasurge))
 #
 # correlations of different means
-cor(res_m_allspec |> dplyr::select(tidyselect::contains(c("m_"))))
+#cor(res_m_allspec |> dplyr::select(tidyselect::contains(c("m_"))))
 #
 # keep only species on unionlist
 res_m <- res_m_allspec |>
@@ -162,8 +161,8 @@ levels_vern_name_eng <- res_m$vern_name_eng |> unique() |> rev()
 levels_vern_name_nld_allspec <- res_m_allspec$vern_name_nld |> unique() |> rev()
 levels_vern_name_nld <- res_m$vern_name_nld |> unique() |> rev()
 levels_stadium <- c(
-  "irrelevant", "afwezig", "sporadisch aanwezig",
-  "beperkt gevestigd", "wijdverspreid"
+  "irrelevant", "absent", "sporadically present",
+  "established to limited extend", "widespread"
 )
 levels_milieu <- c(
   "freshwater",
@@ -270,7 +269,7 @@ plot_ranking <- ggplot2::ggplot(
     res_scored_allspec$response_score |> na.omit() |> min(),
     res_scored_allspec$response_score |> na.omit() |> max()
   )) +
-  ggplot2::scale_y_discrete(labels = labs_hl_allspec) +
+  #ggplot2::scale_y_discrete(labels = labs_hl_allspec) +
   ggplot2::theme_bw() +
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
@@ -294,10 +293,10 @@ res_plot_tmp <- res_comb_upd |>
   dplyr::mutate(
     prius_stadium_upd = dplyr::case_when(
       grepl("IRR", prius_stadium) ~ "irrelevant",
-      grepl("AFW", prius_stadium) ~ "afwezig",
-      grepl("SPO", prius_stadium) ~ "sporadisch aanwezig",
-      grepl("BEP", prius_stadium) ~ "beperkt gevestigd",
-      grepl("VER", prius_stadium) ~ "wijdverspreid"
+      grepl("AFW", prius_stadium) ~ "absent",
+      grepl("SPO", prius_stadium) ~ "sporadically present",
+      grepl("BEP", prius_stadium) ~ "established to limited extend",
+      grepl("VER", prius_stadium) ~ "widespread"
     ),
     on_unionlist_upd = dplyr::case_when(
       on_unionlist ~ "on unionlist",
@@ -370,10 +369,10 @@ res_plot_tmp1 <- res_scored |>
   # adapt response text
   dplyr::mutate(
     response_text_recoded = dplyr::case_when(
-      grepl("ik weet het niet", response_text) ~ "weet niet",
-      grepl("niet voldoende gekend", response_text) ~ "ongekend",
-      grepl("geen goed beeld", response_text) ~ "gekend, maar kaart geeft geen goed beeld",
-      grepl("geeft een goed beeld", response_text) ~ "gekend en kaart geeft goed beeld"
+      grepl("I do not know", response_text) ~ "do not know",
+      grepl("distribution is not sufficiently known", response_text) ~ "unknown",
+      grepl("distribution map is not representative", response_text) ~ "known, but map not representative",
+      grepl("distribution map is representative", response_text) ~ "known and map representative"
     )
   ) |>
   dplyr::arrange(response_score |> dplyr::desc())
@@ -416,48 +415,8 @@ plot_stadium_dist <- ggplot2::ggplot(
 #
 # --- plotting - scoring of questions ---------------------------------------------------
 #
-# get questions (EN)
-q_file <- list.files(
-  questions_path_EN,
-  pattern = "long.rda",
-  full.names = TRUE
-)
-q_long <- get(load(q_file))
-#
-# English translation short questions:
-res_scored_EN <- res_scored |>
-  dplyr::mutate(
-    question_text_short = dplyr::case_match(
-      question_id,
-      "A1" ~ "Configuration introduction sites?",
-      "A2" ~ "Introduction sites accessible?",
-      "A4" ~ "Special introduction sites?",
-      "A5" ~ "Probability of introduction?",
-      "A6" ~ "Probability of establishment?",
-      "B1" ~ "Distribution known?",
-      "B2" ~ "Distribution pattern?",
-      "B3" ~ "Which population density?",
-      "B4" ~ "Change in distribution sites?",
-      "B5" ~ "Distribution sites accessible?",
-      "B7" ~ "Special distribution sites?",
-      "C1" ~ "Impact biodiversity?",
-      "C2" ~ "Impact biodiversity conservation areas?",
-      "C3" ~ "Impact other sectors?",
-      "D1" ~ "Which surveillance techniques?",
-      "D2" ~ "Most relevant surveillance technique?",
-      "D3" ~ "Sensitivity surveillance technique?",
-      "D4" ~ "Specificity surveillance technique?",
-      "D5" ~ "Cost surveillance technique?",
-      "D6" ~ "Scope surveillance technique?",
-      "D7" ~ "Field protocol available?",
-      "D8" ~ "Relevant surveillance schemes?",
-      "D9" ~ "Picked up by surveillance schemes?",
-      "D10" ~ "Opportunistic observations representative?",
-      "E1" ~ "Species managed?",
-      "E2" ~ "Information management evaluation?",
-    ),
-    .after = question_text
-  )
+# get questions
+q_long <- get(load(paste0(questions_path, "questions_long.rda")))
 #
 #
 # prepare data for plotting
@@ -491,7 +450,7 @@ q_plot_tmp <- q_long |>
   # add question text short
   dplyr::left_join(
     x = _,
-    y = res_scored_EN |>
+    y = res_scored |>
       dplyr::select(tidyselect::contains(c("question_id", "question_text_short"))) |>
       dplyr::distinct(question_id, .keep_all = TRUE)
   )
