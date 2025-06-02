@@ -4,9 +4,6 @@
 
 # rm(list = ls())
 
-options(knitr.kable.NA = '')
-options(knitr.table.format = "html")
-
 if (!exists("functions_path")) {
   functions_path <- "source/functions/"
 }
@@ -21,6 +18,38 @@ load(paste0(response_data_path, "tables/", "table_base_filtered.rda"))
 load(paste0(response_data_path, "tables/", "table_base_illustration.rda"))
 load(paste0(response_data_path, "tables/", "table_filtered_illustration.rda"))
 
+# --- define table formatting ---------------
+
+if (!exists("is_html")){
+  is_html <- TRUE
+}
+.format <- ifelse(is_html, "html", "latex")
+.escape <- FALSE
+.bootstrap_options <- if (is_html) {c("condensed", "hover") } else {"basic"}
+.latex_options <- if (is_html) {"basic"} else {c("repeat_header", "striped")}
+.booktabs <- if (is_html) {FALSE} else {TRUE}
+.longtable <- if (is_html) {FALSE} else {TRUE}
+.font_size <- if (exists("mode_source") && grepl("presentation", mode_source)) {
+  15
+} else if (is_html) {
+  12
+} else {
+  6
+}
+.col_id_species_width <- ifelse(is_html, "75px", "50pt")
+.col_id_width <- ifelse(is_html, "75px", "30pt")
+.col_scope_width <- ifelse(is_html, "60px", "35pt")
+.col_addon_width <- ifelse(is_html, "50px", "20pt")
+.col_method_width <- ifelse(is_html, "20px", "2pt")
+
+options(knitr.kable.NA = '')
+options(knitr.table.format = .format)
+
+
+
+
+# colors also different?
+# check tables here and in overleaf
 
 # --- define-colors ---------------
 
@@ -31,19 +60,22 @@ color_hl = if (exists("mode_source") && grepl("presentation", mode_source)) {
 }
 color_meth_a = "#0000FF"
 color_meth_b = "#FFB14E" # "#CD34B5"
+
+color_verylightgrey <-"#FAFAFA" #"#F8F8F8"
+color_lightgrey <-"#D3D3D3"
+color_grey <-"#A9A9A9"
 #
 #
 #
-#
-# --- define-font-size---------------
-#
-.font_size <- if (exists("mode_source") && grepl("presentation", mode_source)) {
-  15
-} else {
-  11
+# --- escape special characters in scientific names  ---------------
+
+if (!is_html) {
+  table_base_filtered <- table_base_filtered |>
+    dplyr::mutate(
+      species = species |>  gsub("&", "\\\\&", x = _)
+    )
 }
-#
-#
+
 #
 # --- round priority scores to 2 digits ---------------
 #
@@ -187,20 +219,40 @@ table_base_illu_list_upd <- lapply(
                 .after = scope_boolean
   )
 )
-#
-# full table filtered (FIX colors later)
+
+# full table filtered
 table_filtered_upd <- table_base_filtered_upd |>
+  dplyr::group_by(species, scope_type) |>
   dplyr::mutate(
     scope_verbose = dplyr::case_when(
       scope_boolean == 1 & grepl("highprior", scope_prior) ~
-        kableExtra::cell_spec(x = method_all, bold = TRUE),
+        kableExtra::cell_spec(
+          format = .format,
+          # paste methods so that they end up in one table cell
+          x = method_all |> paste0(x = _, collapse = ", "),
+          bold = TRUE,
+          escape = .escape
+          ),
       scope_boolean == 1 & grepl("lowprior", scope_prior) ~
-        paste(scope_prior_symbol, kableExtra::cell_spec(x = method_all, color = "lightgrey")),
+        paste(scope_prior_symbol,
+              kableExtra::cell_spec(
+                format = .format,
+                # paste methods so that they end up in one table cell
+                x = method_all |> paste0(x = _, collapse = ", ") |> paste0(", ", x = _),
+                color = color_grey,
+                escape = .escape)
+              ),
       scope_boolean == 0 ~
-        kableExtra::cell_spec(x = scope_boolean_symbol, color = "lightgrey")
+        kableExtra::cell_spec(
+          format = .format,
+          x = scope_boolean_symbol,
+          color = color_grey,
+          escape = .escape
+          )
     ),
     .after = scope_prior
   ) |>
+  dplyr::ungroup() |>
   dplyr::select(!tidyselect::starts_with("scope_boolean"))
 #
 # illustration table filtered  (FIX colors later)
@@ -210,13 +262,22 @@ table_filtered_illu_list_upd <- lapply(
     .data = x,
     scope_verbose = dplyr::case_when(
       scope_boolean == 1 & grepl("highprior", scope_prior) ~
-        kableExtra::cell_spec(x = method_all, bold = TRUE),
+        kableExtra::cell_spec(format = .format, x = method_all, bold = TRUE, escape = .escape),
       scope_boolean == 1 & grepl("lowprior", scope_prior) ~
         # setup so that later highlighting does not break
-        paste0(kableExtra::cell_spec(x = method_all, color = "lightgrey"), ", ", scope_prior_symbol ),
+        # paste0(kableExtra::cell_spec(format = .format, x = method_all, color = color_grey, escape = .escape), ", ", scope_prior_symbol ),
+        paste0(
+          scope_prior_symbol,
+          kableExtra::cell_spec(
+            format = .format,
+            x = method_all |> paste0(", ", x = _),
+            color = color_grey,
+            escape = .escape
+            )
+          ),
       #scope_prior_symbol,
       scope_boolean == 0 ~
-        kableExtra::cell_spec(x = scope_boolean_symbol, color = "lightgrey")
+        kableExtra::cell_spec(format = .format, x = scope_boolean_symbol, color = color_grey, escape = .escape)
     ),
     .after = scope_prior
   )
@@ -224,7 +285,9 @@ table_filtered_illu_list_upd <- lapply(
 #
 #
 # --- highlight-symbols-illustration ---------------
-#
+
+if (FALSE) {
+
 tmp_fun <- function(table, symbol){
   dplyr::mutate(
     .data = table,
@@ -233,10 +296,12 @@ tmp_fun <- function(table, symbol){
         # remove text after last comma
         sub("([^,]*)$"," ", scope_verbose),
         kableExtra::cell_spec(
+          format = .format,
           # remove text before and including last comma
           x = sub('.*\\,', "", scope_verbose),
           color = color_hl,
-          bold = TRUE
+          bold = TRUE,
+          escape = .escape
         )
       ),
       TRUE ~ scope_verbose
@@ -270,7 +335,7 @@ table_filtered_illu_list_upd <- mapply(
   SIMPLIFY = FALSE
 )
 
-
+}
 #
 
 # --- define-table-footnotes ---------------
@@ -285,7 +350,19 @@ footnote_base <- table_base_upd |>
       scope_verbose,
       symbols_base_list |> unlist() |> unname()
     )
-  )
+  ) |>
+  # quadrupel \ needed for .format = latex
+  # https://github.com/haozhu233/kableExtra/issues/120
+  (\(x)
+   if (!is_html) {
+     x |>
+       dplyr::mutate(
+         scope_verbose = scope_verbose |> gsub(pattern = "\\\\", replacement = "\\\\\\\\", x = _)
+       )
+   } else {
+     x
+   }
+  )()
 footnote_filtered <- table_filtered_upd |>
   dplyr::filter(!grepl(",", scope_prior_motivation)) |>
   dplyr::select(c(scope_verbose = scope_prior_symbol, scope_motivation = scope_prior_motivation)) |>
@@ -296,74 +373,18 @@ footnote_filtered <- table_filtered_upd |>
       scope_verbose,
       symbols_filtered_list |> unlist() |> unname()
     )
-  )
-footnote_combined <- dplyr::bind_rows(footnote_base, footnote_filtered)
-#
-#
-#
-# --- define background colors scope verbose ---------------
-#
-color_bg_1 <- "#D4D4FA"
-color_bg_2 <- "#FFC5F7"
-color_bg_3 <- "#FEFDD1"
-#
-colors_base_list <- setNames(
-  list(color_bg_1, color_bg_1, color_bg_1, color_bg_1, color_bg_2),
-  symbols_base_list |> unlist() |> unname()
-)
-colors_filtered_list <- setNames(
-  list(color_hl, color_hl, color_hl, color_hl, color_hl),
-  symbols_filtered_list |> unlist() |> unname()
-)
-#
-define_background <- function(
-    .string,
-    patternlist = colors_base_list
-){
-  i <- purrr::map(names(patternlist), ~ which(
-    stringr::str_starts(
-      .string |>
-        gsub(pattern = "\\$", replacement = "", x = _ )|>
-        gsub(pattern = "\\\\", replacement = "", x = _ ),
-      .x |>
-        gsub(pattern = "\\$", replacement = "", x = _ )|>
-        gsub(pattern = "\\\\", replacement = "", x = _ ),
-    ) == 1
-  )
   ) |>
-    as.integer() |>
-    na.omit()
-  patternlist[[i]]
-}
-#
-#
-#
-# --- add colors scope verbose ---------------
-#
-# FIX coloring not working
-if (FALSE) {
-  # full table base
-  table_base_upd <- table_base_upd |>
-    dplyr::rowwise() |>
-    # add background color
-    # https://stackoverflow.com/questions/76520944/how-to-use-case-when-with-rowwise-for-evaluating-missing-values
-    dplyr::mutate(
-      scope_verbose_background = ifelse(
-        scope_boolean == 1,
-        "white",
-        define_background(.string = scope_boolean_symbol, patternlist = colors_base_list)
-      )
-    ) |>
-    dplyr::mutate(
-      dplyr::case_when(
-        scope_boolean == 0 ~ kableExtra::cell_spec(
-          x = scope_verbose,
-          background = scope_verbose_background
-        ),
-        scope_boolean == 0 ~ scope_verbose
-      )
-    )
-}
+  (\(x)
+   if (!is_html) {
+     x |>
+       dplyr::mutate(
+         scope_verbose = scope_verbose |> gsub(pattern = "\\\\", replacement = "\\\\\\\\", x = _)
+       )
+   } else {
+     x
+   }
+  )()
+footnote_combined <- dplyr::bind_rows(footnote_base, footnote_filtered)
 #
 #
 #
@@ -424,6 +445,88 @@ table_filtered_illu_list_upd <- lapply(
 
 #
 
+# --- define-function-make-table-species-display ---------------
+
+make_table_species_display <- function(
+    data_table,
+    cols_id = c(
+      "species",
+      "vern_name_nld",
+      "kingdom",
+      "taxon",
+      "on_unionlist",
+      "stadium",
+      "prius_stadium",
+      "prius_milieu"
+    ),
+    cols_addon = c(
+      "m_score_feas",
+      "m_score_urge"
+    ),
+    cols_linebreak = c(
+      "species",
+      "vern_name_nld",
+      "stadium",
+      "prius_stadium",
+      "prius_milieu"
+    )
+){
+  data_table_upd <- data_table |>
+    dplyr::select(
+      tidyselect::all_of(cols_id) |
+        tidyselect::all_of(cols_addon)
+    ) |>
+    dplyr::mutate(
+      dplyr::across(
+        tidyselect::contains(cols_linebreak),
+        \(x){
+          y <- stringr::str_wrap(string = x, width = 25)
+          z <- if (!is_html) {
+            kableExtra::linebreak(y, double_escape = FALSE)
+            #gsub(pattern = "\\n", replacement = "\\\\\\\\", y)
+            } else{
+              y
+            }
+          return(z)
+        }
+        )
+      )
+  knitr::kable(
+    x = data_table_upd,
+    format = .format,
+    escape = .escape,
+    booktabs = .booktabs,
+    longtable = .longtable,
+    linesep = "",
+    col.names = colnames(data_table_upd) |>
+      gsub(pattern = "_", replacement = " ", x = _),
+    table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+  ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = .bootstrap_options,
+      latex_options = .latex_options,
+      full_width = FALSE,
+      position = "left",
+      font_size = .font_size
+    ) |>
+    #kableExtra::collapse_rows(
+    #  columns = seq_along(cols_id),
+    #  valign = "top"
+    #) |>
+    # row height
+    kableExtra::row_spec(
+      row = 1:nrow(data_table_upd),
+      extra_css = if (is_html) 'padding: 4px;' else NULL
+    ) #|>
+    # alternating colors
+    #kableExtra::row_spec(
+    #  row = seq(1, nrow(data_table_upd), 2),
+    #  background = color_verylightgrey
+    #)
+}
+
+
+
 # --- define function to make base or filtered tables for display ---------------
 
 make_table_display <- function(
@@ -440,6 +543,7 @@ make_table_display <- function(
     footnote_data = footnote_base
 ){
   data_table_wide <- data_table |>
+    dplyr::distinct(species, scope_type, .keep_all = TRUE) |>
     tidyr::pivot_wider(
       id_cols = !tidyselect::starts_with("scope_"),
       names_from = scope_type,
@@ -459,246 +563,87 @@ make_table_display <- function(
         tidyselect::all_of(cols_addon)
     )
   #
+  .header <- c(
+    length(cols_id),
+    grepl("scope", colnames(data_table_wide)) |> sum(),
+    if (length(cols_addon) > 0) length(cols_addon) else NULL
+    )
+  names(.header) <- c(" ", "scope", if (length(cols_addon) > 0) " " else NULL)
   knitr::kable(
     x = data_table_wide,
-    format = "html",
-    escape = FALSE,
+    format = .format,
+    escape = .escape,
+    booktabs = .booktabs,
+    longtable = .longtable,
+    linesep = "",
     col.names = colnames(data_table_wide) |>
       gsub(pattern = "scope_", replacement = "", x = _) |>
       gsub(pattern = "_", replacement = " ", x = _) |>
       stringr::str_wrap(width = nchar("abundance")), #|>
-    #gsub(pattern = "\\n", replacement = "\\\\n", x = _),
+      #(\(x)
+      # if (!is_html) {
+      #   gsub(pattern = "\\n", replacement = "\\\\n", x)
+      # } else {
+      #   x
+      # }
+      #)(),
     table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
   ) |>
-    # background of id and addon cols
-    kableExtra::column_spec(
-      column =
-        c(seq_along(cols_id), seq_along(cols_addon) + length(cols_id) + 6),
-      background = "grey97"
-    ) |>
-    # borders of scope cols
-    kableExtra::column_spec(
-      column = c(length(cols_id) + 1:6),
-      border_right = "2px solid #f7f7f7"
-    ) |>
     kableExtra::kable_styling(
-      bootstrap_options = c("condensed", "hover"), # "responsive"
+      bootstrap_options = .bootstrap_options,
+      latex_options = .latex_options,
       full_width = FALSE,
       position = "left",
       font_size = .font_size
     ) |>
-    kableExtra::collapse_rows(
-      columns = seq_along(cols_id),
-      valign = "top"
+    # width of id and addon cols
+    kableExtra::column_spec(
+      column = 1,
+      width = .col_id_species_width
     ) |>
+    kableExtra::column_spec(
+      column = seq_along(cols_id)[-1],
+      width = .col_id_width
+    ) |>
+    kableExtra::column_spec(
+      column = length(cols_id) + 6 + seq_along(cols_addon),
+      width = .col_addon_width
+    ) |>
+    # borders & width of scope cols
+    kableExtra::column_spec(
+      column = c(length(cols_id) + 0:6),
+      border_right = ifelse(is_html, "2px solid grey97", TRUE),
+      width = .col_scope_width
+    ) |>
+    #kableExtra::collapse_rows(
+    #  columns = seq_along(cols_id),
+    #  valign = "top"
+    #) |>
     kableExtra::add_header_above(
-      header = c(
-        " " = length(cols_id),
-        "scope" = grepl("scope", colnames(data_table_wide)) |> sum(),
-        " " = length(cols_addon)
-      ),
-      extra_css = "border-bottom: 1.5px solid"
+      header = .header,
+      extra_css = if (is_html) "border-bottom: 1.5px solid" else NULL
     ) |>
     kableExtra::row_spec(
       row = 0 ,
       # align headers top
-      extra_css = 'vertical-align: top !important; padding: 8px;'
+      extra_css = if (is_html) 'vertical-align: top !important; padding: 8px;' else NULL
     ) |>
     kableExtra::row_spec(
       row = 1:nrow(data_table_wide),
+      hline_after = FALSE,
       # row height
-      extra_css = 'padding: 4px;'
+      extra_css = if (is_html) 'padding: 4px;' else NULL
     ) |>
     kableExtra::row_spec(
       row = nrow(data_table_wide),
-      extra_css = "border-bottom: 1.5px solid"
+      extra_css = if (is_html) "border-bottom: 1.5px solid" else NULL
     ) |>
     kableExtra::footnote(
       symbol = footnote_data$scope_motivation,
       symbol_manual = footnote_data$scope_verbose,
-      escape = FALSE
+      escape = .escape
     )
 }
-
-# --- create list of cumulative illustrative base tables for display ---------------
-
-table_base_illu_list_display <- mapply(
-  \(table, index) {
-    table |>
-      dplyr::arrange(stadium, species) |>
-      make_table_display(
-        data_table = _,
-        cols_id = c("species", "stadium"),
-        cols_addon = NULL,
-        footnote_data = footnote_base[1:index,] |>
-          # color last row of footnote data
-          dplyr::mutate(
-            dplyr::across(
-              tidyselect::starts_with("scope"),
-              \(y) dplyr::case_when(
-                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = color_hl),
-                TRUE ~ y
-              )
-            )
-          )
-      )
-  },
-  table_base_illu_list_upd,
-  table_base_illu_list_upd |> seq_along(),
-  SIMPLIFY = FALSE
-)
-
-# --- create final illustrative base table for display ---------------
-
-
-table_base_illu_final_display <- table_base_illu_list_upd |>
-  dplyr::last() |>
-  dplyr::mutate(
-    scope_verbose = dplyr::case_when(
-      scope_boolean == 1 ~ method_all,
-      TRUE ~ scope_verbose
-    ),
-    # don't highlight symbol
-    scope_verbose = gsub(
-      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |>
-        paste(x = _, collapse = ", "),
-      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |>
-        paste(x = _, collapse = ", "),
-      scope_verbose)
-  ) |>
-  dplyr::arrange(stadium, species) |>
-  make_table_display(
-    data_table = _,
-    cols_id = c("species", "stadium"),
-    cols_addon = NULL,
-    footnote_data = footnote_base
-  )
-
-# --- create list of cumulative illustrative filtered tables for display ---------------
-
-table_filtered_illu_list_display <- mapply(
-  \(table, index) {
-    table |>
-      dplyr::arrange(stadium, species) |>
-      make_table_display(
-        data_table = _,
-        cols_id = c("species", "stadium"),
-        cols_addon = NULL,
-        footnote_data = footnote_filtered[1:index,] |>
-          # color last row of footnote
-          dplyr::mutate(
-            dplyr::across(
-              tidyselect::starts_with("scope"),
-              \(y) dplyr::case_when(
-                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(x = y, color = color_hl),
-                TRUE ~ y
-              )
-            )
-          )
-      )
-  },
-  table_filtered_illu_list_upd,
-  table_filtered_illu_list_upd |> seq_along(),
-  SIMPLIFY = FALSE
-)
-
-# --- create final illustrative filtered table for display ---------------
-
-
-table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
-  dplyr::last() |>
-  dplyr::mutate(
-    # don't highlight symbol
-    scope_verbose = gsub(
-      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |>
-        paste(x = _, collapse = ", "),
-      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |>
-        paste(x = _, collapse = ", "),
-      scope_verbose)
-  ) |>
-  dplyr::arrange(stadium, species) |>
-  (\(x)
-   if (exists("mode_source") && grepl("presentation", mode_source)) {
-     x |>
-       dplyr::filter(!grepl("M|N", species)) |>
-       dplyr::select(-"stadium")
-   } else {
-     x
-   }
-  )() |>
-  make_table_display(
-    data_table = _,
-    cols_id = if (exists("mode_source") && grepl("presentation", mode_source)) {
-      c("species")
-      } else{
-        c("species", "stadium")
-      } ,
-    cols_addon = NULL,
-    footnote_data = footnote_combined
-  )
-
-
-# --- create full base table for display ---------------
-
-# sort base table
-table_base_upd <- table_base_upd |>
-  dplyr::arrange(
-    scope_boolean |> dplyr::desc(),
-    scope_type,
-    prius_milieu,
-    stadium,
-    taxon,
-    m_score_feas |> dplyr::desc()
-  )
-
-
-kingdom_list <- setNames(
-  list("plant", "animal"),
-  c("plant", "animal")
-)
-id_cols_display <- c("species", "vern_name_nld", "taxon", "on_unionlist",  "prius_milieu", "stadium")
-
-table_base_upd_display_list <- lapply(
-  kingdom_list,
-  \(x){
-    table_base_upd |>
-      dplyr::filter(grepl(x, kingdom)) |>
-      make_table_display(
-        data_table = _,
-        cols_id = id_cols_display,
-        cols_addon = c("m_score_feas", "m_score_urge"),
-        footnote_data = footnote_base
-      )
-  }
-)
-
-# --- create full filtered table for display ---------------
-
-# sort filtered table
-table_filtered_upd <- table_filtered_upd |>
-  dplyr::arrange(
-    scope_prior,
-    scope_type,
-    prius_milieu,
-    stadium,
-    taxon,
-    m_score_feas |> dplyr::desc()
-  )
-
-
-table_filtered_upd_display_list <- lapply(
-  kingdom_list,
-  \(x){
-    table_filtered_upd |>
-      dplyr::filter(grepl(x, kingdom)) |>
-      make_table_display(
-        data_table = _,
-        cols_id = id_cols_display,
-        cols_addon = c("m_score_feas", "m_score_urge"),
-        footnote_data = footnote_combined
-      )
-  }
-)
 
 # --- define functions to prepare and display synergy tables ---------------
 #
@@ -706,7 +651,8 @@ table_filtered_upd_display_list <- lapply(
 id_cols_syn_display <- if (exists("mode_source") && grepl("presentation", mode_source)) {
   c("vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
 } else {
-  c("species", "vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+  c("species", "vern_name_nld", "stadium", "prius_stadium", "prius_milieu")
+  # "taxon", "on_unionlist",
 }
 #
 # make list with data frames containing a (species , milieu) x methods per scope
@@ -823,32 +769,37 @@ make_table_syn_display_prep <- function(
       dplyr::across(1,
                     \(x){
                       x = kableExtra::cell_spec(
+                        format = .format,
                         x = "Number of species covered",
-                        italic = TRUE
+                        italic = TRUE,
+                        escape = .escape
                       )
                     }
       )
     )
   table_prep <- table_prep |>
-    dplyr::arrange(
-      prius_milieu,
-      taxon
-    ) |>
+    dplyr::arrange(prius_milieu) |> # taxon
     dplyr::mutate(
       dplyr::across(
         tidyselect::starts_with("method_"),
         \(x) dplyr::case_when(
           !is.na(x) ~ kableExtra::cell_spec(
+            format = .format,
             x = " ",
             background = color,
             # fill entire cell (4px )
-            extra_css = paste(
-              "margin: -4px",
-              "padding: 8px",
-              "display: flex",
-              NULL,
-              sep = "; "
-            )
+            extra_css = if (is_html) {
+              paste(
+                "margin: -4px",
+                "padding: 8px",
+                "display: flex",
+                NULL,
+                sep = "; "
+              )
+            } else {
+              NULL
+            },
+            escape = .escape
           ),
           TRUE ~ NA_character_
         )
@@ -874,7 +825,7 @@ make_table_syn_display <- function(
       table_prior,
       table_secondary |>
         dplyr::select(tidyselect::any_of(colnames(table_prior)))
-      )
+    )
   } else {
     table_prior
   }
@@ -899,84 +850,111 @@ make_table_syn_display <- function(
   table_comb <- table_1234
   #
   #
-  # update column names (not rotate the id_cols)
+  # update column names
+  # html: not rotate the id_cols, rest is rotated later
   colnames_upd <- c(
-    colnames(table_comb)[seq_along(cols_id)] |> kableExtra::cell_spec(
-      x = _,
-      extra_css = "writing-mode: horizontal-tb !important;  transform: rotate(180deg) !important;"
-    ),
+    colnames(table_comb)[seq_along(cols_id)] |>
+      gsub(pattern = "_", replacement = " ", x = _) |>
+      kableExtra::cell_spec(
+        format = .format,
+        x = _,
+        extra_css = if (is_html) {
+          "writing-mode: horizontal-tb !important;  transform: rotate(180deg) !important;"
+        } else {
+          NULL
+        },
+        escape = .escape
+      ),
     colnames(table_comb)[(length(cols_id) + 1): ncol(table_comb)] |>
-      gsub(pattern = "method_", replacement = "", x = _)
+      gsub(pattern = "method_", replacement = "", x = _) |>
+      # if latex: rotate
+      (\(x)
+       if (!is_html) {
+         paste0("\\rotatebox{90}{", x, "}")
+       } else {
+         x
+       }
+      )()
   )
   #
   #
   table_comb |>
     knitr::kable(
       x = _,
-      format = "html",
-      escape = FALSE,
+      format = .format,
+      escape = .escape,
+      booktabs = .booktabs,
+      longtable = .longtable,
+      linesep = "",
       col.names = colnames_upd,
       table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
     ) |>
-    # background of id cols
-    kableExtra::column_spec(
-      column = seq_along(cols_id),
-      background = "grey97",
-      #width_min = "220px",
-      extra_css = "white-space: nowrap;"
-    ) |>
-    # borders of method cols
-    #  width
-    kableExtra::column_spec(
-      column = (length(cols_id) + 1):ncol(table_comb),
-      width_min = "20px",
-      width_max = "20px",
-      include_thead = TRUE,
-      border_right = "2px solid #f7f7f7"
-    ) |>
     kableExtra::kable_styling(
-      bootstrap_options = c("condensed", "hover"), # "responsive"
+      bootstrap_options = .bootstrap_options,
+      latex_options = .latex_options |>
+        grep("striped", x = _, invert = TRUE, value = TRUE),
       full_width = FALSE,
       position = "left",
       font_size = .font_size
     ) |>
-    kableExtra::collapse_rows(
-      columns = seq_along(cols_id),
-      valign = "top"
+    # width of id cols
+    kableExtra::column_spec(
+      column = 1,
+      width = .col_id_species_width,
+      extra_css = if (is_html) "white-space: nowrap;" else NULL
     ) |>
+    kableExtra::column_spec(
+      column = seq_along(cols_id)[-1],
+      width = .col_id_width,
+      extra_css = if (is_html) "white-space: nowrap;" else NULL
+    ) |>
+    # borders of method cols
+    kableExtra::column_spec(
+      column = length(cols_id):ncol(table_comb),
+      border_right = ifelse(is_html, "2px solid grey97", TRUE)
+    ) |>
+    #  width of method cols
+    kableExtra::column_spec(
+      column = (length(cols_id) + 1):ncol(table_comb),
+      width = if (is_html) NULL else .col_method_width,
+      width_min = if (is_html) .col_method_width else NULL,
+      width_max = if (is_html) .col_method_width else NULL,
+      include_thead = ifelse(is_html, TRUE, FALSE),
+      border_right = ifelse(is_html, "2px solid grey97", TRUE)
+    ) |>
+    #kableExtra::collapse_rows(
+    #  columns = seq_along(cols_id),
+    #  valign = "top"
+    #) |>
     kableExtra::add_header_above(
       header = c(
         " " = length(cols_id),
         "method" = ncol(table_comb) - length(cols_id)
       ),
-      extra_css = "border-bottom: 1.5px solid"
+      extra_css = if (is_html) "border-bottom: 1.5px solid" else NULL
     ) |>
-    # rotate column names pertaining to methods
+    # if html rotate column names pertaining to methods
     kableExtra::row_spec(
       row = 0,
-      extra_css =
+      extra_css = if (is_html){
         "writing-mode: vertical-lr;  transform: rotate(180deg); white-space: nowrap; padding: 5px;"
+      } else {
+        NULL
+      }
     ) |>
-    # adjust row height
+    # adjust row height & add hline after
     kableExtra::row_spec(
       row = 1:nrow(table_comb),
-      extra_css = 'padding: 4px;'
-    ) |>
-    # uncolor summary rows
-    kableExtra::row_spec(
-      row = c(
-        nrow(table_prior),
-        if(!is.null(table_secondary)) nrow(table_12),
-        if(!is.null(table_tertiary)) nrow(table_123),
-        nrow(table_comb)
-      ),
-      background = "white"
+      extra_css = if (is_html) 'padding: 4px;' else NULL,
+      hline_after = ifelse(is_html, FALSE, TRUE)
     ) |>
     kableExtra::group_rows(
       group_label = "Primary species",
       start_row = 1,
       end_row = nrow(table_prior),
-      background = "white"
+      background = "white",
+      hline_after = TRUE,
+      indent = FALSE
     ) |>
     (\(x)
      if (!is.null(table_secondary)) {
@@ -985,7 +963,9 @@ make_table_syn_display <- function(
            group_label = "Secondary species",
            start_row = nrow(table_prior) + 1,
            end_row = nrow(table_12),
-           background = "white"
+           background = "white",
+           hline_after = TRUE,
+           indent = FALSE
          )
      } else {
        x
@@ -998,7 +978,9 @@ make_table_syn_display <- function(
            group_label = "Tertiary species",
            start_row = nrow(table_12) + 1,
            end_row = nrow(table_123),
-           background = "white"
+           background = "white",
+           hline_after = TRUE,
+           indent = FALSE
          )
      } else {
        x
@@ -1011,7 +993,9 @@ make_table_syn_display <- function(
            group_label = "Remaining species",
            start_row = nrow(table_123) + 1,
            end_row = nrow(table_1234),
-           background = "white"
+           background = "white",
+           hline_after = TRUE,
+           indent = FALSE
          )
      } else {
        x
@@ -1127,70 +1111,221 @@ make_table_syn_display_list <- function(
   return(table_grouped_kingdom_display_list)
 }
 
-# --- create full synergy tables for display - plants & animals ---------------
+# --- illustration - create list of cumulative illustrative base tables for display ---------------
+
+
+table_base_illu_list_display <- mapply(
+  \(table, index) {
+    table |>
+      dplyr::arrange(stadium, species) |>
+      make_table_display(
+        data_table = _,
+        cols_id = c("species", "stadium"),
+        cols_addon = NULL,
+        footnote_data = footnote_base[1:index,] |>
+          # color last row of footnote data
+          dplyr::mutate(
+            dplyr::across(
+              tidyselect::starts_with("scope"),
+              \(y) dplyr::case_when(
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(format = .format, x = y, color = color_hl, escape = .escape),
+                TRUE ~ y
+              )
+            )
+          )
+      )
+  },
+  table_base_illu_list_upd,
+  table_base_illu_list_upd |> seq_along(),
+  SIMPLIFY = FALSE
+)
+
+# --- illustration - create final illustrative base table for display ---------------
+
+
+table_base_illu_final_display <- table_base_illu_list_upd |>
+  dplyr::last() |>
+  dplyr::mutate(
+    scope_verbose = dplyr::case_when(
+      scope_boolean == 1 ~ method_all,
+      TRUE ~ scope_verbose
+    ),
+    # don't highlight symbol
+    scope_verbose = gsub(
+      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      scope_verbose)
+  ) |>
+  dplyr::arrange(stadium, species) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species", "stadium"),
+    cols_addon = NULL,
+    footnote_data = footnote_base
+  )
+
+# --- illustration - create list of cumulative illustrative filtered tables for display ---------------
+
+table_filtered_illu_list_display <- mapply(
+  \(table, index) {
+    table |>
+      dplyr::arrange(stadium, species) |>
+      make_table_display(
+        data_table = _,
+        cols_id = c("species", "stadium"),
+        cols_addon = NULL,
+        footnote_data = footnote_filtered[1:index,] |>
+          # color last row of footnote
+          dplyr::mutate(
+            dplyr::across(
+              tidyselect::starts_with("scope"),
+              \(y) dplyr::case_when(
+                dplyr::row_number() == dplyr::n() ~ kableExtra::cell_spec(format = .format, x = y, color = color_hl, escape = .escape),
+                TRUE ~ y
+              )
+            )
+          )
+      )
+  },
+  table_filtered_illu_list_upd,
+  table_filtered_illu_list_upd |> seq_along(),
+  SIMPLIFY = FALSE
+)
+
+# --- illustration - create final illustrative filtered table for display ---------------
+
+
+table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
+  dplyr::last() |>
+  dplyr::mutate(
+    # don't highlight symbol
+    scope_verbose = scope_verbose |> gsub(
+      # html
+      color_hl |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      "black" |> grDevices::col2rgb() |> as.vector() |> append(255) |>
+        paste(x = _, collapse = ", "),
+      x = _
+      ) |>
+      # latex
+      gsub(
+        color_hl |> gsub("#", "", x = _),
+        "000000",
+        x = _
+      )
+  ) |>
+  dplyr::arrange(stadium, species) |>
+  (\(x)
+   if (exists("mode_source") && grepl("presentation", mode_source)) {
+     x |>
+       dplyr::filter(!grepl("M|N", species)) |>
+       dplyr::select(-"stadium")
+   } else {
+     x
+   }
+  )() |>
+  make_table_display(
+    data_table = _,
+    cols_id = if (exists("mode_source") && grepl("presentation", mode_source)) {
+      c("species")
+      } else{
+        c("species", "stadium")
+      } ,
+    cols_addon = NULL,
+    footnote_data = footnote_combined
+  )
+
+
+# --- all species - create species display table ---------------
+
+# get species
+species_display <- table_base_upd |>
+  dplyr::distinct(species, vern_name_nld, .keep_all = TRUE) |>
+  dplyr::arrange(species) |>
+  make_table_species_display(
+    data_table = _,
+    cols_addon = NULL
+  )
+
+
+
+# --- all species - create full base table for display ---------------
+
+# sort base table
+table_base_upd <- table_base_upd |>
+  dplyr::arrange(
+    scope_boolean |> dplyr::desc(),
+    scope_type,
+    prius_milieu,
+    stadium,
+    #taxon,
+    m_score_feas |> dplyr::desc()
+  )
+
+
+kingdom_list <- setNames(
+  list("plant", "animal"),
+  c("plant", "animal")
+)
+id_cols_display <- c("species", "vern_name_nld", "prius_milieu", "stadium")
+# "taxon", "on_unionlist"
+
+table_base_upd_display_list <- lapply(
+  kingdom_list,
+  \(x){
+    table_base_upd |>
+      dplyr::filter(grepl(x, kingdom)) |>
+      make_table_display(
+        data_table = _,
+        cols_id = id_cols_display,
+        cols_addon = c("m_score_feas", "m_score_urge"),
+        footnote_data = footnote_base
+      )
+  }
+)
+
+# --- all species - create full filtered table for display ---------------
+
+# sort filtered table
+table_filtered_upd <- table_filtered_upd |>
+  dplyr::arrange(
+    scope_prior,
+    scope_type,
+    prius_milieu,
+    stadium,
+    #taxon,
+    m_score_feas |> dplyr::desc()
+  )
+
+
+table_filtered_upd_display_list <- lapply(
+  kingdom_list,
+  \(x){
+    table_filtered_upd |>
+      dplyr::filter(grepl(x, kingdom)) |>
+      make_table_display(
+        data_table = _,
+        cols_id = id_cols_display,
+        cols_addon = c("m_score_feas", "m_score_urge"),
+        footnote_data = footnote_combined
+      )
+  }
+)
+
+# --- all species - create full synergy tables for display - plants & animals ---------------
 
 table_syn_plants_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_upd,
   .kingdom = "plant",
-  rest = TRUE
+  rest = FALSE
 )
 table_syn_animals_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_upd,
   .kingdom = "animal",
-  rest = TRUE
+  rest = FALSE
 )
-
-# --- define-function-make-table-species-display ---------------
-
-make_table_species_display <- function(
-    data_table,
-    cols_id = c(
-      "species",
-      "vern_name_nld",
-      "kingdom",
-      "taxon",
-      "on_unionlist",
-      "stadium",
-      "prius_stadium",
-      "prius_milieu"
-    ),
-    cols_addon = c(
-      "m_score_feas",
-      "m_score_urge"
-    )
-){
-  data_table_upd <- data_table |>
-    dplyr::select(
-      tidyselect::all_of(cols_id) |
-        tidyselect::all_of(cols_addon)
-    )
-  #
-  knitr::kable(
-    x = data_table_upd,
-    format = "html",
-    escape = FALSE,
-    col.names = colnames(data_table_upd) |>
-      gsub(pattern = "_", replacement = " ", x = _),
-    table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
-  ) |>
-    kableExtra::kable_styling(
-      bootstrap_options = c("condensed", "hover"), # "responsive"
-      full_width = FALSE,
-      position = "left",
-      font_size = .font_size
-    ) |>
-    kableExtra::collapse_rows(
-      columns = seq_along(cols_id),
-      valign = "top"
-    ) |>
-    kableExtra::row_spec(
-      row = 1:nrow(data_table_upd),
-      # row height
-      extra_css = 'padding: 4px;'
-    )
-}
-
-
 
 # --- scenario 1- ANB priorities - get species ---------------
 
@@ -1229,11 +1364,14 @@ species_anb_tmp <- table_base_filtered |>
   dplyr::filter(grepl("highprior|lowprior", scope_prior))
 species_anb <- species_anb_tmp |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
+# at leat one scope high prior
 species_anb_highprior <- species_anb_tmp |>
   dplyr::filter(grepl("highprior", scope_prior)) |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
+# all low prior
 species_anb_lowprior <- species_anb_tmp |>
   dplyr::filter(grepl("lowprior", scope_prior)) |>
+  dplyr::filter(!vern_name_nld %in% species_anb_highprior$vern_name_nld) |>
   dplyr::distinct(species, vern_name_nld, .keep_all = TRUE)
 
 
@@ -1269,7 +1407,7 @@ table_filtered_anb_display_list <- lapply(
       make_table_display(
         data_table = _,
         cols_id = id_cols_display,
-        cols_addon = c("m_score_feas", "m_score_urge"),
+        cols_addon = NULL,
         footnote_data = footnote_combined
       )
   }
@@ -1334,7 +1472,7 @@ table_filtered_det_display_list <- lapply(
       make_table_display(
         data_table = _,
         cols_id = id_cols_display,
-        cols_addon = c("m_score_feas", "m_score_urge"),
+        cols_addon = NULL,
         footnote_data = footnote_combined
       )
   }
@@ -1378,7 +1516,7 @@ table_filtered_dist_display_list <- lapply(
       make_table_display(
         data_table = _,
         cols_id = id_cols_display,
-        cols_addon = c("m_score_feas", "m_score_urge"),
+        cols_addon = NULL,
         footnote_data = footnote_combined
       )
   }
