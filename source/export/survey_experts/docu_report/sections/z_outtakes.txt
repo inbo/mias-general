@@ -1,0 +1,14 @@
+# Outtakes
+
+## IAS Regulation
+
+For species on this list, EU member states are required to setup a "surveillance system", that "collects and records data on the occurrence in the environment" across the territory of each EU member state (ref page).
+It is further specified that the surveillance system should be able to determine the "presence and distribution of new as well as already established" of IAS of Union concern, and "detect rapidly the appearance" of those IAS with a previously unknown status.
+
+
+[^2]: It is noted that the document does "not necessarily reflect the official opinion of the European Commission".
+
+
+## Scopes
+
+A list of questions to guide the further concretization of monitoring scheme requirements per scope can be found in Appendix A [to be added?]. 

@@ -1,0 +1,54 @@
+# Results expert survey
+
+
+::: {.landscape}
+
+## Prioritization of all species covered {#sec-app-prioritization}
+
+```{r appdx-b-setup}
+#| message: false
+#| warning: false
+#| cache: false
+
+# test format
+is_html <- knitr::is_html_output()
+
+# define paths
+response_data_path <- "../../../../data/survey_experts/"
+functions_path <- "../../../functions/"
+
+# load response & question data
+res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+
+# source scripts
+source("../09_format_priority_tables.R", local = knitr::knit_global())
+
+```
+
+### Plants
+
+```{r appdx-b-prior-plants}
+#| label: tbl-priorplants
+#| tbl-cap: Prioritization of all plants covered
+
+
+table_filtered_upd_display_list$plant
+
+```
+
+### Animals
+
+```{r appdx-b-prior-animals}
+#| label: tbl-prioranimals
+#| tbl-cap: Prioritization of all animals covered
+
+
+
+table_filtered_upd_display_list$animal
+
+```
+
+
+:::
+
+

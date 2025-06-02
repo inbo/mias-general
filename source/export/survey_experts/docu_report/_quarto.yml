@@ -9,10 +9,14 @@ project:
     - "!LICENSE.md" #ignore LICENSE.md
     - "!README.md" #ignore README.md
   output-dir:  ../../../../output/survey_experts/docu_report
+  execute-dir: project
 
 format:
-  flandersqmd-book-html: default
-  flandersqmd-book-pdf: default
+  flandersqmd-book-html:
+    number-depth: 3
+  flandersqmd-book-pdf:
+    toc: true
+    number-depth: 3
 
 flandersqmd:
   entity: INBO
@@ -28,6 +32,14 @@ flandersqmd:
     orcid: 0000-0001-6064-9803
     affiliation:
       - Research Institute for Nature and Forest (INBO)
+  - name:
+      given: Diederik
+      family: Strubbe
+    email: diederik.strubbe@inbo.be
+    corresponding: false
+    orcid: 0000-0002-2613-4985
+    affiliation:
+      - Research Institute for Nature and Forest (INBO)
   reviewer:
   - name:
       given: John
@@ -36,20 +48,40 @@ flandersqmd:
     orcid: 0000-0000-0000-0000
     affiliation:
        - Research Institute for Nature and Forest (INBO)
+
+  year: 2025
+  reportnr: 00
+  cover: media/cover-placeholder.pdf
+  coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/
+  coverdescription: Photo by Jimmi Kamballur from Pexels
+  # doi
   public_report: false
   colophon: true
-  year: 2025
+  client:
+    - INBO Brussel
+    - VAC Brussel ‐ Herman Teirlinck
+    - Havenlaan 88 bus 73
+    - 1000 Brussel
+  clienturl: https://www.vlaanderen.be/inbo/en-gb
+  clientlogo: media/logo.jpg
+  cooperation:
+    - INBO Brussel
+    - VAC Brussel ‐ Herman Teirlinck
+    - Havenlaan 88 bus 73
+    - 1000 Brussel
+  cooperationurl: https://www.vlaanderen.be/inbo/en-gb
+  cooperationlogo: media/logo.jpg
 
 book:
   downloads: pdf
   open-graph: true
   sidebar:
-    logo: cover.png
+    logo: media/cover-placeholder.png
   body-footer: '{{< footer >}}'
   navbar:
     left:
       - text: Cover
-        file: index.md
+        file: index.qmd
     right:
       - icon: mastodon
         href: https://mastodon.online/@inbo
@@ -64,16 +96,23 @@ book:
     pinned: true
   date: "28/4/2025"
   chapters:
-    - index.md
+    - index.qmd
+    - sections/01_summary.qmd
+    - sections/02_summary_dutch.qmd
     - sections/10_intro.qmd
-    - sections/20_summary.qmd
+    - sections/20_monitoring_IAS.qmd
+    - sections/30_expert_survey.qmd
+    - sections/40_results_survey.qmd
+    - sections/50_executive_committee.qmd
     - sections/99_references.qmd
   appendices:
     - appendices/appendix_a.qmd
+    - appendices/appendix_b.qmd
 
 execute:
   echo: false
 
 lang: en-GB
 
-bibliography: references.bib
+bibliography: ../../../../media/MIAS.bib
+

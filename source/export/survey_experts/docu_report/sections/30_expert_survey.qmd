@@ -1,0 +1,388 @@
+# Expert survey
+
+In this section, we recapitulate the purpose and describe the design of the expert survey, including the selection, format and scoring of questions and the generation and distribution of questionnaires.
+We also elaborate on how the survey results were used for prioritizing species-scope combinations for planning.
+
+```{r survey setup}
+#| message: false
+#| warning: false
+#| cache: false
+
+# test format
+is_html <- knitr::is_html_output()
+
+# define paths
+response_data_path <- "../../../../data/survey_experts/"
+questions_path <- "../questions_EN/"
+functions_path <- "../../../functions/"
+
+# load response & question data
+res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+
+# source scripts
+source("../09_survey_make_plots.R", local = knitr::knit_global())
+source("../09_format_priority_tables.R", local = knitr::knit_global())
+
+options(knitr.kable.NA = '')
+
+```
+
+
+## Purpose
+
+The purpose of the expert survey was to draw on species expert's knowledge in this early phase of planning IAS monitoring schemes for Flanders.
+More specifically, we aimed to collect information tailored to our specific needs and obtain expert judgements at the same time.
+This twofold aim formed the main motivation for consulting experts as compared to conducting a literature study and summarizing existing publications.
+The latter are often more generic and not specific (enough) for monitoring needs and the IAS situation in Flanders.
+
+The survey was designed to assess the feasibility and urgency of monitoring schemes for IAS.
+It covers all 88 IAS of Union concern and an additional set of 34 species currently considered as candidates for the next extension of the Union list [correct?] (ref).
+For a complete overview of the 122 species covered see @sec-app-section.
+
+
+## Design
+
+### Question selection and format
+
+To provide a broad picture, questions from different categories were posed, concerning a species' introduction and establishment, distribution and abundance, impact, monitoring, and management.
+More specifically, the following aspects are covered:
+
+```{r survey print questions}
+#| results: "asis"
+
+sections <- res_comb_upd |>
+  dplyr::pull(section_title) |>
+  unique() |>
+  gsub("&", "and", x = _)
+for (section_i in sections) {
+  questions_i <- res_comb_upd |> 
+    dplyr::filter(section_title |> gsub("&", "and", x = _) == section_i) |>
+    dplyr::pull(question_text_short) |>
+    unique()
+  section_i |> 
+    paste(x = "-", y = _) |>
+    cat(x = _, sep = "\n")
+  questions_i |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+}
+
+```
+
+
+The large majority of the above listed questions are of closed format, meaning that each question comes with a limited number of pre-defined response options.
+Each closed question is paired with an open follow-up question allowing respondents to elaborate on the chosen answer and indicate sources used.
+A full overview of questions and corresponding response options is included in @sec-app-questionnaire.
+
+
+### Question scoring
+
+The closed questions are formulated such that they function as indicators of either feasibility or urgency of a monitoring scheme.
+For instance, more or less accessible introduction or distribution sites of a species indicate lower or higher feasibility of monitoring these sites, 
+a lower or higher probability of establishment in Flanders indicates a lower or higher urgency of monitoring.
+Lower or higher levels of feasibility or urgency are encoded via numerical scores.
+
+These scores are invisible to the respondents and assigned after having received the responses based on an a-priori determined key.
+Assigned values range from 1 indicating low feasibility or urgency to 4 indicating high feasibility or urgency, and are treated as interval-scaled in subsequent analyses. 
+@tbl-scoring illustrates the scoring of questions by providing the key that links response options to scores per question.
+
+
+```{r table scoring}
+#| label: tbl-scoring
+#| tbl-cap: Scoring of survey questions
+
+# overwrite options set in 09_format_priority_tables.R
+# #.bootstrap_options = if (is_html) {c("condensed", "hover") } else {"basic"}
+.latex_options = if (is_html) {"basic"} else {c("repeat_header")}
+# add options
+.col_width_1 = if (is_html) {"220px"} else {"120pt"}
+.col_width_2 = if (is_html) {"70px"} else {"20pt"}
+.col_width_3 = if (is_html) {"350px"} else {"200pt"}
+
+
+# latex issue text overflow with kableExtra::collapse_rows
+
+# prep data raw
+data_table_scoring_upd <- data_table_scoring |>
+  dplyr::full_join(
+    x = _,
+    y = res_comb_upd |> dplyr::select(
+      tidyselect::all_of(c("section_title", "section_no")) 
+    ) |>
+      dplyr::distinct(),
+    by = c("section_number" = "section_no")
+  ) |>
+  dplyr::mutate(
+    section_title = section_title |> gsub("&", "and", x = _)
+  ) |>
+  tidyr::pivot_longer(
+    cols = paste(1:4),
+    names_to = "score",
+    values_to = "response_option"
+  ) |>
+  tidyr::drop_na(response_option) |>
+  dplyr::mutate(score = as.numeric(score)) |>
+  # to preserve order when grouping
+  dplyr::mutate(
+    question_text_short = factor(
+      question_text_short, 
+      levels = data_table_scoring$question_text_short |> unique())
+  ) |>
+  dplyr::mutate(q_index = as.numeric(question_text_short)) |>
+  dplyr::group_by(section_number, q_index) |>
+  dplyr::arrange(score, .by_group = TRUE) |>
+  # mimic collapse rows
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::all_of(c("question_text_short", "score_category")),
+      \(x) dplyr::case_when(
+        dplyr::row_number() != 1 ~ NA_character_,
+        TRUE ~ x
+      ))) |>
+  dplyr::ungroup()
+
+# prep grouping data
+data_grouping <- data_table_scoring_upd |> 
+  dplyr::mutate(index = dplyr::row_number()) |>
+  dplyr::mutate(
+    row_start = min(index),
+    row_stop = max(index),
+    .by = section_title
+  ) |> 
+  dplyr::select(tidyselect::contains(c("section_title", "row_"))) |>
+  dplyr::distinct()
+# update data raw
+data_table_scoring_upd <- data_table_scoring_upd |>
+  dplyr::select(-section_title, -section_number, -q_index) 
+
+# create table
+data_table_scoring_upd |>
+  knitr::kable(
+    x = _,
+    format = .format,
+    escape = FALSE,
+    booktabs = .booktabs,
+    longtable = .longtable,
+    linesep = "",
+    col.names = c("Question", "Indicator", "Score", "Response option"),
+    table.attr = 'data-quarto-disable-processing="true"' 
+  ) |>
+  kableExtra::kable_styling(
+    bootstrap_options = .bootstrap_options, 
+    latex_options = .latex_options,
+    full_width = FALSE,
+    position = "left",
+    font_size = .font_size
+  ) |>
+  kableExtra::column_spec(
+    column = 1,
+    width = .col_width_1
+  ) |>
+  kableExtra::column_spec(
+    column = 2:3,
+    width = .col_width_2
+  ) |>
+  kableExtra::column_spec(
+    column = 4,
+    width = .col_width_3
+  ) |>
+  #kableExtra::collapse_rows(
+  #  columns = 1:ncol(data_table_scoring_upd),
+  #  valign = "top" #"top" broken with booktabs
+  #) |>
+  kableExtra::group_rows(
+    group_label = data_grouping$section_title[1],
+    start_row = data_grouping$row_start[1],
+    end_row = data_grouping$row_stop[1],
+    indent = FALSE,
+    hline_after = TRUE
+  ) |>
+  kableExtra::group_rows(
+    group_label = data_grouping$section_title[2],
+    start_row = data_grouping$row_start[2],
+    end_row = data_grouping$row_stop[2],
+    indent = FALSE,
+    hline_after = TRUE
+  ) |> kableExtra::group_rows(
+    group_label = data_grouping$section_title[3],
+    start_row = data_grouping$row_start[3],
+    end_row = data_grouping$row_stop[3],
+    indent = FALSE,
+    hline_after = TRUE
+  )  |> kableExtra::group_rows(
+    group_label = data_grouping$section_title[4],
+    start_row = data_grouping$row_start[4],
+    end_row = data_grouping$row_stop[4],
+    hline_after = TRUE
+  )  |> kableExtra::group_rows(
+    group_label = data_grouping$section_title[5],
+    start_row = data_grouping$row_start[5],
+    end_row = data_grouping$row_stop[5],
+    indent = FALSE,
+    hline_after = TRUE
+  ) 
+
+
+```
+
+As an example, consider the question on the configuration of (potential) introduction sites of an IAS currently absent from Flanders.
+If there are a limited number of specific introduction sites (e.g. seaports) monitoring these sites is considered relatively highly feasible and the largest value is assigned.
+Instead, if introduction sites are many and widespread (e.g., for a species that is expected to mainly be released from aquaria into freshwater bodies in Flanders) feasibility of structured monitoring is considered to be relatively low and a small value is assigned.
+The smallest value and thus lowest feasibility is assigned if experts report the (potential) introduction sites as unknown, to them personally or generally.
+The reasoning here is that planning monitoring schemes becomes of course less possible to the extent the underlying information is lacking.
+We apply this rather conservative scoring strategy to all questions as can be seen in Table XX.
+
+
+### Questionnaire generation and distribution
+
+For each species, a separate questionnaire was set up using Google Forms.
+We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps).
+In addition all questionnaires were designed to be adaptive in the sense that the selection of presented questions was adapted to the initially reported invasion stadium with response options "absent", "sporadically present", "established to limited extend", "widespread" (ref prius).
+If a species was reported as absent, questions on the distribution in Flanders were skipped.
+Questions on the introduction and establishment were only presented if a species was reported as either absent or sporadically present.  
+
+Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts available via the github repository XXX. 
+[add brief principled section on github repo somewhere easy to find and/or update readme github repo]
+
+The 122 generated forms were mapped to 57 experts affiliated with the Research Institute for Nature and Forest as well as other research institutions in Belgium and the Netherlands.
+Links to the forms were sent out via e-mail using a standardized text [add in appendix]. 
+
+
+## Prioritization of species-scheme combinations {#sec-prior}
+
+As suggested in Section XX the desired outcome of this prioritization is to arrive at a limited number of relevant high-priority species and monitoring scope combinations.
+For these combinations we then intend to start with planning IAS monitoring schemes following the guidelines for designing policy-oriented monitoring schemes developed at INBO (ref).
+
+Our approach to the prioritization involves a two-stage exclusion process visualized in @fig-prioritization [fix size and position].
+In a first stage, we exclude species-scope combinations that are irrelevant (or infeasible).
+In a second stage, we exclude species-scope combinations that have low priority.
+Exclusion is partly based on the global feasibility and urgency scores, partly on individual questions.
+We detail the two exclusion stages and the employed criteria in the following, and provide a schematic illustration of the process.
+Note that the exclusion process is shaped by decisions that are debatable (e.g., which criteria to use how) and so is, by consequence, the process outcome.
+
+![Flowchart of exclusion process](../media/flowchart-prioritization.pdf){#fig-prioritization width=600}
+
+
+### Stage 1: Exclude irrelevant species-scope combinations
+
+In Stage 1, we exclude species-scope combinations that are irrelevant (or infeasible). 
+We determine relevance based on 
+
+- the invasion stadium of a species, 
+- whether the surveillance/monitoring area is known, 
+- whether the species is managed,
+- which information is necessary to evaluate management,
+- whether suitable methods are available to implement the scope.
+
+The last point could also be viewed as rendering a species-scope combination infeasible rather than irrelevant.
+
+We explain each criterion in the following.
+For the exact filtering rules applied to the survey data see [R code here](https://github.com/inbo/mias-general/blob/b5c6d5bdccdb77f97c0c42874f5524f57d856ebc/source/export/survey_experts/08_make_priority_tables.R#L226-L292).
+
+#### Invasion stadium 
+
+First, scope relevance depends on invasion stadium of a species.
+We assume that depending on the invasion stadium (in conservation areas) only certain scopes make sense:
+
+For *absent* and *sporadically present* species, the only relevant scope is detection.
+For *limited established* species, the relevant scopes are inventory, distribution (after management) and abundance (after management). Detection is not considered relevant in this prioritization.
+For *widespread* species, the (potential) scopes are detection in conservation areas in which the species is not yet present and expected to have an impact, distribution (after management) and abundance (after management).
+Inventory is not considered relevant as the distribution of widely established species should generally be known (also see survey results).
+
+#### Distribution area known
+
+Second, scope relevance also depends on whether the distribution area of a species is known.
+If the *distribution area is reported as known*, then the scope inventory is irrelevant, if it is unknown, inventory is relevant.
+This criterion only concerns limited established species as this is the only species group for which scope inventory was withheld previously. 
+
+#### Species not managed
+
+A third factor to determine scope relevance is the existence of management.
+If a **species is not managed**, then management-related monitoring is irrelevant.
+
+
+#### Information not relevant to evaluate management
+
+Fourth, scope relevance depends on the kind of information necessary to evaluate management if the species is managed.
+If *presence-absence information is sufficient*, then management-related monitoring using abundance information is irrelevant
+If *abundance information is required*, then management-related monitoring using distribution information is irrelevant
+
+#### No method to measure abundance
+
+While a scope might remain relevant for a species after considering the above-discussed criteria, 
+a combination might still not being covered because there are no suitable methods available to implement the scope.
+At this stage, we consider a method not suitable, if it cannot measure the desired outcome abundance.
+
+If a method reported in the survey can *only measure presence-absence* but not relative/absolute abundance of a species,
+the scopes related to abundance become infeasible.
+Strictly speaking, we only have this information for the method reported as most relevant and not for the methods listed as available.
+We take a conservative approach assuming that if the most relevant method cannot measure abundance then none of the other methods can.
+
+### Stage 2: Exclude low priority species-scope combinations
+
+In Stage 2, we further filter the withheld relevant species-scope combinations by excluding low priority instances. 
+We determine priority based on
+
+- whether opportunistic observations cover a scope,
+- whether the monitoring area is unknown or unspecific for a species,
+- whether the expert-judged global feasibility and urgency reach critical values.
+
+We again explain each criterion in the following.
+For the exact filtering rules applied to the survey data see
+[R code here](https://github.com/inbo/mias-general/blob/b5c6d5bdccdb77f97c0c42874f5524f57d856ebc/source/export/survey_experts/08_make_priority_tables.R#L293-L340).
+
+#### Opportunistic data are considered representative
+
+First, we check whether species-scope combinations can be considered covered by opportunistic observations (e.g. recorded via [waarnemingen.be](https://waarnemingen.be/)).
+If for a species *opportunistic observations are considered highly representative* by the expert, all scopes withheld for this species are marked as having low priority.
+
+#### Monitoring area unknown or unspecific
+
+Second, we take into account whether the monitoring area is known for a species. 
+The monitoring area depends on the invasion stadium.
+For absent species the scope detection is marked as having low priority if the *introduction places are reported as unknown or unspecific* (i.e., large number of widespread locations).
+For sporadically present species the scope detection is marked as having low priority if the introduction places are reported as unknown or unspecific or if the distribution area is unknown.
+For limited established species, if the distribution area is reported as unknown, the distribution- and abundance-related scopes are marked as low priority, while the inventory scope is marked as high priority.
+
+#### Global feasibility & urgency scores below critical values
+
+Finally, we consider the survey's response scores reflecting the expert-judged global feasibility and urgency per species. 
+We calculate these as the arithmetic means across all feasibility- and urgency-indicator questions, respectively.
+As critical values we use the median feasibility- and urgency-means across all species.
+We assign a high priority only if both the mean feasibility and urgency scores are larger than their respective critical values.
+Otherwise all scopes withheld for this species are excluded.
+
+
+### Illustration
+
+We present all species-scope combinations in the form of a table where rows pertain to species and columns to scopes.
+The table cells contain varying information:
+For a relevant and high-priority species-scope combination, the corresponding table cell holds the monitoring methods reported for this species.
+For a species-scope combination excluded during the second stage of the prioritization process, the corresponding table cell additionally holds a symbol indicating the reason(s) for exclusion.
+For a species-scope combination excluded during the first stage of the prioritization process, the corresponding table cell only holds a symbol indicating the reason(s) for exclusion.
+
+@tbl-illu illustrates this reporting format.
+
+```{r table illustration}
+#| label: tbl-illu
+#| tbl-cap: Illustration of reporting of prioritized species-scope combinations
+
+table_filtered_illu_final_display
+
+
+```
+
+
+
+### Method-based synergies
+
+In a final organization step, we group species based on method-based synergies.
+That is, within a given monitoring scope, we consider commonalities between species concerning the monitoring methods reported. 
+We expect that such method commonalities might lead to synergies during the planning of different monitoring schemes (e.g., when researching methods, planning data collection independent of the concrete sampling sites, planning data analysis). 
+We do at this stage not consider synergies that might arise during the implementation of monitoring schemes (e.g., overlap in concrete sampling sites). 
+
+We consider method-based synergies between prior species (i.e., species which 'survive' the exclusion process for a given scope) resulting in groups with multiple prior species, or between prior and non-prior species (i.e., species that are discarded during the first or second stage of the exclusion process for a given scope). 
+In the latter case the  non-prior species qualify as potential ‘free riders’ under monitoring schemes for prior species.
+
+
+

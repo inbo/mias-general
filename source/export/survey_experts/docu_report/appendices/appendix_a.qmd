@@ -1,3 +1,54 @@
-# Title Appendix A
+# Expert survey
 
-This is appendix A.
+
+## Species covered {#sec-app-species}
+
+```{r appdx-a-setup}
+#| message: false
+#| warning: false
+#| cache: true
+#| eval: false
+
+
+```
+
+```{r appdx-a-species}
+#| label: tbl-species
+#| tbl-cap: Species covered by the expert survey
+#| eval: false
+
+
+```
+
+
+
+{{< pagebreak >}}
+
+## Questionnaire {#sec-app-questionnaire}
+
+
+```{r appdx-a-questionnaire}
+#| results: "asis"
+
+sections_list <- list.files(
+  path = "../questions_EN/overview_sections", 
+  full.names = TRUE
+  ) |> 
+  stringr::str_sort(x = _, numeric = TRUE)
+
+children_list <- vector(mode = "list", length = length(sections_list))
+
+for (i in seq_along(sections_list)) {
+      children_list[[i]] <- knitr::knit_child(
+        sections_list[[i]],
+        quiet = TRUE,
+        envir = environment()
+        ) |> 
+        gsub(pattern = "# ", replacement = "### ", x = _) 
+}
+
+cat(unlist(children_list), sep = "\n")
+
+
+```
+

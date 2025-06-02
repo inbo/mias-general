@@ -1,0 +1,236 @@
+# Results expert survey
+
+In this section we provide the results of the expert survey.
+We briefly describe the response rate and proceed with the results of the prioritization process.
+We present results in terms of 3 scenarios / species focus groups...
+Results for the full set of species we have collected data on can be found in appendix X.
+This concerns mainly the prioritization results but also a number of descriptive results (?).
+
+
+```{r survey results setup}
+#| message: false
+#| warning: false
+#| cache: false
+
+# test format
+is_html <- knitr::is_html_output()
+
+# define paths
+response_data_path <- "../../../../data/survey_experts/"
+questions_path <- "../questions_EN/"
+functions_path <- "../../../functions/"
+
+# load response & question data
+res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+
+# source scripts
+source("../09_format_priority_tables.R", local = knitr::knit_global())
+
+options(knitr.kable.NA = '')
+
+```
+
+## Response rate
+
+Questionnaire completed for `r res_comb_upd$species |> unique() |> length()` species.
+Among these are `r res_comb_upd |> dplyr::filter(on_unionlist) |> dplyr::pull(species) |> unique() |> length()` IAS of union concern 
+and `r res_comb_upd |> dplyr::filter(!on_unionlist) |> dplyr::pull(species) |> unique() |> length()` candidate species.
+
+
+## ANB priority species
+
+### Prioritization
+
+#### Plants
+
+[description]
+
+```{r table prior plants anb}
+#| label: tbl-priorplantsanb
+#| tbl-cap: Prioritized species-scope combinations for ANB priorty plants
+
+table_filtered_anb_display_list$plant
+
+```
+
+
+
+#### Animals
+
+[description]
+
+```{r table prior animals anb}
+#| label: tbl-prioranimalsanb
+#| tbl-cap: Prioritized species-scope combinations for ANB priorty animals
+
+table_filtered_anb_display_list$animal
+
+```
+
+
+
+### Method-based synergies
+
+#### Plants
+
+[description]
+
+```{r table-syn-plants-anb-1}
+#| label: tbl-synplantsanb1
+#| tbl-cap: Method-based synergies for ANB priorty plants under scope abundance after management
+
+table_syn_anb_plants_display_list$abundance_management
+
+```
+
+
+
+#### Animals
+
+[description]
+
+```{r table-syn-animals-anb-1}
+#| label: tbl-synanimalsanb1
+#| tbl-cap: Method-based synergies for ANB priorty animals under scope distribution after management
+
+table_syn_anb_animals_display_list$distribution_management
+
+
+```
+
+
+
+```{r table-syn-animals-anb-2}
+#| label: tbl-synanimalsanb2
+#| tbl-cap: Method-based synergies for ANB priorty animals under scope abundance after management
+
+
+table_syn_anb_animals_display_list$abundance_management
+
+```
+
+
+
+## Focus on scope detection
+
+### Prioritization
+
+#### Plants
+
+[description]
+
+```{r table prior plants det}
+#| label: tbl-priorplantsdet
+#| tbl-cap: Prioritized species-scope combinations for plants among species for which detection is relevant
+#| 
+table_filtered_det_display_list$plant
+
+```
+
+
+#### Animals
+
+[description]
+
+```{r table prior animals det}
+#| label: tbl-prioranimalsdet
+#| tbl-cap: Prioritized species-scope combinations for animals among species for which detection is relevant
+
+table_filtered_det_display_list$animal
+
+```
+
+
+### Method-based synergies
+
+
+#### Plants
+
+[description]
+
+```{r table-syn-plants-det-1}
+#| label: tbl-synplantsdet1
+#| tbl-cap: Method-based synergies for plants under scope detection 
+
+table_syn_det_plants_display_list$detection
+
+```
+
+
+#### Animals
+
+[description]
+
+```{r table-syn-animals-det-1}
+#| label: tbl-synanimalsdet1
+#| tbl-cap: Method-based synergies for animals under scope detection 
+
+table_syn_det_animals_display_list$detection
+
+
+```
+
+
+
+## Focus on scope distribution
+
+### Prioritization
+
+#### Plants
+
+[description]
+
+```{r table prior plants dist}
+#| label: tbl-priorplantsdist
+#| tbl-cap: Prioritized species-scope combinations for plants among species for which distribution is relevant
+#| 
+table_filtered_dist_display_list$plant
+
+```
+
+
+
+#### Animals
+
+[description]
+
+
+```{r table prior animals dist}
+#| label: tbl-prioranimalsdist
+#| tbl-cap: Prioritized species-scope combinations for animals among species for which distribution is relevant
+
+table_filtered_dist_display_list$animal
+
+```
+
+
+### Method-based synergies
+
+#### Plants
+
+[description]
+
+
+```{r table-syn-plants-dist-1}
+#| label: tbl-synplantsdist1
+#| tbl-cap: Method-based synergies for plants under scope distribution 
+
+table_syn_dist_plants_display_list$distribution
+
+```
+
+
+
+#### Animals
+
+[description]
+
+```{r table-syn-animals-dist-1}
+#| label: tbl-synanimalsdist1
+#| tbl-cap: Method-based synergies for animals under scope distribution 
+
+table_syn_dist_animals_display_list$distribution
+
+```
+
+
