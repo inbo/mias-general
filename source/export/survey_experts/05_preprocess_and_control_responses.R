@@ -124,10 +124,6 @@ save(data_resp_long,
      file = paste0(response_data_path, Sys.Date(), "_responsedata_long.rda") |>
        gsub(pattern = "-", replacement = "_")
      )
-save(data_resp_wide,
-     file = paste0(response_data_path, Sys.Date(), "_responsedata_wide.rda") |>
-       gsub(pattern = "-", replacement = "_")
-)
 #
 # some checks
 #
