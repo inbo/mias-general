@@ -3,14 +3,14 @@ rm(list = ls())
 # -------------------------------------------------------------------------
 #
 # authorize access to g-drive (only once)
-if (FALSE) googledrive::drive_auth() # make sure to tick all boxes
-if (FALSE) googledrive::drive_user() # check user
+# trackdown version 1.5.1
+# https://claudiozandonella.github.io/trackdown/articles/oauth-client-configuration.html
 #
 #
 # ---define file paths-------------------------------------------------------
 #
 # root directory of files
-path <- "source/export/survey_experts/docu_presentation"
+path <- "source/export/survey_experts/docu_report"
 #
 # section files
 section_files <- list.files(
@@ -19,11 +19,11 @@ section_files <- list.files(
   pattern = ".qmd"
 )
 #
-# html presentation
-html_file <- list.files(
-  path = "output/survey_experts/docu_presentation/",
+# output file
+pdf_file <- list.files(
+  path = "output/survey_experts/docu_report/",
   full.names = TRUE,
-  pattern = "index.html"
+  pattern = ".pdf"
 )
 #
 # ---upload to / update on g-drive-------------------------------------------
@@ -39,19 +39,22 @@ for (i in seq_along(section_files)){
       what = eval(parse(text = which_fun)),
       args = list(
         file = file_path_i,
-        gpath = "trackdown/steering_committee_presentation/sections",
-        shared_drive = "PRJ_MIUS"
+        gpath = "trackdown/report_expert_survey/sections",
+        shared_drive = "PRJ_MIUS",
+        hide_code = TRUE,
+        open = FALSE
       ))
   )
 }
 #
 #
-# upload/update html presentation
+# upload/update output
 # folder ID is in URL
 try(
   googledrive::drive_upload(
-    media = html_file,
-    path = googledrive::as_id("1-nL25x8H48iIqBkmRVOOwwYCZJuazm2i")
+    media = pdf_file,
+    # "trackdown/report_expert_survey/output_pdf"
+    path = googledrive::as_id("1d3sd4XUZNKeifPEzvV_dwUzSm2Mh9syT")
   )
 )
 #
