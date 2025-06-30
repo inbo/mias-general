@@ -1,26 +1,141 @@
 # Expert survey
 
 
+::: {.landscape}
+
 ## Species covered {#sec-app-species}
 
-```{r appdx-a-setup}
-#| message: false
-#| warning: false
-#| cache: true
-#| eval: false
-
-
-```
+The following table contains the 
+All scientific names are the currently accepted scientific names accoridng to GBIF (ref).
+Vernacular names have largely also been retrieved from GBIF or filled in by species experts otherwise. 
 
 ```{r appdx-a-species}
-#| label: tbl-species
-#| tbl-cap: Species covered by the expert survey
-#| eval: false
+#| message: false
+#| warning: false
+#| cache: false
+
+# load files
+response_data_path <- "../../../../data/survey_experts/"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+species_list <- get(load(species_list_path))
+
+# test format
+is_html <- knitr::is_html_output()
+
+# table specification
+.format <- ifelse(is_html, "html", "latex")
+.escape <- FALSE
+.bootstrap_options <- if (is_html) {c("condensed", "hover") } else {"basic"}
+.latex_options <- if (is_html) {"basic"} else {c("repeat_header", "striped")}
+.booktabs <- if (is_html) {FALSE} else {TRUE}
+.longtable <- if (is_html) {FALSE} else {TRUE}
+.font_size <- if (is_html) {12} else {6}
+.col_width_wide <- ifelse(is_html, "150px", "140pt")
+.col_width_medium <- ifelse(is_html, "120px", "90pt")
+.col_width_narrow <- ifelse(is_html, "70px", "40pt")
+
+options(knitr.kable.NA = '')
+options(knitr.table.format = .format)
+
+# prep species data for display
+species_data <- species_list |> 
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    sci_name = sci_name_gbif_acc, #|> gsub("&", "\\\\&", x = _), 
+    # not needed if cell_spec is applied later on 
+    vern_name_eng = dplyr::case_when(
+      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      TRUE ~ vern_name_gbif_eng_alt
+      ),
+    vern_name_nld = dplyr::case_when(
+      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
+      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gsheet_nld
+      ),
+    color_completed = dplyr::case_when(
+      (sci_name_gbif_acc %in% res_comb_upd$species | 
+         grepl("Reynoutria", x  = sci_name_gbif_acc)) ~ "#000000", 
+      TRUE ~ "#A9A9A9"
+    )
+  ) |>
+  dplyr::arrange(on_unionlist |> dplyr::desc(), sci_name) |>
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::everything(),
+      \(x) {
+        kableExtra::cell_spec(x = x, color = color_completed, format = .format)
+      }
+      )
+    ) |>
+  dplyr::select(
+    tidyselect::all_of(
+    c(
+      "on_unionlist",
+      "sci_name", "vern_name_eng", "vern_name_nld", 
+      "kingdom", "taxon", 
+      "prius_stadium", "prius_milieu"
+      )
+    )
+  ) 
 
 
 ```
 
+```{r appdx-a-species-table}
+#| label: tbl-species
+#| tbl-cap: Species covered by the expert survey
+#| eval: true
 
+knitr::kable(
+    x = species_data,
+    format = .format,
+    escape = .escape,
+    booktabs = .booktabs,
+    longtable = .longtable,
+    linesep = "",
+    col.names = 
+      c(
+        "species on union list",
+        "accepted scientific name", 
+        "vernacular name english", 
+        "vernacular name dutch", 
+        "kingdom", 
+        "taxon",
+        "prius stadium",
+        "prius milieu"
+        ),
+    table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+  ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = .bootstrap_options,
+      latex_options = .latex_options,
+      full_width = FALSE,
+      position = "left",
+      font_size = .font_size
+    ) |>
+    # row height
+    kableExtra::row_spec(
+      row = 1:nrow(species_data),
+      extra_css = if (is_html) 'padding: 4px;' else NULL
+    ) |>
+  # col width
+  kableExtra::column_spec(
+    column = 1:ncol(species_data),
+    width = .col_width_narrow
+  ) |>
+    kableExtra::column_spec(
+    column = 2,
+    width = .col_width_wide
+  ) |>
+    kableExtra::column_spec(
+    column = c(3,4,7,8),
+    width = .col_width_medium
+  )
+
+```
+
+:::
 
 {{< pagebreak >}}
 
@@ -45,6 +160,7 @@ for (i in seq_along(sections_list)) {
         envir = environment()
         ) |> 
         gsub(pattern = "# ", replacement = "### ", x = _) 
+      # alternative: pattern = "##", replacement = ""
 }
 
 cat(unlist(children_list), sep = "\n")

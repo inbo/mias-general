@@ -1,10 +1,23 @@
-# Results expert survey
+# Results of the expert survey {#sec-survey-results}
 
-In this section we provide the results of the expert survey.
-We briefly describe the response rate and proceed with the results of the prioritization process.
-We present results in terms of 3 scenarios / species focus groups...
-Results for the full set of species we have collected data on can be found in appendix X.
-This concerns mainly the prioritization results but also a number of descriptive results (?).
+In this section we provide the results of the expert survey, mainly the results of the prioritization process.
+We present these in terms of three scenarios.
+The scenarios are motivated by a species selection entertained by the agency for nature and forest of the Flemish government (Agentschap voor Natuur en Bos; ANB) and/or by foci on the different monitoring scopes.
+Each scenario thus comprises a subset of the total set of species covered by the survey.
+The scenarios and corresponding species subsets are:
+
+- Scenario 1: Species that ANB considers important in terms of management; this implies a focus on the management-related monitoring scopes 
+- Scenario 2: Focus on species for which the monitoring scope detection is (also) relevant
+- Scenario 3: Focus on species for which the monitoring scope distribution is (also) relevant
+
+As will be seen in the following, there is substantial overlap between the species subsets corresponding to scenarios 1 and 3.
+The species subset considered in scenario 2 is rather unique and thus complementary to the scenario 1 and 3 subsets.
+The latter is, in parts, due to our choice of assigning scope relevance based on invasion stadium (see @sec-prior). 
+
+Results for the full set of species the survey provides data on are included in appendix X.
+This concerns the prioritization results (ref appendix section) but also a number of descriptive results (ref appendix section) *[re-use [these figures](file:///G:/Gedeelde%20drives/PRJ_MIUS/github/mias-general/output/survey_experts/survey_results.html)]*.
+To give some insight into which species we indeed have data on, we first briefly describe the response rate in the following.
+
 
 
 ```{r survey results setup}
@@ -26,115 +39,314 @@ res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda"))
 # source scripts
 source("../09_format_priority_tables.R", local = knitr::knit_global())
 
-options(knitr.kable.NA = '')
+
+# overall
+n_questionnaires <- res_comb_upd$species |> unique() |> length()
+n_species <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
+  n_questionnaires + 2
+} else {
+   n_questionnaires
+}
+n_species_unionlist <- res_comb_upd |> 
+  dplyr::filter(on_unionlist) |> 
+  dplyr::pull(species) |> unique() |> length()
+tmp <- res_comb_upd |> 
+  dplyr::filter(!on_unionlist) |> 
+  dplyr::pull(species) |> unique() |> length()
+n_species_rest <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
+  tmp + 2
+} else {
+    tmp
+  }
+
+# functions
+get_n_species <- function(.table_filtered, .kingdom_list) {
+  lapply(
+    .kingdom_list, 
+    \(x){
+      .table_filtered |>
+        dplyr::filter(grepl(x, kingdom)) |>
+        dplyr::pull(species) |> unique() |> length()
+    })
+}
+get_species_prior <- function(.table_filtered, .kingdom_list) {
+  lapply(
+    .kingdom_list, 
+    \(x){
+      .table_filtered |>
+        dplyr::filter(grepl(x, kingdom)) |>
+        dplyr::filter(scope_prior == "highprior") 
+    }
+  )
+}
+get_n_species_prior <- function(.species_prior, .kingdom_list) {
+  lapply(
+  .kingdom_list, 
+  \(x){
+    .species_prior |>
+      purrr::pluck(.x = _, x) |>
+      dplyr::pull(species) |> unique() |> length()
+  })
+}
+get_names_prior <- function(.species_prior, .kingdom_list) {
+  lapply(
+  .kingdom_list, 
+  \(x){
+    .species_prior |>
+      purrr::pluck(.x = _, x) |>
+      dplyr::distinct(species, .keep_all = TRUE) |>
+      dplyr::rowwise() |> 
+      dplyr::mutate(
+        tmp = paste0(species, " (Dutch vernacular name: ", vern_name_nld, ")")
+        ) |> 
+      dplyr::pull(tmp) |>
+      #paste(x = _, collapse = ", ") |> 
+      gsub("\\\\&", "&", x = _)
+  }) 
+}
+get_exclusion_reasons <- function(.table_filtered, .kingdom_list) {
+  lapply(
+    .kingdom_list, 
+    \(x){
+      .table_filtered |>
+        dplyr::filter(grepl(x, kingdom)) |>
+        tidyr::drop_na(scope_prior_motivation) |>
+        dplyr::group_by(species, scope_type) |>
+        dplyr::distinct(scope_prior_motivation) |>
+        dplyr::ungroup() |>
+        dplyr::pull(scope_prior_motivation) |> 
+        paste(x = _, collapse = ",") |>
+        stringr::str_split(string = _, pattern = "scope low priority as") |> 
+        unlist() |> gsub("\\,", "", x = _) |> gsub("^\\s+", "", x = _) |>
+        (\(x) x[nchar(x) > 0])() |>
+        table() |> 
+        as.data.frame() |>
+        dplyr::arrange(Freq |> dplyr::desc()) |>
+        dplyr::rename(reason = "Var1") |>
+        dplyr::rowwise() |>
+        dplyr::mutate(reason = paste0(reason, " (", Freq, " times)")) |>
+        dplyr::ungroup() |>
+        dplyr::slice_head(n = 3) 
+        ##dplyr::pull(tmp) |> 
+        #paste0(x = _, collapse = ", ")
+    })
+}
+
+# scenario 1
+n_species_anb <- get_n_species(table_filtered_anb, kingdom_list)
+species_anb_prior <- get_species_prior(table_filtered_anb, kingdom_list) 
+n_species_anb_prior <- get_n_species_prior(species_anb_prior, kingdom_list)
+names_anb_prior <- get_names_prior(species_anb_prior, kingdom_list)
+anb_exclusion <- get_exclusion_reasons(table_filtered_anb, kingdom_list)
+
+# scenario 2
+n_species_det <- get_n_species(table_filtered_det, kingdom_list)
+species_det_prior <- get_species_prior(table_filtered_det, kingdom_list) 
+n_species_det_prior <- get_n_species_prior(species_det_prior, kingdom_list)
+names_det_prior <- get_names_prior(species_det_prior, kingdom_list)
+det_exclusion <- get_exclusion_reasons(table_filtered_det, kingdom_list)
+
+# scenario 3
+n_species_dist <- get_n_species(table_filtered_dist, kingdom_list)
+species_dist_prior <- get_species_prior(table_filtered_dist, kingdom_list) 
+n_species_dist_prior <- get_n_species_prior(species_dist_prior, kingdom_list)
+names_dist_prior <- get_names_prior(species_dist_prior, kingdom_list)
+dist_exclusion <- get_exclusion_reasons(table_filtered_dist, kingdom_list)
 
 ```
 
 ## Response rate
 
-Questionnaire completed for `r res_comb_upd$species |> unique() |> length()` species.
-Among these are `r res_comb_upd |> dplyr::filter(on_unionlist) |> dplyr::pull(species) |> unique() |> length()` IAS of union concern 
-and `r res_comb_upd |> dplyr::filter(!on_unionlist) |> dplyr::pull(species) |> unique() |> length()` candidate species.
+Of the 120 questionnaires `r n_questionnaires` were completed for `r n_species` species.
+Among these species are `r n_species_unionlist` IAS of union concern and `r n_species_rest` additional species.
+To see for which species survey responses are available consult again @tbl-species.
+In the overview table, species entries are greyed out if the survey was sent out but not completed.
 
+## Scenario 1: ANB focus species {#sec-scenario-1}
 
-## ANB priority species
+The first scenario considered concerns species deemed important by ANB and implies a focus on management and the corresponding monitoring scopes. 
+It can concern species from all invasion stadia.
 
-### Prioritization
+### Prioritization of species
 
-#### Plants
+@tbl-priorplantsanb and @tbl-prioranimalsanb display the results of the survey-based prioritization process for the ANB focus plants and animals respectively. 
+The tables are sorted as follows:
+First, rows are sorted by monitoring scope priority (stage 2 of prioritization process), with high priority scopes on top.
+Within (i.e., for each value of) scope priority, rows are sorted by scope type relying on the order: `r table_base_upd$scope_type |> levels()`.
+That is, within high and low priority scopes, all species for which (at least) detection is relevant appear first, 
+followed by those for which (at least) inventory is relevant and so forth.
+Within (i.e., for each value of) scope type, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
+Within (i.e., for each value of) milieu, rows are sorted by invasion stadium, from "absent" to "widely established".
+Within (i.e., for each value of) invasion stadium, rows are sorted by global feasibility scores from high to low.
 
-[description]
+For about `r round(n_species_anb_prior$plant / n_species_anb$plant * 100)`% of the plants and about `r round(n_species_anb_prior$animal / n_species_anb$animal * 100)`% of the animals comprising this scenario at least one monitoring scope is withheld during prioritization.
+The respective plants are: 
+
+```{r }
+#| results: "asis"
+names_anb_prior$plant |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+```
+
+The respective animals are:
+
+```{r }
+#| results: "asis"
+names_anb_prior$animal |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+```
+
+The three most prominent reasons for exclusion during stage 2 of the prioritization process are for the plants (multiple exclusion criteria can apply per species-scope combination) *[change frequencies to relative]*:
+
+```{r }
+#| results: "asis"
+anb_exclusion$plant |> 
+  dplyr::pull("reason") |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
+For the animals these are: 
+
+```{r }
+#| results: "asis"
+anb_exclusion$animal |> 
+  dplyr::pull("reason") |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
+*[Note: I can add such an overview also for stage 1, if interesting enough? Also conditional overview only for on scope under focus?]*
 
 ```{r table prior plants anb}
 #| label: tbl-priorplantsanb
-#| tbl-cap: Prioritized species-scope combinations for ANB priorty plants
+#| tbl-cap: Prioritized and nonprioritized species-scope combinations for ANB focus plants
 
 table_filtered_anb_display_list$plant
 
 ```
 
-
-
-#### Animals
-
-[description]
-
 ```{r table prior animals anb}
 #| label: tbl-prioranimalsanb
-#| tbl-cap: Prioritized species-scope combinations for ANB priorty animals
+#| tbl-cap: Prioritized and nonprioritized species-scope combinations for ANB focus animals
 
 table_filtered_anb_display_list$animal
 
 ```
 
-
-
 ### Method-based synergies
 
-#### Plants
+@tbl-synplantsanb1, @tbl-synanimalsanb1, and @tbl-synanimalsanb2 show the method-based synergies for the ANB focus plants and animals. Here, we only consider the monitoring scopes under focus, hence distribution under management and abundance under management. 
+The tables are structured such that primary, secondary and tertiary species are presented in groups of rows.
+Reported monitoring methods are arranged in columns and table cells are filled with color when a method was reported for a species.   
+Within species groups, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
 
-[description]
+For the ANB focus plants, the scope distribution under management is mostly irrelevant or, in one case, is relevant but gets assigned a low priority. 
+For scope abundance after management, on the other hand, a clear group emerges. 
+It consists of five (partly) freshwater plants, all of which can all be monitored using visual surveys and four of which can be monitored using aquatic environmental DNA.
+There are only primary species in this case.
+
 
 ```{r table-syn-plants-anb-1}
 #| label: tbl-synplantsanb1
-#| tbl-cap: Method-based synergies for ANB priorty plants under scope abundance after management
-
+#| tbl-cap: Method-based synergies for ANB focus plants under scope abundance after management
 table_syn_anb_plants_display_list$abundance_management
-
 ```
 
+Turning to the ANB focus animals, both management-related scopes are relevant and of high priority.
+For scope distribution under management, there is a potential synergy between coypu (Dutch vernacular name: beverrat) *[switch to english vernacular names consistently?]* and common raccoon (Dutch vernacular name: wasbeer) as a free rider, as both can be monitored with camera traps and visual surveys.
+However, this synergy appears to be unrealistic due to significant habitat/milieu differences between the species.
 
+For scope abundance under management, two small groups form, both involving the Chinese muntjac (Dutch: Chinese muntjak).
+In combination with the common raccoon (Dutch: wasbeer) method-based synergies concern visual surveys and camera traps.
+In combination with the African clawed frog (Dutch: Afrikaanse klauwkikker) method-based synergies visual surveys and passive acoustic monitoring.
 
-#### Animals
-
-[description]
 
 ```{r table-syn-animals-anb-1}
 #| label: tbl-synanimalsanb1
-#| tbl-cap: Method-based synergies for ANB priorty animals under scope distribution after management
-
+#| tbl-cap: Method-based synergies for ANB focus animals under scope distribution after management
 table_syn_anb_animals_display_list$distribution_management
-
-
 ```
-
-
 
 ```{r table-syn-animals-anb-2}
 #| label: tbl-synanimalsanb2
-#| tbl-cap: Method-based synergies for ANB priorty animals under scope abundance after management
-
-
+#| tbl-cap: Method-based synergies for ANB focus animals under scope abundance after management
 table_syn_anb_animals_display_list$abundance_management
-
 ```
 
 
 
-## Focus on scope detection
+## Scenario 2: Focus on monitoring scope detection
 
-### Prioritization
+The focus on the monitoring scope detection under this second scenario is motivated by the acknowledged importance and effectiveness of early interventions in combating biological invasions (ref).
+It can concern absent and sporadically present species, but also widespread species absent from conservation areas, as we consider the detection relevant for these species groups (see @sec-prior).
 
-#### Plants
+Also the IAS regulation highlights the role of early detection and rapid response (see @sec-scopes).
+At the same time, it is determined that early detection and rapid response to a substantial extent concern official inspections such as border controls, which are within the reponsibilities of the Federal authorities [see @sec-terminology; @working_group_on_invasive_alien_species_surveillance_2017]. 
+Monitoring coordinated by INBO would under this scenario mainly be devoted to detecting introductions into nature (alternative ref to [link](https://www.health.belgium.be/en/animals-and-plants/biodiversity/invasive-alien-species/anchoring-international-level-implementation)).
 
-[description]
+To render monitoring feasible, however, potential places of introduction into nature should be sufficiently known and specific. 
+In addition, introduction into conservation areas should be a matter of concern in the sense that a species is not yet present and expected to have an impact.
+These aspects therefore feature as exclusion criteria in the prioritization process (see @sec-prior).
+
+### Prioritization of species
+
+@tbl-priorplantsdet and @tbl-prioranimalsdet display the results of the survey-based prioritization process for the plants and animals, respectively, for which monitoring scope detection is (also) relevant.
+The tables are sorted as under scenario 1.
+
+For about `r round(n_species_det_prior$plant / n_species_det$plant * 100)`% of the plants and about `r round(n_species_det_prior$animal / n_species_det$animal * 100)`% of the animals comprising this scenario at least one monitoring scope is withheld during prioritization.
+The respective plants are: 
+
+```{r }
+#| results: "asis"
+names_det_prior$plant |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+```
+
+The respective animals are:
+
+```{r }
+#| results: "asis"
+names_det_prior$animal |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+```
+
+The three most prominent reasons for exclusion during stage 2 of the prioritization process are for the plants:
+
+```{r }
+#| results: "asis"
+det_exclusion$plant |> 
+  dplyr::pull("reason") |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
+For the animals these are: 
+
+```{r }
+#| results: "asis"
+det_exclusion$animal |> 
+  dplyr::pull("reason") |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
 
 ```{r table prior plants det}
 #| label: tbl-priorplantsdet
-#| tbl-cap: Prioritized species-scope combinations for plants among species for which detection is relevant
+#| tbl-cap: Prioritized and nonprioritized species-scope combinations for plants for which detection is relevant
 #| 
 table_filtered_det_display_list$plant
 
 ```
 
-
-#### Animals
-
-[description]
-
 ```{r table prior animals det}
 #| label: tbl-prioranimalsdet
-#| tbl-cap: Prioritized species-scope combinations for animals among species for which detection is relevant
+#| tbl-cap: Prioritized and nonprioritized species-scope combinations for animals for which detection is relevant
 
 table_filtered_det_display_list$animal
 
@@ -143,94 +355,148 @@ table_filtered_det_display_list$animal
 
 ### Method-based synergies
 
+@tbl-synplantsdet1 and @table-synanimalsdet1 show the method-based synergies for plants and animals for which detection is relevant. 
+Here we only consider the monitoring scope detection. 
+The tables are structured as under scenario 1.
 
-#### Plants
-
-[description]
+For plants we find visual surveys to be recommended for a group of four partly terrestrial species.
+This group consists of three primary and one secondary species.
 
 ```{r table-syn-plants-det-1}
 #| label: tbl-synplantsdet1
 #| tbl-cap: Method-based synergies for plants under scope detection 
-
 table_syn_det_plants_display_list$detection
-
 ```
 
+Turning to the animals, two larger groups arise:
+The first, aquatic group encompasses three fish species (Dutch vernacular names: Zwarte amerikaanse dwergmeerval, Amurgrondel, Blauwband) and the muskrat (Dutch: Muskusrat) as primary species as well as the signal crayfish (Dutch: Californische rivierkreeft) and the flat‐bottomed star (Dutch: Noord-atlantische zeester) as secondary species.
+Aquatic environmental DNA qualifies as a group-wide monitoring method suited for detection. 
+Electric fishing, trapping and netting can in addition be used for the subgroup of fish.
 
-#### Animals
-
-[description]
+The second group comprises a number of primary (Dutch vernacular names: Muskusrat, Indische mangoeste, Axishert, Huiskraai), secondary (Dutch vernacular names: Kuifmaina, Treurmaina, Asian needle ant, Zwarte vuurmier, Dwergvuurmier), and tertiary (Dutch vernacular names: Pallas eekhoorn, Nieuwzeelandse platworm) terrestrial species. 
+For this large group synergies arise in terms of the potential use of visual surveys, camera traps for the subgroup of mammals, and acoustic surveys for the subgroup of birds.
+A group-wide synergy in terms of visual surveys seems rather unrealistic given the heterogenous taxa involved (i.e., visual surveys for mammals are a very different matter for insects as compared to worms).
 
 ```{r table-syn-animals-det-1}
 #| label: tbl-synanimalsdet1
 #| tbl-cap: Method-based synergies for animals under scope detection 
-
 table_syn_det_animals_display_list$detection
-
-
 ```
 
 
+## Scenario 3: Focus on monitoring scope distribution
 
-## Focus on scope distribution
+The third scenario focuses on the monitoring scope distribution motivated by the clear requirement of the IAS regulation to report on the distribution of already established IAS (see @sec-scopes).
+It concerns species spread to a limited extend as well as widespread species, since we consider the scope distribution relevant for these species groups (see @sec-prior).
 
-### Prioritization
 
-#### Plants
+### Prioritization of species
 
-[description]
+@tbl-priorplantsdist and @tbl-prioranimalsdist display the results of the survey-based prioritization process for the plants and animals, respectively, for which the monitoring scope distribution is (also) relevant.
+The tables are sorted as under scenario 1.
+
+For about `r round(n_species_dist_prior$plant / n_species_dist$plant * 100)`% of the plants and about `r round(n_species_dist_prior$animal / n_species_dist$animal * 100)`% of the animals comprising this scenario at least one monitoring scope is withheld during prioritization.
+The respective plants are: 
+
+```{r }
+#| results: "asis"
+names_dist_prior$plant |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+```
+
+The respective animals are:
+
+```{r }
+#| results: "asis"
+names_dist_prior$animal |> 
+    paste(x = "  -", y = _) |>
+    cat(x = _, sep = "\n")
+```
+
+The three most prominent reasons for exclusion during stage 2 of the prioritization process are for the plants:
+
+```{r }
+#| results: "asis"
+dist_exclusion$plant |> 
+  dplyr::pull("reason") |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
+For the animals these are: 
+
+```{r }
+#| results: "asis"
+dist_exclusion$animal |> 
+  dplyr::pull("reason") |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
 
 ```{r table prior plants dist}
 #| label: tbl-priorplantsdist
-#| tbl-cap: Prioritized species-scope combinations for plants among species for which distribution is relevant
+#| tbl-cap: Prioritized and nonprioritized species-scope combinations for plants for which distribution is relevant
 #| 
 table_filtered_dist_display_list$plant
 
 ```
 
 
-
-#### Animals
-
-[description]
-
-
 ```{r table prior animals dist}
 #| label: tbl-prioranimalsdist
-#| tbl-cap: Prioritized species-scope combinations for animals among species for which distribution is relevant
+#| tbl-cap: Prioritized and nonprioritized species-scope combinations for animals for which distribution is relevant
 
 table_filtered_dist_display_list$animal
 
 ```
 
-
 ### Method-based synergies
 
-#### Plants
+@tbl-synplantsdist1 and @table-synanimalsdsit2 show the method-based synergies for plants and animals for which the monitoring scope distribution is relevant. 
+The tables are structured as under scenario 1.
 
-[description]
+For plants we find the same aquatic group as under scenario 1 with the same method-based synergies, visual surveys and aquatic environmental DNA.
 
 
 ```{r table-syn-plants-dist-1}
 #| label: tbl-synplantsdist1
 #| tbl-cap: Method-based synergies for plants under scope distribution 
-
 table_syn_dist_plants_display_list$distribution
-
 ```
 
+For the animals, two groups emerge.
+A first, terrestrial group comprises two primary mammals (Dutch vernacular names: Aziatische grondeekhoorn, Chinese muntjak)
+and a tertiary mammal (Dutch: wasbeer), all of which can be monitored using visual surveys and camera traps.
 
+A second, aquatic group consists of four primary species (Dutch vernacular names: Afrikaanse klauwkikker, blauwband, beverrat, muskusrat), a secondary crayfish (Dutch: gevlekte rivierkreeft) and a tertiary species (Dutch: Chinese krab), sharing aquatic environmental DNA as a monitoring method.
 
-#### Animals
+Note that for the majority of these species (i.e., Chinese muntjac, African clawed frog, coypu, and common raccoon) method-based synergies were already found under scenario 1.
 
-[description]
 
 ```{r table-syn-animals-dist-1}
 #| label: tbl-synanimalsdist1
 #| tbl-cap: Method-based synergies for animals under scope distribution 
-
 table_syn_dist_animals_display_list$distribution
-
 ```
 
+## Caveats
+
+In the current analysis we have not established the evaluation of early eradication measures as its own monitoring scope distinct from the scope detection. 
+<!--
+[Alternatively we could have considered the included management-related scopes for absent/sporadically present species, but that sounds a bit counterintuitive.]
+-->
+*[Note: The discussion in the context of the muntjac monitoring and specifically Tim mentioning the evaluation of early eradication made me realize that this got a bit lost in this analysis, as we mainly focused on management of established species.]*
+Had we done this, then the analysis of method-based synergies under scenario 1 could have been extended by one further management-related monitoring scope, in theory. 
+In practice, we would not have seen much change in the results, as 5 out of 6 plants and 16 out of 17 animals for which detection is relevant are not withheld during the survey-based prioritization process.
+This is due to the relatively strict exclusion criteria employed in relation to the monitoring scope detection (see @sec-prior).
+These would likewise have applied to species-scope combinations involving the downstream monitoring scope of management related to detection.
+
+Speaking about the exclusion criteria employed in relation to scope detection, another concern might be that we tied the scope's relevance to
+the invasion stadia of species being absent, sporadically present, or widespread but absent from conservation areas.
+The stadium established to a limited extend was not taken into account.
+The reason for this is that, due to the generic nature of the current analysis, we did not consider species-specific 
+distribution areas based on which we could have defined areas relevant for monitoring for detection. 
+A more in-depth analysis for a single or a smaller group of limited established IAS might reveal such additional areas.
 

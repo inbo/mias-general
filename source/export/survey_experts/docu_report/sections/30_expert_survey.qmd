@@ -1,7 +1,7 @@
-# Expert survey
+# The expert survey {#sec-survey-design}
 
 In this section, we recapitulate the purpose and describe the design of the expert survey, including the selection, format and scoring of questions and the generation and distribution of questionnaires.
-We also elaborate on how the survey results were used for prioritizing species-scope combinations for planning.
+We also elaborate on how the survey results were used for prioritizing species-scope combinations for further planning.
 
 ```{r survey setup}
 #| message: false
@@ -34,10 +34,11 @@ The purpose of the expert survey was to draw on species expert's knowledge in th
 More specifically, we aimed to collect information tailored to our specific needs and obtain expert judgements at the same time.
 This twofold aim formed the main motivation for consulting experts as compared to conducting a literature study and summarizing existing publications.
 The latter are often more generic and not specific (enough) for monitoring needs and the IAS situation in Flanders.
+The survey was designed to assess the feasibility and urgency of monitoring schemes for IAS in terms of various relevant aspects.
+These assessments then formed the input for the below-described prioritization process.
 
-The survey was designed to assess the feasibility and urgency of monitoring schemes for IAS.
-It covers all 88 IAS of Union concern and an additional set of 34 species currently considered as candidates for the next extension of the Union list [correct?] (ref).
-For a complete overview of the 122 species covered see @sec-app-section.
+The survey covers all 88 IAS of Union concern and an additional set of 34 species that were at the time of survey setup considered as candidates for the next extension of the Union list (currently still the case for XX of the additional species; ref?).
+For a complete overview of the 122 species covered see @sec-app-species.
 
 
 ## Design
@@ -237,35 +238,43 @@ We apply this rather conservative scoring strategy to all questions as can be se
 
 For each species, a separate questionnaire was set up using Google Forms.
 We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps).
-In addition all questionnaires were designed to be adaptive in the sense that the selection of presented questions was adapted to the initially reported invasion stadium with response options "absent", "sporadically present", "established to limited extend", "widespread" (ref prius).
+The only exception are three invasive knotweeds that were summarized due to their similiar ecology (?) 
+(`r res_comb_upd$species |> grep("Reynoutria", x = _, value = TRUE) |> unique()`).
+
+Furthermore all questionnaires were designed to be adaptive in the sense that the selection of presented questions was adapted to the initially reported invasion stadium with response options "absent", "sporadically present", "established to limited extend", "widespread" (ref prius).
 If a species was reported as absent, questions on the distribution in Flanders were skipped.
 Questions on the introduction and establishment were only presented if a species was reported as either absent or sporadically present.  
 
 Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts available via the github repository XXX. 
-[add brief principled section on github repo somewhere easy to find and/or update readme github repo]
+*[add brief summary of github repo and/or update readme github repo]*
 
-The 122 generated forms were mapped to 57 experts affiliated with the Research Institute for Nature and Forest as well as other research institutions in Belgium and the Netherlands.
-Links to the forms were sent out via e-mail using a standardized text [add in appendix]. 
+The 120 generated forms were mapped to 57 experts affiliated with INBO as well as other research institutions in Belgium and the Netherlands.
+Links to the forms were sent out via e-mail using a standardized text *[display email text in appendix?]*. 
 
 
-## Prioritization of species-scheme combinations {#sec-prior}
+## Prioritization of species-scope combinations {#sec-prior}
 
-As suggested in Section XX the desired outcome of this prioritization is to arrive at a limited number of relevant high-priority species and monitoring scope combinations.
-For these combinations we then intend to start with planning IAS monitoring schemes following the guidelines for designing policy-oriented monitoring schemes developed at INBO (ref).
+Crossing the different monitoring scopes described in @sec-monitoring-ias with all 122 species covered would result in a large number of potential combinations.
+In order to proceed with the planning of IAS monitoring schemes, the question of which combinations should be considered first arises.
+The desired outcome of this prioritization process was thus to arrive at a limited number of relevant high-priority species and monitoring scope combinations.
+For these combinations we in the future intend to start with planning IAS monitoring schemes following the guidelines for designing policy-oriented monitoring schemes developed at INBO (ref).
 
-Our approach to the prioritization involves a two-stage exclusion process visualized in @fig-prioritization [fix size and position].
+Our approach to the prioritization involves a two-stage exclusion process visualized in @fig-prioritization *[adapt fix size and position]*.
 In a first stage, we exclude species-scope combinations that are irrelevant (or infeasible).
 In a second stage, we exclude species-scope combinations that have low priority.
-Exclusion is partly based on the global feasibility and urgency scores, partly on individual questions.
+Exclusion is based on the global feasibility and urgency scores, but also on individual questions.
 We detail the two exclusion stages and the employed criteria in the following, and provide a schematic illustration of the process.
 Note that the exclusion process is shaped by decisions that are debatable (e.g., which criteria to use how) and so is, by consequence, the process outcome.
 
 ![Flowchart of exclusion process](../media/flowchart-prioritization.pdf){#fig-prioritization width=600}
 
+Note that prioritization is not to be understood in the sense of (re-)determining the relevance of IAS in general.
+It concerns a temporary ranking of species-scope combinations in order to organize the (to some extent necessarily) sequential planning of IAS monitoring schemes. 
+Also, the here-presented results form a suggestion that can be overruled (see @sec-committee).
 
 ### Stage 1: Exclude irrelevant species-scope combinations
 
-In Stage 1, we exclude species-scope combinations that are irrelevant (or infeasible). 
+In Stage 1 of the process, we exclude species-scope combinations that are irrelevant (or infeasible). 
 We determine relevance based on 
 
 - the invasion stadium of a species, 
@@ -281,13 +290,14 @@ For the exact filtering rules applied to the survey data see [R code here](https
 
 #### Invasion stadium 
 
-First, scope relevance depends on invasion stadium of a species.
+First, scope relevance depends on the invasion stadium of a species.
 We assume that depending on the invasion stadium (in conservation areas) only certain scopes make sense:
 
 For *absent* and *sporadically present* species, the only relevant scope is detection.
 For *limited established* species, the relevant scopes are inventory, distribution (after management) and abundance (after management). Detection is not considered relevant in this prioritization.
 For *widespread* species, the (potential) scopes are detection in conservation areas in which the species is not yet present and expected to have an impact, distribution (after management) and abundance (after management).
-Inventory is not considered relevant as the distribution of widely established species should generally be known (also see survey results).
+Absence from conservation areas is based on the classification of invasion stadium put forward in by (ref prius). 
+Inventory is not considered relevant as the distribution of widely established species should generally be known (see also descriptive survey results in appendix).
 
 #### Distribution area known
 
@@ -320,7 +330,7 @@ We take a conservative approach assuming that if the most relevant method cannot
 
 ### Stage 2: Exclude low priority species-scope combinations
 
-In Stage 2, we further filter the withheld relevant species-scope combinations by excluding low priority instances. 
+In Stage 2 of the process, we further filter the withheld relevant species-scope combinations by excluding low priority instances. 
 We determine priority based on
 
 - whether opportunistic observations cover a scope,
@@ -357,8 +367,8 @@ Otherwise all scopes withheld for this species are excluded.
 
 We present all species-scope combinations in the form of a table where rows pertain to species and columns to scopes.
 The table cells contain varying information:
-For a relevant and high-priority species-scope combination, the corresponding table cell holds the monitoring methods reported for this species.
-For a species-scope combination excluded during the second stage of the prioritization process, the corresponding table cell additionally holds a symbol indicating the reason(s) for exclusion.
+For a species-scope combination withheld after the entire prioritization process, the corresponding table cell holds the monitoring methods reported for this species.
+For a species-scope combination excluded during the second stage of the prioritization process, the corresponding table cell additionally holds a symbol indicating the reason(s) for exclusion. The monitoring methods are the monitoring methods are greyed out. 
 For a species-scope combination excluded during the first stage of the prioritization process, the corresponding table cell only holds a symbol indicating the reason(s) for exclusion.
 
 @tbl-illu illustrates this reporting format.
@@ -366,9 +376,7 @@ For a species-scope combination excluded during the first stage of the prioritiz
 ```{r table illustration}
 #| label: tbl-illu
 #| tbl-cap: Illustration of reporting of prioritized species-scope combinations
-
 table_filtered_illu_final_display
-
 
 ```
 
@@ -376,13 +384,21 @@ table_filtered_illu_final_display
 
 ### Method-based synergies
 
-In a final organization step, we group species based on method-based synergies.
+In a final organization step, we group species using method-based synergies.
 That is, within a given monitoring scope, we consider commonalities between species concerning the monitoring methods reported. 
 We expect that such method commonalities might lead to synergies during the planning of different monitoring schemes (e.g., when researching methods, planning data collection independent of the concrete sampling sites, planning data analysis). 
-We do at this stage not consider synergies that might arise during the implementation of monitoring schemes (e.g., overlap in concrete sampling sites). 
 
-We consider method-based synergies between prior species (i.e., species which 'survive' the exclusion process for a given scope) resulting in groups with multiple prior species, or between prior and non-prior species (i.e., species that are discarded during the first or second stage of the exclusion process for a given scope). 
-In the latter case the  non-prior species qualify as potential ‘free riders’ under monitoring schemes for prior species.
+Note that the analysis of method-based synergies is preliminary at this point. 
+Further in-depth planning will be required to reveal whether indicated synergies actually hold up. 
+This is especially true if species we find preliminary synergies for differ significantly in terms of habitat, 
+as such differences can have diverging implications for how a certain monitoring method will be deployed. 
+Also note that we do at this stage not consider synergies that might arise during the implementation of monitoring schemes (e.g., overlap in concrete sampling sites). 
 
+We consider method-based synergies between prior species (i.e., species 'surviving' the exclusion process for a given scope) resulting in groups with multiple prior species, or between prior and non-prior species (i.e., species discarded during the first or second stage of the exclusion process for a given scope). 
+Non-prior species qualify as potential ‘free riders’ under monitoring schemes for prior species and are thus considered if there is at least one prior species for a given monitoring scope.
 
+In the later result presentation, we refer to primary, secondary and tertiary species *[keep or simplify to prior vs. non-prior?]*.
+Whereas primary species are effectively prior species, secondary and tertiary species are both non-prior species.
+The label secondary thereby applies if a species has been excluded during stage 2 of the prioritization process because their global urgency (but not feasibility) score is below the critical value.
+For tertiary species it is the global feasibility (but not the urgency) score that is below threshold.
 

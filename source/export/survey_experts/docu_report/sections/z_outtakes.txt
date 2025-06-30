@@ -1,14 +1,55 @@
 # Outtakes
 
+## Intro
+
+All of these projects
+, making use of mainly opportunistic data or data from various sources and with varying quality.
+Monitoring in semi-structured and ad-hoc ways (ref), or tailored to specific species, pilot projects preparing,...
+
+## Terminology
+
+With monitoring schemes we refer to schemes that have been designed to collect data under a certain scope with a certain information content/ with the aim to answer specific questions on the status and or trend of an IAS with a desired certainty. This includes at least the following components: representative sampling, planning the number and possibly configuration of samples based on statistical criteria (e.g., power), ... [provide working definition] (ref Maes et al.?).
+[examples e.g. soortenmeetnetten]
+
+
 ## IAS Regulation
 
 For species on this list, EU member states are required to setup a "surveillance system", that "collects and records data on the occurrence in the environment" across the territory of each EU member state (ref page).
 It is further specified that the surveillance system should be able to determine the "presence and distribution of new as well as already established" of IAS of Union concern, and "detect rapidly the appearance" of those IAS with a previously unknown status.
 
-
 [^2]: It is noted that the document does "not necessarily reflect the official opinion of the European Commission".
+
+## Flanders
+
+The Government Agreement of the Flemish government (ref., p. 6):
+ "In the fight against invasive alien species such as the Chinese mitten crab, each sector and the Flemish government are taking their responsibility.
+We ensure efficient knowledge sharing and coordination of initiatives around species management, alien species control and coexistence with wild animals."
+
+a few sentences on mandates - INBO, ANB - along the lines: "In Flanders, the Agency for Nature and Forests (ANB) is responsible for preventing the introduction and spread of species, the management of established species, and reporting on these matters. INBO coordinates the monitoring of the status of invasive or potentially invasive species and supports the ANB."
+[ref](https://www.vlaanderen.be/inbo/en-gb/researchdomains/invasieve-soorten/)
+
 
 
 ## Scopes
 
-A list of questions to guide the further concretization of monitoring scheme requirements per scope can be found in Appendix A [to be added?]. 
+A list of questions to guide the further concretization of monitoring scheme requirements per scope can be found in Appendix A [to be added?].
+
+[In case of detection - does the determination of potential places of introduction also count as an inventory?]
+
+
+## Results
+
+
+## Summary of all scenarios
+
+[HERE]
+Summary of all scenarios:
+- Scenario 1: ANB priority species (scope abundance under management)
+  - 4 - 5 freshwater plants: aquatic eDNA & visual surveys
+  - Chinese muntjak & Afrikaanse klauwkikker: visual surveys & passive acoustic monitoring
+- Scenario 2: Focus on detection (scope detection)
+  - 5 terrestrial plants: visual surveys
+  - 6 aquatic species: aquatic eDNA
+- Scenario 3: Focus on distribution (scope distribution)
+  - 4 - 5 freshwater plants: aquatic eDNA & visual surveys
+  - 6 freshwater species: aquatic eDNA
