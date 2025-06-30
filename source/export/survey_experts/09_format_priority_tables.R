@@ -56,7 +56,7 @@ options(knitr.table.format = .format)
 color_hl = if (exists("mode_source") && grepl("presentation", mode_source)) {
   "#FFB14E"
 } else {
-  "#FA8775"
+  INBOtheme::inbo_hoofd #"#FA8775"
 }
 color_meth_a = "#0000FF"
 color_meth_b = "#FFB14E" # "#CD34B5"
@@ -651,7 +651,7 @@ make_table_display <- function(
 id_cols_syn_display <- if (exists("mode_source") && grepl("presentation", mode_source)) {
   c("vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
 } else {
-  c("species", "vern_name_nld", "stadium", "prius_stadium", "prius_milieu")
+  c("species", "vern_name_nld", "stadium", "taxon", "prius_milieu")
   # "taxon", "on_unionlist",
 }
 #
