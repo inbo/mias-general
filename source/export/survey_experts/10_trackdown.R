@@ -61,6 +61,15 @@ try(
 # ---download from g-drive -------------------------------------------------
 #
 if (FALSE) {
-  trackdown::download_file()
+  i <- 5
+  file_path_i <- section_files[i]
+  try(
+    trackdown::download_file(
+      file = file_path_i,
+      gpath = "trackdown/report_expert_survey/v1_sections_accepted",
+      shared_drive = "PRJ_MIUS"
+    )
+  )
+
 }
 #

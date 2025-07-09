@@ -37,6 +37,12 @@ A list of questions to guide the further concretization of monitoring scheme req
 [In case of detection - does the determination of potential places of introduction also count as an inventory?]
 
 
+
+## Survey
+
+Knowledge of the distribution area is thus considered twice for species established to a limited extent. In the first exclusion round it was used to determine the relevance of scope inventory, while the distribution and abundance-related scopes were withheld as well. In this second exclusion round it is used to prioritize scope inventory over the distribution and abundance-related scopes.
+
+
 ## Results
 
 
@@ -53,3 +59,4 @@ Summary of all scenarios:
 - Scenario 3: Focus on distribution (scope distribution)
   - 4 - 5 freshwater plants: aquatic eDNA & visual surveys
   - 6 freshwater species: aquatic eDNA
+
