@@ -810,6 +810,10 @@ make_table_syn_display_prep <- function(
     table_prep <- table_prep |>
       dplyr::bind_rows(x = _, y = added_row)
   }
+  if (nrow(table_prep) == 0){
+    table_prep <- NULL
+  }
+  return(table_prep)
 }
 #
 # function to display tables
