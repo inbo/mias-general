@@ -751,7 +751,8 @@ make_table_syn_list <- function(
 make_table_syn_display_prep <- function(
     table,
     cols_id = id_cols_syn_display,
-    color = color_hl
+    color = color_hl,
+    add_species_number = FALSE
 ) {
   table_prep <- table |>
     dplyr::select(tidyselect::all_of(cols_id), tidyselect::starts_with("method_"))
@@ -805,7 +806,7 @@ make_table_syn_display_prep <- function(
         )
       )
     )
-  if (nrow(table_prep) > 0){
+  if (nrow(table_prep) > 0 & add_species_number){
     table_prep <- table_prep |>
       dplyr::bind_rows(x = _, y = added_row)
   }
@@ -1094,7 +1095,7 @@ make_table_syn_display_list <- function(
       table_secondary = if (inherits(table_kingdom_secondary_list, "try-error")) {
         NULL
       } else {
-        table_kingdom_secondary_list[[x]]
+        table_kingdom_secondary_list[[x]] ## these NULL vs. dataframe with 0 rows depending on whether added_row is added?
       },
       table_tertiary = if (inherits(table_kingdom_tertiary_list, "try-error")) {
         NULL
@@ -1523,7 +1524,7 @@ table_filtered_dist_display_list <- lapply(
 )
 
 #
-# --- scenario 3 - distribution / not detection - synergy tables - plants & plants ---------------
+# --- scenario 3 - distribution / not detection - synergy tables - plants & animals ---------------
 #
 table_syn_dist_plants_display_list  <- make_table_syn_display_list(
   .table_filtered = table_filtered_dist,
