@@ -16,7 +16,6 @@ functions_path <- "../../../functions/"
 # load response & question data
 res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
 # source scripts
-source("../09_survey_make_plots.R", local = knitr::knit_global())
 source("../09_format_priority_tables.R", local = knitr::knit_global())
 options(knitr.kable.NA = '')
 ```
@@ -81,32 +80,62 @@ All closed questions are formulated such that they function as indicators of eit
 
 # latex issue text overflow with kableExtra::collapse_rows
 
-# prep data raw
-data_table_scoring_upd <- data_table_scoring |>
-  dplyr::full_join(
-    x = _,
-    y = res_comb_upd |> dplyr::select(
-      tidyselect::all_of(c("section_title", "section_no")) 
-    ) |>
-      dplyr::distinct(),
-    by = c("section_number" = "section_no")
-  ) |>
-  dplyr::mutate(
-    section_title = section_title |> gsub("&", "and", x = _)
+# get questions
+q_long <- get(load(paste0(questions_path, "questions_long.rda")))
+#
+#
+# prepare data for table
+data_table_scoring_tmp <- q_long |>
+  # filter rows
+  dplyr::filter(question_include_in_form == 1, question_use_for_ranking == 1) |>
+  tidyr::drop_na(score_response_option) |>
+  # merge responses based on response scores
+  tidyr::pivot_wider(
+    values_from = response_option,
+    names_from = score_response_option,
+    values_fn = function(x) paste(x, collapse = " / ")
   ) |>
   tidyr::pivot_longer(
     cols = paste(1:4),
     names_to = "score",
-    values_to = "response_option"
+    values_to = "response"
   ) |>
-  tidyr::drop_na(response_option) |>
-  dplyr::mutate(score = as.numeric(score)) |>
-  # to preserve order when grouping
   dplyr::mutate(
-    question_text_short = factor(
-      question_text_short, 
-      levels = data_table_scoring$question_text_short |> unique())
+    score = as.numeric(score)
   ) |>
+  # add question text short
+  dplyr::left_join(
+    x = _,
+    y = res_comb_upd |>
+      dplyr::select(tidyselect::contains(c("question_id", "question_text_short"))) |>
+      dplyr::distinct(question_id, .keep_all = TRUE)
+  ) |>
+  # select variables for table
+  dplyr::select(tidyselect::all_of(
+    c(
+      "section_title", 
+      "section_number", 
+      "question_text_short", 
+      "score_category", 
+      "score", 
+      "response"
+    ))) |>
+  # replace special character
+  dplyr::mutate(
+    section_title = section_title |> gsub("&", "and", x = _)
+  ) |>
+  #
+  tidyr::drop_na(response) 
+
+# to preserve order when grouping
+data_table_scoring <- factorize(
+  data_table_scoring_tmp,
+  c("question_text_short", "section_title"),
+  list(
+    data_table_scoring_tmp$question_text_short |> unique(),
+    data_table_scoring_tmp$section_title |> unique()
+  )
+) |>
   dplyr::mutate(q_index = as.numeric(question_text_short)) |>
   dplyr::group_by(section_number, q_index) |>
   dplyr::arrange(score, .by_group = TRUE) |>
@@ -120,8 +149,9 @@ data_table_scoring_upd <- data_table_scoring |>
       ))) |>
   dplyr::ungroup()
 
+
 # prep grouping data
-data_grouping <- data_table_scoring_upd |> 
+data_grouping <- data_table_scoring |> 
   dplyr::mutate(index = dplyr::row_number()) |>
   dplyr::mutate(
     row_start = min(index),
@@ -130,12 +160,10 @@ data_grouping <- data_table_scoring_upd |>
   ) |> 
   dplyr::select(tidyselect::contains(c("section_title", "row_"))) |>
   dplyr::distinct()
-# update data raw
-data_table_scoring_upd <- data_table_scoring_upd |>
-  dplyr::select(-section_title, -section_number, -q_index) 
 
 # create table
-data_table_scoring_upd |>
+data_table_scoring |>
+  dplyr::select(-section_title, -section_number, -q_index) |>
   knitr::kable(
     x = _,
     format = .format,
