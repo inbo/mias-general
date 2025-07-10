@@ -6,18 +6,18 @@ This concerns the results of the prioritization process but also a number of des
 ```{r survey results setup}
 #| message: false
 #| warning: false
-#| cache: false
 # test format
 is_html <- knitr::is_html_output()
 # define paths
 response_data_path <- "../../../../data/survey_experts/"
 questions_path <- "../questions_EN/"
 functions_path <- "../../../functions/"
-# load response & question data
+species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+# load response & question data, species list
 res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+species_list <- get(load(species_list_path))
 # source scripts
 source("../09_format_priority_tables.R", local = knitr::knit_global())
-
 # overall
 n_questionnaires <- res_comb_upd$species |> unique() |> length()
 n_species <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
@@ -35,7 +35,70 @@ n_species_rest <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any
   tmp + 2
 } else {
     tmp
-  }
+}
+# form completed
+species_data <- species_list |> 
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    species = sci_name_gbif_acc,
+    vern_name_eng = dplyr::case_when(
+      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      TRUE ~ vern_name_gbif_eng_alt
+      ),
+    vern_name_nld = dplyr::case_when(
+      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
+      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gsheet_nld
+      ),
+    form_completed = dplyr::case_when(
+      (sci_name_gbif_acc %in% res_comb_upd$species | 
+         grepl("Reynoutria", x  = sci_name_gbif_acc)) ~ TRUE, 
+      TRUE ~ FALSE
+    )
+  )  
+print_species_name <- function(
+    species_table, 
+    name_expr = expression(c("*",species,"*", " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]"))
+    ) {
+  species_table |>
+    dplyr::rowwise() |> 
+    dplyr::mutate(
+      tmp = paste0(eval(expr = name_expr), collapse = "")
+        ) |>
+    dplyr::arrange(tmp) |>
+    dplyr::pull(tmp) |>
+    gsub("\\\\&", "&", x = _)
+}
+
+```
+
+
+
+```{r }
+#| results: "asis"
+species_data |> 
+  dplyr::filter(on_unionlist & !form_completed) |>
+  print_species_name(species_table = _) |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
+It was also not completed for the following candidate IAS:
+
+```{r }
+#| results: "asis"
+species_data |> 
+  dplyr::filter(!on_unionlist & !form_completed) |>
+  print_species_name(species_table = _) |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+```
+
+
+
+```{r scenario-info}
+#| message: false
+#| warning: false
 # functions
 get_n_species <- function(.table_filtered, .kingdom_list) {
   lapply(
@@ -72,13 +135,9 @@ get_names_prior <- function(.species_prior, .kingdom_list) {
     .species_prior |>
       purrr::pluck(.x = _, x) |>
       dplyr::distinct(species, .keep_all = TRUE) |>
-      dplyr::rowwise() |> 
-      dplyr::mutate(
-        tmp = paste0(species, " (Dutch vernacular name: ", vern_name_nld, ")")
-        ) |> 
-      dplyr::pull(tmp) |>
-      #paste(x = _, collapse = ", ") |> 
-      gsub("\\\\&", "&", x = _)
+      print_species_name(
+        species_table = _
+        )
   }) 
 }
 get_exclusion_reasons <- function(.table_filtered, .kingdom_list) {
