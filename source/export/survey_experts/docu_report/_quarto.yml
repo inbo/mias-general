@@ -113,6 +113,7 @@ book:
     - index.qmd
     - sections/01_summary.qmd
     - sections/02_summary_dutch.qmd
+    - sections/10_introduction.qmd
     - sections/20_monitoring_IAS.qmd
     - sections/30_expert_survey.qmd
     - sections/40_results_survey.qmd
