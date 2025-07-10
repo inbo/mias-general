@@ -73,6 +73,14 @@ print_species_name <- function(
 ```
 
 
+## Descriptive results
+
+
+### Response rate 
+
+Of the 120 questionnaires `r n_questionnaires` were completed for `r n_species` species.
+Among these species are `r n_species_unionlist` IAS of union concern and `r n_species_rest` additional species.
+At the time we started processing the survey data, the survey was not completed for the following Union List IAS:
 
 ```{r }
 #| results: "asis"
@@ -94,6 +102,33 @@ species_data |>
   cat(x = _, sep = "\n")
 ```
 
+
+In the overview table @tbl-species, species entries are greyed out if the survey was sent out but not completed.
+
+
+### Ranking of species …
+
+[...]
+
+
+### …
+
+[...]
+
+
+## Results of the prioritization process
+
+The prioritization process detailed in the previous section enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: It narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
+
+Yet despite this filtering, the number of retained combinations remains large and additional focus is therefore helpful .
+To this end, we structure the presentation of results around three strategic scenarios. Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritized combinations of species and monitoring scopes:
+
+- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
+- **Scenario 2** highlights prioritized species for which early detection is key (i.e., scope detection is withheld). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
+- **Scenario 3** targets prioritized species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
+
+These three scenarios provide complementary perspectives on how to further narrow the focus for developing monitoring schemes. They reflect a balance between operational needs, early-intervention opportunities, and legal obligations. In the following subsections we present each scenario and explore method-based synergies that may support coordinated planning of monitoring schemes.
+Tables providing a simultaneous overview over all species the survey provides data on are included in appendix X (ref appendix).
 
 
 ```{r scenario-info}
@@ -187,41 +222,6 @@ names_dist_prior <- get_names_prior(species_dist_prior, kingdom_list)
 dist_exclusion <- get_exclusion_reasons(table_filtered_dist, kingdom_list)
 ```
 
-
-## Descriptive results
-
-
-### Response rate 
-
-Of the 120 questionnaires `r n_questionnaires` were completed for `r n_species` species.
-Among these species are `r n_species_unionlist` IAS of union concern and `r n_species_rest` additional species.
-To see for which species survey responses are available consult again @tbl-species.
-In the overview table, species entries are greyed out if the survey was sent out but not completed.
-[add list here of species we have no data for]
-
-### Ranking of species …
-
-[...]
-
-
-### …
-
-[...]
-
-
-## Results of the prioritization process
-
-The prioritization process detailed in the previous section enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: It narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
-
-Yet despite this filtering, the number of retained combinations remains large and additional focus is therefore helpful .
-To this end, we structure the presentation of results around three strategic scenarios. Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritized combinations of species and monitoring scopes:
-
-- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
-- **Scenario 2** highlights prioritized species for which early detection is key (i.e., scope detection is withheld). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
-- **Scenario 3** targets prioritized species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
-
-These three scenarios provide complementary perspectives on how to further narrow the focus for developing monitoring schemes. They reflect a balance between operational needs, early-intervention opportunities, and legal obligations. In the following subsections we present each scenario and explore method-based synergies that may support coordinated planning of monitoring schemes.
-Tables providing a simultaneous overview over all species the survey provides data on are included in appendix X (ref appendix).
 
 
 ### Scenario 1: ANB focus species {#sec-scenario-1}
