@@ -314,6 +314,9 @@ tmp <- googledrive::drive_find(
 tmp_id <- tmp[1,] |>
   googledrive::as_id()
 meth_dict <- googlesheets4::read_sheet(ss = tmp_id)
+# replace environmental DNA by eDNA
+meth_dict <- meth_dict |>
+  dplyr::mutate(method_EN = method_EN |> gsub("environmental DNA", "eDNA", x = _))
 #
 # translate response_text_final
 meth_dict_upd <- meth_dict$method_EN
@@ -349,7 +352,7 @@ res_meth_options_data <- data.frame(
 ) |> dplyr::mutate(
   response_options_cat = dplyr::case_when(
     grepl("surveys|trace", response_options) ~ categories[1],
-    grepl("environmental DNA", response_options) ~ categories[2],
+    grepl("eDNA", response_options) ~ categories[2],
     grepl("camera|passive", response_options) ~ categories[5],
     grepl("trap|nets", response_options) ~ categories[3],
     grepl("electrofishing", response_options) ~ categories[4],
