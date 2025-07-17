@@ -166,7 +166,14 @@ levels_milieu <- c(
 #
 # colors stadium (cols4all - palette: met.lakota)
 cols_stadium <- data.frame(
-  cols = c("#247D3F", "#04A3BD", "#F0BE3D", "#DA7901", "#931E18"),
+  cols = c(
+    INBOtheme::inbo_groen,
+    INBOtheme::inbo_lichtgrijs,
+    INBOtheme::inbo_oranje,
+    INBOtheme::inbo_hoofd,
+    INBOtheme::inbo_steun_donkerroos
+    ),
+  #cols = c("#247D3F", "#04A3BD", "#F0BE3D", "#DA7901", "#931E18"),
   stadium = levels_stadium
 )
 #
@@ -174,7 +181,7 @@ cols_stadium <- data.frame(
 cols_feasurge <- c("#04A3BD", "#DA7901")
 #
 # color to highlight data
-col_hl <- "#F0BE3D"
+col_hl <- INBOtheme::inbo_hoofd
 #
 # color for background data
 col_bg <- "#E5E4E2"
