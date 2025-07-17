@@ -20,9 +20,25 @@ load(paste0(response_data_path, "results_combined.rda"))
 #
 #
 #
-# --- add variable question_text_short (EN) ---------------
+# --- shorten certain vernacular names ---------------
 #
 res_comb_upd <- res_comb |>
+  dplyr::mutate(
+    vern_name_eng = dplyr::case_when(
+      grepl("Colombian ramshorn apple snail", vern_name_eng) ~ "Colombian ramshorn apple snail",
+      TRUE ~ vern_name_eng
+      ),
+    vern_name_nld = dplyr::case_when(
+      grepl("Moerasaronskelk", vern_name_nld) ~ "Moerasaronskelk",
+      TRUE ~ vern_name_nld
+    )
+  )
+#
+#
+#
+# --- add variable question_text_short (EN) ---------------
+#
+res_comb_upd <- res_comb_upd |>
   dplyr::mutate(
     question_text_short_EN = dplyr::case_match(
       question_id,
