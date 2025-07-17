@@ -319,6 +319,8 @@ plot_ranking
 
 
 # --- plotting - invasion stadium vs. prius stadium ---------------------------------------------------
+
+if (FALSE){
 #
 res_plot_tmp <- res_comb_upd |>
   dplyr::distinct(species, .keep_all = TRUE) |>
@@ -503,5 +505,6 @@ plot_scoredist <- ggplot2::ggplot(res_plot, ggplot2::aes(response_score)) +
     y = "frequency"
   )
 
+}
 }
 
