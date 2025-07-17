@@ -64,6 +64,7 @@ color_meth_b = "#FFB14E" # "#CD34B5"
 color_verylightgrey <-"#FAFAFA" #"#F8F8F8"
 color_lightgrey <-"#D3D3D3"
 color_grey <-"#A9A9A9"
+color_black <- "#000000"
 #
 #
 #
