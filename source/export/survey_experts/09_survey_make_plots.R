@@ -33,8 +33,8 @@ load(paste0(response_data_path, "results_combined_upd.rda"))
 # define subsets of response data
 
 res_scored_allspec <- res_comb_upd |>
-  dplyr::filter(question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(!grepl("IRR", prius_stadium))
+  dplyr::filter(question_scored |> as.logical(), !section_skipped) #|>
+  #dplyr::filter(!grepl("IRR", prius_stadium))
 res_scored <- res_scored_allspec |>
   dplyr::filter(on_unionlist)
 res_open <- res_comb_upd |>
@@ -89,7 +89,7 @@ highlight_labs <- function(
 #
 # --- calculate mean scores and rank -----------------------------------
 #
-# # grand means urgency & feasibility
+# grand means urgency & feasibility
 res_m_feas <- summarize(res_scored_allspec, "feas")
 res_m_urge <- summarize(res_scored_allspec, "urge")
 # grand mean all questions
@@ -117,18 +117,20 @@ res_m_allspec <- dplyr::full_join(
     x = _,
     y = res_gm_urge |> dplyr::rename(gm_urge = "m_urge")
   ) |>
+  # group mean m_feas m_urge
   dplyr::mutate(
     gm_mfeas_murge = mean(c(m_feas, m_urge)),
     .by = species
   ) |>
+  # group mean gm_feas gm_urge
   dplyr::mutate(
     gm_gmfeas_gmurge = mean(c(gm_feas, gm_urge)),
     .by = species
   ) |>
-  dplyr::arrange(dplyr::desc(m_feasurge))
+  dplyr::arrange(dplyr::desc(gm_mfeas_murge))
 #
 # correlations of different means
-#cor(res_m_allspec |> dplyr::select(tidyselect::contains(c("m_"))))
+cor(res_m_allspec |> dplyr::select(tidyselect::starts_with(c("m_", "gm_"))))
 #
 # keep only species on unionlist
 res_m <- res_m_allspec |>
@@ -183,19 +185,6 @@ cols_meth <- c("#5B859E","#1E395F","#75884B","#1E5A46","#DF8D71","#AF4F2F","#D48
 # color to highlight axis labels
 col_labs <- "#71797E" #"#EA5F94"
 #
-# axis labels to highlight
-# these (only work if y axis not facetted)
-labs_hl_allspec <- highlight_labs(
-  labs = levels_vern_name_nld_allspec,
-  pattern = "kreeft|muntjak",
-  color = col_labs
-)
-labs_hl <- highlight_labs(
-  labs = levels_vern_name_nld,
-  pattern = "kreeft|muntjak",
-  color = col_labs
-)
-#
 #
 #
 # --- plotting - species ranking ---------------------------------------------------
@@ -212,65 +201,115 @@ res_plot_tmp <- res_m_allspec |>
       TRUE ~ m_urge
     ),
     on_unionlist_upd = dplyr::case_when(
-      on_unionlist ~ "on unionlist",
-      !on_unionlist ~ "not on unionlist"
+      on_unionlist ~ "species on unionlist",
+      !on_unionlist ~ "species not on unionlist"
     ),
     part = dplyr::case_when(
       dplyr::row_number() < (dplyr::n()/2) ~ "part 1",
       TRUE ~ "part 2"
-    )
+    ),
+    y_axis_num_helper = dplyr::n() - dplyr::row_number() + 1
+  ) |>
+  tidyr::pivot_longer(
+    cols = tidyselect::all_of(c("m_urge", "m_feas")),
+    names_to = "indicator",
+    values_to = "indicator_m"
+  ) |>
+  dplyr::mutate(
+    indicator = dplyr::case_match(
+      indicator,
+      "m_urge" ~ "urgency",
+      "m_feas" ~ "feasibility"
+    ),
+    indicator_cutoff = median(indicator_m),
+    .by = indicator
   )
+
 res_plot <- factorize(
   dataframe = res_plot_tmp,
   varnames = c("species", "vern_name_eng", "vern_name_nld",
                "on_unionlist_upd", "stadium"),
   varlevels = list(
     levels_species_allspec,
-    levels_vern_name_eng_allspec,
+    levels_vern_name_eng_allspec |> rev(),
     levels_vern_name_nld_allspec,
-    c("on unionlist", "not on unionlist"),
+    c("species on unionlist", "species not on unionlist"),
     levels_stadium
   )
 )
+
+cutoff_feas <- res_plot_tmp |>
+  dplyr::filter(grepl("feas", indicator))|>
+  dplyr::pull(indicator_cutoff) |>
+  unique()
+cutoff_urge <- res_plot_tmp |>
+  dplyr::filter(grepl("urge", indicator))|>
+  dplyr::pull(indicator_cutoff) |>
+  unique()
 #
 # plot
-# (split in 2 using facet_wrap - requires attention to labels)
 plot_ranking <- ggplot2::ggplot(
   res_plot,
-  ggplot2::aes(x = m_feasurge, y = vern_name_nld, color = stadium)) +
-  ggplot2::geom_linerange(ggplot2::aes(xmin = 0, xmax = m_feasurge), linetype = "dotted") +
-  ggplot2::geom_linerange(ggplot2::aes(xmin = m_min, xmax = m_max)) +
-  ggplot2::geom_point(ggplot2::aes(x = m_feasurge), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = m_feas), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = m_feas), shape = "F") +
-  ggplot2::geom_point(ggplot2::aes(x = m_urge), color = "white", size = 2) +
-  ggplot2::geom_point(ggplot2::aes(x = m_urge), shape = "U") +
-  ggplot2::geom_point(ggplot2::aes(shape = on_unionlist_upd), size = 2) +
-  ggplot2::scale_shape_manual(values = c(16, 1)) +
+  ggplot2::aes(x = indicator_m, y = y_axis_num_helper, color = stadium, shape = interaction(indicator, on_unionlist_upd))) +
+  ggplot2::geom_vline(ggplot2::aes(linetype = indicator, xintercept = indicator_cutoff)) +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = gm_mfeas_murge, xmax = 5), linetype = "dotted") +
+  ggplot2::geom_linerange(ggplot2::aes(xmin = m_min, xmax = m_max), linewidth = 0.7) +
+  ggplot2::geom_point(size = 2.5, fill = "white") +
+  # annotation
+  ggplot2::annotate(
+    "text", x = cutoff_feas + 0.1, y = 0, hjust = 0, size = 3, angle = 90,
+    label = "critical value feasibility" |> stringr::str_wrap(width = 20)
+    ) +
+  ggplot2::annotate(
+    "text", x = cutoff_urge + 0.1, y = 0, hjust = 0, size = 3, angle = 90,
+    label = "critical value urgency" |> stringr::str_wrap(width = 20)
+  ) +
+  # scales
+  ggplot2::scale_shape_manual(
+    values = c(17, 16, 24, 21),
+    labels = function(x) gsub("\\.", ", ", x) |> stringr::str_wrap(string = _, width = 20))+
   ggplot2::scale_color_manual(
     values = cols_stadium |>
       dplyr::filter(stadium %in% (res_plot$stadium |> unique())) |>
-      dplyr::pull(cols)) +
-  ggplot2::coord_cartesian(xlim = c(
+      dplyr::pull(cols),
+    labels = function(x) stringr::str_wrap(x, width = 20)
+  ) +
+  ggplot2::scale_linetype_manual(values = c("solid", "longdash"), guide = "none") +
+  ggplot2::scale_y_continuous(
+    position = "right",
+    breaks = res_plot$y_axis_num_helper |> unique(),
+    labels = res_plot$vern_name_eng |> levels(),
+    sec.axis = ggplot2::dup_axis(name = "Species (vernular name eng)", labels = NULL, breaks = NULL),
+    expand = c(0, 1)
+    ) +
+  ggplot2::coord_cartesian(
+    xlim = c(
     res_scored_allspec$response_score |> na.omit() |> min(),
     res_scored_allspec$response_score |> na.omit() |> max()
-  )) +
-  #ggplot2::scale_y_discrete(labels = labs_hl_allspec) +
+   ),
+   ylim = c(
+     res_plot$y_axis_num_helper |> min(),
+     res_plot$y_axis_num_helper |> max()
+   )
+   ) +
   ggplot2::theme_bw() +
   ggplot2::theme(
     legend.title = ggplot2::element_blank(),
+    legend.position = "inside",
+    legend.justification = c(0, 1),
+    legend.key = ggplot2::element_blank(),
+    legend.background = ggplot2::element_blank(),
+    legend.text = ggplot2::element_text(margin = ggplot2::margin(b = 5, unit = "pt")),
     axis.text.y = ggtext::element_markdown(),
     panel.grid.major.y = ggplot2::element_blank(),
     panel.grid.minor.y = ggplot2::element_blank()
   ) +
   ggplot2::labs(
-    x = "mean of feasibilty and urgency scores (grand mean)",
-    y = "species (vernacular name nld)"
-  )
+    x = "Overall feasibilty/urgency scores",
+    y = NULL
+  )#
+plot_ranking
 
-# plot_ranking
-# closer to F if species is present as F then has more questions
-# closer to U if species is absent as U then has more questions
 
 # --- plotting - invasion stadium vs. prius stadium ---------------------------------------------------
 #
