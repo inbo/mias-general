@@ -1,5 +1,51 @@
 # Steering committee decision {#sec-committee}
 
+```{r steering-committee-setup}
+#| message: false
+#| warning: false
+# test format
+is_html <- knitr::is_html_output()
+# define paths
+response_data_path <- "../../../../data/survey_experts/"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+functions_path <- "../../../functions/"
+# load response & question data, species list
+res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+species_list <- get(load(species_list_path))
+# source scripts
+source("../09_format_priority_tables.R", local = knitr::knit_global())
+# species data
+species_data <- species_list |> 
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    species = sci_name_gbif_acc,
+    vern_name_eng = dplyr::case_when(
+      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      TRUE ~ vern_name_gbif_eng_alt
+      ),
+    vern_name_nld = dplyr::case_when(
+      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
+      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gsheet_nld
+      )
+  )
+# format species names for printing 
+print_species_name <- function(
+    species_table, 
+    name_expr = expression(c("*",species,"*", " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]"))
+    ) {
+  species_table |>
+    dplyr::rowwise() |> 
+    dplyr::mutate(
+      tmp = paste0(eval(expr = name_expr), collapse = "")
+        ) |>
+    dplyr::arrange(tmp) |>
+    dplyr::pull(tmp) |>
+    gsub("\\\\&", "&", x = _)
+}
+
+```
+
 
 ## Meeting details and attendance
 
@@ -15,67 +61,274 @@ It was communicated in advance that the structure of the session would begin wit
 
 ## Initial feedback from the steering committee
 
-The first feedback from the steering committee focused on the expert evaluation component of the survey framework. The expert input was acknowledged as highly valuable; however, it was noted that two potentially important species – Reuzenbereklauw, Reuzenbalsemienine, and grote waternavel [fix names] – had not been evaluated. This was due to a lack of expert input (ref to section XX). The steering committee agreed that both species are considered important and should ideally be included in the prioritization. It was proposed to collect expert assessments for these species at a later stage, allowing their inclusion in future iterations of the prioritization process.
+The first feedback from the steering committee focused on the expert evaluation component of the survey framework. The expert input was acknowledged as highly valuable; however, it was noted that two potentially important species – 
+`r species_data |> dplyr::filter(grepl("Reuzenbereklauw|Reuzenbalsemien|Grote waternavel", vern_name_nld)) |> print_species_name()` 
+– had not been evaluated. This was due to a lack of expert input (ref to section XX). The steering committee agreed that both species are considered important and should ideally be included in the prioritization. It was proposed to collect expert assessments for these species at a later stage, allowing their inclusion in future iterations of the prioritization process.
 
 A second discussion point concerned the choice between a species-oriented prioritization versus an approach based on potential method-based synergies. The committee recognized the added value of identifying monitoring methods that could efficiently target multiple IAS simultaneously. Nevertheless, it was agreed that the current overview of synergies remains exploratory and lacks the resolution needed to inform decision making. Several examples were cited to illustrate this, such as cases where the same monitoring method (e.g., camera traps) might be applicable to both terrestrial and aquatic species in theory, but its implementation in practice would be very different due to habitat constraints. Such implementation differences would also undermine potential synergies during the planning phase. In light of these limitations, the committee decided to proceed with a species-oriented prioritization. Once priority species have been identified, further assessment of method-based synergies –including those with lower-priority species– can be undertaken to increase planning and monitoring efficiency.
 
 
-## Selection of a prioritization scenario and resulting species list
+## Compiling a consolidated species list
 
 Following the decision to adopt a species-oriented approach, the steering committee reviewed the three proposed prioritization scenarios. After discussion, it was concluded that Scenario 1 - focus on ANB priority species and management - and Scenario 3 - focus on distribution - most closely reflected the committee’s priorities and were therefore preferred. Scenario 2, which emphasized early detection of new potential invaders, was considered less relevant to consider at this stage, although its rationale was acknowledged. It was also pointed out that detection is more realistically carried out via opportunistic data than via structured monitoring schemes if a balance of costs and benefits is to be maintained.
 
-However, rather than selecting a single scenario, the committee opted to extract a number of species across scenario’s to compile into a consolidated species list and cross with the scopes deemed most relevant for each species. The primary monitoring scopes under consideration here were detection, distribution, and abundance under management. The committee’s species list consists of 6 species receiving a high-priority status in the survey-based prioritization (i.e., at least one scope of high priority), 4 species receiving a low-priority status (i.e., at least one scope relevant but not of high priority), and one with no survey data available (grote waternavel [fix name]).Two species that were rated as having a high priority in the survey were explicitly excluded at this stage: Japanse klimvaren (_Lygodium japonicum_)[fix name ] which is not yet present in Flanders and for which early detection was not considered a sufficient reason to warrant inclusion; and the blauwbandgrondel (_Pseudorasbora parva_) [fix name], which, despite initial discussion on targeted exclusion from sensitive areas such as nature reserves, was deemed too widespread for a meaningful monitoring scheme of that nature. In addition, five other high-priority species were not further considered for the consolidated list: axishert, huiskraai, indische mangoeste, rode rivierkreeft, and aziatische grondeekhoorn were also not further considered [reason?].
+However, rather than selecting a single scenario, the committee opted to extract a number of species across scenario’s to compile into a consolidated species list and select the monitoring scopes deemed most relevant for each species. 
+The committee’s species list consists of 13 species receiving a high-priority status in the survey-based prioritization (i.e., at least one scope of high priority;
+`r species_data |> dplyr::filter(grepl("waterteunisbloem|parelvederkruid|muskusrat|beverrat|muntjak|klauwkikker|verspreidbladige waterpest|crassula|moerasaronskelk|hemelboom|dwergmeerval|amurgrondel", vern_name_nld, ignore.case = TRUE)) |> print_species_name()`
+), 4 species receiving a low-priority status (i.e., at least one scope relevant but not of high priority;
+`r species_data |> dplyr::filter(grepl("stierkikker|lettersierschildpad|wasbeer", vern_name_nld, ignore.case = TRUE)) |> print_species_name()`
+), and one with no survey data available 
+(
+`r species_data |> dplyr::filter(grepl("waternavel", vern_name_nld, ignore.case = TRUE)) |> print_species_name()`
+).
+Two species that were rated as having a high priority in the survey were explicitly excluded at this stage: 
+`r species_data |> dplyr::filter(grepl("Japanse klimvaren", vern_name_nld)) |> print_species_name()`
+,which is not yet present in Flanders and for which early detection was not considered a sufficient reason to warrant inclusion; and
+`r species_data |> dplyr::filter(grepl("Blauwband", vern_name_nld)) |> print_species_name()`
+, which, despite initial discussion on targeted exclusion from sensitive areas such as nature reserves, was deemed too widespread for a meaningful monitoring scheme of that nature. In addition, five other high-priority species were not further considered for the consolidated list
+(
+`r species_data |> dplyr::filter(grepl("axishert|huiskraai|indische mangoeste|rode amerikaanse rivierkreeft|aziatische grondeekhoorn", vern_name_nld, ignore.case = TRUE)) |> print_species_name()`
+).
+@tbl-selection-committee lists all species retained in the consolidated list, including their survey scenario origin and the monitoring scopes identified as relevant in the survey.
 
-Table XX lists all species ratined in the consolidated list, including their scenario origin and associated monitoring scopes, is reproduced below.
 
-Title: Consolidated species list as decided upon by the steering committee.
-
-[Table here]
-
-[Add table note: Detection for the widespread species hemelboom and muskusrat [fix name] concerns assessing their presence and potential impact in protected nature areas.]
+```{r table-selection-committee}
+#| label: selection-committee
+#| tbl-cap: Consolidated species list as decided upon by the steering committee
 
 
-## Narrowing down to highest priority species for urgent monitoring design
+# 18 - 1
+species_strings_committee <- c(
+  "waterteunisbloem", #2
+  "parelvederkruid",
+  "stierkikker",
+  "muskusrat",
+  "beverrat",
+  "lettersierschildpad",
+  "muntjak",
+  "klauwkikker",
+  "wasbeer", #2
+  "verspreidbladige waterpest",
+  "crassula",
+  "moerasaronskelk",
+  "hemelboom",
+  "dwergmeerval",
+  "amurgrondel"
+)
+# remove last 6 species for shortlist
+species_shortlist_committee <- species_strings_committee |> head(x = _, -6)
 
-To further refine the compiled list and identify the species for which the development of structured monitoring schemes is most urgent, the representatives from ANB and VMM were each asked to select five species from the consolidated list deemed most important to address first. The selection proceeded in alternating turns, allowing both representatives to contribute equally to the shortlist. The remaining species - those not selected = are indicated in grey in Table X above.
+# get full species table
+species_committee <- table_filtered_upd |>
+  dplyr::filter(
+    grepl(
+      paste(species_strings_committee, collapse = "|"),
+      vern_name_nld,
+      ignore.case = TRUE
+    )
+  )
 
-The reasons for not selecting certain species at this stage varied. For example, hemelboom (Ailanthus altissima) [fix name] was excluded due to ongoing debate about the species' invasiveness in protected nature areas. While it can be invasive in specific habitats such as dunes, it is not universally regarded as a harmful invader in all contexts, making it difficult to justify a general monitoring scheme within the scope of this exercise.Other species, such as the Zwarte Dwergmeerval (Ameiurus melas) [fix name], were acknowledged as important but currently and in the scope of this exercise deprioritized due to the availability of existing (project-based) monitoring efforts relying on eDNA. Its distribution is likely relatively well known and limited in extent. The hope is that species like this, although not prioritized in this step, will still be captured through broader aquatic monitoring schemes designed for aquatic invaders.
+# prep table for display
+table_committee <- species_committee |>
+  # remove irrelevant scopes, keep low- and high-priority ones
+  tidyr::drop_na(scope_prior) |>
+  # reorder scope levels
+  dplyr::mutate(
+    scope_type = factor(scope_type, levels = levels(table_filtered_upd$scope_type) |> rev())
+  ) |>
+  dplyr::arrange(scope_type) |>
+  dplyr::distinct(species, scope_type, .keep_all = TRUE) |>
+  # make scope list
+  dplyr::mutate(
+    relevant_monitoring_scopes = paste(scope_type, collapse = ", ") |>
+      gsub("_", " under ", x = _),
+    .by = species
+  ) |>
+  dplyr::distinct(species, .keep_all = TRUE) |>
+  # record scenarios 
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    scenario_1 = dplyr::case_when(
+      grepl(vern_name_nld, table_syn_plants_display_list$abundance_management) |
+      grepl(vern_name_nld, table_syn_plants_display_list$distribution_management) |
+      grepl(vern_name_nld, table_syn_animals_display_list$abundance_management) |
+      grepl(vern_name_nld, table_syn_animals_display_list$distribution_management) ~
+        "scenario 1"
+    ),
+    scenario_2 = dplyr::case_when(
+      grepl(vern_name_nld, table_syn_plants_display_list$detection) |
+      grepl(vern_name_nld, table_syn_animals_display_list$detection) ~
+        "scenario 2"
+    ),
+    scenario_3 = dplyr::case_when(
+      grepl(vern_name_nld, table_syn_plants_display_list$distribution)|
+      grepl(vern_name_nld, table_syn_animals_display_list$distribution) ~
+        "scenario 3"
+    )
+  ) |>
+  dplyr::ungroup() |>
+  # make scenario list
+  tidyr::unite(
+      col = scenarios,
+      tidyselect::starts_with("scenario"),
+      sep = ", ",
+      na.rm = TRUE,
+      remove = FALSE
+    ) |>
+  dplyr::mutate(scenarios = dplyr::na_if(scenarios, "")) |>
+  # add missing species
+  dplyr::full_join(
+    x = _,
+    y = species_data |> dplyr::filter(grepl("Grote waternavel", vern_name_nld)),
+    by = intersect(colnames(species_data), colnames(species_committee))
+  ) |>
+  # sort table
+  dplyr::arrange(
+    kingdom |> dplyr::desc(),
+    scenario_1, scenario_2, scenario_3,
+    prius_milieu,
+    stadium,
+    taxon
+  ) |>
+  dplyr::select(
+    tidyselect::any_of(c(id_cols_display, "scenarios", "relevant_monitoring_scopes", "kingdom"))
+  ) 
 
-A third group of species, such as watercrassula (Crassula helmsii) [fix name], was excluded primarily because of uncertainty regarding the feasibility and effectiveness of management interventions. In such cases, the absence of clear options for action limits the practical value of establishing a monitoring schemes at this time.
+# prep grouping table
+table_committee_grouping <- table_committee |>
+  dplyr::mutate(index = dplyr::row_number()) |>
+  dplyr::mutate(
+    row_start = min(index),
+    row_stop = max(index),
+    .by = kingdom
+  ) |>
+  dplyr::select(tidyselect::contains(c("kingdom", "row_"))) |>
+  dplyr::distinct()
+
+table_committee_display <- table_committee |>
+  dplyr::select(-kingdom) |>
+  # highlight species of shortlist
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::any_of(c(id_cols_display, "scenarios", "relevant_monitoring_scopes")),
+      \(x) {
+        dplyr::case_when(
+          grepl(
+            paste(species_shortlist_committee, collapse = "|"),
+            vern_name_nld,
+            ignore.case = TRUE
+          ) ~
+            kableExtra::cell_spec(x = x, color = color_black, format = .format, escape = .escape),
+          TRUE ~
+            kableExtra::cell_spec(x = x, color = color_grey, format = .format, escape = .escape)
+        )
+      }
+    )
+  ) |>
+  knitr::kable(
+    x = _,
+    format = .format,
+    escape = FALSE,
+    booktabs = .booktabs,
+    longtable = .longtable,
+    linesep = "",
+    col.names = colnames(table_committee) |> head(x = _, -1) |> gsub("_", " ", x = _),
+    table.attr = 'data-quarto-disable-processing="true"'
+  ) |>
+  kableExtra::kable_styling(
+    bootstrap_options = .bootstrap_options,
+    latex_options = .latex_options,
+    full_width = FALSE,
+    position = "left",
+    font_size = .font_size
+  ) |>
+  kableExtra::column_spec(
+      column = 1,
+      width = .col_id_species_width
+    ) |>
+    kableExtra::column_spec(
+      column = seq_along(id_cols_display)[-1],
+      width = .col_id_width
+    ) |>
+    kableExtra::column_spec(
+      column = 1:2 + length(id_cols_display),
+      width = .col_scope_width
+    ) |>
+  kableExtra::group_rows(
+    group_label = table_committee_grouping$kingdom[1],
+    start_row = table_committee_grouping$row_start[1],
+    end_row = table_committee_grouping$row_stop[1],
+    indent = FALSE,
+    hline_after = TRUE
+  ) |>
+  kableExtra::group_rows(
+    group_label = table_committee_grouping$kingdom[2],
+    start_row = table_committee_grouping$row_start[2],
+    end_row = table_committee_grouping$row_stop[2],
+    indent = FALSE,
+    hline_after = TRUE
+  )
+
+
+table_committee_display
+
+```
+
+To further refine the compiled list and identify the species for which the development of structured monitoring schemes is most urgent, the representatives from ANB and VMM were each asked to select five species from the consolidated list deemed most important to address first. The selection proceeded in alternating turns, allowing both representatives to contribute equally to the shortlist. 
+The remaining species - those not selected - are indicated in grey in @tbl-selection-committee above.
+
+The reasons for not selecting certain species at this stage varied. For example, 
+`r species_data |> dplyr::filter(grepl("Hemelboom", vern_name_nld)) |> print_species_name()`
+was excluded due to ongoing debate about the species' invasiveness in protected nature areas. While it can be invasive in specific habitats such as dunes, it is not universally regarded as a harmful invader in all contexts, making it difficult to justify a general monitoring scheme within the scope of this exercise. Other species, such as 
+`r species_data |> dplyr::filter(grepl("dwergmeerval", vern_name_nld)) |> print_species_name()`
+, were acknowledged as important but currently and in the scope of this exercise deprioritized due to the availability of existing (project-based) monitoring efforts relying on eDNA. Its distribution is likely relatively well known and limited in extent. The hope is that species like this, although not prioritized in this step, will still be captured through broader aquatic monitoring schemes designed for aquatic invaders.
+
+A third group of species, such as 
+`r species_data |> dplyr::filter(grepl("Watercrassula", vern_name_nld)) |> print_species_name()`
+, was excluded primarily because of uncertainty regarding the feasibility and effectiveness of management interventions. In such cases, the absence of clear options for action limits the practical value of establishing a monitoring schemes at this time.
 
 
 ## Final selection of priority species for immediate monitoring design
 
-In the final step of the present prioritization exercise, the representatives of ANB and VMM were invited to further narrow down the shortlist by selecting two species each from the remaining candidates. This was again done through an alternating selection process. At this stage, the focus was placed solely on identifying the species to be taken forward for immediate monitoring design, without providing justifications for those not selected. For the selected species, the rationale for inclusion and the general contours of the required monitoring schemes were briefly discussed. Their exact design and implementation will be addressed in a next phase, relying on the INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1].
+In the final step of the present prioritization exercise, the representatives of ANB and VMM were invited to further narrow down the shortlist by selecting two species each from the remaining candidates. This was again done through an alternating selection process. At this stage, the focus was placed solely on identifying the species to be taken forward for immediate monitoring design, without providing justifications for those not selected. For the selected species, the rationale for inclusion and the general contours of the - according to the steering committee - most required monitoring schemes were briefly discussed. Their exact design and implementation will be addressed in a next phase, relying on the INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1].
+
+### Chinese muntjac
+
+The first species chosen was 
+`r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`
+. The selection was based on several reasons. An invasive population of the species is already present in Flanders, with a currently limited but potentially expanding distribution. Moreover, the species is already the subject of ongoing management efforts led by ANB. Importantly, this Flemish population is one of the few established populations on the European mainland, making its monitoring particularly relevant in a continental context. The Chinese muntjac is known to have significant ecological impacts, as demonstrated in the United Kingdom, where the species has become widespread and abundant.
+
+For the Chinese muntjac, the selected monitoring scope is abundance under management, aligned with the objective of eradicating the species from its current range in part of the province of Antwerp. The monitoring network must be capable of tracking reductions in absolute abundance in response to management actions and verifying when the species has been fully eradicated - transitioning from monitoring abundance to monitoring presence-absence. However, some complexities were noted. While the species is known to occur in the region, its precise distribution remains unclear, with a mix of confirmed, suspected, and potential distribution sites. Moreover, the species’ mobility in response to control efforts adds an extra challenge, as individuals may relocate rather than disappear. Consequently, although the main focus remains on abundance under management, additional monitoring efforts are needed to follow-up the species’ distribution and enable detection in bordering not yet invaded areas.
 
 
-### Chinese muntjac [fix name]
+### Common slider
 
-The first species chosen was the Chinese muntjac (Muntiacus reevesi) [fix name]. The selection was based on several reasons. An invasive population of the species is already present in Flanders, with a currently limited but potentially expanding distribution. Moreover, the species is already the subject of ongoing management efforts led by ANB. Importantly, this Flemish population is one of the few established populations on the European mainland, making its monitoring particularly relevant in a continental context. The Chinese muntjac is known to have significant ecological impacts, as demonstrated in the United Kingdom, where the species has become widespread and abundant.
+The second species selected is 
+`r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`
+, a turtle species commonly released into the wild through pet trade. While there are currently no confirmed reproducing populations in Flanders, large numbers of individuals have been observed in the wild. The species is long-lived, can cause ecological damage, and with climate change, the chances of successful reproduction in Flanders are expected to increase. This was seen as an opportune moment to begin systematic monitoring before the species becomes fully established and invasive.
 
-
-For the Chinese muntjac, the selected monitoring scope is abundance after management, aligned with the objective of eradicating the species from its current range in part of the province of Antwerp. The monitoring network must be capable of tracking reductions in absolute abundance in response to management actions and verifying when the species has been fully eradicated - transitioning from monitoring abundance to monitoring presence-absence. However, some complexities were noted. While the species is known to occur in the region, its precise distribution remains unclear, with a mix of confirmed, suspected, and potential distribution sites. Moreover, the species’ mobility in response to control efforts adds an extra challenge, as individuals may relocate rather than disappear. Consequently, although the main focus remains on abundance under management, additional monitoring efforts are needed to follow-up the species’ distribution and enable detection in bordering not yet invaded areas.
-
-
-### Lettersierschildpad [fix name]
-
-The second species selected is the red-eared slider (Trachemys scripta) [fix name], a turtle species commonly released into the wild through pet trade. While there are currently no confirmed reproducing populations in Flanders, large numbers of individuals have been observed in the wild. The species is long-lived, can cause ecological damage, and with climate change, the chances of successful reproduction in Flanders are expected to increase. This was seen as an opportune moment to begin systematic monitoring before the species becomes fully established and invasive.
-
-Two monitoring scopes are relevant for this species. First, scope inventory: there is a need for a clearer picture of where the species is currently present across waterbodies in Flanders. Once a better understanding of the species’ current distribution is established with sufficient certainty, a full distribution monitoring scheme can be considered. Second, scope abundance after management: the species is already the target of local management efforts at certain sites. A monitoring scheme is needed to assess changes in abundance in response to these actions. Such a scheme could be developed as a proof of concept, implemented in a selection of managed sites. 
+Two monitoring scopes are relevant for this species. First, scope distribution: There is a need for a clearer picture of where the species is currently present across waterbodies in Flanders, hence an inventory. Once a better understanding of the species’ current distribution is established, a full distribution monitoring scheme can be considered. Second, scope abundance under management: the species is already the target of local management efforts at certain sites. A monitoring scheme is needed to assess changes in abundance in response to these actions. Such a scheme could be developed as a proof of concept, implemented in a selection of managed sites. 
 
 
-### American bullfrog [fix name]
+### American bull frog
 
-The third species selected as a priority is the American bullfrog (Lithobates catesbeianus)[fix name], which is already established in Flanders. Although its overall distribution remains limited in extent, the species can be locally abundant within its invaded range. The bullfrog is currently the subject of active management by ANB, in collaboration with various partners and funded through multiple projects. Preliminary monitoring is already in place, primarily using eDNA-based approaches.
+The third species selected as a priority is
+`r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`
+, which is already established in Flanders. Although its overall distribution remains limited in extent, the species can be locally abundant within its invaded range. The bullfrog is currently the subject of active management by ANB, in collaboration with various partners and funded through multiple projects. Preliminary monitoring is already in place, primarily using eDNA-based approaches.
 
-The most important monitoring scope identified for this species is abundance under management. Within the currently invaded zones, the aim is to assess whether different management strategies lead to measurable reductions in abundance over time. A secondary but complementary need is for improved data on distribution. This applies both to identifying which specific water bodies within the invaded area are currently occupied, and to detecting any expansion into new areas. This inventory / distribution monitoring is crucial to evaluate whether the species can be effectively contained within its current range. 
+The most important monitoring scope identified by the committee for this species is abundance under management. Within the currently invaded zones, the aim is to assess whether different management strategies lead to measurable reductions in abundance over time. A secondary but complementary need is for improved data on distribution. This applies both to identifying which specific water bodies within the invaded area are currently occupied, and to detecting any expansion into new areas. This inventory / distribution monitoring is crucial to evaluate whether the species can be effectively contained within its current range. 
 
-The case of the American bullfrog shares certain features with that of the Chinese muntjac - namely, a combination of management-related monitoring and a need to clarify distribution boundaries - but differs in that the bullfrog is at a more advanced stage of invasion and is already widely established within its core range.
+The case of the American bull frog shares certain features with that of the Chinese muntjac - namely, a combination of management-related monitoring and a need to clarify distribution boundaries - but differs in that the bullfrog is at a more advanced stage of invasion and is already widely established within its core range.
 
 
-### Waterteunisbloem (fix name)
+### Large-flower and floating primrose-willow
 
-The final species group selected for prioritization is the water primrose, which includes both water primrose (Ludwigia grandiflora) and creeping water primrose (Ludwigia peploides). Both species are already present in Flanders, with the latter having a more limited distribution, while the first is already widespread and continuing to expand its invasion range. Both species are currently subject to management by VMM.
+The final species group selected for prioritization includes both,
+`r species_data |> dplyr::filter(grepl("Large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
+and 
+`r species_data |> dplyr::filter(grepl("Floating primrose-willow", vern_name_eng)) |> print_species_name()`
+.
+Both species are already present in Flanders, with the latter having a more limited distribution, while the first is already widespread and continuing to expand its invasion range. Both species are currently subject to management by VMM.
 
 The main monitoring scope for this group is abundance under management. Due to the species’ ability to regenerate from small plant fragments, successful management is challenging, and monitoring is essential to determine whether local populations are truly eradicated or simply reduced temporarily. A monitoring scheme would need to be sensitive enough to detect regrowth and re-establishment, particularly in managed water bodies.
 
@@ -84,10 +337,14 @@ Given the current distribution of invasive water primroses, the proposed monitor
 
 ## Concluding remarks on method-based synergies
 
-The steering committee expressed agreement with the employed survey-based framework including the prioritization process, and with the final selection of the four species outlined above. At the same time, the committee emphasized the importance of further exploring method-based synergies across species. In particular, for the Chinese muntjac, it was noted that the likely use of a camera trap network presents an opportunity to design monitoring schemes that could generate insights applicable to other invasive mammal species. The committee recommended that the development of this monitoring scheme be carried out with a view toward broader applicability - specifically to species such as the raccoon (Procyon lotor), raccoon dog (Nyctereutes procyonoides) , and possibly even (potentially) invasive squirrel species - in order to enhance efficiency and integration across future monitoring efforts.
+The steering committee expressed agreement with the employed survey-based framework including the prioritization process, and with the final selection of the four species outlined above. At the same time, the committee emphasized the importance of further exploring method-based synergies across species. In particular, for the Chinese muntjac, it was noted that the likely use of a camera trap network presents an opportunity to design monitoring schemes that could generate insights applicable to other invasive mammal species. The committee recommended that the development of this monitoring scheme be carried out with a view toward broader applicability - specifically to species such as
+`r species_data |> dplyr::filter(grepl("raccoon", vern_name_eng)) |> print_species_name()`
+, and possibly even (potentially) invasive squirrel species - in order to enhance efficiency and integration across future monitoring efforts.
 
-For the American bullfrog , the steering committee agreed that an eDNA-based monitoring approach is likely the most appropriate method. It was emphasized that the design of this monitoring network should aim to be broadly applicable to other species that are also amenable to detection via eDNA. A key example is the African clawed frog (Xenopus laevis), which is also invasive in Flanders but currently at an earlier stage of invasion and with a more limited distribution. Like the bullfrog, the African clawed frog is subject to management by ANB. While the bullfrog was prioritized in this exercise due to the presence of ongoing monitoring and project-based management, both species are considered important. The committee stressed that the eDNA-based scheme developed for the bullfrog should be compatible with future monitoring schemes for the African clawed frog, and ideally also extendable to other aquatic IAS detectable through eDNA techniques.
+For the American bull frog, the steering committee agreed that an eDNA-based monitoring approach is likely the most appropriate method. It was emphasized that the design of this monitoring network should aim to be broadly applicable to other species that are also amenable to detection via eDNA. A key example is 
+`r species_data |> dplyr::filter(grepl("African clawed frog", vern_name_eng)) |> print_species_name()`
+, which is also invasive in Flanders but currently at an earlier stage of invasion and with a more limited distribution. Like the American bull frog, the African clawed frog is subject to management by ANB. While the American bull frog was prioritized in this exercise due to the presence of ongoing monitoring and project-based management, both species are considered important. The committee stressed that the eDNA-based scheme developed for the bullfrog should be compatible with future monitoring schemes for the African clawed frog, and ideally also extendable to other aquatic IAS detectable through eDNA techniques.
 
-The steering committee also wished to make special note of invasive crayfish species, which were not retained as priority species in this exercise despite their ecological relevance and the fact that several species are actively managed by ANB. Their absence reflects the current situation: there is already some monitoring underway through the CrayWatch citizen science project [ref.], and as such, they did not meet the strict prioritization criteria used to narrow down the selection to four species. However, the committee emphasized that this monitoring remains project-based and not structurally embedded. In light of the proposed eDNA-based monitoring for the American bullfrog and the African clawed frog, the committee strongly encouraged exploring to what extent eDNA methods can be generalized across aquatic invasive animal species. In this context, crayfish are considered a key candidate group for testing method-based synergies and assessing the practical feasibility of multi-species eDNA monitoring in the field.
+The steering committee also wished to make special note of invasive crayfish species, which were not retained as priority species in this exercise despite their ecological relevance and the fact that several species are actively managed by ANB. Their absence reflects the current situation: there is already some monitoring underway through the CrayWatch citizen science project [ref.], and as such, they did not meet the strict prioritization criteria used to narrow down the selection to four species. However, the committee emphasized that this monitoring remains project-based and not structurally embedded. In light of the proposed eDNA-based monitoring for the American bull frog and the African clawed frog, the committee strongly encouraged exploring to what extent eDNA methods can be generalized across aquatic invasive animal species. In this context, crayfish are considered a key candidate group for testing method-based synergies and assessing the practical feasibility of multi-species eDNA monitoring in the field.
 
 For both the red-eared slider and the water primroses, the expert survey highlighted the potential for method-based synergies, particularly through visual surveys that could be shared with other species. However, the steering committee noted that the real-world feasibility of these synergies remains uncertain. To assess how practical and effective such visual survey synergies would be in actual field conditions, a more in-depth study is required. While this kind of methodological assessment is generally foreseen for the next phase of the work, the committee agreed that for these two species in particular, such a targeted evaluation should be undertaken early on, to clarify the extent to which shared survey strategies can be realistically implemented.
