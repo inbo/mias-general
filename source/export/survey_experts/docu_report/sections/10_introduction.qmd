@@ -1,3 +1,7 @@
+---
+toc: false
+---
+
 # Introduction {#sec-monitoring-ias}
 
 Belgium is legally obligated to monitor invasive alien species (IAS) on the List of Invasive Alien Species of Union Concern (Union List in short) under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014]..

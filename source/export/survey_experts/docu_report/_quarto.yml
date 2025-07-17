@@ -6,17 +6,15 @@ project:
   render:
     - "*.md"
     - "*.qmd"
-    - "!LICENSE.md" #ignore LICENSE.md
-    - "!README.md" #ignore README.md
+    - "!LICENSE.md"
+    - "!README.md"
   output-dir:  ../../../../output/survey_experts/docu_report
+  post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R # adjust path
   execute-dir: project
 
 format:
-  flandersqmd-book-html:
-    number-depth: 3
-  flandersqmd-book-pdf:
-    toc: true
-    number-depth: 3
+  flandersqmd-book-html: default
+  flandersqmd-book-pdf: default
 
 flandersqmd:
   entity: INBO
@@ -62,15 +60,15 @@ flandersqmd:
     orcid: 0000-0001-7268-4200
     affiliation:
        - Research Institute for Nature and Forest (INBO)
-
-  year: 2025
+  year: 2025 # remove?
   reportnr: 00
-  cover: media/cover-placeholder.pdf
-  coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/
-  coverdescription: Photo by Jimmi Kamballur from Pexels
+  cover: media/cover-placeholder.pdf # remove?
+  coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/ # remove?
+  coverdescription: Photo by Jimmi Kamballur from Pexels # remove?
   # doi
   public_report: false
   colophon: true
+  floatbarrier: section
   client:
     - INBO Brussel
     - VAC Brussel ‐ Herman Teirlinck
@@ -89,30 +87,32 @@ flandersqmd:
 book:
   downloads: pdf
   open-graph: true
-  sidebar:
-    logo: media/cover-placeholder.png
   body-footer: '{{< footer >}}'
   navbar:
-    left:
-      - text: Cover
-        file: index.qmd
-    right:
+      pinned: true
+      right:
       - icon: mastodon
-        href: https://mastodon.online/@inbo
+        href: https://mastodon.online/&#64;inbo
+      - icon: bluesky
+        href: https://bsky.app/profile/inbo.be
       - icon: facebook
         href: https://www.facebook.com/INBOVlaanderen/
-      - icon: github
-        menu:
-          - text: Source Code
-            url:  https://github.com/inbo
-          - text: Report a Bug
-            url:  https://github.com/inbo
-    pinned: true
-  date: "28/4/2025"
+      left:
+      - text: Cover
+        file: index.qmd
+      - text: Acknowledgements
+        file: sections/01_acknowledgements.qmd
+      - text: Summary
+        file: sections/02_summary.qmd
+      - text: Dutch executive summary
+        file: sections/03_summary_dutch.qmd
+      - text: Introduction
+        file: sections/10_introduction.qmd
   chapters:
     - index.qmd
-    - sections/01_summary.qmd
-    - sections/02_summary_dutch.qmd
+    - sections/01_acknowledgements.qmd
+    - sections/02_summary.qmd
+    - sections/03_summary_dutch.qmd
     - sections/10_introduction.qmd
     - sections/20_monitoring_IAS.qmd
     - sections/30_expert_survey.qmd
@@ -125,6 +125,11 @@ book:
 
 execute:
   echo: false
+  warnings: true
+  errors: true
+  message: true
+  freeze: false
+  cache: false
 
 lang: en-GB
 
