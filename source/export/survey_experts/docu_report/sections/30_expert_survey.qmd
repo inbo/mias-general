@@ -66,6 +66,7 @@ Questions were of both closed, multiple-choice and open, free-text format. Each 
 All closed questions are formulated such that they function as indicators of either feasibility or urgency of a monitoring scheme for the species under consideration. Lower or higher levels of feasibility or urgency are encoded via numerical scores assigned across the response options of each question. Score values range from 1 indicating low feasibility or urgency to 4 indicating high feasibility or urgency, and are treated as interval-scaled in subsequent analyses. Different response options can have the same score, but all scores are assigned at least once per question. Scores were set a-priori to distributing the survey but not visible to respondents. @tbl-scoring illustrates the scoring of questions by providing the key that links response options to scores per question.
 
 ```{r table scoring}
+#| message: false
 #| label: tbl-scoring
 #| tbl-cap: Scoring of survey questions
 
@@ -73,9 +74,9 @@ All closed questions are formulated such that they function as indicators of eit
 # #.bootstrap_options = if (is_html) {c("condensed", "hover") } else {"basic"}
 .latex_options = if (is_html) {"basic"} else {c("repeat_header")}
 # add options
-.col_width_1 = if (is_html) {"220px"} else {"120pt"}
+.col_width_1 = if (is_html) {"220px"} else {"110pt"}
 .col_width_2 = if (is_html) {"70px"} else {"20pt"}
-.col_width_3 = if (is_html) {"350px"} else {"200pt"}
+.col_width_3 = if (is_html) {"350px"} else {"250pt"}
 
 
 # latex issue text overflow with kableExtra::collapse_rows
@@ -238,7 +239,7 @@ If the number of introduction sites is limited and sites are specific (e.g. seap
 
 ### Questionnaire generation and distribution
 
-For each species, a separate questionnaire was set up using Google Forms (ref). We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from GBIF (ref)). The only exception was the group of three invasive knotweeds, which were combined into a single form . This decision was based not only on their similar ecological characteristics, but primarily on the difficulty of reliably distinguishing them in the field or in most data sources. 
+For each species, a separate questionnaire was set up using Google Forms (ref). We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from GBIF (ref)). The only exception was the group of three invasive knotweeds, which were combined into a single form. This decision was based not only on their similar ecological characteristics, but primarily on the difficulty of reliably distinguishing them in the field or in most data sources. 
 
 Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts available via the github repository XXX. [add brief summary of github repo and/or update readme github repo]
 
