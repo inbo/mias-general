@@ -3,3 +3,10 @@ toc: false
 ---
 
 # Acknowledgements {-}
+
+We would like to thank all species experts who participated in the survey and contributed their time and expertise to assess the current and expected status of invasive alien species in Flanders. 
+Their input provided essential information for the prioritization process outlined in this report and formed the basis for the present analysis. 
+Without their expertise and commitment, this work would not have been possible.
+We are also grateful to the members of the steering committee for their constructive feedback and decision-making contributions.
+
+In preparing this report, we made use of the large language model GPT-4-turbo [= model of chatGPT current free version; you used that?] to suggest writing improvements and to assist in drafting the summary and executive summary sections. All content produced in this manner was critically reviewed, edited, and validated by the authors to ensure accuracy, consistency with the scientific objectives and the policy context of the report.
