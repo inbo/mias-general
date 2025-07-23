@@ -1,12 +1,5 @@
 {{< colophon >}}
 
-# Preface {.unnumbered}
+# Preface {-}
 
-Some text.
-
-
-```{r setup}
-
-
-```
-
+[Content section?]
