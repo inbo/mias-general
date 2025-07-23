@@ -9,7 +9,7 @@ project:
     - "!LICENSE.md"
     - "!README.md"
   output-dir:  ../../../../output/survey_experts/docu_report
-  post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R # adjust path
+  #post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R # adjust path
   execute-dir: project
 
 format:
