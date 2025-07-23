@@ -129,7 +129,7 @@ execute:
   errors: true
   message: true
   freeze: false
-  cache: false
+  cache: true
 
 lang: en-GB
 
