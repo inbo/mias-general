@@ -4,4 +4,88 @@ toc: false
 
 # Summary {-}
 
-[Here English summary, short around 1 page]
+
+```{r summary-setup}
+#| message: false
+#| warning: false
+
+# define paths
+species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+# load species list
+species_list <- get(load(species_list_path))
+# species data
+species_data <- species_list |> 
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    species = sci_name_gbif_acc,
+    vern_name_eng = dplyr::case_when(
+      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      TRUE ~ vern_name_gbif_eng_alt
+      ),
+    vern_name_nld = dplyr::case_when(
+      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
+      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gsheet_nld
+      )
+  )
+# format species names for printing 
+print_species_name <- function(
+    species_table, 
+    name_expr = expression(c("*",species,"*", " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]"))
+    ) {
+  species_table |>
+    dplyr::rowwise() |> 
+    dplyr::mutate(
+      tmp = paste0(eval(expr = name_expr), collapse = "")
+        ) |>
+    dplyr::arrange(tmp) |>
+    dplyr::pull(tmp) |>
+    gsub("\\\\&", "&", x = _)
+}
+
+```
+
+
+
+This report presents a survey-based framework to prepare the development of structured, policy-relevant monitoring schemes for invasive alien species in Flanders. 
+Under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014], member states are required to monitor species listed as of Union Concern, including the establishment of systems for early detection and for monitoring species' distributions and management outcomes. 
+In the Flemish region, the Research Institute for Nature and Forest is formally tasked with coordinating such monitoring efforts. 
+However, Flanders currently lacks a coherent monitoring programme that systematically addresses all species on the Union List.
+
+Existing efforts consist of a fragmented landscape of initiatives, often project-based and time-limited, with varying geographic and taxonomic coverage.
+These include professional and citizen science-based schemes dedicated to specific species groups, professional monitoring schemes with broader ecological aims, and opportunistic observations collected through public biodiversity reporting portals such as waarnemingen.be [ref]. 
+Despite their contributions, these initiatives are not methodologically aligned and do not collectively meet the requirements of the EU Invasive Alien Species Regulation.
+
+To support the design of future invasive alien species monitoring schemes, 
+an expert survey was conducted covering all 88 species on the current Union List as well as 34 candidate species considered for future inclusion.
+The survey gathered species-specific information and expert judgements on the introduction, distribution, abundance, impacts, management and monitoring status in Flanders.
+The collected responses were condensed into overall ratings of the feasibility and urgency of structured monitoring schemes for the species under consideration.
+
+These survey results then informed a two-stage prioritization process.
+Distinguishing the monitoring scopes of detection, inventory, distribution, abundance, and distribution or abundance under management, 
+we aimed to identify a limited number of species-scope combinations with high relevance and priority.
+In a first stage, the relevance of the different monitoring scopes was assessed per species using criteria such as invasion stage, management status, and method availability.
+Irrelevant species-scope combinations were excluded.
+In a second stage, the priority of remaining combinations was assessed based on the overall feasibility and urgency ratings, as well as on experts' responses to selected critical survey questions. 
+The outcome of the prioritization process was a selection of relevant high-priority species–scope combinations for monitoring scheme development.
+
+To further structure the prioritization results, three strategic focus scenarios were developed, each concerning a subset of the prioritized species and monitoring scopes: 
+(1) species prioritized for management by the Agency for Nature and Forests; 
+(2) species requiring mainly early detection;
+and (3) species for which distribution monitoring is relevant.
+For each scenario, commonalities in monitoring methods between species were explored to identify potential method-based synergies relevant for coordination or even implementation efforts.
+
+A steering committee involving representatives from the Research Institute for Nature and Forest, the Agency for Nature and Forests and the Flanders Environment Agency reviewed the survey and prioritization outcomes and agreed on a final shortlist of four species or species groups for immediate monitoring scheme development.
+These include
+`r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`,
+`r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`,
+`r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`,
+and, subsumed as a group, 
+`r species_data |> dplyr::filter(grepl("Large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
+and 
+`r species_data |> dplyr::filter(grepl("Floating primrose-willow", vern_name_eng)) |> print_species_name()`
+.
+For each, one or more main monitoring scopes were identified, often linked to evaluating ongoing or future management actions.
+
+The development of monitoring schemes for these species should proceed based on the methodological guidelines developed by the Research Institute for Nature and Forest [@wouters_ontwerp_2008-1]
+to ensure reliable and policy-aligned monitoring results.
