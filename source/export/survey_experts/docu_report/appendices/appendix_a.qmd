@@ -1,13 +1,13 @@
-# Expert survey
+# Expert survey design {#sec-app-a}
 
-
-::: {.landscape}
 
 ## Species covered {#sec-app-species}
 
 The following table contains the 
-All scientific names are the currently accepted scientific names accoridng to GBIF (ref).
+All scientific names are the currently accepted scientific names according to the Global Biodiversity Information Facility (GBIF; ref).
 Vernacular names have largely also been retrieved from GBIF or filled in by species experts otherwise. 
+
+::: {.landscape}
 
 ```{r appdx-a-species}
 #| message: false
@@ -17,8 +17,11 @@ Vernacular names have largely also been retrieved from GBIF or filled in by spec
 # load files
 response_data_path <- "../../../../data/survey_experts/"
 species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+maps_urls_path <- "../../../../media/gbif_occcubes/plot_filepaths_gdriveurls.rda"
+
 res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
 species_list <- get(load(species_list_path))
+maps_urls <- get(load(maps_urls_path))
 
 # test format
 is_html <- knitr::is_html_output()
@@ -84,7 +87,7 @@ species_data <- species_list |>
 
 ```{r appdx-a-species-table}
 #| label: tbl-species
-#| tbl-cap: Species covered by the expert survey
+#| tbl-cap: All species covered in the expert survey
 #| eval: true
 
 knitr::kable(
@@ -168,3 +171,68 @@ cat(unlist(children_list), sep = "\n")
 
 ```
 
+
+{{< pagebreak >}}
+
+## Invitation e-mail text {#sec-app-mail}
+
+The following e-mail text was used to invite species experts to participate in the survey. 
+
+
+> ***Subject: Survey on invasive alien species in Flanders***
+
+> *Dear [name receiver],*
+
+> *In connection with the project “Designing surveillance schemes for Invasive Alien Species” at the Research Institute for Nature and Forest we are conducting a survey among species experts. With this we would like to kindly ask you to participate in it.* 
+
+> *The survey is intended to take your expertise into account when planning future survey schemes for invasive alien species in Flanders. This includes the current list of invasive alien species of concern to the European Union (Invasive Alien Species of Union concern), as well as a number of species that may be added to this list in the future. You are not an expert for invasive alien species or the species listed below? In that case we have - based on recommendations from colleagues or literature research - come to the conclusion that you are probably still the most appropriate person to make statements about this or these (sometimes poorly known) species, in a Flemish context.* 
+
+> *For each species, a separate form has been prepared with questions on its (probability of) introduction and/or establishment, its distribution and abundance, its impact, its monitoring and its management. You obviously only need to fill in a form for the species listed below. For each species, this will take about 20 - 30 minutes. An overview of the full questionnaire can be found here: [link overview questions]* 
+
+> *We would greatly appreciate it if you could complete this survey before [date]. Should it be impossible for you to participate, we would appreciate it if you could recommend other experts who could help us further with the species below.*
+
+> *The email address that you may provide with this survey will only be used to contact you regarding the results, given your explicit permission. When analyzing the survey results, personal data will be anonymized. Similarly, responses containing free text will not be disclosed verbatim but only in summarized form.*
+
+> *Should you have any further questions or require further information, please do not hesitate to contact us. Thank you very much for your cooperation.*
+
+> *Kind regards,*
+> *[name sender]*
+
+
+> *Link to the form for [species name]:*
+> *[link form]*
+
+
+
+{{< pagebreak >}}
+
+## Species distribution maps {#sec-app-maps}
+
+The question "Is the distribution of the species across Flanders sufficiently known?" was complemented by species-specific distribution maps based on recent data from GBIF [@gbif_the_global_biodiversity_information_facility_what_2025] (ref GBIF; ref data).
+
+### Example distribution map for the Chinese muntjac
+
+Here we show the distribution map of the Chinese muntjac as an example.
+For the Flemish Region (area within the solid line) and a 30 km wide buffer zone (area between solid and dotted line), we mark those grid cells (EEA Reference grid, 1 x 1 km) in red within which the Chinese muntjac has been observed between the years 2014 and 2024.
+
+![Example occurrence map based on GBIF data](../../../../../media/gbif_occcubes/plots_ggspatial/muntiacus_reevesi_(ogilby,_1839).png){width=100%}
+
+
+### Distribution maps of all species
+
+Distribution maps for all species are available as external png files under the following links: 
+
+
+```{r appdx-a-distmaps-urls}
+#| results: "asis"
+
+urls_to_print <- maps_urls |>
+  dplyr::arrange(species) |>
+  dplyr::mutate(
+    tmp = paste0("[", species, "](", gdrive_url,")")
+  ) |>
+  dplyr::pull(tmp) |>
+  paste(x = "-", y = _) |>
+    cat(x = _, sep = "\n")
+
+```

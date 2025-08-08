@@ -1,9 +1,6 @@
-# Results expert survey
+# Expert survey results {#sec-app-b}
 
 
-::: {.landscape}
-
-## Prioritization of all species covered {#sec-app-prioritization}
 
 ```{r appdx-b-setup}
 #| message: false
@@ -12,21 +9,136 @@
 
 # test format
 is_html <- knitr::is_html_output()
-
 # define paths
 response_data_path <- "../../../../data/survey_experts/"
+questions_path <- "../questions_EN/"
 functions_path <- "../../../functions/"
-
-# load response & question data
-res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
-
 # source scripts
-source("../09_format_priority_tables.R", local = knitr::knit_global())
+source("../09_survey_make_plots.R", local = knitr::knit_global())
 
 ```
 
 
-:::
-
-
 ## Additional descriptive results {#sec-app-descr-results}
+
+### Invasion stadium PrIUS against survey
+
+@fig-stadium displays the invasion stadium as assigned in the PrIUS report [@dhondt_een_2022] against the invasion stadium as reported in the expert survey.
+Species for which discrepancies occur are highlighted.
+
+```{r plot-stadium}
+#| label: "fig-stadium"
+#| fig-cap: "Invasion stadium according to PrIUS and the expert survey"
+#| fig-width: 10
+#| fig-height: 8
+#| out-width: 90%
+
+plot_stadium
+
+```
+
+{{< pagebreak >}}
+
+### Response proportions "unknown / I do not know" 
+
+@fig-score-props-1 shows the proportion of responses that fall into the category "unknown / I do not know" across all questions per species.
+As in @fig-ranking, species are sorted according to their overall urgency scores nested within their overall feasibility scores.
+
+
+```{r plot-score-props-1}
+#| label: "fig-score-props-1"
+#| fig-cap: "Relative proportions of responses 'unknown / I do not know' per species"
+#| fig-width: 10
+#| fig-height: 16
+#| out-width: 90%
+
+plot_unknown_prop_species
+
+```
+
+{{< pagebreak >}}
+
+@fig-score-props-2 shows the proportion of responses that fall into the category "unknown / I do not know" across all species per question.
+
+```{r plot-score-props-2}
+#| label: "fig-score-props-2"
+#| fig-cap: "Relative proportions of responses 'unknown / I do not know' per question"
+#| fig-width: 10
+#| fig-height: 10
+#| out-width: 90%
+
+plot_unknown_prop_question
+
+```
+
+{{< pagebreak >}}
+
+@fig-score-patterns, finally, shows the proportion of responses that fall into the category "unknown / I do not know" per question and per species.
+Species are sorted according to their overall urgency scores nested within their overall feasibility scores.
+
+```{r plot-score-patterns}
+#| label: "fig-score-patterns"
+#| fig-cap: "Pattern of responses 'unknown / I do not know' per species and question"
+#| fig-width: 10
+#| fig-height: 16
+#| out-width: 90%
+
+plot_unknown_pattern
+
+```
+
+{{< pagebreak >}}
+
+### Monitoring methods
+
+@fig-method-freq displays the monitoring methods reported in the survey sorted by frequency.
+Note that per species multiple methods could be reported. 
+Methods are grouped into categories distinguished by color.
+
+```{r plot-method-freq}
+#| label: "fig-method-freq"
+#| fig-cap: "Absolute frequencies of monitoring methods reported"
+#| fig-width: 10
+#| fig-height: 12
+#| out-width: 90%
+
+plot_meth_freq
+
+```
+
+{{< pagebreak >}}
+
+@fig-method-pairs shows all pairwise combinations of monitoring methods reported in the survey sorted by frequency. 
+
+```{r plot-method-pairs}
+#| label: "fig-method-pairs"
+#| fig-cap: "Absolute frequencies of pairwise combinations of monitoring methods reported"
+#| fig-width: 10
+#| fig-height: 14
+#| out-width: 90%
+
+plot_meth_netw
+
+```
+
+
+{{< pagebreak >}}
+
+### Existing monitoring efforts
+
+@fig-moni-pattern provides an overview over existing monitoring efforts reported per species. 
+Monitoring efforts are sorted by the number of species they cover (highest coverage left).
+Species are grouped by kingdom, and within groups sorted according to their overall urgency scores nested within their overall feasibility scores.
+
+
+```{r plot-moni-pattern}
+#| label: "fig-moni-pattern"
+#| fig-cap: "Existing monitoring efforts reported per species"
+#| fig-width: 10
+#| fig-height: 16
+#| out-width: 90%
+
+plot_moni_patt
+
+```
+
