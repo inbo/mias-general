@@ -2,7 +2,7 @@
 toc: false
 ---
 
-# Steering committee decision {#sec-committee}
+# Steering committee meeting and decision {#sec-committee}
 
 ```{r steering-committee-setup}
 #| message: false
@@ -38,19 +38,19 @@ species_data <- species_list |>
 ```
 
 
-## Meeting details and attendance
+## Meeting details and agenda
 
 The steering committee meeting was held on Wednesday, April 23rd, from 13:30 to 16:00 in Brussels. The meeting brought together key representatives from the involved institutions. Attending on behalf of INBO were Diederik Strubbe, Tim Adriaens, Janne Adolf and Thierry Onkelinx. Nicolas Pardon attended on behalf of ANB, while Dan Slootmakers represented VMM.
 
+The meeting began with a brief round of introductions, during which each participant outlined their main areas of interest and institutional priorities related to IAS monitoring. This was followed by a structured presentation outlining the purpose and design of the expert survey and the logic and workflow underlying the proposed prioritization of monitoring schemes. Results were presented in terms of the three scenarios detailed in @sec-scenarios.
+It was emphasized that the primary objective of the meeting was to enable the steering committee to decide which species or species groups should be prioritized for structured monitoring in Flanders. The results of the survey and prioritization process were put forward as guiding but not binding.
 
-## Opening remarks and presentation of the expert survey
+After this overview the floor was opened for questions and discussion, and an optional review of the implementation details of the employed approach.
+The final phase of the meeting was then dedicated to decision-making.
 
-The meeting began with a brief round of introductions, during which each participant outlined their main areas of interest and institutional priorities related to IAS monitoring. This was followed by a structured presentation outlining the purpose and design of the expert survey and the logic and workflow underlying the proposed prioritization of monitoring schemes. Results were presented in terms of the three scenarios detailed in section XX.
+## Species decided upon by the committee
 
-It was communicated in advance that the structure of the session would begin with a presentation of the survey framework and results. Only after this overview would the floor be opened for questions and discussion, and optional review of the implementation details of the employed approach.It was also emphasized that the primary objective of the meeting was to enable the steering committee to decide which species or species groups should be prioritized for structured monitoring in Flanders. The results of the survey and prioritization process were put forward as guiding but not binding.
-
-
-## Initial feedback from the steering committee
+### Initial feedback
 
 The first feedback from the steering committee focused on the expert evaluation component of the survey framework. The expert input was acknowledged as highly valuable; however, it was noted that two potentially important species – 
 `r species_data |> dplyr::filter(grepl("Reuzenbereklauw|Reuzenbalsemien|Grote waternavel", vern_name_nld)) |> print_species_name()` 
@@ -58,8 +58,7 @@ The first feedback from the steering committee focused on the expert evaluation 
 
 A second discussion point concerned the choice between a species-oriented prioritization versus an approach based on potential method-based synergies. The committee recognized the added value of identifying monitoring methods that could efficiently target multiple IAS simultaneously. Nevertheless, it was agreed that the current overview of synergies remains exploratory and lacks the resolution needed to inform decision making. Several examples were cited to illustrate this, such as cases where the same monitoring method (e.g., camera traps) might be applicable to both terrestrial and aquatic species in theory, but its implementation in practice would be very different due to habitat constraints. Such implementation differences would also undermine potential synergies during the planning phase. In light of these limitations, the committee decided to proceed with a species-oriented prioritization. Once priority species have been identified, further assessment of method-based synergies – including those with lower-priority species – can be undertaken to increase planning and monitoring efficiency.
 
-
-## Compiling a consolidated species list
+### Compiling a consolidated species list
 
 Following the decision to adopt a species-oriented approach, the steering committee reviewed the three proposed prioritization scenarios. After discussion, it was concluded that Scenario 1 - focus on ANB priority species and management - and Scenario 3 - focus on distribution - most closely reflected the committee’s priorities and were therefore preferred. Scenario 2, which emphasized early detection of new potential invaders, was considered less relevant to consider at this stage, although its rationale was acknowledged. It was also pointed out that detection is more realistically carried out via opportunistic data than via structured monitoring schemes if a balance of costs and benefits is to be maintained.
 
@@ -293,6 +292,8 @@ table_committee_display
 
 ```
 
+### Further refinement
+
 To further refine the compiled list and identify the species for which the development of structured monitoring schemes is most urgent, the representatives from ANB and VMM were each asked to select five species from the consolidated list deemed most important to address first. The selection proceeded in alternating turns, allowing both representatives to contribute equally to the shortlist. 
 The remaining species - those not selected - are indicated in grey in @tbl-selection-committee above.
 
@@ -307,11 +308,11 @@ A third group of species, such as
 , was excluded primarily because of uncertainty regarding the feasibility and effectiveness of management interventions. In such cases, the absence of clear options for action limits the practical value of establishing a monitoring schemes at this time.
 
 
-## Final selection of priority species for immediate monitoring design
+### Final selection of species for immediate monitoring design
 
 In the final step of the present prioritization exercise, the representatives of ANB and VMM were invited to further narrow down the shortlist by selecting two species each from the remaining candidates. This was again done through an alternating selection process. At this stage, the focus was placed solely on identifying the species to be taken forward for immediate monitoring design, without providing justifications for those not selected. For the selected species, the rationale for inclusion and the general contours of the - according to the steering committee - most required monitoring schemes were briefly discussed. Their exact design and implementation will be addressed in a next phase, relying on the INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1].
 
-### Chinese muntjac
+#### Chinese muntjac
 
 The first species chosen was 
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`
@@ -320,7 +321,7 @@ The first species chosen was
 For the Chinese muntjac, the selected monitoring scope is abundance under management, aligned with the objective of eradicating the species from its current range in part of the province of Antwerp. The monitoring scheme must be capable of tracking reductions in absolute abundance in response to management actions and verifying when the species has been fully eradicated - transitioning from monitoring abundance to monitoring presence-absence. However, some complexities were noted. While the species is known to occur in the region, its precise distribution remains unclear, with a mix of confirmed, suspected, and potential distribution sites. Moreover, the species’ mobility in response to control efforts adds an extra challenge, as individuals may relocate rather than disappear. Consequently, although the main focus remains on abundance under management, additional monitoring efforts are needed to follow-up the species’ distribution and enable detection in bordering not yet invaded areas.
 
 
-### Common slider
+#### Common slider
 
 The second species selected is 
 `r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`
@@ -329,7 +330,7 @@ The second species selected is
 Two monitoring scopes are relevant for this species. First, scope distribution: There is a need for a clearer picture of where the species is currently present across waterbodies in Flanders, hence an inventory. Once a better understanding of the species’ current distribution is established, a full distribution monitoring scheme can be considered. Second, scope abundance under management: the species is already the target of local management efforts at certain sites. A monitoring scheme is needed to assess changes in abundance in response to these actions. Such a scheme could be developed as a proof of concept, implemented in a selection of managed sites. 
 
 
-### American bull frog
+#### American bull frog
 
 The third species selected as a priority is
 `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`
@@ -340,7 +341,7 @@ The most important monitoring scope identified by the committee for this species
 The case of the American bull frog shares certain features with that of the Chinese muntjac - namely, a combination of management-related monitoring and a need to clarify distribution boundaries - but differs in that the bullfrog is at a more advanced stage of invasion and is already widely established within its core range.
 
 
-### Large-flower and floating primrose-willow
+#### Large-flower and floating primrose-willow
 
 The final species group selected for prioritization includes both,
 `r species_data |> dplyr::filter(grepl("Large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
@@ -354,7 +355,7 @@ The main monitoring scope for this group is abundance under management. Due to t
 Given the current distribution of invasive water primroses, the proposed monitoring approach will likely involve proof-of-concept case studies, focusing on selected sites where active management is taking place, as well as comparative sites without intervention. This will allow for the evaluation of management effectiveness in reducing abundance and achieving local eradication, and could help inform future scaling of monitoring efforts across the Flemish region.
 
 
-## Concluding remarks on method-based synergies
+### Concluding remarks on method-based synergies
 
 The steering committee expressed agreement with the employed survey-based framework including the prioritization process, and with the final selection of the four species outlined above. At the same time, the committee emphasized the importance of further exploring method-based synergies across species. In particular, for the Chinese muntjac, it was noted that the likely use of a camera trap network presents an opportunity to design monitoring schemes that could generate insights applicable to other invasive mammal species. The committee recommended that the development of this monitoring scheme be carried out with a view toward broader applicability - specifically to species such as
 `r species_data |> dplyr::filter(grepl("raccoon", vern_name_eng)) |> print_species_name()`
