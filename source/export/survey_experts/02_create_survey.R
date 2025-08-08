@@ -67,6 +67,17 @@ tmp <- maps_info |>
   googledrive::as_id()
 tmp %in% maps_info$id
 #
+# add gdrive urls to plot_filepaths and save
+plot_filepaths_gdriveurls <- maps_info |>
+  dplyr::mutate(
+    gdrive_url = paste0("https://drive.google.com/file/d/", id, "/view")
+  ) |>
+  dplyr::select(
+    tidyselect::all_of(c("species", "path_to_map", "gdrive_url"))
+  )
+save(plot_filepaths_gdriveurls,
+     file = "media/gbif_occcubes/plot_filepaths_gdriveurls.rda")
+#
 #
 #
 # --- create google apps script which builds forms -------------
