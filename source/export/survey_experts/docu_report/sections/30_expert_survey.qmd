@@ -43,16 +43,18 @@ To provide a comprehensive overview, questions from different categories were po
 sections <- res_comb_upd |>
   dplyr::pull(section_title) |>
   unique() |>
-  gsub("&", "and", x = _)
+  gsub("&", "and", x = _) 
 for (section_i in sections) {
   questions_i <- res_comb_upd |> 
     dplyr::filter(section_title |> gsub("&", "and", x = _) == section_i) |>
     dplyr::pull(question_text_short) |>
-    unique()
+    unique() 
   section_i |> 
+    gsub("Surveillance", "Monitoring", x = _) |>
     paste(x = "-", y = _) |>
     cat(x = _, sep = "\n")
   questions_i |> 
+    gsub("surveillance", "monitoring", x = _) |>
     paste(x = "  -", y = _) |>
     cat(x = _, sep = "\n")
 }
@@ -293,7 +295,7 @@ It concerns a temporary ranking of species-scope combinations in order to organi
 In Stage 1 of the prioritization process, we exclude species-scope combinations that are less relevant. We determine relevance based on 
 
 - the invasion stage of a species, 
-- whether the surveillance/monitoring area is known, 
+- whether the monitoring area is known, 
 - whether the species is managed,
 - which information is necessary to evaluate management,
 - whether suitable methods are available to implement the monitoring.
