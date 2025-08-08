@@ -17,7 +17,8 @@ section_files <- list.files(
   path = paste(path, "sections", sep = "/"),
   full.names = TRUE,
   pattern = ".qmd"
-)
+) |>
+  grep("EN", x = _, invert = TRUE, value = TRUE)
 #
 # output file
 pdf_file <- list.files(
@@ -39,7 +40,7 @@ for (i in seq_along(section_files)){
       what = eval(parse(text = which_fun)),
       args = list(
         file = file_path_i,
-        gpath = "trackdown/report_expert_survey/sections",
+        gpath = "trackdown/report_expert_survey/v2_sections",
         shared_drive = "PRJ_MIUS",
         hide_code = TRUE,
         open = FALSE
@@ -53,15 +54,15 @@ for (i in seq_along(section_files)){
 try(
   googledrive::drive_upload(
     media = pdf_file,
-    # "trackdown/report_expert_survey/output_pdf"
-    path = googledrive::as_id("1d3sd4XUZNKeifPEzvV_dwUzSm2Mh9syT")
+    # "trackdown/report_expert_survey/v2_output_pdf"
+    path = googledrive::as_id("1WUw2kzdTJM2jzPFm7fxoCtlLmRT_IQH5")
   )
 )
 #
 # ---download from g-drive -------------------------------------------------
 #
 if (FALSE) {
-  i <- 5
+  i <- 7
   file_path_i <- section_files[i]
   try(
     trackdown::download_file(
