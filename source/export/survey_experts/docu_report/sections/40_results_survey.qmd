@@ -524,7 +524,7 @@ can be monitored using visual surveys, with four also suitable for aquatic envir
 
 ```{r table-syn-plants-anb-1}
 #| label: tbl-synplantsanb1
-#| tbl-cap: Method-based synergies for ANB focus plants under scope abundance after management
+#| tbl-cap: Method-based synergies for Scenario 1 plants under scope abundance after management
 table_syn_anb_plants_display_list$abundance_management
 ```
 
@@ -543,13 +543,13 @@ One groups it with the Common raccoon, based on shared use of visual surveys and
 
 ```{r table-syn-animals-anb-1}
 #| label: tbl-synanimalsanb1
-#| tbl-cap: Method-based synergies for ANB focus animals under scope distribution after management
+#| tbl-cap: Method-based synergies for Scenario 1 animals under scope distribution after management
 table_syn_anb_animals_display_list$distribution_management
 ```
 
 ```{r table-syn-animals-anb-2}
 #| label: tbl-synanimalsanb2
-#| tbl-cap: Method-based synergies for ANB focus animals under scope abundance after management
+#| tbl-cap: Method-based synergies for Scenario 1 animals under scope abundance after management
 table_syn_anb_animals_display_list$abundance_management
 ```
 
@@ -576,7 +576,7 @@ names_det_prior$animal |>
 ```
 
 @tbl-synplantsdet1 and @tbl-synanimalsdet1 show the method-based synergies for these plants and animals under scope detection. 
-The tables are structured as under scenario 1.
+The tables are structured as under Scenario 1.
 For plants (see @tbl-synplantsdet1) we find that visual surveys are recommended for a group of six species, all at least partly terrestrial, consisting of three primary species 
 (`r species_data |> dplyr::filter(grepl("China-sumac|Japanese climbing fern|American skunk-cabbage", vern_name_eng)) |> print_species_name()`) 
 and three secondary species 
@@ -585,7 +585,7 @@ and three secondary species
 
 ```{r table-syn-plants-det-1}
 #| label: tbl-synplantsdet1
-#| tbl-cap: Method-based synergies for plants under scope detection 
+#| tbl-cap: Method-based synergies for Scenario 2 plants under scope detection 
 table_syn_det_plants_display_list$detection
 ```
 
@@ -613,7 +613,7 @@ For this large group synergies arise in terms of the potential use of visual sur
 
 ```{r table-syn-animals-det-1}
 #| label: tbl-synanimalsdet1
-#| tbl-cap: Method-based synergies for animals under scope detection 
+#| tbl-cap: Method-based synergies for Scenario 2 animals under scope detection 
 table_syn_det_animals_display_list$detection
 ```
 
@@ -642,12 +642,12 @@ names_dist_prior$animal |>
 Note that there is substantial overlap between the species considered under this and the first scenario. In part, this is due to our choice of assigning relevance of the scenario-specific scopes based on largely overlapping invasion stages (see @sec-prior).
 
 @tbl-synplantsdist1 and @tbl-synanimalsdist1 show the method-based synergies for the above-listed plants and animals under scope distribution. 
-The tables are again structured as under scenario 1.
+The tables are again structured as under Scenario 1.
 For plants we find the same aquatic group as under Scenario 1 with the same method-based synergies, visual surveys and aquatic eDNA.
 
 ```{r table-syn-plants-dist-1}
 #| label: tbl-synplantsdist1
-#| tbl-cap: Method-based synergies for plants under scope distribution 
+#| tbl-cap: Method-based synergies for Scenario 3 plants under scope distribution 
 table_syn_dist_plants_display_list$distribution
 ```
 
@@ -668,11 +668,11 @@ and a tertiary species
 
 Note that for the majority of these animal species
 (i.e., `r species_data |> dplyr::filter(grepl("Chinese muntjak|Afrikaanse klauwkikker|Beverrat|Wasbeer$", vern_name_nld)) |> print_species_name()`)
-similar method-based synergies were already found under scenario 1.
+similar method-based synergies were already found under Scenario 1.
 
 ```{r table-syn-animals-dist-1}
 #| label: tbl-synanimalsdist1
-#| tbl-cap: Method-based synergies for animals under scope distribution 
+#| tbl-cap: Method-based synergies for Scenario 3 animals under scope distribution 
 table_syn_dist_animals_display_list$distribution
 ```
 
