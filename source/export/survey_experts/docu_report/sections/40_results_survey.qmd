@@ -287,23 +287,58 @@ Within (i.e., for each value of) scope type, rows are sorted by milieu according
 Within (i.e., for each value of) milieu, rows are sorted by invasion stadium, from "absent" to "widely established".
 Within (i.e., for each value of) invasion stadium, rows are sorted by global feasibility scores from high to low.
 
+::: {.landscape}
 
 ```{r prior-all-plants}
 #| label: tbl-priorplants
-#| tbl-cap: Prioritization of all plants covered
+#| tbl-cap: Prioritization results for all monitoring scope-plant combinations covered in the survey
 
-table_filtered_upd_display_list$plant
+table_filtered_upd_display_list$plant |>
+  # species names
+  kableExtra::column_spec(
+    column = 1,
+    width = ifelse(is_html, "150px", "140pt")
+  ) |>
+  # other id cols
+  kableExtra::column_spec(
+    column = seq(1,3) + 1,
+    width = ifelse(is_html, "120px", "60pt")
+  ) |>
+  # scope cols
+  kableExtra::column_spec(
+    column = seq(1,6) + 4,
+    width = ifelse(is_html, "120px", "45pt")
+  )
 
 ```
 
+{{< pagebreak >}}
 
 ```{r prior-all-animals}
 #| label: tbl-prioranimals
-#| tbl-cap: Prioritization of all animals covered
+#| tbl-cap: Prioritization results for all monitoring scope-animal combinations covered in the survey
 
-table_filtered_upd_display_list$animal
+table_filtered_upd_display_list$animal |>
+  # species names
+  kableExtra::column_spec(
+    column = 1,
+    width = ifelse(is_html, "150px", "140pt")
+  ) |>
+  # other id cols
+  kableExtra::column_spec(
+    column = seq(1,3) + 1,
+    width = ifelse(is_html, "120px", "60pt")
+  ) |>
+  # scope cols
+  kableExtra::column_spec(
+    column = seq(1,6) + 4,
+    width = ifelse(is_html, "120px", "45pt")
+  )
 
 ```
+
+:::
+
 
 We see that for about `r paste0(round(n_species_prior$plant / n_species$plant * 100), "% (", n_species_prior$plant, " out of ", n_species$plant, ")")` of all plants and 
 about `r paste0(round(n_species_prior$animal / n_species$animal * 100), "% (", n_species_prior$animal, " out of ", n_species$animal, ")")` of all animals at least one monitoring scope is withheld as having high relevance and high priority. 
