@@ -53,8 +53,20 @@ However, as we also aim to prepare future applications of the INBO guidelines fo
 
 ### Monitoring schemes according to this report
 
-With “monitoring schemes” we refer to schemes that have been designed following a principled methodology to ensure that data collection is purposeful and optimized to meet numerical quality criteria. Such schemes give rise to objective, reliable and valid results that are fit for informing policy. The INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1] represent such a methodology aimed at tailoring 
-monitoring objectives, data collection, processing and analysis, reporting and quality control to the true information needs in a qualitative and quantitative sense [reword/extend definition].
+With “monitoring schemes” we refer to schemes that have been designed following a principled methodology to ensure that data collection is purposeful and optimized to meet numerical quality criteria. 
+Such schemes give rise to objective, reliable and valid results that are fit for informing policy. 
+The INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1] represent such a methodology aimed at tailoring 
+monitoring objectives, data collection, processing and analysis, reporting and quality control to the true information needs.
+
+More specifically, a systematic, five-phase approach is proposed.
+The guidelines thereby emphasize the importance of, first, outlining a future monitoring scheme by defining monitoring objectives in collaboration with clients and stakeholders to ensure the scheme is relevant and supported, taking into account existing knowledge and data.
+The objectives are then translated into specific, measurable targets, with careful selection of indicators; 
+a study design is developed that aligns the dimensioning of the scheme, as well as sampling and data collection strategies with the intended monitoring purpose;
+costs are estimated. 
+The focus is then shifted to the future output of a monitoring scheme. 
+This includes planning the storage, processing and statistical analysis of the to be collected data, but also planning the reporting and communication of monitoring results.
+Finally, the guidelines highlight the need for quality assurance and transparent documentation to maintain scientific credibility.
+They also promote regular assessments and adaptive improvements based on new insights and changing information needs.
 
 
 ## Distinguishing different monitoring scopes {#sec-scopes}
