@@ -42,6 +42,7 @@ if (!exists("is_html")){
 .col_addon_width <- ifelse(is_html, "50px", "20pt")
 .col_method_width <- ifelse(is_html, "20px", "2pt")
 
+
 options(knitr.kable.NA = '')
 options(knitr.table.format = .format)
 
@@ -452,7 +453,7 @@ make_table_species_display <- function(
     data_table,
     cols_id = c(
       "species",
-      "vern_name_nld",
+      "vern_name_eng",
       "kingdom",
       "taxon",
       "on_unionlist",
@@ -466,7 +467,7 @@ make_table_species_display <- function(
     ),
     cols_linebreak = c(
       "species",
-      "vern_name_nld",
+      "vern_name_eng",
       "stadium",
       "prius_stadium",
       "prius_milieu"
@@ -534,13 +535,10 @@ make_table_display <- function(
     data_table,
     cols_id = c(
       "species",
-      "vern_name_nld",
+      "vern_name_eng",
       "stadium"
     ),
-    cols_addon = c(
-      "m_score_feas",
-      "m_score_urge"
-    ),
+    cols_addon = c("m_score_feas", "m_score_urge"),
     footnote_data = footnote_base
 ){
   data_table_wide <- data_table |>
@@ -650,9 +648,9 @@ make_table_display <- function(
 #
 #
 id_cols_syn_display <- if (exists("mode_source") && grepl("presentation", mode_source)) {
-  c("vern_name_nld", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+  c("vern_name_eng", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
 } else {
-  c("species", "vern_name_nld", "stadium", "taxon", "prius_milieu")
+  c("species", "vern_name_eng", "stadium", "taxon", "prius_milieu")
   # "taxon", "on_unionlist",
 }
 #
@@ -701,7 +699,7 @@ make_table_syn_list <- function(
         dplyr::distinct(
           dplyr::across(
             tidyselect::all_of(
-              c("species", "vern_name_nld", cols_addon)
+              c("species", "vern_name_eng", cols_addon)
             )
           )
         )
@@ -736,7 +734,7 @@ make_table_syn_list <- function(
       table |>
         dplyr::filter(scope_type == scope) |>
         tidyr::pivot_wider(
-          id_cols = c("scope_type", "species", "vern_name_nld", "prius_milieu", cols_addon),
+          id_cols = c("scope_type", "species", "vern_name_eng", "prius_milieu", cols_addon),
           names_from = method,
           names_prefix = "method_",
           values_from = n_species
@@ -1248,7 +1246,7 @@ table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
 
 # get species
 species_display <- table_base_upd |>
-  dplyr::distinct(species, vern_name_nld, .keep_all = TRUE) |>
+  dplyr::distinct(species, vern_name_eng, .keep_all = TRUE) |>
   dplyr::arrange(species) |>
   make_table_species_display(
     data_table = _,
@@ -1275,7 +1273,7 @@ kingdom_list <- setNames(
   list("plant", "animal"),
   c("plant", "animal")
 )
-id_cols_display <- c("species", "vern_name_nld", "prius_milieu", "stadium")
+id_cols_display <- c("species", "vern_name_eng", "prius_milieu", "stadium")
 # "taxon", "on_unionlist"
 
 table_base_upd_display_list <- lapply(
@@ -1314,7 +1312,7 @@ table_filtered_upd_display_list <- lapply(
       make_table_display(
         data_table = _,
         cols_id = id_cols_display,
-        cols_addon = c("m_score_feas", "m_score_urge"),
+        cols_addon = NULL,
         footnote_data = footnote_combined
       )
   }

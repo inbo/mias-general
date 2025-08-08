@@ -375,7 +375,7 @@ area_scope_lowprior_expr <- '
      scope_boolean == 1)
      '
 area_scope_lowprior_motivation <-
-  "scope low priority as surveillance area is not known"
+  "scope low priority as monitoring area is not known"
 #
 #
 # ... per species depending on survey priority scores

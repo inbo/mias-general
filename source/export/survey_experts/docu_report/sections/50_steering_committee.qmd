@@ -102,7 +102,7 @@ Two species that were rated as having a high priority in the survey were explici
 
 
 # 18 - 1
-species_strings_committee <- c(
+species_strings_com <- c(
   "waterteunisbloem", #2
   "parelvederkruid",
   "stierkikker",
@@ -119,18 +119,28 @@ species_strings_committee <- c(
   "dwergmeerval",
   "amurgrondel"
 )
-# remove last 6 species for shortlist
-species_shortlist_committee <- species_strings_committee |> head(x = _, -6)
-
+# shortlist: remove last 6 species
+species_shortlist_com <- species_strings_com |> head(x = _, -6)
 # get full species table
 species_committee <- table_filtered_upd |>
   dplyr::filter(
     grepl(
-      paste(species_strings_committee, collapse = "|"),
+      paste(species_strings_com, collapse = "|"),
       vern_name_nld,
       ignore.case = TRUE
     )
   )
+# english names shortlist
+species_shortlist_com_eng <- species_committee |>
+  dplyr::filter(
+    grepl(
+      paste(species_shortlist_com, collapse = "|"),
+      vern_name_nld,
+      ignore.case = TRUE
+    )
+  ) |> 
+  dplyr::pull(vern_name_eng) |>
+  unique()
 
 # prep table for display
 table_committee <- species_committee |>
@@ -153,21 +163,21 @@ table_committee <- species_committee |>
   dplyr::rowwise() |>
   dplyr::mutate(
     scenario_1 = dplyr::case_when(
-      grepl(vern_name_nld, table_syn_plants_display_list$abundance_management) |
-      grepl(vern_name_nld, table_syn_plants_display_list$distribution_management) |
-      grepl(vern_name_nld, table_syn_animals_display_list$abundance_management) |
-      grepl(vern_name_nld, table_syn_animals_display_list$distribution_management) ~
-        "scenario 1"
+      grepl(vern_name_eng, table_syn_plants_display_list$abundance_management) |
+      grepl(vern_name_eng, table_syn_plants_display_list$distribution_management) |
+      grepl(vern_name_eng, table_syn_animals_display_list$abundance_management) |
+      grepl(vern_name_eng, table_syn_animals_display_list$distribution_management) ~
+        "Scenario 1"
     ),
     scenario_2 = dplyr::case_when(
-      grepl(vern_name_nld, table_syn_plants_display_list$detection) |
-      grepl(vern_name_nld, table_syn_animals_display_list$detection) ~
-        "scenario 2"
+      grepl(vern_name_eng, table_syn_plants_display_list$detection) |
+      grepl(vern_name_eng, table_syn_animals_display_list$detection) ~
+        "Scenario 2"
     ),
     scenario_3 = dplyr::case_when(
-      grepl(vern_name_nld, table_syn_plants_display_list$distribution)|
-      grepl(vern_name_nld, table_syn_animals_display_list$distribution) ~
-        "scenario 3"
+      grepl(vern_name_eng, table_syn_plants_display_list$distribution)|
+      grepl(vern_name_eng, table_syn_animals_display_list$distribution) ~
+        "Scenario 3"
     )
   ) |>
   dplyr::ungroup() |>
@@ -218,8 +228,8 @@ table_committee_display <- table_committee |>
       \(x) {
         dplyr::case_when(
           grepl(
-            paste(species_shortlist_committee, collapse = "|"),
-            vern_name_nld,
+            paste(species_shortlist_com_eng, collapse = "|"),
+            vern_name_eng,
             ignore.case = TRUE
           ) ~
             kableExtra::cell_spec(x = x, color = color_black, format = .format, escape = .escape),
@@ -234,7 +244,7 @@ table_committee_display <- table_committee |>
     format = .format,
     escape = FALSE,
     booktabs = .booktabs,
-    longtable = .longtable,
+    longtable = FALSE,
     linesep = "",
     col.names = colnames(table_committee) |> head(x = _, -1) |> gsub("_", " ", x = _),
     table.attr = 'data-quarto-disable-processing="true"'
@@ -246,19 +256,37 @@ table_committee_display <- table_committee |>
     position = "left",
     font_size = .font_size
   ) |>
+  # column widths
+  # species names
   kableExtra::column_spec(
       column = 1,
-      width = .col_id_species_width
-    ) |>
+      width = ifelse(is_html, "100px", "80pt")
+  ) |>
+  # other id cols
+  kableExtra::column_spec(
+      column = 2,
+      width = ifelse(is_html, "60px", "60pt")
+  ) |>
+  kableExtra::column_spec(
+      column = 3,
+      width = ifelse(is_html, "60px", "50pt")
+  ) |>
+  kableExtra::column_spec(
+      column = 3,
+      width = ifelse(is_html, "60px", "60pt")
+  ) |>
+  # scenario 
     kableExtra::column_spec(
-      column = seq_along(id_cols_display)[-1],
-      width = .col_id_width
+      column = 5,
+      width =  ifelse(is_html, "40px", "40pt")
     ) |>
-    kableExtra::column_spec(
-      column = 1:2 + length(id_cols_display),
-      width = .col_scope_width
-    ) |>
-  kableExtra::group_rows(
+  # scope
+  kableExtra::column_spec(
+      column = 6,
+      width =  ifelse(is_html, "45px", "80pt")
+  ) |>
+  # group rows
+    kableExtra::group_rows(
     group_label = table_committee_grouping$kingdom[1],
     start_row = table_committee_grouping$row_start[1],
     end_row = table_committee_grouping$row_stop[1],

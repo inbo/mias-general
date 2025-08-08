@@ -72,15 +72,17 @@ All closed questions are formulated such that they function as indicators of eit
 ```{r table scoring}
 #| message: false
 #| label: tbl-scoring
-#| tbl-cap: Scoring of survey questions
+#| tbl-cap: Scoring of the survey questions
+
 
 # overwrite options set in 09_format_priority_tables.R
 # #.bootstrap_options = if (is_html) {c("condensed", "hover") } else {"basic"}
-.latex_options = if (is_html) {"basic"} else {c("repeat_header")}
+.latex_options = if (is_html) {"basic"} else {c("repeat_header", "hold_position")}
+.longtable = FALSE
 # add options
-.col_width_1 = if (is_html) {"220px"} else {"110pt"}
-.col_width_2 = if (is_html) {"70px"} else {"20pt"}
-.col_width_3 = if (is_html) {"350px"} else {"250pt"}
+.col_width_1 = if (is_html) {"220px"} else {"100pt"}
+.col_width_2 = if (is_html) {"70px"} else {"10pt"}
+.col_width_3 = if (is_html) {"350px"} else {"280pt"}
 
 
 # latex issue text overflow with kableExtra::collapse_rows
@@ -129,8 +131,13 @@ data_table_scoring_tmp <- q_long |>
   dplyr::mutate(
     section_title = section_title |> gsub("&", "and", x = _)
   ) |>
-  #
-  tidyr::drop_na(response) 
+  # 
+  tidyr::drop_na(response) |>
+  # replace surveillance with monitoring
+  dplyr::mutate(
+    section_title = section_title |> gsub("Surveillance", "Monitoring", x = _),
+    question_text_short = question_text_short |> gsub("surveillance", "monitoring", x = _),
+  )
 
 # to preserve order when grouping
 data_table_scoring <- factorize(
@@ -144,15 +151,26 @@ data_table_scoring <- factorize(
   dplyr::mutate(q_index = as.numeric(question_text_short)) |>
   dplyr::group_by(section_number, q_index) |>
   dplyr::arrange(score, .by_group = TRUE) |>
+  # collapse question text and indicator
+  dplyr::mutate(
+    question_text_category = 
+      paste0(
+        question_text_short, 
+        " (", 
+        score_category |> substring(text = _, 1, 1),
+        ")"
+        )
+  ) |>
   # mimic collapse rows
   dplyr::mutate(
     dplyr::across(
-      tidyselect::all_of(c("question_text_short", "score_category")),
+      tidyselect::all_of(c("question_text_short", "score_category", "question_text_category")),
       \(x) dplyr::case_when(
         dplyr::row_number() != 1 ~ NA_character_,
         TRUE ~ x
       ))) |>
   dplyr::ungroup()
+
 
 
 # prep grouping data
@@ -168,7 +186,7 @@ data_grouping <- data_table_scoring |>
 
 # create table
 data_table_scoring |>
-  dplyr::select(-section_title, -section_number, -q_index) |>
+  dplyr::select(question_text_category, score, response) |>
   knitr::kable(
     x = _,
     format = .format,
@@ -176,7 +194,7 @@ data_table_scoring |>
     booktabs = .booktabs,
     longtable = .longtable,
     linesep = "",
-    col.names = c("Question", "Indicator", "Score", "Response option"),
+    col.names = c("Question (indicator)", "Score", "Response option"),
     table.attr = 'data-quarto-disable-processing="true"' 
   ) |>
   kableExtra::kable_styling(
@@ -191,11 +209,11 @@ data_table_scoring |>
     width = .col_width_1
   ) |>
   kableExtra::column_spec(
-    column = 2:3,
+    column = 2,
     width = .col_width_2
   ) |>
   kableExtra::column_spec(
-    column = 4,
+    column = 3,
     width = .col_width_3
   ) |>
   #kableExtra::collapse_rows(
@@ -215,18 +233,21 @@ data_table_scoring |>
     end_row = data_grouping$row_stop[2],
     indent = FALSE,
     hline_after = TRUE
-  ) |> kableExtra::group_rows(
+  ) |>
+  kableExtra::group_rows(
     group_label = data_grouping$section_title[3],
     start_row = data_grouping$row_start[3],
     end_row = data_grouping$row_stop[3],
     indent = FALSE,
     hline_after = TRUE
-  )  |> kableExtra::group_rows(
+  ) |> 
+  kableExtra::group_rows(
     group_label = data_grouping$section_title[4],
     start_row = data_grouping$row_start[4],
     end_row = data_grouping$row_stop[4],
     hline_after = TRUE
-  )  |> kableExtra::group_rows(
+  ) |> 
+  kableExtra::group_rows(
     group_label = data_grouping$section_title[5],
     start_row = data_grouping$row_start[5],
     end_row = data_grouping$row_stop[5],
@@ -236,6 +257,7 @@ data_table_scoring |>
 
 
 ```
+
 
 Take, for example, species not yet present in Flanders for which early detection is essential: Experts were asked to evaluate how potential introduction sites for such species are configured.
 If the number of introduction sites is limited and sites are specific (e.g. seaports), monitoring all of these sites is considered highly feasible and the largest value is assigned. Instead, if introduction sites are many and widespread (e.g., for a species that is expected to mainly be released from aquaria into freshwater bodies in Flanders) feasibility of structured monitoring is considered to be comparatively low and a small value is assigned. The smallest value (and thus lowest feasibility) is assigned if experts report the (potential) introduction sites as unknown, to them personally or generally. The underlying rationale is that the feasibility of planning monitoring schemes is minimal if the availability of relevant information is. We apply this rather conservative scoring strategy to all questions as can be seen in the table.
@@ -358,8 +380,25 @@ For a species-scope combination excluded during the second stage of the prioriti
 
 ```{r table illustration}
 #| label: tbl-illu
-#| tbl-cap: Illustration of reporting of prioritized species-scope combinations
-table_filtered_illu_final_display
+#| tbl-cap: Illustration of the prioritization results presentation
+table_filtered_illu_final_display |>
+  # species
+  kableExtra::column_spec(
+    column = 1,
+    width = ifelse(is_html, "50px", "40pt")
+  ) |>
+  # stadium
+  kableExtra::column_spec(
+    column = 2,
+    width = ifelse(is_html, "70px", "60pt")
+  ) |>
+  # scopes
+  kableExtra::column_spec(
+    column = seq(1,6) + 2,
+    width = ifelse(is_html, "40px", "40pt")
+  ) 
+  
+  
 ```
 
 
