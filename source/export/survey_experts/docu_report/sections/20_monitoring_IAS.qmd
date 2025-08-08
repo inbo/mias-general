@@ -4,7 +4,7 @@ toc: false
 
 # Monitoring schemes for invasive alien species in Flanders: Some background {#sec-monitoring-ias}
 
-## The legal context
+## The legal context {#sec-legal-context}
 
 ### The EU Invasive Alien Species Regulation
 
@@ -20,7 +20,7 @@ The effectiveness of early eradication measures and the effectiveness of managem
 
 ### Legislation in Flanders
 
-At the Flemish level, the Decree of the Flemish Government on the Protection and Management of Species, or, in short, the Species Decree, specifies that INBO "(...) shall coordinate the inventory of species falling within the scope of this Decree, with regard to: monitoring the state of conservation of native species; drawing up red lists concerning native species (...); monitoring the status of invasive species and potentially invasive species" (ref; article 5, notes to article 5; pp. XX).^[Note that this and all following quotes represent unofficial translations of the original Dutch text.]
+At the Flemish level, the Decree of the Flemish Government on the Protection and Management of Species, or, in short, the Species Decree, specifies that INBO "(...) shall coordinate the inventory of species falling within the scope of this Decree, with regard to: monitoring the state of conservation of native species; drawing up red lists concerning native species (...); monitoring the status of invasive species and potentially invasive species" [@noauthor_decree_2009; article 5, notes to article 5; pp. XX].^[Note that this and all following quotes represent unofficial translations of the original Dutch text.]
 
 Inventorying is thereby defined as "establishing the occurrence of certain species in certain areas of the Flemish region, at certain time points and in certain numbers".
 It is further specified that the "emphasis lies on aspects of distribution, abundance changes over time (...) with regard to (...) control and the prevention of nuisance.
@@ -35,7 +35,7 @@ The "coordinating role" assigned to INBO concerns ensuring the "correct collecti
 Although used recurrently, the terms “surveillance” and “monitoring” are not explicitly defined, neither in the Invasive Alien Species Regulation nor in the Species Decree. We therefore include a brief clarification of terms in this section.
 
 
-### Surveillance and monitoring in EU terms
+### Surveillance and monitoring in EU terms {#sec-terms-eu}
 
 In the supporting document Surveillance of Invasive Alien Species of Union concern [@working_group_on_invasive_alien_species_surveillance_2017] available via [an official EU website](https://environment.ec.europa.eu/topics/nature-and-biodiversity/invasive-alien-species_en) document surveillance is defined as "a systematic activity or survey of entry points for IAS aimed at detecting, identifying and locating alien species new to the EU, to a Member State (...). As such, surveillance is an integral and pivotal element of early detection, early warning and rapid response and of prevention. IAS surveillance may include the adaptation or extension of existing programmes that are called ‘monitoring’. Inspection may be considered a form of directed surveillance. Inspection is an official and systematic activity focused on IAS pathways and entry points or invasion hubs aimed at detecting deliberate or inadvertent introduction of IAS." [@working_group_on_invasive_alien_species_surveillance_2017, p. 5].
 
@@ -48,7 +48,7 @@ Monitoring on the other hand is defined more broadly as "the systematic collecti
 
 In the current report, we employ “monitoring” as an umbrella term with a definition largely overlapping with the one in the above-cited EU document. Note however that, according to our use, monitoring can also be implemented for the purpose of detection, but does then obviously not incorporate official inspections. We find that a more in-depth definition is not required in the current stage. 
 
-However, as we also aim to prepare future applications of the INBO guidelines for monitoring schemes we already point out that these handle different, more nuanced definitions of monitoring and surveillance. In the guidelines - but also in the scientific literature on nature conservation - surveillance concerns repeated and standardized measurements in order to assess the status and/or trend of a certain target, in the present context for instance the distribution of an IAS. Monitoring in turn is defined as a special form of surveillance in that it involves a-priori defined standards for the evaluation of the target’s status and/or trend [@wouters_ontwerp_2008-1, pp. 15 - 16; ref Alexander p. 49]. Following this logic, we might, alternatively, have used “surveillance” as our umbrella term. In fact, we still were when designing the survey, which is why the raw survey materials provided in appendix XX (ref) feature the term “surveillance” instead of “monitoring”. Switching terms is obviously not ideal but the benefits seemed to outweigh the costs as the EU-aligned definition of surveillance is rather common among IAS experts and in communication with policy-makers.
+However, as we also aim to prepare future applications of the INBO guidelines for monitoring schemes we already point out that these handle different, more nuanced definitions of monitoring and surveillance. In the guidelines - but also in the scientific literature on nature conservation - surveillance concerns repeated and standardized measurements in order to assess the status and/or trend of a certain target, in the present context for instance the distribution of an IAS. Monitoring in turn is defined as a special form of surveillance in that it involves a-priori defined standards for the evaluation of the target’s status and/or trend [@wouters_ontwerp_2008-1, pp. 15 - 16; @alexander_survey_2008, p. 49]. Following this logic, we might, alternatively, have used “surveillance” as our umbrella term. In fact, we still were when designing the survey, which is why the raw survey materials provided in @sec-app-a feature the term “surveillance” instead of “monitoring”. Switching terms is obviously not ideal but the benefits seemed to outweigh the costs as the EU-aligned definition of surveillance is rather common among IAS experts and in communication with policy-makers.
 
 
 ### Monitoring schemes according to this report
@@ -79,15 +79,15 @@ A monitoring scheme with scope detection aims to assess a species' presence in a
 Typically this encompasses areas at (and/or around) known places of (potential) introduction or sites of sporadic occurrence.
 Other plausible options are areas at (and/or around) conservation sites, or areas from which the species had been eradicated before.
 
-Detection receives considerable attention in the Invasive Alien Species Regulation. It is, for example, emphasized that prevention is “generally more environmentally desirable and cost-effective than reaction after the fact” [@noauthor_regulation_2014, p. 3] and should therefore be prioritized. Early detection and rapid response are widely recognized as pillars of effective IAS management, as they offer the best chance to contain or eradicate emerging populations before they become widespread and difficult to control (ref). According to documentation supporting the regulation (ref section terminology), detection can refer to both official inspections at points of entry - such as import controls, which in Belgium fall under the responsibility of the federal government (ref) - or to monitoring of the natural environment for signs of new introductions. In this report, we focus on the latter, detecting emerging IAS populations in the wild in Flanders, as only this falls under INBO’s monitoring obligations (alternative ref to [link](https://www.health.belgium.be/en/animals-and-plants/biodiversity/invasive-alien-species/anchoring-international-level-implementation)).
+Detection receives considerable attention in the Invasive Alien Species Regulation. It is, for example, emphasized that prevention is “generally more environmentally desirable and cost-effective than reaction after the fact” [@noauthor_regulation_2014, p. 3] and should therefore be prioritized. Early detection and rapid response are widely recognized as pillars of effective IAS management, as they offer the best chance to contain or eradicate emerging populations before they become widespread and difficult to control (ref?). According to documentation supporting the regulation (@sec-terms-eu), detection can refer to both official inspections at points of entry - such as import controls, which in Belgium fall under the responsibility of the federal government (ref?) - or to monitoring of the natural environment for signs of new introductions. In this report, we focus on the latter, detecting emerging IAS populations in the wild in Flanders, as only this falls under INBO's monitoring obligations ([link](https://www.health.belgium.be/en/animals-and-plants/biodiversity/invasive-alien-species/anchoring-international-level-implementation), alternative ref?).
 
 
 ### Monitoring scope distribution
 
 Under the scope distribution, a monitoring scheme aims to assess the status of and, where relevant, trend in a species' distribution. The area to be monitored will depend on the species’ current invasion stage. For species already widespread, this may require coverage of the entire Flemish region, while for species established more locally, monitoring can focus on their current range and the surrounding areas where spread is most likely. Setting up a monitoring scheme with this scope thus requires the (potential) distribution area of a species to be largely known a-priori.
 
-Reconsidering the reporting obligations under the Invasive Alien Species Regulation, scope distribution can be considered the most well-defined from the EU perspective (ref p. X):
-Distribution is explicitly operationalized as the presence and absence in terms of $10\times 10$ km grid cells of the EEA Reference grid (ref) across Flanders. 
+Reconsidering the reporting obligations under the Invasive Alien Species Regulation, scope distribution can be considered the most well-defined from the EU perspective [@noauthor_regulation_2014 p. X]:
+Distribution is explicitly operationalized as the presence and absence in terms of $10\times 10$ km grid cells of the EEA Reference grid [@peifer_about_2011] across Flanders. 
 
 
 ### Monitoring scope abundance
@@ -114,4 +114,4 @@ The Invasive Alien Species Regulation considers distribution and abundance as po
 Monitoring the distribution or abundance of a species requires knowledge of the (potential) distribution area of a species, as we have explained in the previous subsections
 If the (potential) distribution area is not sufficiently known then assessing its location forms a distinct monitoring scope called inventory [@de_knijf_monitoring_2014]. 
 Under this scope, monitoring is of limited duration and can be finalized once the status of the distribution areas is sufficiently known. 
-Note that “inventory” as used here refers specifically to targeted, time-limited efforts to determine a species’ distribution area, and differs from the broader use of the term in the Species Decree of the Flemish Government, where it includes a much wider range of monitoring objectives (see above ref section).
+Note that “inventory” as used here refers specifically to targeted, time-limited efforts to determine a species’ distribution area, and differs from the broader use of the term in the Species Decree of the Flemish Government, where it includes a much wider range of monitoring objectives (see @sec-legal-context).

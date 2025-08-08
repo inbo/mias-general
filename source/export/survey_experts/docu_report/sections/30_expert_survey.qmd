@@ -28,7 +28,7 @@ options(knitr.kable.NA = '')
 ## Purpose
 
 To support the early phase-planning of structured IAS monitoring schemes for Flanders, we conducted a survey drawing on the knowledge of species experts. The survey aimed to obtain context-specific information on individual species’ invasion stage, introduction, distribution, abundance and impacts in Flanders, as well as ongoing management actions, and available monitoring techniques. This combined need for context-specific information and expert judgement motivated the use of a survey approach rather than a literature review. Existing publications may lack the geographical specificity, operational detail, or up-to-date insights required for monitoring design in the Flemish context. Also, for relevant publications, we expected species experts to be aware and draw on them where appropriate. The survey therefore included questions to assess the perceived urgency and feasibility of establishing monitoring schemes for each species, considering the above-mentioned aspects.. The expert assessments formed the input for the prioritization process to identify a limited number of priority species and monitoring schemes. 
-The survey covers all 88 IAS of Union concern and an additional set of 34 species that were at the time of survey setup considered as candidates for the next extension of the Union List (currently still the case for 26 of the additional species; ref draft implementing regulation). For a complete overview of the 122 species covered see @sec-app-species. 
+The survey covers all 88 IAS of Union concern and an additional set of 34 species that were at the time of survey setup considered as candidates for the next extension of the Union List (currently still the case for 26 of the additional species; ref?). For a complete overview of the 122 species covered see @sec-app-species. 
 
 
 ## Design
@@ -68,6 +68,7 @@ Questions were of both closed, multiple-choice and open, free-text format. Each 
 ### Question scoring
 
 All closed questions are formulated such that they function as indicators of either feasibility or urgency of a monitoring scheme for the species under consideration. Lower or higher levels of feasibility or urgency are encoded via numerical scores assigned across the response options of each question. Score values range from 1 indicating low feasibility or urgency to 4 indicating high feasibility or urgency, and are treated as interval-scaled in subsequent analyses. Different response options can have the same score, but all scores are assigned at least once per question. Scores were set a-priori to distributing the survey but not visible to respondents. @tbl-scoring illustrates the scoring of questions by providing the key that links response options to scores per question.
+
 
 ```{r table scoring}
 #| message: false
@@ -265,21 +266,22 @@ If the number of introduction sites is limited and sites are specific (e.g. seap
 
 ### Questionnaire generation and distribution
 
-For each species, a separate questionnaire was set up using Google Forms (ref). We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from GBIF (ref)). The only exception was the group of three invasive knotweeds, which were combined into a single form. This decision was based not only on their similar ecological characteristics, but primarily on the difficulty of reliably distinguishing them in the field or in most data sources. 
+For each species, a separate questionnaire was set up using Google Forms (ref). We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from the Global Biodiversity Information Facility (GBIF) [@gbif_the_global_biodiversity_information_facility_what_2025] (ref data; @sec-app-maps)). 
+The only exception was the group of three invasive knotweeds, which were combined into a single form. This decision was based not only on their similar ecological characteristics, but primarily on the difficulty of reliably distinguishing them in the field or in most data sources. 
 
-Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts available via the github repository XXX. [add brief summary of github repo and/or update readme github repo]
+Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts available via the github repository X (ref repo).
 
-The 120 generated forms were mapped to 57 experts affiliated with INBO as well as other research institutions in Belgium and the Netherlands. Links to the forms were sent out via e-mail using a standardized text available in appendix XX (ref).
+The 120 generated forms were mapped to 57 experts affiliated with INBO as well as other research institutions in Belgium and the Netherlands. Links to the forms were sent out via e-mail using a standardized text (see @sec-app-mail).
 
 
 ## Prioritization of species-scope combinations {#sec-prior}
 
-Crossing the different monitoring scopes described in @sec-monitoring-ias with all 122 species covered in the expert survey results in a large number of potential monitoring schemes. To make the development of monitoring schemes tractable, a prioritization must be made. The desired outcome of this prioritization process was thus to arrive at a limited number of relevant high-priority species and monitoring scope combinations. These priority combinations form the starting point for the development of structured, policy-relevant IAS monitoring schemes, to be implemented using the proven INBO framework for monitoring design and evaluation (ref leidraad).
+Crossing the different monitoring scopes described in @sec-monitoring-ias with all 122 species covered in the expert survey results in a large number of potential monitoring schemes. To make the development of monitoring schemes tractable, a prioritization must be made. The desired outcome of this prioritization process was thus to arrive at a limited number of relevant high-priority species and monitoring scope combinations. These priority combinations form the starting point for the development of structured, policy-relevant IAS monitoring schemes, to be implemented using the proven INBO framework for monitoring design and evaluation [@wouters_ontwerp_2008].
 
 Our approach to the prioritization involves a two-stage exclusion process visualized in @fig-prioritization [adapt fix size and position]. First we exclude species-scope combinations that are less relevant. Then we exclude species-scope combinations that have low priority.
 We base exclusion not only on the overall feasibility and urgency scores, but also on responses to selected individual survey questions. The latter implies that a species-scope combination is excluded if the expert chooses a certain response to a certain question - an implementation of the one-out-all-out-principle for a limited number of question-response combinations we deemed critical. We detail the two stages of the prioritization process and the exact exclusion criteria employed in the following.
 
-![Flowchart of exclusion process](../media/flowchart-prioritization.pdf){#fig-prioritization width=600}
+![Flowchart of the prioritization process](../media/flowchart-prioritization.pdf){#fig-prioritization width=600}
 
 It is important to note that the prioritization process necessarily involves interpretative choices - such as how to best define exclusion criteria - which may be open to debate. The results presented here are intended to inform decision-making by the steering committee, which retains the flexibility to revisit or adjust priorities in light of the expert survey findings and additional considerations (see @sec-committee).
 
@@ -302,7 +304,7 @@ For the exact filtering rules applied to the survey data see [R code here](https
 
 #### Invasion stage 
 
-First, the relevance of a given monitoring scope depends on the invasion stage of a species. Not all scopes are meaningful or appropriate for each stage. For species that are absent or only sporadically present, detection is the only relevant scope, as the objective is to identify new introductions early. For species that are established to a limited extent, relevant scopes may include inventory, distribution (under management), and abundance (under management). At this stage, we consider detection less relevant, since the species is already locally present. For widespread species, inventory is not considered necessary, as the species’ general distribution is assumed to be sufficiently known. There is one important exception where detection may still be relevant at this stage. As emphasized by d’hondt et al. (ref prius), a species classified as widespread across Flanders may still be absent from specific high-value conservation areas. In such cases, it may be worthwhile to invest in detection efforts targeted specifically at these areas, in order to prevent establishment in ecologically sensitive sites where the species is expected to have a significant impact. In addition to this specific form of detection, distribution (under management) and abundance (under management) remain relevant scopes for widespread species, particularly in the context of ongoing or planned control measures.
+First, the relevance of a given monitoring scope depends on the invasion stage of a species. Not all scopes are meaningful or appropriate for each stage. For species that are absent or only sporadically present, detection is the only relevant scope, as the objective is to identify new introductions early. For species that are established to a limited extent, relevant scopes may include inventory, distribution (under management), and abundance (under management). At this stage, we consider detection less relevant, since the species is already locally present. For widespread species, inventory is not considered necessary, as the species’ general distribution is assumed to be sufficiently known. There is one important exception where detection may still be relevant at this stage. As emphasized by @dhondt_een_2022, a species classified as widespread across Flanders may still be absent from specific high-value conservation areas. In such cases, it may be worthwhile to invest in detection efforts targeted specifically at these areas, in order to prevent establishment in ecologically sensitive sites where the species is expected to have a significant impact. In addition to this specific form of detection, distribution (under management) and abundance (under management) remain relevant scopes for widespread species, particularly in the context of ongoing or planned control measures.
 
 
 #### Knowledge of the distribution area
@@ -368,7 +370,7 @@ For a given species we assign a high priority only if both the overall feasibili
 
 ### Reporting format
 
-#### Table of species-scope combinations
+#### Table of species-scope combinations {#sec-spec-scope-table}
 
 To report the results of the prioritization process we present all species-scope combinations in the form of a table where rows pertain to species and columns to scopes. 
 @tbl-illu illustrates this format.
@@ -402,7 +404,7 @@ table_filtered_illu_final_display |>
 ```
 
 
-#### Table of monitoring method-based synergies
+#### Table of monitoring method-based synergies {#sec-mon-syn}
 
 We complement the table of species-scope combinations with a table of potential monitoring method-based synergies. That is, within each monitoring scope, we identify species for which overlapping methods were reported and display those in tabular fashion. Such method-based commonalities may help to align efforts in the planning of monitoring schemes (e.g., method selection, planning of data collection) or even in their future implementation (e.g., training field workers, data analysis, joint procurement and logistics). It is important to note, however, that the present analysis represents a preliminary screening. Whether the indicated synergies actually manifest will only become clear upon further investigation during the application of the INBO guidelines for designing monitoring schemes. 
 
