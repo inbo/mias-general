@@ -12,6 +12,9 @@ With monitoring schemes we refer to schemes that have been designed to collect d
 [examples e.g. soortenmeetnetten]
 
 
+The guidelines aim to provide a structured and systematic approach to designing effective ecological monitoring schemes. They emphasize the importance of clearly defining monitoring objectives, selecting appropriate indicators, and aligning sampling and data collection, processing and analysis with these objectives. The document promotes transparency, consistency, and reproducibility throughout the planning process. It also encourages close collaboration with clients and stakeholders and the integration of existing knowledge and data. Ultimately, the goal is to ensure that monitoring efforts are scientifically robust and policy-relevant.
+
+
 ## IAS Regulation
 
 For species on this list, EU member states are required to setup a "surveillance system", that "collects and records data on the occurrence in the environment" across the territory of each EU member state (ref page).
