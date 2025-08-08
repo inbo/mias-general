@@ -61,20 +61,6 @@ species_data <- species_list |>
       TRUE ~ FALSE
     )
   )  
-# format species names for printing
-print_species_name <- function(
-    species_table, 
-    name_expr = expression(c("*",species,"*", " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]"))
-    ) {
-  species_table |>
-    dplyr::rowwise() |> 
-    dplyr::mutate(
-      tmp = paste0(eval(expr = name_expr), collapse = "")
-        ) |>
-    dplyr::arrange(tmp) |>
-    dplyr::pull(tmp) |>
-    gsub("\\\\&", "&", x = _)
-}
 
 ```
 
@@ -514,7 +500,7 @@ This concerns the species
 `r paste(names_anb_prior_nomanagment$plant, names_anb_prior_nomanagment$animal)`.
 
 We inspect the method-based synergies under the management-related monitoring scopes. To this end, @tbl-synplantsanb1, @tbl-synanimalsanb1, and @tbl-synanimalsanb2 show the monitoring methods shared among the ANB focus plants and animals for the scopes distribution under management and abundance under management.
-The tables are structured such that primary, secondary and tertiary species (ref subsection) are presented in groups of rows.
+The tables are structured such that primary, secondary and tertiary species (see @sec-mon-syn) are presented in groups of rows.
 Reported monitoring methods are arranged in columns and table cells are filled with color when a method was reported for a species.
 Within species groups, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
 
