@@ -338,7 +338,7 @@ plot_ranking <- ggplot2::ggplot(
     y = NULL
   )#
 #plot_ranking
-
+#plot_ranking |> plotly::ggplotly()
 
 # --- plotting - invasion stadium vs. prius stadium ---------------------------------------------------
 
@@ -415,6 +415,7 @@ plot_stadium <- ggplot2::ggplot(
   )
 
 #plot_stadium
+#plot_stadium |> plotly::ggplotly()
 #
 #
 #
@@ -1013,7 +1014,7 @@ plot_moni_patt <- ggplot2::ggplot(
   ) +
   ggplot2::labs(
     x = "Methods",
-    y = "Species (English vernacular name)"
+    y = "Species (vernacular name eng)"
   )
 # plot_moni_patt
 
