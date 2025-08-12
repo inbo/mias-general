@@ -360,7 +360,7 @@ res_plot_tmp <- res_comb_upd |>
     # stadium labels
     label_helper = paste(prius_stadium_upd, stadium, sep ="_")
   ) |>
-  dplyr::group_by(label_helper) |>
+  dplyr::group_by(label_helper, on_unionlist_upd) |>
   dplyr::mutate(
     stadium_label = dplyr::case_when(
       (prius_stadium_upd != stadium & dplyr::row_number() == 1) ~ paste(vern_name_eng, collapse = "\n"),
