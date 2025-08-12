@@ -101,8 +101,8 @@ knitr::kable(
       c(
         "species on union list",
         "accepted scientific name", 
-        "vernacular name english", 
-        "vernacular name dutch", 
+        "vernacular name eng", 
+        "vernacular name nld", 
         "kingdom", 
         "taxon",
         "prius invasion stage",
