@@ -410,8 +410,8 @@ plot_stadium <- ggplot2::ggplot(
     strip.background = ggplot2::element_blank()
   ) +
   ggplot2::labs(
-    x = "Stadium assigned in PrIUS",
-    y = "Stadium reported by expert"
+    x = "Invasion stage assigned in PrIUS",
+    y = "Invasion stage reported by expert"
   )
 
 #plot_stadium

@@ -270,8 +270,8 @@ Within (i.e., for each value of) scope priority, rows are sorted by scope type r
 That is, within high and low priority scopes, all species for which (at least) detection is relevant appear first, 
 followed by those for which (at least) inventory is relevant and so forth.
 Within (i.e., for each value of) scope type, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
-Within (i.e., for each value of) milieu, rows are sorted by invasion stadium, from "absent" to "widely established".
-Within (i.e., for each value of) invasion stadium, rows are sorted by global feasibility scores from high to low.
+Within (i.e., for each value of) milieu, rows are sorted by invasion stage, from "absent" to "widely established".
+Within (i.e., for each value of) invasion stage, rows are sorted by global feasibility scores from high to low.
 
 ::: {.landscape}
 

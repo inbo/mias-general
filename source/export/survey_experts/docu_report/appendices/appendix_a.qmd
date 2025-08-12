@@ -105,7 +105,7 @@ knitr::kable(
         "vernacular name dutch", 
         "kingdom", 
         "taxon",
-        "prius stadium",
+        "prius invasion stage",
         "prius milieu"
         ),
     table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE

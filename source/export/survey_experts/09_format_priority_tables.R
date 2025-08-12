@@ -107,7 +107,7 @@ add_symbols <- function(
     dplyr::rowwise() |>
     dplyr::mutate(
       scope_boolean_symbol = dplyr::case_when(
-        grepl("invasion stadium", scope_boolean_motivation) ~
+        grepl("invasion stage", scope_boolean_motivation) ~
           paste(scope_boolean_symbol, .symbols_base_list$stadium, sep = ", "),
         TRUE ~ scope_boolean_symbol
       ),
@@ -501,7 +501,8 @@ make_table_species_display <- function(
     longtable = .longtable,
     linesep = "",
     col.names = colnames(data_table_upd) |>
-      gsub(pattern = "_", replacement = " ", x = _),
+      gsub(pattern = "_", replacement = " ", x = _) |>
+      gsub(pattern = "stadium", replacement = "invasion stage", x = _),
     table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
   ) |>
     kableExtra::kable_styling(
@@ -578,6 +579,8 @@ make_table_display <- function(
     col.names = colnames(data_table_wide) |>
       gsub(pattern = "scope_", replacement = "", x = _) |>
       gsub(pattern = "_", replacement = " ", x = _) |>
+      gsub(pattern = "stadium", replacement = "invasion stage", x = _) |>
+
       stringr::str_wrap(width = nchar("abundance")), #|>
       #(\(x)
       # if (!is_html) {
@@ -859,6 +862,7 @@ make_table_syn_display <- function(
   colnames_upd <- c(
     colnames(table_comb)[seq_along(cols_id)] |>
       gsub(pattern = "_", replacement = " ", x = _) |>
+      gsub(pattern = "stadium", replacement = "invasion stage", x = _) |>
       kableExtra::cell_spec(
         format = .format,
         x = _,

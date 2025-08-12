@@ -21,14 +21,14 @@ source("../09_survey_make_plots.R", local = knitr::knit_global())
 
 ## Additional descriptive results {#sec-app-descr-results}
 
-### Invasion stadium PrIUS against survey
+### Invasion stage PrIUS against survey
 
-@fig-stadium displays the invasion stadium as assigned in the PrIUS report [@dhondt_een_2022] against the invasion stadium as reported in the expert survey.
+@fig-stadium displays the invasion stage as assigned in the PrIUS report [@dhondt_een_2022] against the invasion stage as reported in the expert survey.
 Species for which discrepancies occur are highlighted.
 
 ```{r plot-stadium}
 #| label: "fig-stadium"
-#| fig-cap: "Invasion stadium according to PrIUS and the expert survey"
+#| fig-cap: "Invasion stage according to PrIUS and the expert survey"
 #| fig-width: 10
 #| fig-height: 8
 #| out-width: 90%

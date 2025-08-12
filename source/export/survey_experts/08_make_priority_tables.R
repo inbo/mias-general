@@ -292,7 +292,7 @@ stadium_scope_1_expr <- '
      )
      '
 stadium_scope_0_motivation <-
-  "scope not relevant due to invasion stadium"
+  "scope not relevant due to invasion stage"
 #
 #
 # set scope to 0...
