@@ -2,7 +2,7 @@
 toc: false
 ---
 
-# Introduction {#sec-monitoring-ias}
+# Introduction {#sec-intro}
 
 Belgium is legally obligated to monitor invasive alien species (IAS) on the List of Invasive Alien Species of Union Concern (Union List in short) under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014].
 For the Flemish region, the coordination of such monitoring is a statutory task of the Research Institute for Nature and Forest (INBO). However, despite this obligation, Flanders currently still lacks a dedicated and coherent monitoring program that systematically covers all Union List species [@maes_monitoring_2023].
