@@ -54,10 +54,10 @@ flandersqmd:
       - Research Institute for Nature and Forest (INBO)
   reviewer:
   - name:
-      given: John
-      family: Doe
-    email: john.doe.email
-    orcid: 0000-0001-7268-4200
+      given: Bram
+      family: D'hondt
+    email: bram.dhondt@inbo.be
+    orcid: 0000-0002-1330-1457
     affiliation:
        - Research Institute for Nature and Forest (INBO)
   year: 2025 # remove?
