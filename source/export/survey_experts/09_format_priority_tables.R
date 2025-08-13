@@ -502,7 +502,7 @@ make_table_species_display <- function(
     linesep = "",
     col.names = colnames(data_table_upd) |>
       gsub(pattern = "_", replacement = " ", x = _) |>
-      gsub(pattern = "stadium", replacement = "invasion stage", x = _),
+      gsub(pattern = "stadium", replacement = "invasion stage", x = _) |>
     table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
   ) |>
     kableExtra::kable_styling(

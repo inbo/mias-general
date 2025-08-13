@@ -235,7 +235,7 @@ table_committee_display <- table_committee |>
     col.names = colnames(table_committee) |> 
       head(x = _, -1) |> 
       gsub("_", " ", x = _) |>
-      gsub("stadium", "invasion stage", x = _),
+      gsub("stadium", "invasion stage", x = _) |>
     table.attr = 'data-quarto-disable-processing="true"'
   ) |>
   kableExtra::kable_styling(
