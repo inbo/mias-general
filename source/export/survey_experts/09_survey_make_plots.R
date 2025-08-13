@@ -308,7 +308,7 @@ plot_ranking <- ggplot2::ggplot(
     position = "right",
     breaks = res_plot$y_axis_num_helper |> unique(),
     labels = res_plot$vern_name_eng |> levels(),
-    sec.axis = ggplot2::dup_axis(name = "Species (English vernular name)", labels = NULL, breaks = NULL),
+    sec.axis = ggplot2::dup_axis(name = "Species (vernular name eng)", labels = NULL, breaks = NULL),
     expand = c(0, 1)
     ) +
   ggplot2::coord_cartesian(
@@ -550,7 +550,7 @@ plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_nam
   ) +
   ggplot2::labs(
     x = "Proportion responses",
-    y = "Species (English vernacular name)",
+    y = "Species (vernacular name eng)",
     color = "Category response"
   )
 # plot_unknown_prop_species
@@ -690,7 +690,7 @@ plot_unknown_pattern <- ggplot2::ggplot(
   ) +
   ggplot2::labs(
     x = "Question",
-    y = "Species (English vernacular name)",
+    y = "Species (vernacular name eng)",
     color = "Category response",
     fill = "Category response"
   )
