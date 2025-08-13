@@ -107,7 +107,8 @@ knitr::kable(
         "taxon",
         "prius invasion stage",
         "prius milieu"
-        ),
+        ) |> 
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE),
     table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
   ) |>
     kableExtra::kable_styling(

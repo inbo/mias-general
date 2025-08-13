@@ -236,6 +236,7 @@ table_committee_display <- table_committee |>
       head(x = _, -1) |> 
       gsub("_", " ", x = _) |>
       gsub("stadium", "invasion stage", x = _) |>
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE),
     table.attr = 'data-quarto-disable-processing="true"'
   ) |>
   kableExtra::kable_styling(

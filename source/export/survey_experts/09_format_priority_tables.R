@@ -503,6 +503,7 @@ make_table_species_display <- function(
     col.names = colnames(data_table_upd) |>
       gsub(pattern = "_", replacement = " ", x = _) |>
       gsub(pattern = "stadium", replacement = "invasion stage", x = _) |>
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE),
     table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
   ) |>
     kableExtra::kable_styling(
@@ -568,7 +569,7 @@ make_table_display <- function(
     grepl("scope", colnames(data_table_wide)) |> sum(),
     if (length(cols_addon) > 0) length(cols_addon) else NULL
     )
-  names(.header) <- c(" ", "scope", if (length(cols_addon) > 0) " " else NULL)
+  names(.header) <- c(" ", "Scope", if (length(cols_addon) > 0) " " else NULL)
   knitr::kable(
     x = data_table_wide,
     format = .format,
@@ -580,7 +581,7 @@ make_table_display <- function(
       gsub(pattern = "scope_", replacement = "", x = _) |>
       gsub(pattern = "_", replacement = " ", x = _) |>
       gsub(pattern = "stadium", replacement = "invasion stage", x = _) |>
-
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE)|>
       stringr::str_wrap(width = nchar("abundance")), #|>
       #(\(x)
       # if (!is_html) {
@@ -863,6 +864,7 @@ make_table_syn_display <- function(
     colnames(table_comb)[seq_along(cols_id)] |>
       gsub(pattern = "_", replacement = " ", x = _) |>
       gsub(pattern = "stadium", replacement = "invasion stage", x = _) |>
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE) |>
       kableExtra::cell_spec(
         format = .format,
         x = _,
@@ -875,6 +877,7 @@ make_table_syn_display <- function(
       ),
     colnames(table_comb)[(length(cols_id) + 1): ncol(table_comb)] |>
       gsub(pattern = "method_", replacement = "", x = _) |>
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE) |>
       # if latex: rotate
       (\(x)
        if (!is_html) {
@@ -937,7 +940,7 @@ make_table_syn_display <- function(
     kableExtra::add_header_above(
       header = c(
         " " = length(cols_id),
-        "method" = ncol(table_comb) - length(cols_id)
+        "Method" = ncol(table_comb) - length(cols_id)
       ),
       extra_css = if (is_html) "border-bottom: 1.5px solid" else NULL
     ) |>
