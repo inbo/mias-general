@@ -4,7 +4,7 @@
 ## Species covered {#sec-app-species}
 
 The following table contains the 
-All scientific names are the currently accepted scientific names according to the Global Biodiversity Information Facility (GBIF; ref).
+All scientific names are the currently accepted scientific names according to the Global Biodiversity Information Facility [GBIF; @gbif_the_global_biodiversity_information_facility_what_2025].
 Vernacular names have largely also been retrieved from GBIF or filled in by species experts otherwise. 
 
 ::: {.landscape}
@@ -209,7 +209,7 @@ The following e-mail text was used to invite species experts to participate in t
 
 ## Species distribution maps {#sec-app-maps}
 
-The question "Is the distribution of the species across Flanders sufficiently known?" was complemented by species-specific distribution maps based on recent data from GBIF [@gbif_the_global_biodiversity_information_facility_what_2025] (ref GBIF; ref data).
+The question "Is the distribution of the species across Flanders sufficiently known?" was complemented by species-specific distribution maps based on recent data from GBIF [@gbif_the_global_biodiversity_information_facility_what_2025; @gbiforg_user_occurrence_2024].
 
 ### Example distribution map for the Chinese muntjac
 
