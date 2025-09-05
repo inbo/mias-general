@@ -62,7 +62,7 @@ A second discussion point concerned the choice between a species-oriented priori
 
 Following the decision to adopt a species-oriented approach, the steering committee reviewed the three proposed prioritization scenarios. After discussion, it was concluded that Scenario 1 - focus on ANB priority species and management - and Scenario 3 - focus on distribution - most closely reflected the committee’s priorities and were therefore preferred. Scenario 2, which emphasized early detection of new potential invaders, was considered less relevant to consider at this stage, although its rationale was acknowledged. It was also pointed out that detection is more realistically carried out via opportunistic data than via structured monitoring schemes if a balance of costs and benefits is to be maintained.
 
-However, rather than selecting a single scenario, the committee opted to extract a number of species across scenario’s to compile into a consolidated species list and select the monitoring scopes deemed most relevant for each species. 
+However, rather than selecting a single scenario, the committee opted to extract a number of species across scenarios to compile into a consolidated species list and select the monitoring scopes deemed most relevant for each species. 
 The committee’s species list consists of 13 species receiving a high-priority status in the survey-based prioritization (i.e., at least one scope of high priority;
 `r species_data |> dplyr::filter(grepl("waterteunisbloem|parelvederkruid|muskusrat|beverrat|muntjak|klauwkikker|verspreidbladige waterpest|crassula|moerasaronskelk|hemelboom|dwergmeerval|amurgrondel", vern_name_nld, ignore.case = TRUE)) |> print_species_name()`
 ), 4 species receiving a low-priority status (i.e., at least one scope relevant but not of high priority;
@@ -309,7 +309,7 @@ was excluded due to ongoing debate about the species' invasiveness in protected 
 
 A third group of species, such as 
 `r species_data |> dplyr::filter(grepl("Watercrassula", vern_name_nld)) |> print_species_name()`
-, was excluded primarily because of uncertainty regarding the feasibility and effectiveness of management interventions. In such cases, the absence of clear options for action limits the practical value of establishing a monitoring schemes at this time.
+, was excluded primarily because of uncertainty regarding the feasibility and effectiveness of management interventions. In such cases, the absence of clear options for action limits the practical value of establishing monitoring schemes at this time.
 
 
 ### Final selection of species for immediate monitoring design
