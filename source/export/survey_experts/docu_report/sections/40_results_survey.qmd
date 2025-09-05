@@ -4,8 +4,9 @@ toc: false
 
 # Results of the expert survey {#sec-survey-results}
 
-In this section, we present the results of the expert survey.
+In this chapter, we present the results of the expert survey.
 This mainly concerns the results of the prioritization process but also a number of descriptive results.
+All R analysis code is again available via the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate].
 
 ```{r survey-results-setup}
 #| message: false
@@ -107,7 +108,7 @@ Species' overall feasibility and urgency scores obtained from the survey can be 
 The figure displays the overall scores along the x-axis and the species along the y-axis.
 Triangles represent feasibility and circles urgency scores and species are sorted according to their overall feasibility scores and nested within these according to their overall urgency scores. 
 The critical feasibility and urgency values used for exclusion in the prioritization process are indicated via vertical lines (dashed for urgency, solid for feasibility).
-Per species, overall feasiblity und urgency scores are connected by a solid line if they exceed both their critical values and by a dashed line otherwise. 
+Per species, overall feasibility and urgency scores are connected by a solid line if they exceed both their critical values and by a dashed line otherwise. 
 Triangles or circles that are filled pertain to Union List species, empty ones to candidate species.
 The expert-judged invasion stage is coded by color:
 Absent species are shown in grey, sporadically present species in orange, limited established species in magenta, and widespread species in purple.
@@ -124,9 +125,9 @@ plot_ranking
 
 
 We see that monitoring schemes tend to be rated as both more urgent and feasible for species in later invasion stages.
-This is in part related to the fact that, for species in earlier invasion stages, experts tended to reply "unknown" or "I don't know" more often - response options that we linked to low feasibilty and urgency (see @sec-app-descr-results). 
+This is in part related to the fact that, for species in earlier invasion stages, experts tended to reply "unknown" or "I don't know" more often - response options that we linked to low feasibility and urgency (see @sec-app-descr-results). 
 Also, we find more often that feasibility scores are higher than urgency scores than the reverse.
-[Any patterns you want to mention if we take ecology of species into account?]
+
 
 As explained in @sec-prior, the displayed overall scores co-determine the prioritization results:
 Species that miss either the critical feasibility or the critical urgency value are excluded from the final prioritization. 
@@ -400,10 +401,10 @@ exclusion_stage2$animal |>
 The prioritization process enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: It narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
 
 Yet despite this filtering, the number of retained combinations remains large and additional focus is therefore helpful.
-To this end, we complement the presentation of the prioritization results in the previous subsection with three strategic scenarios.
+To this end, we complement the presentation of the prioritization results in the previous section with three strategic scenarios.
 Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritized combinations of species and monitoring scopes:
 
-- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
+- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities (ref?). This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
 - **Scenario 2** highlights prioritized species for which early detection is key (i.e., scope detection is withheld). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
 - **Scenario 3** targets prioritized species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
 
@@ -497,7 +498,7 @@ names_anb_nonprior$animal |>
 
 See again tables @tbl-priorplants and @tbl-prioranimals for the exact exclusion reasons.
 
-For the subset of ANB focus species with at least one high-relevance, high-priority monitoring scope, there was a management-related scope among the withheld scopes in more than half of the cases. For the remaining cases, the management-related scopes had been excluded due to the species not being managed, or due to distribution or abundance information not being necessary to evaluate management, or due to the lack of a method to measure abundance
+For the subset of ANB focus species with at least one high-relevance, high-priority monitoring scope, there was a management-related scope among the withheld scopes in more than half of the cases. For the remaining cases, the management-related scopes had been excluded due to the species not being managed, or due to distribution or abundance information not being necessary to evaluate management, or due to the lack of a method to measure abundance.
 Given the focus on management-related monitoring scopes in this scenario, the latter subset of species is not further examined in the following.
 This concerns the species 
 `r paste(names_anb_prior_nomanagment$plant, names_anb_prior_nomanagment$animal)`.
@@ -609,7 +610,7 @@ table_syn_det_animals_display_list$detection
 
 #### Scenario 3: Focus on monitoring scope distribution
 
-The third scenario focuses on the monitoring scope distribution motivated by the clear requirement of the IAS regulation to report on the distribution of IAS (see @sec-scopes). We thus consider all species for which the monitoring scope distribution gets assigned a high relevance and high priority in the survey-based prioritization. 
+The third scenario focuses on the monitoring scope distribution motivated by the clear requirement of the Invasive Alien Species Regulation to report on the distribution of IAS (see @sec-scopes). We thus consider all species for which the monitoring scope distribution gets assigned a high relevance and high priority in the survey-based prioritization. 
 The respective plants are in alphabetical order: 
 
 ```{r }
@@ -682,7 +683,9 @@ Next, turning to the representativeness of opportunistic observations as an excl
 While we have used it as a general criterion to assign low relevance to any monitoring scope, the original question only addressed representativeness with respect to a species' distribution.
 Future assessments of expert knowledge should consider the representativeness of opportunistic observations in a more differentiated manner.
 For the current results, we note that the representativeness of opportunistic observations is rarely the sole reason of exclusion, although there are a few cases (
-e.g., `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`, but see the following section
+e.g., `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`, but see the following chapter
 ).
 
-Finally, also concerning the numerical processing of the collected expert input, we made certain choices that could have affected the survey results: Response scores were treated as interval-scaled and summarized via arithmetic means across questions, critical values for expert rated-feasibility and urgency were based on the 50-th percentile of the distribution of mean scores across all species. Alternatively, expert responses could be treated as ordinal - with consequences for further processing - or summarized in different ways; also, critical values can be determined in various manners. Our choices were mainly guided by simplicity and interpretability.
+Considering the approach of having different experts provide judgements about the status of different IAS in Flanders, one might be concerned about rater effects: Differences that arise between species might in part reflect differences between experts and their judgements, rather than differences between species. Unfortunately, we can neither rule out such effects, nor quantify them, as we did not cross experts with species in our study design. Workload is of course a major consideration here, as experts are in high demand already. We, however, attempted to select experts to the best of our knowledge.  
+
+Finally, regarding the numerical processing of the collected expert input, we made certain choices that could have affected the survey results: Response scores were treated as interval-scaled and summarized via arithmetic means across questions, critical values for expert rated-feasibility and urgency were based on the 50-th percentile of the distribution of mean scores across all species. Alternatively, expert responses could be treated as ordinal - with consequences for further processing - or summarized in different ways; also, critical values can be determined in various manners. Our choices were mainly guided by simplicity and interpretability.
