@@ -895,7 +895,7 @@ make_table_syn_display <- function(
       format = .format,
       escape = .escape,
       booktabs = .booktabs,
-      longtable = .longtable,
+      longtable = FALSE, #.longtable,
       linesep = "",
       col.names = colnames_upd,
       table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
