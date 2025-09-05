@@ -65,7 +65,8 @@ species_list_file <- list.files(
   pattern = "species_list",
   full.names = TRUE
 ) |>
-  grep(pattern = "2025-04-30", x = _, value = TRUE)
+  grep(pattern = "2025-04-30", x = _, value = TRUE) |>
+  grep(pattern = "upd", x = _, value = TRUE)
 species_list <- get(load(species_list_file))$data
 #
 #
@@ -124,7 +125,7 @@ species_info <- species_list |>
   ) |>
   dplyr::select(
     tidyselect::any_of(
-      c("on_unionlist", "kingdom", "taxon", "prius_stadium", "prius_milieu",
+      c("on_unionlist", "on_unionlist_2025", "kingdom", "taxon", "prius_stadium", "prius_milieu",
         "sci_name", "vern_name_eng", "vern_name_nld")
       )
     ) |>

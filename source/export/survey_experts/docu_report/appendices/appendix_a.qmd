@@ -16,7 +16,7 @@ Vernacular names have largely also been retrieved from GBIF or filled in by spec
 
 # load files
 response_data_path <- "../../../../data/survey_experts/"
-species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list_upd.Rda"
 maps_urls_path <- "../../../../media/gbif_occcubes/plot_filepaths_gdriveurls.rda"
 
 res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
@@ -62,7 +62,7 @@ species_data <- species_list |>
       TRUE ~ "#A9A9A9"
     )
   ) |>
-  dplyr::arrange(on_unionlist |> dplyr::desc(), sci_name) |>
+  dplyr::arrange(on_unionlist_2025 |> dplyr::desc(), sci_name) |>
   dplyr::mutate(
     dplyr::across(
       tidyselect::everything(),
@@ -75,6 +75,7 @@ species_data <- species_list |>
     tidyselect::all_of(
     c(
       "on_unionlist",
+      "on_unionlist_2025",
       "sci_name", "vern_name_eng", "vern_name_nld", 
       "kingdom", "taxon", 
       "prius_stadium", "prius_milieu"
@@ -99,7 +100,8 @@ knitr::kable(
     linesep = "",
     col.names = 
       c(
-        "species on union list",
+        "species on union list 2022",
+        "species on union list 2025",
         "accepted scientific name", 
         "vernacular name eng", 
         "vernacular name nld", 
@@ -129,11 +131,11 @@ knitr::kable(
     width = .col_width_narrow
   ) |>
     kableExtra::column_spec(
-    column = 2,
+    column = 3,
     width = .col_width_wide
   ) |>
     kableExtra::column_spec(
-    column = c(3,4,7,8),
+    column = c(4,5,8,9),
     width = .col_width_medium
   )
 

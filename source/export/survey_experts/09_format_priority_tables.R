@@ -456,7 +456,7 @@ make_table_species_display <- function(
       "vern_name_eng",
       "kingdom",
       "taxon",
-      "on_unionlist",
+      "on_unionlist_2025",
       "stadium",
       "prius_stadium",
       "prius_milieu"
@@ -652,16 +652,16 @@ make_table_display <- function(
 #
 #
 id_cols_syn_display <- if (exists("mode_source") && grepl("presentation", mode_source)) {
-  c("vern_name_eng", "taxon", "on_unionlist", "stadium", "prius_stadium", "prius_milieu")
+  c("vern_name_eng", "taxon", "on_unionlist_2025", "stadium", "prius_stadium", "prius_milieu")
 } else {
   c("species", "vern_name_eng", "stadium", "taxon", "prius_milieu")
-  # "taxon", "on_unionlist",
+  # "taxon", "on_unionlist_2025",
 }
 #
 # make list with data frames containing a (species , milieu) x methods per scope
 make_table_syn_list <- function(
     table_filtered,
-    cols_addon = c("stadium", "prius_stadium", "taxon", "on_unionlist"),
+    cols_addon = c("stadium", "prius_stadium", "taxon", "on_unionlist_2025"),
     remove_n_1 = FALSE
 ){
   methods <- setNames(
@@ -1281,7 +1281,7 @@ kingdom_list <- setNames(
   c("plant", "animal")
 )
 id_cols_display <- c("species", "vern_name_eng", "prius_milieu", "stadium")
-# "taxon", "on_unionlist"
+# "taxon", "on_unionlist_2025"
 
 table_base_upd_display_list <- lapply(
   kingdom_list,
@@ -1389,7 +1389,7 @@ species_anb_lowprior <- species_anb_tmp |>
 species_anb_display <- species_anb |>
   dplyr::arrange(
     kingdom |> dplyr::desc(),
-    on_unionlist |> dplyr::desc(),
+    on_unionlist_2025 |> dplyr::desc(),
     stadium,
     prius_milieu,
     taxon,

@@ -11,7 +11,7 @@ toc: false
 is_html <- knitr::is_html_output()
 # define paths
 response_data_path <- "../../../../data/survey_experts/"
-species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list_upd.Rda"
 functions_path <- "../../../functions/"
 # load response & question data, species list
 res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))

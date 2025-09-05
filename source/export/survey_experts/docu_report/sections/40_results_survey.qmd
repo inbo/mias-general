@@ -16,7 +16,7 @@ is_html <- knitr::is_html_output()
 response_data_path <- "../../../../data/survey_experts/"
 questions_path <- "../questions_EN/"
 functions_path <- "../../../functions/"
-species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list_upd.Rda"
 # load response & question data, species list
 res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
 species_list <- get(load(species_list_path))
@@ -31,10 +31,10 @@ n_species <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
    n_questionnaires
 }
 n_species_unionlist <- res_comb_upd |> 
-  dplyr::filter(on_unionlist) |> 
+  dplyr::filter(on_unionlist_2025) |> 
   dplyr::pull(species) |> unique() |> length()
 tmp <- res_comb_upd |> 
-  dplyr::filter(!on_unionlist) |> 
+  dplyr::filter(!on_unionlist_2025) |> 
   dplyr::pull(species) |> unique() |> length()
 n_species_rest <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
   tmp + 2
@@ -77,18 +77,20 @@ At the time we started processing the survey data, the survey was not completed 
 ```{r species-missing-a}
 #| results: "asis"
 species_data |> 
-  dplyr::filter(on_unionlist & !form_completed) |>
+  dplyr::filter(on_unionlist_2025 & !form_completed) |>
   print_species_name(species_table = _) |>
   paste(x = "  -", y = _) |>
   cat(x = _, sep = "\n")
 ```
 
-It was also not completed for the following candidate IAS:
+
 
 ```{r species-missing-b}
 #| results: "asis"
+#| include: FALSE
+# It was also not completed for the following candidate IAS:
 species_data |> 
-  dplyr::filter(!on_unionlist & !form_completed) |>
+  dplyr::filter(!on_unionlist_2025 & !form_completed) |>
   print_species_name(species_table = _) |>
   paste(x = "  -", y = _) |>
   cat(x = _, sep = "\n")

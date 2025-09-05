@@ -36,10 +36,10 @@ res_scored_allspec <- res_comb_upd |>
   dplyr::filter(question_scored |> as.logical(), !section_skipped) #|>
   #dplyr::filter(!grepl("IRR", prius_stadium))
 res_scored <- res_scored_allspec |>
-  dplyr::filter(on_unionlist)
+  dplyr::filter(on_unionlist_2025)
 res_open <- res_comb_upd |>
   dplyr::filter(!question_scored |> as.logical(), !section_skipped) |>
-  dplyr::filter(on_unionlist, !grepl("IRR", prius_stadium))
+  dplyr::filter(on_unionlist_2025, !grepl("IRR", prius_stadium))
 
 # --- setup functions --------------------------------------------------
 #
@@ -134,7 +134,7 @@ cor(res_m_allspec |> dplyr::select(tidyselect::starts_with(c("m_", "gm_"))))
 #
 # keep only species on unionlist
 res_m <- res_m_allspec |>
-  dplyr::filter(on_unionlist)
+  dplyr::filter(on_unionlist_2025)
 #
 #
 #
@@ -213,8 +213,8 @@ res_plot_tmp <- res_m_allspec |>
       TRUE ~ m_urge
     ),
     on_unionlist_upd = dplyr::case_when(
-      on_unionlist ~ "species on unionlist",
-      !on_unionlist ~ "species not on unionlist"
+      on_unionlist_2025 ~ "species on unionlist 2025",
+      !on_unionlist_2025 ~ "species not on unionlist 2025"
     ),
     part = dplyr::case_when(
       dplyr::row_number() < (dplyr::n()/2) ~ "part 1",
@@ -252,7 +252,7 @@ res_plot <- factorize(
     levels_species_allspec,
     levels_vern_name_eng_allspec |> rev(),
     levels_vern_name_nld_allspec,
-    c("species on unionlist", "species not on unionlist"),
+    c("species on unionlist 2025", "species not on unionlist 2025"),
     levels_stadium
   )
 )
@@ -354,8 +354,8 @@ res_plot_tmp <- res_comb_upd |>
       grepl("VER", prius_stadium) ~ "widespread"
     ),
     on_unionlist_upd = dplyr::case_when(
-      on_unionlist ~ "on unionlist",
-      !on_unionlist ~ "not on unionlist"
+      on_unionlist_2025 ~ "on unionlist 2025",
+      !on_unionlist_2025 ~ "not on unionlist 2025"
     ),
     # stadium labels
     label_helper = paste(prius_stadium_upd, stadium, sep ="_")
@@ -373,7 +373,7 @@ res_plot <- factorize(
   list(
     levels_stadium,
     levels_stadium,
-    c("on unionlist", "not on unionlist")
+    c("on unionlist 2025", "not on unionlist 2025")
   )
 )
 #
