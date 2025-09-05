@@ -8,7 +8,6 @@ toc: false
 ```{r summary-setup}
 #| message: false
 #| warning: false
-
 # define paths
 species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
 # load species list
@@ -42,7 +41,6 @@ print_species_name <- function(
     dplyr::pull(tmp) |>
     gsub("\\\\&", "&", x = _)
 }
-
 ```
 
 
@@ -53,11 +51,11 @@ In the Flemish region, the Research Institute for Nature and Forest is formally 
 However, Flanders currently lacks a coherent monitoring programme that systematically addresses all species on the Union List.
 
 Existing efforts consist of a fragmented landscape of initiatives, often project-based and time-limited, with varying geographic and taxonomic coverage.
-These include professional and citizen science-based schemes dedicated to specific species groups, professional monitoring schemes with broader ecological aims, and opportunistic observations collected through public biodiversity reporting portals such as waarnemingen.be [ref]. 
+These include professional and citizen science-based projects dedicated to specific species groups, professional monitoring schemes with broader ecological aims, and opportunistic observations collected through public biodiversity reporting portals such as waarnemingen.be [@noauthor_waarnemingenbe_nodate]. 
 Despite their contributions, these initiatives are not methodologically aligned and do not collectively meet the requirements of the EU Invasive Alien Species Regulation.
 
 To support the design of future invasive alien species monitoring schemes, 
-an expert survey was conducted covering all 88 species on the current Union List as well as 34 candidate species considered for future inclusion.
+an expert survey was conducted covering all 114 species on the current Union List [@noauthor_commission_2025], as well as 8 candidate species that were considered for inclusion in 2025, but were ultimately discarded.
 The survey gathered species-specific information and expert judgements on the introduction, distribution, abundance, impacts, management and monitoring status in Flanders.
 The collected responses were condensed into overall ratings of the feasibility and urgency of structured monitoring schemes for the species under consideration.
 
@@ -72,8 +70,8 @@ The outcome of the prioritization process was a selection of relevant high-prior
 To further structure the prioritization results, three strategic focus scenarios were developed, each concerning a subset of the prioritized species and monitoring scopes: 
 (1) species prioritized for management by the Agency for Nature and Forests; 
 (2) species requiring mainly early detection;
-and (3) species for which distribution monitoring is relevant.
-For each scenario, commonalities in monitoring methods between species were explored to identify potential method-based synergies relevant for coordination or even implementation efforts.
+and (3) species for which primarily distribution monitoring is relevant.
+For each scenario, commonalities in monitoring methods between species were explored to identify potential method-based synergies relevant for coordination and/or implementation efforts.
 
 A steering committee involving representatives from the Research Institute for Nature and Forest, the Agency for Nature and Forests and the Flanders Environment Agency reviewed the survey and prioritization outcomes and agreed on a final shortlist of four species or species groups for immediate monitoring scheme development.
 These include
