@@ -30,17 +30,18 @@ n_species <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
 } else {
    n_questionnaires
 }
-n_species_unionlist <- res_comb_upd |> 
+tmp <- res_comb_upd |> 
   dplyr::filter(on_unionlist_2025) |> 
   dplyr::pull(species) |> unique() |> length()
-tmp <- res_comb_upd |> 
-  dplyr::filter(!on_unionlist_2025) |> 
-  dplyr::pull(species) |> unique() |> length()
-n_species_rest <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
+n_species_unionlist <- if (res_comb_upd$species |> grepl("Reynoutria", x  = _) |> any()) {
   tmp + 2
 } else {
     tmp
 }
+n_species_rest <- res_comb_upd |> 
+  dplyr::filter(!on_unionlist_2025) |> 
+  dplyr::pull(species) |> unique() |> length()
+
 # form completed
 species_data <- species_list |> 
   purrr::pluck("data") |>
