@@ -4,7 +4,7 @@ toc: false
 
 # The expert survey {#sec-survey-design}
 
-In this section, we recapitulate the purpose and describe the design of the expert survey, including the selection, format and scoring of questions and the generation and distribution of questionnaires.
+In this chapter, we recapitulate the purpose and describe the design of the expert survey, including the selection, format and scoring of questions and the generation and distribution of questionnaires.
 We also detail how the survey results were used for prioritizing species-scope combinations for further planning.
 
 ```{r survey setup}
@@ -28,7 +28,7 @@ options(knitr.kable.NA = '')
 ## Purpose
 
 To support the early phase-planning of structured IAS monitoring schemes for Flanders, we conducted a survey drawing on the knowledge of species experts. The survey aimed to obtain context-specific information on individual species’ invasion stage, introduction, distribution, abundance and impacts in Flanders, as well as ongoing management actions, and available monitoring techniques. This combined need for context-specific information and expert judgement motivated the use of a survey approach rather than a literature review. Existing publications may lack the geographical specificity, operational detail, or up-to-date insights required for monitoring design in the Flemish context. Also, for relevant publications, we expected species experts to be aware and draw on them where appropriate. The survey therefore included questions to assess the perceived urgency and feasibility of establishing monitoring schemes for each species, considering the above-mentioned aspects.. The expert assessments formed the input for the prioritization process to identify a limited number of priority species and monitoring schemes. 
-The survey covers all 88 IAS of Union concern and an additional set of 34 species that were at the time of survey setup considered as candidates for the next extension of the Union List (currently still the case for 26 of the additional species; ref?). For a complete overview of the 122 species covered see @sec-app-species. 
+The survey covers all 114 IAS of Union concern and an additional set of 8 species that were at the time of survey setup considered as candidates for the 2025 extension of the Union List. . For a complete overview of the 122 species covered see @sec-app-species.^[Since the survey was set up before the most recent update of the Union List [@noauthor_commission_2025], it was originally sent out for 88 Union List and 34 candidate species. We have however adapted the current report to reflect the 2025 Union List status. Information on the 2022 situation is still included in the referenced species overview table in @sec-app-a.]  
 
 
 ## Design
@@ -268,17 +268,18 @@ If the number of introduction sites is limited and sites are specific (e.g. seap
 
 ### Questionnaire generation and distribution
 
-For each species, a separate questionnaire was set up using Google Forms (ref). We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from the Global Biodiversity Information Facility (GBIF) [@gbif_the_global_biodiversity_information_facility_what_2025] (ref data; @sec-app-maps)). 
+For each species, a separate questionnaire was set up using Google Forms. We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from the Global Biodiversity Information Facility (GBIF) [@gbif_the_global_biodiversity_information_facility_what_2025; @gbiforg_user_occurrence_2024] (@sec-app-maps)). 
 The only exception was the group of three invasive knotweeds, which were combined into a single form. This decision was based not only on their similar ecological characteristics, but primarily on the difficulty of reliably distinguishing them in the field or in most data sources. 
 
-Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts available via the github repository X (ref repo).
+Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts, all available via the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate].
+
 
 The 120 generated forms were mapped to 57 experts affiliated with INBO as well as other research institutions in Belgium and the Netherlands. Links to the forms were sent out via e-mail using a standardized text (see @sec-app-mail).
 
 
 ## Prioritization of species-scope combinations {#sec-prior}
 
-Crossing the different monitoring scopes described in @sec-monitoring-ias with all 122 species covered in the expert survey results in a large number of potential monitoring schemes. To make the development of monitoring schemes tractable, a prioritization must be made. The desired outcome of this prioritization process was thus to arrive at a limited number of relevant high-priority species and monitoring scope combinations. These priority combinations form the starting point for the development of structured, policy-relevant IAS monitoring schemes, to be implemented using the proven INBO framework for monitoring design and evaluation [@wouters_ontwerp_2008].
+Crossing the different monitoring scopes described in @sec-monitoring-ias with all 122 species covered in the expert survey results in a large number of potential monitoring schemes. To make the development of monitoring schemes tractable, a prioritization must be made. The desired outcome of this prioritization process was thus to arrive at a limited number of relevant high-priority species and monitoring scope combinations. These priority combinations form the starting point for the development of structured, policy-relevant IAS monitoring schemes, to be implemented using the proven INBO framework for monitoring design and evaluation [@wouters_ontwerp_2008-1].
 
 Our approach to the prioritization involves a two-stage exclusion process visualized in @fig-prioritization [adapt fix size and position]. First we exclude species-scope combinations that are less relevant. Then we exclude species-scope combinations that have low priority.
 We base exclusion not only on the overall feasibility and urgency scores, but also on responses to selected individual survey questions. The latter implies that a species-scope combination is excluded if the expert chooses a certain response to a certain question - an implementation of the one-out-all-out-principle for a limited number of question-response combinations we deemed critical. We detail the two stages of the prioritization process and the exact exclusion criteria employed in the following.
@@ -300,7 +301,7 @@ In Stage 1 of the prioritization process, we exclude species-scope combinations 
 - which information is necessary to evaluate management,
 - whether suitable methods are available to implement the monitoring.
 
-We explain each criterion in the following subsections.
+We explain each criterion in the following sections.
 For the exact filtering rules applied to the survey data see [R code here](https://github.com/inbo/mias-general/blob/b5c6d5bdccdb77f97c0c42874f5524f57d856ebc/source/export/survey_experts/08_make_priority_tables.R#L226-L292).
 
 
@@ -343,7 +344,7 @@ We determine priority based on
 - whether the monitoring area is unknown or unspecific for a species,
 - whether the expert-judged overall feasibility and urgency reach critical values.
 
-We again explain each criterion in the following subsections.
+We again explain each criterion in the following sections.
 For the exact filtering rules applied to the survey data see
 [R code here](https://github.com/inbo/mias-general/blob/b5c6d5bdccdb77f97c0c42874f5524f57d856ebc/source/export/survey_experts/08_make_priority_tables.R#L293-L340).
 
@@ -410,4 +411,4 @@ table_filtered_illu_final_display |>
 
 We complement the table of species-scope combinations with a table of potential monitoring method-based synergies. That is, within each monitoring scope, we identify species for which overlapping methods were reported and display those in tabular fashion. Such method-based commonalities may help to align efforts in the planning of monitoring schemes (e.g., method selection, planning of data collection) or even in their future implementation (e.g., training field workers, data analysis, joint procurement and logistics). It is important to note, however, that the present analysis represents a preliminary screening. Whether the indicated synergies actually manifest will only become clear upon further investigation during the application of the INBO guidelines for designing monitoring schemes. 
 
-We consider method-based synergies in two ways: first, between species for which a given scope was retained during both stages of the prioritization process, referred to as primary species in the following; and second, between primary species and species for which the scope remained relevant but was given a low priority during the second exclusion round. Here we further distinguish between secondary and tertiary species. Secondary species are those excluded purely due to a low overall urgency score, despite being considered feasible to monitor; tertiary species have been excluded purely due to a low overall feasibility score, even though the overall urgency of monitoring was critical. Non-primary species can still be relevant to consider if they share monitoring methods with primary species. In such cases, they may be included as potential ‘free riders’ in that they could be monitored opportunistically as part of a scheme primarily designed for a primary species.
+We consider method-based synergies in two ways: first, between species for which a given scope was retained during both stages of the prioritization process, referred to as primary species in the following; and second, between primary species and species for which the scope remained relevant but was given a low priority during the second exclusion round. Here we further distinguish between secondary and tertiary species. Secondary species are those excluded purely due to a low overall urgency score, despite being considered feasible to monitor; tertiary species have been excluded purely due to a low overall feasibility score, even though the overall urgency of monitoring was critical. Non-primary species can still be relevant to consider if they share monitoring methods with primary species. In such cases, they may be included as potential “free riders” in that they could be monitored opportunistically as part of a scheme primarily designed for a primary species.
