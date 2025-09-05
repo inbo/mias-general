@@ -19,7 +19,7 @@ format:
 flandersqmd:
   entity: INBO
   level: 1
-  title: Prioritizing monitoring schemes for invasive alien species in Flanders
+  title: Prioritizing invasive alien species for monitoring in Flanders
   subtitle: Results of an expert survey
   author:
   - name:
@@ -66,7 +66,7 @@ flandersqmd:
   coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/ # remove?
   coverdescription: Photo by Jimmi Kamballur from Pexels # remove?
   # doi
-  public_report: false
+  public_report: true
   colophon: true
   floatbarrier: section
   client:
