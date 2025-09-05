@@ -122,6 +122,7 @@ book:
   appendices:
     - appendices/appendix_a.qmd
     - appendices/appendix_b.qmd
+    - appendices/appendix_c.qmd
 
 execute:
   echo: false
