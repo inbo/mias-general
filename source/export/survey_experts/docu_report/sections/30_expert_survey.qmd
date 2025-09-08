@@ -71,6 +71,9 @@ Questions were of both closed, multiple-choice and open, free-text format. Each 
 
 All closed questions are formulated such that they function as indicators of either feasibility or urgency of a monitoring scheme for the species under consideration. Lower or higher levels of feasibility or urgency are encoded via numerical scores assigned across the response options of each question. Score values range from 1 indicating low feasibility or urgency to 4 indicating high feasibility or urgency, and are treated as interval-scaled in subsequent analyses. Different response options can have the same score, but all scores are assigned at least once per question. Scores were set a-priori to distributing the survey but not visible to respondents. @tbl-scoring illustrates the scoring of questions by providing the key that links response options to scores per question.
 
+Take, for example, species not yet present in Flanders for which early detection is essential: Experts were asked to evaluate how potential introduction sites for such species are configured.
+If the number of introduction sites is limited and sites are specific (e.g. seaports), monitoring all of these sites is considered highly feasible and the largest value is assigned. Instead, if introduction sites are many and widespread (e.g., for a species that is expected to mainly be released from aquaria into freshwater bodies in Flanders) feasibility of structured monitoring is considered to be comparatively low and a small value is assigned. The smallest value (and thus lowest feasibility) is assigned if experts report the (potential) introduction sites as unknown, to them personally or generally. The underlying rationale is that the feasibility of planning monitoring schemes is minimal if the availability of relevant information is. We apply this rather conservative scoring strategy to all questions as can be seen in the table.
+
 
 ```{r table scoring}
 #| message: false
@@ -80,8 +83,8 @@ All closed questions are formulated such that they function as indicators of eit
 
 # overwrite options set in 09_format_priority_tables.R
 # #.bootstrap_options = if (is_html) {c("condensed", "hover") } else {"basic"}
-.latex_options = if (is_html) {"basic"} else {c("repeat_header", "hold_position")}
-.longtable = FALSE
+.latex_options = if (is_html) {"basic"} else {c("repeat_header", "HOLD_position")} #
+
 # add options
 .col_width_1 = if (is_html) {"220px"} else {"100pt"}
 .col_width_2 = if (is_html) {"70px"} else {"10pt"}
@@ -195,7 +198,7 @@ data_table_scoring |>
     format = .format,
     escape = FALSE,
     booktabs = .booktabs,
-    longtable = .longtable,
+    longtable = TRUE,
     linesep = "",
     col.names = c("Question (indicator)", "Score", "Response option"),
     table.attr = 'data-quarto-disable-processing="true"' 
@@ -262,8 +265,6 @@ data_table_scoring |>
 ```
 
 
-Take, for example, species not yet present in Flanders for which early detection is essential: Experts were asked to evaluate how potential introduction sites for such species are configured.
-If the number of introduction sites is limited and sites are specific (e.g. seaports), monitoring all of these sites is considered highly feasible and the largest value is assigned. Instead, if introduction sites are many and widespread (e.g., for a species that is expected to mainly be released from aquaria into freshwater bodies in Flanders) feasibility of structured monitoring is considered to be comparatively low and a small value is assigned. The smallest value (and thus lowest feasibility) is assigned if experts report the (potential) introduction sites as unknown, to them personally or generally. The underlying rationale is that the feasibility of planning monitoring schemes is minimal if the availability of relevant information is. We apply this rather conservative scoring strategy to all questions as can be seen in the table.
 
 
 ### Questionnaire generation and distribution
@@ -382,6 +383,12 @@ For a species-scope combination withheld after the entire prioritization process
 For a species-scope combination excluded during the second stage of the prioritization process, the monitoring methods are greyed out and the table cell additionally holds a symbol indicating the reason(s) for exclusion. For a species-scope combination excluded during the first stage of the prioritization process, the corresponding table cell only holds a symbol indicating the reason(s) for exclusion.
 
 
+#### Table of monitoring method-based synergies {#sec-mon-syn}
+
+We complement the table of species-scope combinations with a table of potential monitoring method-based synergies. That is, within each monitoring scope, we identify species for which overlapping methods were reported and display those in tabular fashion. Such method-based commonalities may help to align efforts in the planning of monitoring schemes (e.g., method selection, planning of data collection) or even in their future implementation (e.g., training field workers, data analysis, joint procurement and logistics). It is important to note, however, that the present analysis represents a preliminary screening. Whether the indicated synergies actually manifest will only become clear upon further investigation during the application of the INBO guidelines for designing monitoring schemes.
+
+We consider method-based synergies in two ways: first, between species for which a given scope was retained during both stages of the prioritization process, referred to as primary species in the following; and second, between primary species and species for which the scope remained relevant but was given a low priority during the second exclusion round. Here we further distinguish between secondary and tertiary species. Secondary species are those excluded purely due to a low overall urgency score, despite being considered feasible to monitor; tertiary species have been excluded purely due to a low overall feasibility score, even though the overall urgency of monitoring was critical. Non-primary species can still be relevant to consider if they share monitoring methods with primary species. In such cases, they may be included as potential “free riders” in that they could be monitored opportunistically as part of a scheme primarily designed for a primary species.
+
 
 ```{r table illustration}
 #| label: tbl-illu
@@ -407,8 +414,3 @@ table_filtered_illu_final_display |>
 ```
 
 
-#### Table of monitoring method-based synergies {#sec-mon-syn}
-
-We complement the table of species-scope combinations with a table of potential monitoring method-based synergies. That is, within each monitoring scope, we identify species for which overlapping methods were reported and display those in tabular fashion. Such method-based commonalities may help to align efforts in the planning of monitoring schemes (e.g., method selection, planning of data collection) or even in their future implementation (e.g., training field workers, data analysis, joint procurement and logistics). It is important to note, however, that the present analysis represents a preliminary screening. Whether the indicated synergies actually manifest will only become clear upon further investigation during the application of the INBO guidelines for designing monitoring schemes. 
-
-We consider method-based synergies in two ways: first, between species for which a given scope was retained during both stages of the prioritization process, referred to as primary species in the following; and second, between primary species and species for which the scope remained relevant but was given a low priority during the second exclusion round. Here we further distinguish between secondary and tertiary species. Secondary species are those excluded purely due to a low overall urgency score, despite being considered feasible to monitor; tertiary species have been excluded purely due to a low overall feasibility score, even though the overall urgency of monitoring was critical. Non-primary species can still be relevant to consider if they share monitoring methods with primary species. In such cases, they may be included as potential “free riders” in that they could be monitored opportunistically as part of a scheme primarily designed for a primary species.

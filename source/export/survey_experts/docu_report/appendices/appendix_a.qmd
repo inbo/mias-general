@@ -34,8 +34,8 @@ is_html <- knitr::is_html_output()
 .booktabs <- if (is_html) {FALSE} else {TRUE}
 .longtable <- if (is_html) {FALSE} else {TRUE}
 .font_size <- if (is_html) {12} else {6}
-.col_width_wide <- ifelse(is_html, "150px", "140pt")
-.col_width_medium <- ifelse(is_html, "120px", "90pt")
+.col_width_wide <- ifelse(is_html, "150px", "70pt")
+.col_width_medium <- ifelse(is_html, "120px", "70pt")
 .col_width_narrow <- ifelse(is_html, "70px", "40pt")
 
 options(knitr.kable.NA = '')

@@ -33,7 +33,7 @@ species_data <- species_list |>
       TRUE ~ vern_name_gsheet_nld
       )
   )
-
+options(knitr.kable.NA = '')
 
 ```
 
@@ -250,25 +250,25 @@ table_committee_display <- table_committee |>
   # species names
   kableExtra::column_spec(
       column = 1,
-      width = ifelse(is_html, "100px", "80pt")
+      width = ifelse(is_html, "100px", "90pt")
   ) |>
   # other id cols
   kableExtra::column_spec(
       column = 2,
-      width = ifelse(is_html, "60px", "60pt")
+      width = ifelse(is_html, "60px", "40pt")
   ) |>
   kableExtra::column_spec(
       column = 3,
-      width = ifelse(is_html, "60px", "50pt")
+      width = ifelse(is_html, "60px", "30pt")
   ) |>
   kableExtra::column_spec(
       column = 3,
-      width = ifelse(is_html, "60px", "60pt")
+      width = ifelse(is_html, "60px", "40pt")
   ) |>
   # scenario 
     kableExtra::column_spec(
       column = 5,
-      width =  ifelse(is_html, "40px", "40pt")
+      width =  ifelse(is_html, "40px", "30pt")
     ) |>
   # scope
   kableExtra::column_spec(

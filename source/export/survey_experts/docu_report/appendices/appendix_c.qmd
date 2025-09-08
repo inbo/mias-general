@@ -1,4 +1,4 @@
-# R and R package information
+# R and R package information {#sec-app-c}
 
 ```{r appdx-b-setup}
 #| message: false
@@ -60,9 +60,14 @@ pkg_prima <- cbind(
 Note that the following information is extracted from the current version (date: `r Sys.Date()`) of the *renv.lock* file in the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate], which contains all source code associated with this project.
 The *renv.lock* file (and its commit history) provides detailed information on the R version and all R packages used.
 
+
 ## R version used
 
 We have used R version `r pkg_all$R$version` [@r_core_team_r_2025].
+
+## Quarto version used
+
+We have used Quarto version `r quarto::quarto_version()` [@allaire_quarto_2025].
 
 ## Primary R packages
 
@@ -103,4 +108,4 @@ pkg_all$pkg |>
     cat(x = _, sep = "\n")
 
 ```
-""
+
