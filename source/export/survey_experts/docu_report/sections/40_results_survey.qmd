@@ -404,7 +404,7 @@ Yet despite this filtering, the number of retained combinations remains large an
 To this end, we complement the presentation of the prioritization results in the previous section with three strategic scenarios.
 Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritized combinations of species and monitoring scopes:
 
-- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities (ref?). This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
+- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
 - **Scenario 2** highlights prioritized species for which early detection is key (i.e., scope detection is withheld). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
 - **Scenario 3** targets prioritized species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
 
@@ -546,7 +546,7 @@ table_syn_anb_animals_display_list$abundance_management
 
 #### Scenario 2: Focus on monitoring scope detection
 
-The focus on detection under this second scenario is motivated by the acknowledged importance and effectiveness of early detection and intervention in combating biological invasions (ref?). Here we thus consider all species for which the monitoring scope detection has high relevance and high priority according to our survey-based approach.
+The focus on detection under this second scenario is motivated by the acknowledged importance and effectiveness of early detection and intervention in combating biological invasions. Here we thus consider all species for which the monitoring scope detection has high relevance and high priority according to our survey-based approach.
 The respective plants are in alphabetical order: 
 
 ```{r }
