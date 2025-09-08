@@ -96,7 +96,6 @@ book:
         file: sections/10_introduction.qmd
   chapters:
     - index.qmd
-    - sections/01_acknowledgements.qmd
     - sections/02_summary.qmd
     - sections/03_summary_dutch.qmd
     - sections/10_introduction.qmd
