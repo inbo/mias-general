@@ -69,20 +69,6 @@ flandersqmd:
   public_report: true
   colophon: true
   floatbarrier: section
-  client:
-    - INBO Brussel
-    - VAC Brussel ‐ Herman Teirlinck
-    - Havenlaan 88 bus 73
-    - 1000 Brussel
-  clienturl: https://www.vlaanderen.be/inbo/en-gb
-  clientlogo: media/logo.jpg
-  cooperation:
-    - INBO Brussel
-    - VAC Brussel ‐ Herman Teirlinck
-    - Havenlaan 88 bus 73
-    - 1000 Brussel
-  cooperationurl: https://www.vlaanderen.be/inbo/en-gb
-  cooperationlogo: media/logo.jpg
 
 book:
   downloads: pdf
