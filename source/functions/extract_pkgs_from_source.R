@@ -3,10 +3,10 @@ extract_pkgs_from_source <- function(source_dir = file.path("source", "export", 
   # Get all .R and .qmd files within source_dir
   r_files <- list.files(
     source_dir,
-    pattern = "[\\.qmd|\\.R|\\.r]$$", # "\\.[rR]$$",
     full.names = TRUE,
     recursive = TRUE
     ) |>
+    grep("(\\.qmd$|(?<!\\.Rmd)\\.R$)", x = _, value = TRUE, perl = TRUE) |>
     # remove path to flandersqmd extensions
     grep("_extensions", x = _, invert = TRUE, value = TRUE)
 
