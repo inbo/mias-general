@@ -314,7 +314,7 @@ First, the relevance of a given monitoring scope depends on the invasion stage o
 #### Knowledge of the distribution area
 
 Second, scope relevance also depends on whether the distribution area of a species is known.
-If the distribution area is reported as known, then the scope inventory is irrelevant, if it is unknown, inventory is required and thus withheld.
+If the distribution area is reported as known, then the scope inventory is irrelevant, if it is unknown, inventory is required and thus retained.
 This criterion only concerns limited established species as this is the only invasion stage for which we withhold scope inventory. 
 
 
@@ -338,7 +338,7 @@ Even if a particular monitoring scope is relevant for a species based on the pre
 
 ### Stage 2: Exclusion of low priority species-scope combinations
 
-In Stage 2 of the prioritisation process, we further filter the withheld relevant species-scope combinations by excluding low priority instances. 
+In Stage 2 of the prioritisation process, we further filter the retained relevant species-scope combinations by excluding low priority instances. 
 We determine priority based on
 
 - whether opportunistic observations cover a scope,
@@ -352,7 +352,7 @@ For the exact filtering rules applied to the survey data see
 
 #### Representativeness of opportunistic data
 
-First, we check whether species-scope combinations can be considered covered by opportunistic observations (e.g. observations recorded via [waarnemingen.be](https://waarnemingen.be/)). If for a species opportunistic observations are considered highly representative by the expert, all scopes withheld for this species are marked as having low priority.
+First, we check whether species-scope combinations can be considered covered by opportunistic observations (e.g. observations recorded via [waarnemingen.be](https://waarnemingen.be/)). If for a species opportunistic observations are considered highly representative by the expert, all scopes retained for this species are marked as having low priority.
 
 
 #### Knowledge and specificity of the monitoring area
@@ -361,7 +361,7 @@ Second, we take into account whether the monitoring area is known for a species.
 The monitoring area can refer to different things depending on the invasion stage of a species.
 For absent or sporadically present species it concerns introduction places and scope detection is marked as having low priority if the introduction places are reported as unknown or unspecific (i.e., a large number of widespread locations).
 For sporadically present species the distribution area needs to be known in addition.
-If the distribution area is reported as unknown for limited established species, the distribution- and abundance-related scopes are marked as low priority, while the inventory scope is marked as high priority. The distribution- and abundance-related scopes were withheld as relevant during the first exclusion round, as scope inventory requires a temporary monitoring effort only, and the remaining scopes should then become prioritised.
+If the distribution area is reported as unknown for limited established species, the distribution- and abundance-related scopes are marked as low priority, while the inventory scope is marked as high priority. The distribution- and abundance-related scopes were retained as relevant during the first exclusion round, as scope inventory requires a temporary monitoring effort only, and the remaining scopes should then become prioritised.
 
 
 #### Overall feasibility & urgency scores
@@ -369,7 +369,7 @@ If the distribution area is reported as unknown for limited established species,
 Finally, we consider the survey's response scores reflecting the expert-judged overall feasibility and urgency per species. We calculate these overall scores as the arithmetic means across all feasibility- and urgency-indicator questions, respectively. As critical values we in each case use the 50-th percentile (i.e., the median) of the distribution of the overall scores across all species. 
 Per se, the 50-th percentile is a rather liberal choice for a critical value, but in the present process less decisive as it is complemented by additional exclusion criteria.
 
-For a given species we assign a high priority only if both the overall feasibility and urgency scores are larger than their respective critical values. Otherwise all scopes withheld up to now are excluded for this species.
+For a given species we assign a high priority only if both the overall feasibility and urgency scores are larger than their respective critical values. Otherwise all scopes retained up to now are excluded for this species.
 
 
 ### Reporting format
@@ -379,7 +379,7 @@ For a given species we assign a high priority only if both the overall feasibili
 To report the results of the prioritisation process we present all species-scope combinations in the form of a table where rows pertain to species and columns to scopes. 
 @tbl-illu illustrates this format.
 
-For a species-scope combination withheld after the entire prioritisation process, the corresponding table cell holds the monitoring methods reported for this species.
+For a species-scope combination retained after the entire prioritisation process, the corresponding table cell holds the monitoring methods reported for this species.
 For a species-scope combination excluded during the second stage of the prioritisation process, the monitoring methods are greyed out and the table cell additionally holds a symbol indicating the reason(s) for exclusion. For a species-scope combination excluded during the first stage of the prioritisation process, the corresponding table cell only holds a symbol indicating the reason(s) for exclusion.
 
 

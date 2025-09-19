@@ -47,7 +47,7 @@ print_species_name <- function(
 De volgende beleidssamenvatting in het Nederlands is een uitgebreide variatie van de voorafgaande kortere Engelse samenvatting. 
 Het rapport zelf is in het Engels geschreven om het voor een breder publiek toegankelijk te maken.
 
-Dit rapport presenteert een op een expert-survey gebaseerde kader ter voorbereiding van het ontwerp van gestructureerde, beleidsrelevante meetnetten voor invasieve uitheemse soorten in Vlaanderen. 
+Dit rapport presenteert een op een expert survey gebaseerde kader ter voorbereiding van het ontwerp van gestructureerde, beleidsrelevante meetnetten voor invasieve uitheemse soorten in Vlaanderen. 
 Onder de EU Verordening betreffende invasieve uitheemse soorten [@noauthor_regulation_2014] zijn lidstaten verplicht om toezicht te houden op een lijst van voor de Unie zorgwekkende invasieve uitheemse soorten (de Unielijst). 
 Dit omvat het opzetten van systemen voor vroegtijdige detectie, het monitoren van de verspreiding van soorten en het opvolgen van beheersresultaten . 
 In Vlaanderen is het Instituut voor Natuur- en Bosonderzoek formeel belast met de coördinatie van dergelijke monitoringsinspanningen. 
@@ -58,7 +58,7 @@ Deze omvatten professionele en op burgerwetenschap gebaseerde programma's die zi
 Ondanks hun bijdragen zijn deze initiatieven methodologisch niet op elkaar afgestemd en voldoen ze collectief niet aan de vereisten van de EU Verordening betreffende invasieve uitheemse soorten.
 
 Om het ontwerp van toekomstige, coherente meetnetten voor invasieve uitheemse soorten te ondersteunen, werd 
-een survey onder soortenexperts uitgevoerd die alle 114 soorten van de huidige Unielijst [@noauthor_commission_2025] omvatte, evenals 8 kandidaatsoorten die werden beschouwd voor opname in de Unielijst in 2025, maar die uiteindelijk niet weerhouden werden door de Europese Commissie.
+een survey onder soortenexperts uitgevoerd die alle 114 soorten van de huidige Unielijst [@noauthor_commission_2025] omvatte, evenals 8 kandidaatsoorten die werden beschouwd voor opname in de Unielijst in 2025, maar die uiteindelijk niet geselecteerd werden door de Europese Commissie.
 De survey verzamelde soortspecifieke informatie en expertoordelen over de introductie, verspreiding, abundantie, impact, het beheer en de monitoringstatus in Vlaanderen.
 De ontvangen antwoorden werden samengevat tot algemene scores betreffende de haalbaarheid en de urgentie van gestructureerde meetnetten voor de soorten in kwestie.
 
