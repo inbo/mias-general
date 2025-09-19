@@ -5,7 +5,7 @@ toc: false
 # Results of the expert survey {#sec-survey-results}
 
 In this chapter, we present the results of the expert survey.
-This mainly concerns the results of the prioritization process but also a number of descriptive results.
+This mainly concerns the results of the prioritisation process but also a number of descriptive results.
 All R analysis code is again available via the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate].
 
 ```{r survey-results-setup}
@@ -107,10 +107,10 @@ In the overview table @tbl-species, species entries are greyed out if the survey
 Species' overall feasibility and urgency scores obtained from the survey can be explored in @fig-ranking.
 The figure displays the overall scores along the x-axis and the species along the y-axis.
 Triangles represent feasibility and circles urgency scores and species are sorted according to their overall feasibility scores and nested within these according to their overall urgency scores. 
-The critical feasibility and urgency values used for exclusion in the prioritization process are indicated via vertical lines (dashed for urgency, solid for feasibility).
+The critical feasibility and urgency values used for exclusion in the prioritisation process are indicated via vertical lines (dashed for urgency, solid for feasibility).
 Per species, overall feasibility and urgency scores are connected by a solid line if they exceed both their critical values and by a dashed line otherwise. 
 Triangles or circles that are filled pertain to Union List species, empty ones to candidate species.
-The expert-judged invasion stage is coded by color:
+The expert-judged invasion stage is coded by colour:
 Absent species are shown in grey, sporadically present species in orange, limited established species in magenta, and widespread species in purple.
 
 ```{r ranking-overall-scores}
@@ -129,8 +129,8 @@ This is in part related to the fact that, for species in earlier invasion stages
 Also, we find more often that feasibility scores are higher than urgency scores than the reverse.
 
 
-As explained in @sec-prior, the displayed overall scores co-determine the prioritization results:
-Species that miss either the critical feasibility or the critical urgency value are excluded from the final prioritization. 
+As explained in @sec-prior, the displayed overall scores co-determine the prioritisation results:
+Species that miss either the critical feasibility or the critical urgency value are excluded from the final prioritisation. 
 Species that pass both critical values are included, unless they are excluded due to other, more specific reasons linked to expert reactions to individual questions.  
 
 
@@ -144,7 +144,7 @@ which monitoring techniques were reported with which frequencies and in which co
 and which existing monitoring efforts were reported per species.
 
 
-## Results of the prioritization process
+## Results of the prioritisation process
 
 ```{r prep-presentation-prior}
 #| message: false
@@ -265,11 +265,11 @@ exclusion_stage2 <- get_exclusion_reasons(table_base_filtered_upd, kingdom_list,
 
 
 
-### Prioritization of all species covered
+### Prioritisation of all species covered
 
-@tbl-priorplants and @tbl-prioranimals display the results of the survey-based prioritization process for all plants and animals assessed in the survey in the form of the above introduced species-scope table (see @sec-spec-scope-table).
+@tbl-priorplants and @tbl-prioranimals display the results of the survey-based prioritisation process for all plants and animals assessed in the survey in the form of the above introduced species-scope table (see @sec-spec-scope-table).
 The tables are sorted as follows:
-First, rows are sorted by monitoring scope priority (stage 2 of prioritization process), with high priority scopes on top.
+First, rows are sorted by monitoring scope priority (stage 2 of prioritisation process), with high priority scopes on top.
 Within (i.e., for each value of) scope priority, rows are sorted by scope type relying on the order: `r table_base_upd$scope_type |> levels()`.
 That is, within high and low priority scopes, all species for which (at least) detection is relevant appear first, 
 followed by those for which (at least) inventory is relevant and so forth.
@@ -281,7 +281,7 @@ Within (i.e., for each value of) invasion stage, rows are sorted by global feasi
 
 ```{r prior-all-plants}
 #| label: tbl-priorplants
-#| tbl-cap: Prioritization results for all monitoring scope-plant combinations covered in the survey
+#| tbl-cap: Prioritisation results for all monitoring scope-plant combinations covered in the survey
 
 table_filtered_upd_display_list$plant |>
   # species names
@@ -306,7 +306,7 @@ table_filtered_upd_display_list$plant |>
 
 ```{r prior-all-animals}
 #| label: tbl-prioranimals
-#| tbl-cap: Prioritization results for all monitoring scope-animal combinations covered in the survey
+#| tbl-cap: Prioritisation results for all monitoring scope-animal combinations covered in the survey
 
 table_filtered_upd_display_list$animal |>
   # species names
@@ -350,10 +350,10 @@ names_prior$animal |>
     cat(x = _, sep = "\n")
 ```
 
-For the species-scope combination not withheld after prioritization, the exact exclusion reasons can be revisited in @tbl-priorplants and @tbl-prioranimals, respectively.
+For the species-scope combination not withheld after prioritisation, the exact exclusion reasons can be revisited in @tbl-priorplants and @tbl-prioranimals, respectively.
 We provide a brief summary here:
 Looking at the plants first, there were `r exclusion_stage1$plant$Freq_total |> unique()` potential species-scope combinations in total. 
-During Stage 1 of the prioritization process `r exclusion_stage1$plant$Freq_total |> unique() - exclusion_stage2$plant$Freq_total |> unique()` of these were excluded due to the following reasons (note that multiple exclusion criteria can apply per species-scope combination):
+During Stage 1 of the prioritisation process `r exclusion_stage1$plant$Freq_total |> unique() - exclusion_stage2$plant$Freq_total |> unique()` of these were excluded due to the following reasons (note that multiple exclusion criteria can apply per species-scope combination):
 
 ```{r }
 #| results: "asis"
@@ -375,7 +375,7 @@ exclusion_stage2$plant |>
 ```
 
 Turning to the animals, there were `r exclusion_stage1$animal$Freq_total |> unique()` potential species-scope combinations to begin with. 
-During Stage 1 of the prioritization process, `r exclusion_stage1$animal$Freq_total |> unique() - exclusion_stage2$animal$Freq_total |> unique()` combinations were excluded due to the following reasons:
+During Stage 1 of the prioritisation process, `r exclusion_stage1$animal$Freq_total |> unique() - exclusion_stage2$animal$Freq_total |> unique()` combinations were excluded due to the following reasons:
 
 ```{r }
 #| results: "asis"
@@ -398,15 +398,15 @@ exclusion_stage2$animal |>
 
 ### Focus scenarios for species subgroups {#sec-scenarios}
 
-The prioritization process enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: It narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
+The prioritisation process enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: It narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
 
 Yet despite this filtering, the number of retained combinations remains large and additional focus is therefore helpful.
-To this end, we complement the presentation of the prioritization results in the previous section with three strategic scenarios.
-Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritized combinations of species and monitoring scopes:
+To this end, we complement the presentation of the prioritisation results in the previous section with three strategic scenarios.
+Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritised combinations of species and monitoring scopes:
 
-- **Scenario 1** focuses on prioritized species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
-- **Scenario 2** highlights prioritized species for which early detection is key (i.e., scope detection is withheld). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
-- **Scenario 3** targets prioritized species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
+- **Scenario 1** focuses on prioritised species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
+- **Scenario 2** highlights prioritised species for which early detection is key (i.e., scope detection is withheld). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
+- **Scenario 3** targets prioritised species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
 
 These three scenarios provide complementary perspectives on how to further narrow the focus for developing monitoring schemes. They reflect a balance between operational needs, early-intervention opportunities, and legal obligations. In the following we present each scenario and explore method-based synergies that may support coordinated planning of monitoring schemes.
 Tables providing a simultaneous overview over all species the survey provides data on are included in @sec-app-species.
@@ -459,7 +459,7 @@ names_dist_prior <- get_names_prior(species_dist_prior, kingdom_list)
 
 #### Scenario 1: ANB focus species {#sec-scenario-1}
 
-To define Scenario 1, we start from the list of species identified by ANB as management priorities. We then check which of these species passed our expert survey-based prioritization. For about `r round(n_species_anb_prior$plant / n_species_anb$plant * 100)`% of the ANB focus plants and about `r round(n_species_anb_prior$animal / n_species_anb$animal * 100)`% of the ANB focus animals at least one monitoring scope was withheld after Stage 2 of the prioritization. 
+To define Scenario 1, we start from the list of species identified by ANB as management priorities. We then check which of these species passed our expert survey-based prioritisation. For about `r round(n_species_anb_prior$plant / n_species_anb$plant * 100)`% of the ANB focus plants and about `r round(n_species_anb_prior$animal / n_species_anb$animal * 100)`% of the ANB focus animals at least one monitoring scope was withheld after Stage 2 of the prioritisation. 
 The respective plants are in alphabetical order: 
 
 ```{r }
@@ -478,7 +478,7 @@ names_anb_prior$animal |>
     cat(x = _, sep = "\n")
 ```
 
-Not withheld here, but still prioritized by ANB are, among the plants:
+Not withheld here, but still prioritised by ANB are, among the plants:
 
 ```{r }
 #| results: "asis"
@@ -505,7 +505,7 @@ This concerns the species
 
 We inspect the method-based synergies under the management-related monitoring scopes. To this end, @tbl-synplantsanb1, @tbl-synanimalsanb1, and @tbl-synanimalsanb2 show the monitoring methods shared among the ANB focus plants and animals for the scopes distribution under management and abundance under management.
 The tables are structured such that primary, secondary and tertiary species (see @sec-mon-syn) are presented in groups of rows.
-Reported monitoring methods are arranged in columns and table cells are filled with color when a method was reported for a species.
+Reported monitoring methods are arranged in columns and table cells are filled with colour when a method was reported for a species.
 Within species groups, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
 
 Among the ANB focus plants, a clear synergy emerges for the **scope abundance under management** (@tbl-synplantsanb1): five (partly) freshwater species
@@ -610,7 +610,7 @@ table_syn_det_animals_display_list$detection
 
 #### Scenario 3: Focus on monitoring scope distribution
 
-The third scenario focuses on the monitoring scope distribution motivated by the clear requirement of the Invasive Alien Species Regulation to report on the distribution of IAS (see @sec-scopes). We thus consider all species for which the monitoring scope distribution gets assigned a high relevance and high priority in the survey-based prioritization. 
+The third scenario focuses on the monitoring scope distribution motivated by the clear requirement of the Invasive Alien Species Regulation to report on the distribution of IAS (see @sec-scopes). We thus consider all species for which the monitoring scope distribution gets assigned a high relevance and high priority in the survey-based prioritisation. 
 The respective plants are in alphabetical order: 
 
 ```{r }
@@ -671,9 +671,9 @@ table_syn_dist_animals_display_list$distribution
 
 The design of the expert survey, the processing of the collected input and, by consequence, the survey results are shaped by a whole range of substantive and methodological choices. As the present analysis aimed to provide a first broad overview over IAS monitoring priorities in Flanders based on expert input, we aimed to apply a relatively simple approach. While alternatives exist for virtually all of the implemented choices, a few more concrete points of concern might arise. 
 
-A first concern might be that the current prioritization exercise falls somewhat short when it comes to the potential monitoring of early eradication measures. Species for which such measures would be relevant are currently only considered under the monitoring scope detection and not under the management-related scopes, as we tied the latter to distribution or abundance monitoring, for which species needed to be at least limited established. 
+A first concern might be that the current prioritisation exercise falls somewhat short when it comes to the potential monitoring of early eradication measures. Species for which such measures would be relevant are currently only considered under the monitoring scope detection and not under the management-related scopes, as we tied the latter to distribution or abundance monitoring, for which species needed to be at least limited established. 
 Had we included the evaluation of early eradication measures either via an existing or an additional monitoring scope, then Scenario 1 - with its focus on management - could have been extended in principle. 
-In practice, however, we would not have seen much change in the results, as 5 out of 6 plants and 16 out of 17 animals for which detection was deemed relevant were not withheld after the second round of the survey-based prioritization process.
+In practice, however, we would not have seen much change in the results, as 5 out of 6 plants and 16 out of 17 animals for which detection was deemed relevant were not withheld after the second round of the survey-based prioritisation process.
 This is due to the relatively strict exclusion criteria employed in relation to the monitoring scope detection (see @sec-prior).
 These would likely also have applied had we considered the downstream monitoring scope of evaluating early eradication following detection.
 

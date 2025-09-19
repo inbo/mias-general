@@ -59,21 +59,21 @@ an expert survey was conducted covering all 114 species on the current Union Lis
 The survey gathered species-specific information and expert judgements on the introduction, distribution, abundance, impacts, management and monitoring status in Flanders.
 The collected responses were condensed into overall ratings of the feasibility and urgency of structured monitoring schemes for the species under consideration.
 
-These survey results then informed a two-stage prioritization process.
+These survey results then informed a two-stage prioritisation process.
 Distinguishing the monitoring scopes of detection, inventory, distribution, abundance, and distribution or abundance under management, 
 we aimed to identify a limited number of species-scope combinations with high relevance and priority.
 In a first stage, the relevance of the different monitoring scopes was assessed per species using criteria such as invasion stage, management status, and method availability.
 Irrelevant species-scope combinations were excluded.
 In a second stage, the priority of remaining combinations was assessed based on the overall feasibility and urgency ratings, as well as on experts' responses to selected critical survey questions. 
-The outcome of the prioritization process was a selection of relevant high-priority species–scope combinations for monitoring scheme development.
+The outcome of the prioritisation process was a selection of relevant high-priority species–scope combinations for monitoring scheme development.
 
-To further structure the prioritization results, three strategic focus scenarios were developed, each concerning a subset of the prioritized species and monitoring scopes: 
-(1) species prioritized for management by the Agency for Nature and Forests; 
+To further structure the prioritisation results, three strategic focus scenarios were developed, each concerning a subset of the prioritised species and monitoring scopes: 
+(1) species prioritised for management by the Agency for Nature and Forests; 
 (2) species requiring mainly early detection;
 and (3) species for which primarily distribution monitoring is relevant.
 For each scenario, commonalities in monitoring methods between species were explored to identify potential method-based synergies relevant for coordination and/or implementation efforts.
 
-A steering committee involving representatives from the Research Institute for Nature and Forest, the Agency for Nature and Forests and the Flanders Environment Agency reviewed the survey and prioritization outcomes and agreed on a final shortlist of four species or species groups for immediate monitoring scheme development.
+A steering committee involving representatives from the Research Institute for Nature and Forest, the Agency for Nature and Forests and the Flanders Environment Agency reviewed the survey and prioritisation outcomes and agreed on a final short-list of four species or species groups for immediate monitoring scheme development.
 These include
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`,
 `r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`,

@@ -35,7 +35,7 @@ a few sentences on mandates - INBO, ANB - along the lines: "In Flanders, the Age
 
 ## Scopes
 
-A list of questions to guide the further concretization of monitoring scheme requirements per scope can be found in Appendix A [to be added?].
+A list of questions to guide the further concretisation of monitoring scheme requirements per scope can be found in Appendix A [to be added?].
 
 [In case of detection - does the determination of potential places of introduction also count as an inventory?]
 
