@@ -40,7 +40,7 @@ options(knitr.kable.NA = '')
 
 ## Meeting details and agenda
 
-The steering committee meeting was held on Wednesday, April 23rd, from 13:30 to 16:00 in Brussels. The meeting brought together key representatives from the involved institutions. Attending on behalf of INBO were Diederik Strubbe, Tim Adriaens, Janne Adolf and Thierry Onkelinx. Nicolas Pardon attended on behalf of ANB, while Dan Slootmakers represented VMM.
+The steering committee meeting was held on Wednesday, April 23, from 13:30 to 16:00 in Brussels. The meeting brought together key representatives from the involved institutions. Attending on behalf of INBO were Diederik Strubbe, Tim Adriaens, Janne Adolf and Thierry Onkelinx. Nicolas Pardon attended on behalf of ANB, while Dan Slootmakers represented VMM.
 
 The meeting began with a brief round of introductions, during which each participant outlined their main areas of interest and institutional priorities related to IAS monitoring. This was followed by a structured presentation outlining the purpose and design of the expert survey and the logic and workflow underlying the proposed prioritisation of monitoring schemes. Results were presented in terms of the three scenarios detailed in @sec-scenarios.
 It was emphasized that the primary objective of the meeting was to enable the steering committee to decide which species or species groups should be prioritised for structured monitoring in Flanders. The results of the survey and prioritisation process were put forward as guiding but not binding.
