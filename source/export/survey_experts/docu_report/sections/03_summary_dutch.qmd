@@ -94,7 +94,7 @@ Monitoring op basis van detectie kan snelle interventies ondersteunen en de kans
 Scenario 3 omvat soorten waarvoor monitoring van de verspreiding het meest relevant is en sluit aan bij de meest expliciet gedefinieerde rapporteringsverplichtingen onder de EU Verordening betreffende invasieve uitheemse soorten.
 
 Voor elk scenario werden de door de experten gerapporteerde monitoringtechnieken geanalyseerd om overeenkomsten en dus potentiële synergieën op basis van methoden tussen soorten te identificeren. 
-In verschillende gevallen werden overeenkomsten gevonden, bijvoorbeeld met betrekking tot het gebruik van environmental DNA voor aquatische soorten, visuele surveys voor terrestrische planten of cameravallen voor terrestrische zoogdieren.
+In verschillende gevallen werden overeenkomsten gevonden, bijvoorbeeld met betrekking tot het gebruik van omgevings-DNA voor aquatische soorten, visuele surveys voor terrestrische planten of cameravallen voor terrestrische zoogdieren.
 Dergelijke overlappingen kunnen mogelijkheden bieden voor gecoördineerde planning en mogelijk zelfs gecoördineerde implementatie van meetnetten voor meerdere soorten. 
 Er is echter verder onderzoek nodig om te onthullen in hoeverre deze potentiële synergieën zich uiteindelijk kunnen realiseren.
 
@@ -127,7 +127,7 @@ De meest relevante monitoringscope is abundantie onder beheer, om populatieafnam
 Voor deze soorten heeft de ontwikkeling van gestructureerde meetnetten de hoogste prioriteit in Vlaanderen. 
 Deze meetnetten moeten ontwikkeld worden in overeenstemming met de methodologische richtlijnen van het Instituut voor Natuur- en Bosonderzoek [@wouters_ontwerp_2008-1]. Deze richtlijnen bieden een principieel kader voor het afstemmen van monitoringdoelen, gegevensverzameling, gegevensanalyse en rapportage op de ware informatiebehoeften, wat betrouwbare, robuuste en beleidsrelevante inzichten oplevert.
 Dit rapport biedt een belangrijke basis voor deze volgende fase. 
-Naast een prioritisering van soorten en monitoringscopes en een geconsolideerde short-list, biedt het een methodologie voor beslissingsondersteuning, een voorstel voor het vormen van soortgroepen voor monitoring, en een empirisch overzicht van expertinzichten in de huidige status van invasieve uitheemse Unielijst soorten in Vlaanderen. 
+Naast een prioritering van soorten en monitoringscopes en een geconsolideerde short-list, biedt het een methodologie voor beslissingsondersteuning, een voorstel voor het vormen van soortgroepen voor monitoring, en een empirisch overzicht van expertinzichten in de huidige status van invasieve uitheemse Unielijst soorten in Vlaanderen. 
 
 
 :::
