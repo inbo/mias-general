@@ -57,7 +57,8 @@ pkg_prima <- cbind(
 ```
 
 
-Note that the following information is extracted from the current version (date: `r Sys.Date()`) of the *renv.lock* file in the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate], which contains all source code associated with this project.
+For the current project, we use the R package renv [@ushey_renv_2024] for dependency management.
+The following information is thus extracted from the current version (date: `r Sys.Date()`) of the *renv.lock* file in the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate] accompanying this project.
 The *renv.lock* file (and its commit history) provides detailed information on the R version and all R packages used.
 
 
