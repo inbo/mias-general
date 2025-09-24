@@ -47,7 +47,7 @@ print_species_name <- function(
 De volgende beleidssamenvatting in het Nederlands is een uitgebreide variatie van de voorafgaande kortere Engelse samenvatting. 
 Het rapport zelf is in het Engels geschreven om het voor een breder publiek toegankelijk te maken.
 
-Dit rapport presenteert een op een expert survey gebaseerde kader ter voorbereiding van het ontwerp van gestructureerde, beleidsrelevante meetnetten voor invasieve uitheemse soorten in Vlaanderen. 
+Dit rapport presenteert een op een expert survey gebaseerd kader ter voorbereiding van het ontwerp van gestructureerde, beleidsrelevante meetnetten voor invasieve uitheemse soorten in Vlaanderen. 
 Onder de EU Verordening betreffende invasieve uitheemse soorten [@noauthor_regulation_2014] zijn lidstaten verplicht om toezicht te houden op een lijst van voor de Unie zorgwekkende invasieve uitheemse soorten (de Unielijst). 
 Dit omvat het opzetten van systemen voor vroegtijdige detectie, het monitoren van de verspreiding van soorten en het opvolgen van beheersresultaten . 
 In Vlaanderen is het Instituut voor Natuur- en Bosonderzoek formeel belast met de coördinatie van dergelijke monitoringsinspanningen. 
@@ -105,7 +105,7 @@ De geselecteerde soorten en bijbehorende monitoringsscopes zijn als volgt:
 
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`, 
 een kleine hertensoort met een momenteel beperkte maar mogelijk uitbreidende verspreiding in Vlaanderen. 
-Het is onderhevig aan voortdurende uitroeiingsinspanningen. 
+Het dier is onderhevig aan voortdurende uitroeiingsinspanningen. 
 De meest relevante monitoringscope betreft abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.
 
 `r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`,

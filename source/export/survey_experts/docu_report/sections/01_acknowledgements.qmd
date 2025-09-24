@@ -4,7 +4,7 @@ toc: false
 
 # Acknowledgements {-}
 
-We would like to thank all species experts who participated in the survey and contributed their time and expertise to assess the current and expected status of invasive alien species in Flanders. 
+We thank all species experts who participated in the survey and contributed their time and expertise to assess the current and expected status of invasive alien species in Flanders. 
 Their input provided essential information for the prioritisation process outlined in this report and formed the basis for the present analysis. 
 Without their expertise and commitment, this work would not have been possible.
 We are also grateful to the members of the steering committee for their constructive feedback and decision-making contributions.

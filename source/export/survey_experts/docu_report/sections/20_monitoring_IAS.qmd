@@ -114,7 +114,7 @@ Note that the Invasive Alien Species Regulation mentions the scope abundance onl
 Monitoring schemes with scopes distribution or abundance under management aim to assess the status and possibly trend of a species' distribution or population size in and around areas where management takes place.
 Management evaluation ranges on a continuum with as end points estimating causal effects of a measurement action versus measuring its temporal and spatial correlates. 
 The degree of experimental and/or statistical control determines the position on this continuum.
-In addition, the nature of the to-be-evaluated management action (e.g., eradication vs. population control) further defines the implementation of the management-related scopes:
+In addition, the nature of the to be evaluated management action (e.g., eradication vs. population control) further defines the implementation of the management-related scopes:
 If population control or containment measures are to be evaluated, the duration of monitoring will for instance be (potentially) unlimited.
 If eradication measures are to be evaluated, monitoring will typically be of limited duration. Once monitoring has continued for a sufficiently long period without detections to confidently confirm the species’ eradication, it may be discontinued. In such cases, the focus may shift to periodic detection monitoring to ensure early warning in case of reintroduction.
 
@@ -123,7 +123,7 @@ The Invasive Alien Species Regulation considers distribution and abundance as po
 
 ### Inventory
 
-Monitoring the distribution or abundance of a species requires knowledge of the (potential) distribution area of a species, as we have explained in the previous sections
+Monitoring the distribution or abundance of a species requires knowledge of the (potential) distribution area of a species, as we have explained in the previous sections.
 If the (potential) distribution area is not sufficiently known then assessing its location forms a distinct monitoring scope called inventory [@de_knijf_monitoring_2014]. 
 Under this scope, monitoring is of limited duration and can be finalized once the status of the distribution areas is sufficiently known. 
 Note that “inventory” as used here refers specifically to targeted, time-limited efforts to determine a species’ distribution area, and differs from the broader use of the term in the Species Decree of the Flemish Government, where it includes a much wider range of monitoring objectives (see @sec-legal-context).
