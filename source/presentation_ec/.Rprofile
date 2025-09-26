@@ -1,0 +1,2 @@
+setwd("../../")
+source(".Rprofile")

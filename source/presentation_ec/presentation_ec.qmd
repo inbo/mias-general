@@ -1,0 +1,18 @@
+---
+title: "presentation_ec"
+---
+
+```{r setup}
+
+```
+
+```{css}
+code {font-size: 20pt;}
+h2 {font-size: 40pt !important;}
+ul li {font-size: 24pt !important;}
+```
+
+{{< include sections/0_intro.qmd >}}
+{{< include sections/1_methodology.qmd >}}
+{{< include sections/2_survey.qmd >}}
+{{< include sections/3_example.qmd >}}
