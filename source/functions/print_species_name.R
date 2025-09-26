@@ -2,8 +2,10 @@
 # format species names for printing
 print_species_name <- function(
     species_table,
-    name_expr = expression(c("*", species, " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]", "*"))
+    name_expr = expression(c("*", species, " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]", "*")),
+    shorten = FALSE
 ) {
+  if (shorten)  name_expr = expression(c("*", vern_name_eng, "*"))
   species_table |>
     dplyr::rowwise() |>
     dplyr::mutate(

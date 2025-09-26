@@ -440,7 +440,8 @@ names_anb_prior_nomanagment <- lapply(
       dplyr::filter(!any(grepl("management", scope_type))) |>
       dplyr::distinct(species, .keep_all = TRUE) |>
       print_species_name(
-        species_table = _
+        species_table = _,
+        shorten = TRUE
         )
   }) 
 # scenario 2
@@ -509,7 +510,7 @@ Reported monitoring methods are arranged in columns and table cells are filled w
 Within species groups, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
 
 Among the ANB focus plants, a clear synergy emerges for the **scope abundance under management** (@tbl-synplantsanb1): five (partly) freshwater species
-(`r species_data |> dplyr::filter(grepl("African elodea|primrose-willow|Brazilian water-milfoil|Australian swamp stonecrop", vern_name_eng)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("African elodea|primrose-willow|Brazilian water-milfoil|Australian swamp stonecrop", vern_name_eng)) |> print_species_name(shorten = TRUE)`)
 can be monitored using visual surveys, with four also suitable for aquatic environmental DNA (eDNA). All are primary species, making them strong candidates for a shared monitoring approach.
 
 ```{r table-syn-plants-anb-1}
@@ -518,17 +519,17 @@ can be monitored using visual surveys, with four also suitable for aquatic envir
 table_syn_anb_plants_display_list$abundance_management
 ```
 
-For the ANB-priority animals, scope **distribution under management** reveals a potential synergy between 
-`r species_data |> dplyr::filter(grepl("Coypu", vern_name_eng)) |> print_species_name()` 
-and 
-`r species_data |> dplyr::filter(grepl("Common raccoon", vern_name_eng)) |> print_species_name()`
-, which can both be monitored using camera traps and visual surveys (@tbl-synanimalsanb1).
+For the ANB-priority animals, scope **distribution under management** reveals a potential synergy between the
+`r species_data |> dplyr::filter(grepl("Coypu", vern_name_eng)) |> print_species_name(shorten = TRUE)` 
+and the
+`r species_data |> dplyr::filter(grepl("Common raccoon", vern_name_eng)) |> print_species_name(shorten = TRUE)`,
+which can both be monitored using camera traps and visual surveys (@tbl-synanimalsanb1).
 
-For the scope **abundance under management**, two limited method-based synergies emerge (@tbl-synanimalsanb2), both involving 
-`r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`. 
-One groups it with the Common raccoon, based on shared use of visual surveys and camera traps; the other links it with 
-`r species_data |> dplyr::filter(grepl("African clawed frog", vern_name_eng)) |> print_species_name()`
-, based on visual surveys and passive acoustic monitoring.
+For the scope **abundance under management**, two limited method-based synergies emerge (@tbl-synanimalsanb2), both involving the
+`r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name(shorten = TRUE)`. 
+One groups it with the Common raccoon, based on shared use of visual surveys and camera traps; the other links it with the
+`r species_data |> dplyr::filter(grepl("African clawed frog", vern_name_eng)) |> print_species_name(shorten = TRUE)`,
+based on visual surveys and passive acoustic monitoring.
 
 
 ```{r table-syn-animals-anb-1}
@@ -568,9 +569,9 @@ names_det_prior$animal |>
 @tbl-synplantsdet1 and @tbl-synanimalsdet1 show the method-based synergies for these plants and animals under scope detection. 
 The tables are structured as under Scenario 1.
 For plants (see @tbl-synplantsdet1) we find that visual surveys are recommended for a group of six species, all at least partly terrestrial, consisting of three primary species 
-(`r species_data |> dplyr::filter(grepl("China-sumac|Japanese climbing fern|American skunk-cabbage", vern_name_eng)) |> print_species_name()`) 
+(`r species_data |> dplyr::filter(grepl("China-sumac|Japanese climbing fern|American skunk-cabbage", vern_name_eng)) |> print_species_name(shorten = TRUE)`) 
 and three secondary species 
-(`r species_data |> dplyr::filter(grepl("Crimson fountaingrass|Chinese packing grass|Chinese tallow", vern_name_eng)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Crimson fountaingrass|Chinese packing grass|Chinese tallow", vern_name_eng)) |> print_species_name(shorten = TRUE)`)
 . Among these, three species are currently absent in Flanders, two are sporadically present, and one is already widespread. All occur in terrestrial habitats, with American skunk-cabbage also associated with freshwater environments. 
 
 ```{r table-syn-plants-det-1}
@@ -581,23 +582,23 @@ table_syn_det_plants_display_list$detection
 
 Turning to the animals, two larger groups arise (see @tbl-synanimalsdet1):
 The first, aquatic group encompasses three fish species 
-(`r species_data |> dplyr::filter(grepl("Black bullhead|Amur sleeper|False razbora", vern_name_eng)) |> print_species_name()`) 
-and 
-`r species_data |> dplyr::filter(grepl("Muskusrat", vern_name_nld)) |> print_species_name()` 
-as primary species as well as 
-`r species_data |> dplyr::filter(grepl("Signal crayfish", vern_name_eng)) |> print_species_name()`
-and
-`r species_data |> dplyr::filter(grepl("bottomed star", vern_name_eng)) |> print_species_name()`
+(`r species_data |> dplyr::filter(grepl("Black bullhead|Amur sleeper|False razbora", vern_name_eng)) |> print_species_name(shorten = TRUE)`) 
+and the
+`r species_data |> dplyr::filter(grepl("Muskusrat", vern_name_nld)) |> print_species_name(shorten = TRUE)` 
+as primary species as well as  the
+`r species_data |> dplyr::filter(grepl("Signal crayfish", vern_name_eng)) |> print_species_name(shorten = TRUE)`
+and the
+`r species_data |> dplyr::filter(grepl("bottomed star", vern_name_eng)) |> print_species_name(shorten = TRUE)`
 as secondary species.
 Aquatic environmental DNA qualifies as a group-wide monitoring method suited for detection. 
 Electric fishing, trapping and netting can in addition be used for the subgroup of fish.
 
 The second group comprises a number of primary 
-(`r species_data |> dplyr::filter(grepl("Ondatra|Herpestes|Corvus|Axis", species)) |> print_species_name()`), 
+(`r species_data |> dplyr::filter(grepl("Ondatra|Herpestes|Corvus|Axis", species)) |> print_species_name(shorten = TRUE)`), 
 secondary 
-(`r species_data |> dplyr::filter(grepl("myna|Asian needle ant|Black imported fire ant|Little fire ant", vern_name_eng)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("myna|Asian needle ant|Black imported fire ant|Little fire ant", vern_name_eng)) |> print_species_name(shorten = TRUE)`)
 and tertiary 
-(`r species_data |> dplyr::filter(grepl("Pallas eekhoorn|Nieuw-zeelandse platworm", vern_name_nld)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Pallas eekhoorn|Nieuw-zeelandse platworm", vern_name_nld)) |> print_species_name(shorten = TRUE)`)
 terrestrial species. 
 For this large group synergies arise in terms of the potential use of visual surveys, camera traps for the subgroup of mammals, and acoustic surveys for the subgroup of birds.
 
@@ -643,21 +644,21 @@ table_syn_dist_plants_display_list$distribution
 
 For the animals, two groups emerge.
 A first, terrestrial group comprises two primary mammals
-(`r species_data |> dplyr::filter(grepl("Aziatische grondeekhoorn|Chinese muntjak", vern_name_nld)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Aziatische grondeekhoorn|Chinese muntjak", vern_name_nld)) |> print_species_name(shorten = TRUE)`)
 and a tertiary mammal
-(`r species_data |> dplyr::filter(grepl("Common raccoon", vern_name_eng)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Common raccoon", vern_name_eng)) |> print_species_name(shorten = TRUE)`)
 , all of which can be monitored using visual surveys and camera traps.
 
 A second, aquatic group consists of four primary species
-(`r species_data |> dplyr::filter(grepl("Afrikaanse klauwkikker|Blauwband|Beverrat|Muskusrat", vern_name_nld)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Afrikaanse klauwkikker|Blauwband|Beverrat|Muskusrat", vern_name_nld)) |> print_species_name(shorten = TRUE)`)
 , a secondary crayfish
-(`r species_data |> dplyr::filter(grepl("Gevlekte rivierkreeft", vern_name_nld)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Gevlekte rivierkreeft", vern_name_nld)) |> print_species_name(shorten = TRUE)`)
 and a tertiary species 
-(`r species_data |> dplyr::filter(grepl("Chinese krab", vern_name_nld)) |> print_species_name()`)
+(`r species_data |> dplyr::filter(grepl("Chinese krab", vern_name_nld)) |> print_species_name(shorten = TRUE)`)
 , sharing aquatic eDNA as a monitoring method.
 
 Note that for the majority of these animal species
-(i.e., `r species_data |> dplyr::filter(grepl("Chinese muntjak|Afrikaanse klauwkikker|Beverrat|Wasbeer$", vern_name_nld)) |> print_species_name()`)
+(i.e., `r species_data |> dplyr::filter(grepl("Chinese muntjak|Afrikaanse klauwkikker|Beverrat|Wasbeer$", vern_name_nld)) |> print_species_name(shorten = TRUE)`)
 similar method-based synergies were already found under Scenario 1.
 
 ```{r table-syn-animals-dist-1}
@@ -683,7 +684,7 @@ Next, turning to the representativeness of opportunistic observations as an excl
 While we have used it as a general criterion to assign low relevance to any monitoring scope, the original question only addressed representativeness with respect to a species' distribution.
 Future assessments of expert knowledge should consider the representativeness of opportunistic observations in a more differentiated manner.
 For the current results, we note that the representativeness of opportunistic observations is rarely the sole reason of exclusion, although there are a few cases (
-e.g., `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`, but see the following chapter
+e.g., `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name(shorten = TRUE)`, but see the following chapter
 ).
 
 Considering the approach of having different experts provide judgements about the status of different IAS in Flanders, one might be concerned about rater effects: Differences that arise between species might in part reflect differences between experts and their judgements, rather than differences between species. Unfortunately, we can neither rule out such effects, nor quantify them, as we did not cross experts with species in our study design. Workload is of course a major consideration here, as experts are in high demand already. We, however, attempted to select experts to the best of our knowledge.  
