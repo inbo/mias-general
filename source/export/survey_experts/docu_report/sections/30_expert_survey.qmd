@@ -60,7 +60,7 @@ for (section_i in sections) {
 }
 ```
 
-In the beginning of each questionnaire experts were asked to indicate the invasion status for the species and questionnaire composition then dynamically adapted to this input: Depending on whether the species was marked as “absent,” “sporadically present,” “established to a limited extent,” or “widespread,” certain questionnaire sections were shown or skipped. If a species was reported as established to a limited extent or widespread, we considered questions belonging to the section on introduction and establishment irrelevant and omitted these.
+In the beginning of each questionnaire experts were asked to indicate the invasion status for the species and questionnaire composition then dynamically adapted to this input: depending on whether the species was marked as “absent,” “sporadically present,” “established to a limited extent,” or “widespread,” certain questionnaire sections were shown or skipped. If a species was reported as established to a limited extent or widespread, we considered questions belonging to the section on introduction and establishment irrelevant and omitted these.
 If a species was reported as absent, questions on the distribution and abundance in Flanders were skipped.
 
 Questions were of both closed, multiple-choice and open, free-text format. Each closed question was paired with an open one allowing respondents to complement their selection of the a-priori defined response option/the forced standardized replies with contextual clarifications. A full overview of all questions in the original survey composition is included in @sec-app-questionnaire.
@@ -71,7 +71,8 @@ Questions were of both closed, multiple-choice and open, free-text format. Each 
 
 All closed questions are formulated such that they function as indicators of either feasibility or urgency of a monitoring scheme for the species under consideration. Lower or higher levels of feasibility or urgency are encoded via numerical scores assigned across the response options of each question. Score values range from 1 indicating low feasibility or urgency to 4 indicating high feasibility or urgency, and are treated as interval-scaled in subsequent analyses. Different response options can have the same score, but all scores are assigned at least once per question. Scores were set a-priori to distributing the survey but not visible to respondents. @tbl-scoring illustrates the scoring of questions by providing the key that links response options to scores per question.
 
-Take, for example, species not yet present in Flanders for which early detection is essential: Experts were asked to evaluate how potential introduction sites for such species are configured.
+Take, for example, species not yet present in Flanders for which early detection is essential.
+Experts were asked to evaluate how potential introduction sites for such species are configured.
 If the number of introduction sites is limited and sites are specific (e.g. seaports), monitoring all of these sites is considered highly feasible and the largest value is assigned. Instead, if introduction sites are many and widespread (e.g., for a species that is expected to mainly be released from aquaria into freshwater bodies in Flanders) feasibility of structured monitoring is considered to be comparatively low and a small value is assigned. The smallest value (and thus lowest feasibility) is assigned if experts report the (potential) introduction sites as unknown, to them personally or generally. The underlying rationale is that the feasibility of planning monitoring schemes is minimal if the relevant information is unavailable. We apply this rather conservative scoring strategy to all questions as can be seen in the table.
 
 
@@ -292,7 +293,7 @@ It is important to note that the prioritisation process necessarily involves int
 Also note that prioritisation is not to be understood in the sense of (re-)determining the relevance of IAS in general.
 It concerns a temporary ranking of species-scope combinations in order to organize the - to some extent necessarily - sequential planning of IAS monitoring schemes. 
 
-### Stage 1: Exclusion of irrelevant/less relevant species-scope combinations
+### Stage 1: exclusion of irrelevant/less relevant species-scope combinations
 
 In Stage 1 of the prioritisation process, we exclude species-scope combinations that are less relevant. We determine relevance based on 
 
@@ -336,7 +337,7 @@ If abundance information is required, then management-related monitoring using d
 Even if a particular monitoring scope is relevant for a species based on the previously discussed criteria, it may still be excluded from further consideration if no suitable methods are available to implement it. We consider a method unsuitable when it cannot measure the outcome required by the scope in question. In the survey, experts were asked to indicate which monitoring technique they considered most relevant for the species in question, and, subsequently, whether that technique could measure relative or absolute abundance. If the selected technique was only capable of assessing presence or absence, we deemed the abundance-related scopes infeasible. Although experts could also list additional potentially relevant techniques, follow-up questions targeting their characteristics were only posed for the technique identified as most relevant.
 
 
-### Stage 2: Exclusion of low priority species-scope combinations
+### Stage 2: exclusion of low priority species-scope combinations
 
 In Stage 2 of the prioritisation process, we further filter the retained relevant species-scope combinations by excluding low priority instances. 
 We determine priority based on

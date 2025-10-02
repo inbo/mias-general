@@ -66,7 +66,7 @@ Deze survey resultaten vormden vervolgens de basis voor een tweefasig prioriteri
 Hiermee wilden we de relevantie en prioriteit bepalen van verschillende monitoringscopes voor de beoordeelde soorten 
 en een beperkt aantal soort-scope combinaties met hoge relevantie en prioriteit identificeren.
 We maken onderscheid tussen zes mogelijke monitoringscopes:
-Detectie (om de aanwezigheid van een soort te meten in gebieden waar de soort afwezig is), 
+detectie (om de aanwezigheid van een soort te meten in gebieden waar de soort afwezig is), 
 inventarisatie (om de verspreidingsgebieden van een soort te lokaliseren), 
 verspreiding (om de status en trend van de verspreiding van een soort te meten),
 abundantie (om de status en trend van de populatiegrootte van een soort te meten),
@@ -80,7 +80,7 @@ De prioriteit werd bepaald op basis van de algemene haalbaarheids- en urgentiesc
 Daarnaast werden de antwoorden op bepaalde kritische surveyvragen gebruikt om beslissingen over uitsluiting te onderbouwen, bijvoorbeeld wanneer experts meldden dat opportunistische gegevensverzameling al voldoende dekking bood voor een soort.
 De toepassing van deze filters leverde een selectie op soort-scope combinaties die als zeer relevant en prioritair werden beschouwd voor de ontwikkeling van toekomstige meetnetten.
 
-Om de resultaten van de prioritering verder te structureren, werden drie strategische focusscenario's ontwikkeld, elk met betrekking tot een subset van de geprioriteerde soorten en monitoringscopes:
+Om de resultaten van de prioritering verder te structureren, werden drie strategische focusscenario's ontwikkeld, elk met betrekking tot een subset van de geprioriteerde soorten en monitoringscopes.
 
 Scenario 1 richt zich op soorten die door het Agentschap voor Natuur en Bos expliciet als beheersprioriteit zijn aangemerkt. 
 Voor deze soorten is vooral monitoring nodig om maatregelen voor uitroeiing, inperking en controle te begeleiden.
@@ -101,7 +101,7 @@ Er is echter verder onderzoek nodig om te onthullen in hoeverre deze potentiële
 De resultaten van de survey en het prioriteringsproces werden geëvalueerd door een stuurgroep bestaande uit vertegenwoordigers van het Instituut voor Natuur- en Bosonderzoek, het Agentschap voor Natuur en Bos en de Vlaamse Milieumaatschappij.
 Op basis van deze evaluatie kwam de stuurgroep tot een definitieve short-list van vier soorten of soortgroepen voor het prioritair ontwerpen van meetnetten. 
 Deze selecties weerspiegelen een evenwicht tussen ecologische relevantie, huidige beheersbehoeften, haalbaarheid van monitoring en beleidsprioriteiten.
-De geselecteerde soorten en bijbehorende monitoringsscopes zijn als volgt:
+De geselecteerde soorten en bijbehorende monitoringsscopes zijn als volgt.
 
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`, 
 een kleine hertensoort met een momenteel beperkte maar mogelijk uitbreidende verspreiding in Vlaanderen. 

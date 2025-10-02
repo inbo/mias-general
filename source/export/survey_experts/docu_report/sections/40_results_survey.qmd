@@ -111,7 +111,7 @@ The critical feasibility and urgency values used for exclusion in the prioritisa
 Per species, overall feasibility and urgency scores are connected by a solid line if they exceed both their critical values and by a dashed line otherwise. 
 Triangles or circles that are filled pertain to Union List species, empty ones to candidate species.
 The expert-judged invasion stage is coded by colour:
-Absent species are shown in grey, sporadically present species in orange, limitedly established species in magenta, and widespread species in purple.
+absent species are shown in grey, sporadically present species in orange, limitedly established species in magenta, and widespread species in purple.
 
 ```{r ranking-overall-scores}
 #| label: "fig-ranking"
@@ -130,7 +130,7 @@ Also, we find more often that feasibility scores are higher than urgency scores 
 
 
 As explained in @sec-prior, the displayed overall scores co-determine the prioritisation results:
-Species that miss either the critical feasibility or the critical urgency value are excluded from the final prioritisation. 
+species that miss either the critical feasibility or the critical urgency value are excluded from the final prioritisation. 
 Species that pass both critical values are included, unless they are excluded due to other, more specific reasons linked to expert reactions to individual questions.  
 
 
@@ -268,7 +268,7 @@ exclusion_stage2 <- get_exclusion_reasons(table_base_filtered_upd, kingdom_list,
 ### Prioritisation of all species covered
 
 @tbl-priorplants and @tbl-prioranimals display the results of the survey-based prioritisation process for all plants and animals assessed in the survey in the form of the above introduced species-scope table (see @sec-spec-scope-table).
-The tables are sorted as follows:
+The tables are sorted as follows.
 First, rows are sorted by monitoring scope priority (stage 2 of prioritisation process), with high priority scopes on top.
 Within (i.e., for each value of) scope priority, rows are sorted by scope type relying on the order: `r table_base_upd$scope_type |> levels()`.
 That is, within high and low priority scopes, all species for which (at least) detection is relevant appear first, 
@@ -351,7 +351,7 @@ names_prior$animal |>
 ```
 
 For the species-scope combination not retained after prioritisation, the exact exclusion reasons can be revisited in @tbl-priorplants and @tbl-prioranimals, respectively.
-We provide a brief summary here:
+We provide a brief summary here.
 Looking at the plants first, there were `r exclusion_stage1$plant$Freq_total |> unique()` potential species-scope combinations in total. 
 During Stage 1 of the prioritisation process `r exclusion_stage1$plant$Freq_total |> unique() - exclusion_stage2$plant$Freq_total |> unique()` of these were excluded due to the following reasons (note that multiple exclusion criteria can apply per species-scope combination):
 
@@ -398,7 +398,7 @@ exclusion_stage2$animal |>
 
 ### Focus scenarios for species subgroups {#sec-scenarios}
 
-The prioritisation process enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: It narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
+The prioritisation process enabled the identification of species–scope combinations that are both of high relevance and of high priority for structured monitoring in Flanders. This selection represents a meaningful advance: it narrows the field of candidate monitoring schemes and comprises those with the strongest justification for further planning.
 
 Yet despite this filtering, the number of retained combinations remains large and additional focus is therefore helpful.
 To this end, we complement the presentation of the prioritisation results in the previous section with three strategic scenarios.
@@ -681,12 +681,12 @@ These would likely also have applied had we considered the downstream monitoring
 Another potential concern with regard to the exclusion criteria used for scope detection is that the relevance of this scope was tied to particular invasion stages - specifically, species being absent, sporadically present, or widespread but absent from conservation areas. Species that are established to a limited extent were not included. This was a deliberate choice, as the generic nature of the current analysis did not allow for the incorporation of species-specific distribution data. Such data would be necessary to identify areas where detection monitoring might still be relevant for species already established to a limited extent elsewhere in the Flemish region. A more detailed, species-level analysis focusing on one or a few limitedly established IAS could, however, reveal such areas and justify inclusion of this category in future assessments.
 
 Next, turning to the representativeness of opportunistic observations as an exclusion criterion, we should highlight the following inconsistency: 
-While we have used it as a general criterion to assign low relevance to any monitoring scope, the original question only addressed representativeness with respect to a species' distribution.
+while we have used it as a general criterion to assign low relevance to any monitoring scope, the original question only addressed representativeness with respect to a species' distribution.
 Future assessments of expert knowledge should consider the representativeness of opportunistic observations in a more differentiated manner.
 For the current results, we note that the representativeness of opportunistic observations is rarely the sole reason of exclusion, although there are a few cases (
 e.g., `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name(shorten = TRUE)`, but see the following chapter
 ).
 
-Considering the approach of having different experts provide judgements about the status of different IAS in Flanders, one might be concerned about rater effects: Differences that arise between species might in part reflect differences between experts and their judgements, rather than differences between species. Unfortunately, we can neither rule out such effects, nor quantify them, as we did not cross experts with species in our study design. Workload is of course a major consideration here, as experts are in high demand already. We, however, attempted to select experts to the best of our knowledge.  
+Considering the approach of having different experts provide judgements about the status of different IAS in Flanders, one might be concerned about rater effects: differences that arise between species might in part reflect differences between experts and their judgements, rather than differences between species. Unfortunately, we can neither rule out such effects, nor quantify them, as we did not cross experts with species in our study design. Workload is of course a major consideration here, as experts are in high demand already. We, however, attempted to select experts to the best of our knowledge.  
 
-Finally, regarding the numerical processing of the collected expert input, we made certain choices that could have affected the survey results: Response scores were treated as interval-scaled and summarized via arithmetic means across questions, critical values for expert rated-feasibility and urgency were based on the 50th percentile of the distribution of mean scores across all species. Alternatively, expert responses could be treated as ordinal - with consequences for further processing - or summarized in different ways; also, critical values can be determined in various manners. Our choices were mainly guided by simplicity and interpretability.
+Finally, regarding the numerical processing of the collected expert input, we made certain choices that could have affected the survey results: response scores were treated as interval-scaled and summarized via arithmetic means across questions, critical values for expert rated-feasibility and urgency were based on the 50th percentile of the distribution of mean scores across all species. Alternatively, expert responses could be treated as ordinal - with consequences for further processing - or summarized in different ways; also, critical values can be determined in various manners. Our choices were mainly guided by simplicity and interpretability.

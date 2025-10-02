@@ -2,7 +2,7 @@
 toc: false
 ---
 
-# Monitoring schemes for invasive alien species in Flanders: Some background {#sec-monitoring-ias}
+# Monitoring schemes for invasive alien species in Flanders: some background {#sec-monitoring-ias}
 
 ## The legal context {#sec-legal-context}
 
@@ -30,7 +30,7 @@ It is highlighted that inventory obligations originate in European legislation.
 The "coordinating role" assigned to INBO concerns ensuring the "correct collection, processing and interpretation of data" while individual volunteers as well as volunteers from various associations and organizations might contribute to carrying out data collection in the field.
 
 
-## Surveillance and monitoring: A clarification of terms
+## Surveillance and monitoring: a clarification of terms
 
 Although used recurrently, the terms “surveillance” and “monitoring” are not explicitly defined, neither in the Invasive Alien Species Regulation nor in the Species Decree. We therefore include a brief clarification of terms in this section.
 
@@ -99,7 +99,7 @@ Detection receives considerable attention in the Invasive Alien Species Regulati
 Under the scope distribution, a monitoring scheme aims to assess the status of and, where relevant, trend in a species' distribution. The area to be monitored will depend on the species’ current invasion stage. For species already widespread, this may require coverage of the entire Flemish region, while for species established more locally, monitoring can focus on their current range and the surrounding areas where spread is most likely. Setting up a monitoring scheme with this scope thus requires the (potential) distribution area of a species to be largely known a-priori.
 
 Reconsidering the reporting obligations under the Invasive Alien Species Regulation, scope distribution can be considered the most well-defined from the EU perspective:
-Distribution is explicitly operationalised as the presence and absence in terms of $10\times 10$ km grid cells of the EEA Reference grid [@peifer_about_2011] across Flanders. 
+distribution is explicitly operationalised as the presence and absence in terms of $10\times 10$ km grid cells of the EEA Reference grid [@peifer_about_2011] across Flanders. 
 
 
 ### Abundance
@@ -114,7 +114,7 @@ Note that the Invasive Alien Species Regulation mentions the scope abundance onl
 Monitoring schemes with scopes distribution or abundance under management aim to assess the status and possibly trend of a species' distribution or population size in and around areas where management takes place.
 Management evaluation ranges on a continuum with as end points estimating causal effects of a measurement action versus measuring its temporal and spatial correlates. 
 The degree of experimental and/or statistical control determines the position on this continuum.
-In addition, the nature of the to be evaluated management action (e.g., eradication vs. population control) further defines the implementation of the management-related scopes:
+In addition, the nature of the to be evaluated management action (e.g., eradication vs. population control) further defines the implementation of the management-related scopes.
 If population control or containment measures are to be evaluated, the duration of monitoring will for instance be (potentially) unlimited.
 If eradication measures are to be evaluated, monitoring will typically be of limited duration. Once monitoring has continued for a sufficiently long period without detections to confidently confirm the species’ eradication, it may be discontinued. In such cases, the focus may shift to periodic detection monitoring to ensure early warning in case of reintroduction.
 
