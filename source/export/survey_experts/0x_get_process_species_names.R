@@ -316,18 +316,72 @@ species_old_upd_tmp <- data_1 |>
     y = list_2 |> purrr::pluck("data") |> dplyr::select(c("sci_name_gbif_acc", "on_unionlist_2025"))
   )
 
-# reduced manual adaptions
+# --- fix capitalization of vernacular names ---------------
+
+
+# rewind general capitalization vernacular names
+firstlower <- function(x) {
+  substr(x, 1, 1) <- tolower(substr(x, 1, 1))
+  x
+}
+cap_placenames <- function(
+    x,
+    placenames = c(
+      # NL
+      "afghaans", "afrikaans", "amerikaans", "australisch", "aziatisch",
+      "californisch", "canadese", "chinese", "indische", "japans",
+      "nieuw-guinese", "nieuw-zeelandse", "noord-atlantische", "noord-aziatische",
+      "noordelijke", "oosterse", "oostelijk", "perzische",
+      "sosnowsky", "thaise", "westelijk",
+      # EN
+      "african", "american", "andean", "asian", "asiatic", "australian",
+      "brazilian", "canada", "cape", "carolina", "chilean", "china", "chinese",
+      "colombian", "egyptian", "himalayan", "indian", "japanese", "maryland",
+      "new guinea", "new zealand", "obama", "persian", "senegal", "sosnowsky"
+    )
+){
+  pattern <- placenames |> paste(x = _, collapse = "|")
+  if (grepl(pattern, x)){
+    match <- stringr::str_match(x, pattern)
+    x_1 <-  match |> stringr::str_to_title()
+    x_2 <- sub(match, "X", x)
+    x <- sub("X", x_1, x_2)
+  }
+  x
+}
+
+species_old_upd_tmp <- species_old_upd_tmp |>
+  dplyr::mutate(
+    dplyr::across(
+      dplyr::contains(c("nld", "eng")),
+      firstlower
+    ),
+    dplyr::across(
+      dplyr::contains(c("nld", "eng")),
+      \(x) {sapply(x, cap_placenames) }
+    )
+  )
+
+species_old_upd_tmp$vern_name_gbif_eng_alt <- stringr::str_replace_all(
+  species_old_upd_tmp$vern_name_gbif_eng_alt, "Giant", "giant"
+  )
+species_old_upd_tmp$vern_name_gbif_nld_alt <- stringr::str_replace_all(
+  species_old_upd_tmp$vern_name_gbif_nld_alt, "Bastaard", "Boheemse"
+)
+
+# --- additional manual adaptions ---------------
+
 # 3) misgurnus mohoity (Dybowski, 1869):
 # add vernacular name in Dutch
-misgurnus_vernname_nld <- "Noord-aziatische modderkruiper"
+misgurnus_vernname_nld <- "Noord-Aziatische modderkruiper"
 #
 # 4) Ondatra zibethicus (Linnaeus, 1766):
 # replace vernacular name in English, which is German
-ondatra_vernname_eng <- "Muskrat"
+ondatra_vernname_eng <- "muskrat"
 #
 # 5) Pachycondyla chinensis (Emery, 1895)
 # add vernacular name in Dutch
-pachycondyla_vernname_nld <- "Aziatische Naaldmier"
+pachycondyla_vernname_nld <- "Aziatische naaldmier"
 
 # adapt
 species_old_upd <- species_old_upd_tmp |>
@@ -344,7 +398,30 @@ species_old_upd <- species_old_upd_tmp |>
   )
 
 # compare
-waldo::compare(data_1, species_old_upd)
+with_width <- function(width, code) {
+  withr::local_options(width = width)
+  code
+}
+test <- lapply(
+  seq_along(data_1),
+  \(i){
+    waldo::compare(
+      data_1[, i] ,
+      species_old_upd[, i],
+      max_diffs = nrow(data_1)
+    ) |> with_width(
+      width = 100,
+      code = _
+    )
+  }
+)
+if (FALSE){
+  test[[15]]
+  test[[16]]
+  test[[17]]
+  test[[18]]
+}
+
 
 # save
 species_list <- list(

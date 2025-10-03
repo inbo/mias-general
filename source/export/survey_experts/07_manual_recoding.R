@@ -29,7 +29,7 @@ res_comb_upd <- res_comb |>
       TRUE ~ vern_name_eng
       ),
     vern_name_nld = dplyr::case_when(
-      grepl("Moerasaronskelk", vern_name_nld) ~ "Moerasaronskelk",
+      grepl("moerasaronskelk", vern_name_nld) ~ "moerasaronskelk",
       TRUE ~ vern_name_nld
     )
   )
@@ -475,3 +475,4 @@ res_moni_options_upd <- moni_dict$monitoring_EN |> unique()
 # save data sets
 save(res_moni_recoded, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))
 save(res_moni_options_upd, file = paste0(response_data_path, "recoded_processed/", "results_monitoring_options.rda"))
+
