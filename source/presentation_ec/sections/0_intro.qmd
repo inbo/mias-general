@@ -2,3 +2,12 @@
 
 ## Outline 
 
+- Guidelines for monitoring design
+- Expert survey 
+- Example Chinese muntjac
+
+::: {.notes}
+
+- Expert survey to support
+- Example to illustrate application of guidelines
+:::

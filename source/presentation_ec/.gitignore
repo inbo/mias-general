@@ -5,6 +5,9 @@
 *.pdf
 *.sty
 *.tex
+*.ttf
+*.css
+*.csl
 !_extensions/*
 site_libs
 !media/*

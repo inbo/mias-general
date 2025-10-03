@@ -7,9 +7,24 @@ title: "presentation_ec"
 ```
 
 ```{css}
+/* decrease size of code */
 code {font-size: 20pt;}
+/* decrease font size of slide headers */
 h2 {font-size: 40pt !important;}
+/* decrease font size of list items */
 ul li {font-size: 24pt !important;}
+
+/* define vcenter */
+vcenter {vertical-align: middle;}
+
+/* reposition footer text */
+.reveal .footer {
+  text-align: right !important;
+  font-size: 0.6em !important;
+  box-sizing: border-box !important; 
+  padding-right: 200px !important;
+}
+
 ```
 
 {{< include sections/0_intro.qmd >}}

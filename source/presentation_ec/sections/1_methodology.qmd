@@ -1,1 +1,103 @@
-# Methodology
+# Guidelines for monitoring design
+
+## Purpose
+
+- Developed at INBO
+- Tailoring monitoring scheme to the actual information needs
+- Producing results of high substantive & numerical quality 
+
+::: footer
+
+@wouters_ontwerp_2008-1
+
+:::
+
+::: {.notes}
+- comprehensive, taking relevant literature into account
+- guidelines for designing policy‐oriented monitoring schemes
+- ...
+
+:::
+
+## The monitoring design process
+
+
+::: {layout="[[6, 94], [6, 94], [6, 94], [6, 94], [6, 94]]" layout-valign="center"}
+
+
+![](../../media/guidelines/symbol_1.png)
+
+[Prioritising information needs]{.fragment fragment-index=1}
+
+
+![](../../media/guidelines/symbol_2.png)
+
+[Developing sample design and data collection]{.fragment fragment-index=2}
+ 
+![](../../media/guidelines/symbol_3.png)
+
+[Planning data storage & analysis]{.fragment fragment-index=3}
+
+![](../../media/guidelines/symbol_4.png)
+
+[Planning reporting & communication]{.fragment fragment-index=4}
+
+![](../../media/guidelines/symbol_5.png)
+
+[Implementation & quality assurance]{.fragment fragment-index=5}
+
+:::
+
+::: {.notes}
+
+- Phase 1, mainly:
+  - Analysing the demand and supply of
+  - reviewing the scientific basis (focus on aspects relevant for monitoring),
+  - (constraints analysis)
+  - outlining a future monitoring scheme by defining monitoring objectives in collaboration with clients and stakeholders
+  - ensure the scheme is relevant and supported, taking into account existing knowledge and data
+
+- Phase 2:
+  - monitoring objectives are then translated into specific, measurable targets; selection of suitable indicators
+  - Sample frame and sampling to draw representative
+  - How much data to collect: align dimensioning of the scheme with its purpose
+  - Measurement (e.g., protocols)
+  - Determining costs
+
+- Phase 3:
+  - The focus is then shifted to the future output of a monitoring scheme
+  - planning the storage, processing and statistical analysis of the to be collected data
+
+
+- Phase 4:
+  - planning the reporting and communication of monitoring results
+
+
+- Phase 5:
+  - Approval & start of monitoring network design
+  - guidelines highlight the need for quality assurance and transparent documentation to maintain scientific credibility
+  - regular assessments and adaptive improvements based on new insights and changing information needs
+  
+  - Documentation monitoring scheme
+  - High-quality data collection and storage
+  - Monitoring network control and evaluation
+
+
+:::
+
+
+## The monitoring design process
+
+![Circle of monitoring design](../../media/guidelines/symbols.png){width=900}
+
+
+
+## Applications
+
+[Soortenmeetnetten]
+
+
+## Challenges for IAS
+
+- Documentation...
+- ...

@@ -24,7 +24,7 @@ flandersqmd:
   entity: INBO
   level: 2
   title: |
-    | Measurement schemes
+    | Monitoring schemes
     | for invasive alien species
   author:
     - name:
@@ -51,8 +51,9 @@ flandersqmd:
       orcid: 0000-0001-8804-4216
       affiliation:
         - Research Institute for Nature and Forest (INBO)
-  cover: ../../../mias-muntjac/media/mapview_snapshot.png
+  cover: ../../../mias-muntjac/media/img/mapview_snapshot.png
 
 
 lightbox: true
 
+bibliography: ../../media/MIAS.bib

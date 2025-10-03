@@ -1,1 +1,38 @@
 # Example Chinese muntjac
+
+
+## Prioritising information needs {background-image="../../media/symbols/symbol_1.png" background-size="5%" background-position="top 30px right 50px"} 
+
+
+
+
+Monitoring scopes/modules
+
+Ecology
+
+Method: Camera traps (gold standard & expertise at INBO)
+
+
+
+## 2: Developing sample design and data collection {background-image="../../media/symbols/symbol_2.png" background-size="5%" background-position="top 30px right 50px"}
+
+Based on information:
+
+
+
+
+
+Sample frame and sampling
+
+Based on statistical determine the optimal numbner of locations to assess
+- too little: we won't be able to make the statements we want
+- too much: costs higher than they'd need to be
+- translation to costs
+
+
+Already a link to how we will analyse the data; 
+simplyfying assumptions
+here the idea to get
+
+
+
