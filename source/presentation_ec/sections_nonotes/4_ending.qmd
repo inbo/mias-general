@@ -1,0 +1,18 @@
+# Outlook
+
+## Outlook
+
+- Scaling up monitoring scheme development for remaining species
+  - First designs as blueprints
+  - Tackling species groups by capitalizing on synergies
+  - Information compiled via expert survey
+  - Drawing upon existing monitoring / citizen science initiatives
+
+
+
+# Thank you for your attention
+
+## References
+
+::: {#refs}
+:::
