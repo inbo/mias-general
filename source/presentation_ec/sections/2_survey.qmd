@@ -1,101 +1,122 @@
 # Expert survey
 
+::: {.notes}
+
+For this reason, we first took a step back and 
+conducted an expert survey to prepare the application of the guidelines
+
+:::
+
 ## Purpose
 
-- Prioritize 88 + 34 IAS for monitoring in Flanders
 - Draw on expert knowledge & assessment of situation in Flanders
   - introduction & establishment
   - distribution & abundance
   - impacts
   - monitoring
   - management
-- Assess **feasiblity** and **urgency** of monitoring schemes per species
-
+- Assess [feasiblity]{style="text-decoration:underline"} and [urgency]{style="text-decoration:underline"} of monitoring schemes per species
+- Prioritize Union List (candidate) IAS for monitoring in Flanders
 
 ::: footer
-([Full question list](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing))
+@adolf_prioritising_2025; under review
 :::
 
 
 ::: {.notes}
 
-- Expert support/prepare the development of a coherent IAS monitoring program in Flanders
-- 88 + 34 (candidate) IAS on union list - some kind of prioritization needed
-  - covered the previous Union List plus candidate species (X of which have now been added to the list)
-- we wanted specific information and judgements about the situation in Flanders
-- assumed experts would know relevant documents
-- collected responses condensed into overall ratings of feasibility & urgency of structured monitoring schemes for the considered species 
+- So, we relied on species experts for their knowledge and assessment of the situation in Flanders,
+regarding a number of aspects
+- with the idea that experts would know the relevant info and could help us integrating it in an efficient way
+- survey question were selected such that they's serve as indicators of feasibility & urgency of structured monitoring per species
+- collected responses were summarized/condensed into feasibility & urgency scores
+- and subsequently used for prioritzation...
+
+[why survey: we wanted answers to specific questions relevant for monitoring and the situation in Flanders]
 
 :::
 
 
-## Prioritization 
+## Prioritization {visibility="hidden"}
 
 ![Flowchart of the exclusion process](../../media/survey/flowchart-prioritization.svg){width=700}
 
+::: footer
+@adolf_prioritising_2025; under review
+:::
 
 ::: {.notes}
 
 - For the prioritization itself we took the following approach
-  - Propose (exhaustive) range of monitoring scopes, e.g.,
+- Propose (exhaustive) range of monitoring scopes, e.g.,
     - detection, distribution (change), abundance (change) under management
-  - determine relevance & importance/priority of each species scope combination based on survey results
-  - criteria: 
-    - overall feasibilty and urgency scores
-    - but also scores on individual questions (e.g. invasion stage, management status)
+- then used the overall feasibilty and urgency scores
+  - but also scores on individual questions (e.g. invasion stage, management status)
+- to determine relevance & importance/priority of each species scope combination based on survey results
 
 :::
 
+## Results - Illustration
 
+```{r species-scope-table}
+#| results: asis
 
-## Results / Final selection
+table_filtered_illu_final_display |> 
+  kableExtra::add_footnote(NULL) |> 
+  unclass() |> cat()
+
+```
+
+::: footer
+@adolf_prioritising_2025; under review
+:::
+
+::: {.notes}
+
+... more specifically, to prioritize the species with respect to different possible monitoring scopes
+
+- result: selection of species-monitoring scope combinations eligible for development of mon schemes in near future
+
+:::
+
+## Results - Final selection steering committee
 
 :::: {.columns}
 
-::: {.column width="20%"}
+::: {.column width="25%"}
 
-
-![](../../media/presentation_ec/muntjac.png){width=100}
-
-Chinese muntjac
+![Chinese muntjac](../../media/presentation_ec/muntjac2.png){height=200}
 
 - abundance under management
 - detection
 
 :::
 
-::: {.column width="20%"}
+::: {.column width="25%"}
 
 
-![](../../media/presentation_ec/slider.png){width=100}
+![American bull frog](../../media/presentation_ec/bullfrog2.png){height=200}
 
-Common slider
+
+- abundance under management
+- inventory / distribution
+
+:::
+
+::: {.column width="25%"}
+
+![Common slider](../../media/presentation_ec/slider2.png){height=200}
 
 - inventory / distribution
 - abundance under management
+
 
 :::
 
 ::: {.column width="25%"}
 
 
-![](../../media/presentation_ec/bullfrog.png){width=100}
-
-
-American<br>bull frog
-
-- abundance under management
-- inventory / distribution
-
-
-:::
-
-::: {.column width="35%"}
-
-
-![](../../media/presentation_ec/pimrose.png){width=100}
-
-Large-flower & floating primrose-willow
+![Large-flower/floating primrose-willow](../../media/presentation_ec/pimrose2.png){height=200}
 
 - abundance under management
 
@@ -104,25 +125,20 @@ Large-flower & floating primrose-willow
 
 ::::
 
-
+::: footer
+@adolf_prioritising_2025; under review
+:::
 
 
 ::: {.notes}
 
-- Result
-  - selection of species-scope combinations for near-future monitoring scheme development
-
-
-- Results presented in different formats
-  - Overview tables listing exclusion reasons for all species-scope combinations, primary methods for relevant combinations 
-  - Scenario's to further structure the results
-       - focus on selected scopes and species for which these are relevant according to our survey
-       - explore commonalities in monitoring methods between species (method-based synergies for planning and implementation)
-- Results presented to a steering committee consisting of project team & representatives of 
+- our results presented to a steering committee involving representatives of 
   - the Agency for Nature and Forests
   - Flanders Environment Agency
-- Final species selection made by steering committee
-
+- Steering committee made final selection of species & monitoring scopes (here)
+- focus on the Chinese muntjac, 
+- ...for which we have some preliminary phase 1 and 2 results
+- ...to give a bit of an impression of how guidelines are applied
 :::
 
 

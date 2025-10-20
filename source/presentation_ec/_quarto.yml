@@ -18,13 +18,13 @@ lang: en-GB
 format:
   flandersqmd-revealjs:
     link-external-newwindow: true
-    transition-speed: fast
+    transition: none
 
 flandersqmd:
   entity: INBO
   level: 2
   title: |
-    | Monitoring schemes
+    | Designing monitoring schemes
     | for invasive alien species
   author:
     - name:

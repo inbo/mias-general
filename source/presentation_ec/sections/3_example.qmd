@@ -1,38 +1,260 @@
 # Example Chinese muntjac
 
 
-## Prioritising information needs {background-image="../../media/symbols/symbol_1.png" background-size="5%" background-position="top 30px right 50px"} 
+## Prioritising information needs {background-image="../../media/presentation_ec/symbol_1.png" background-size="5%" background-position="top 30px right 50px"}
+
+::: {layout="[[60, 40]]"}
+
+
+![Chinese muntjac](../../media/presentation_ec/muntjac3.png){height=400}
+
+- small deer species native to China and Taiwan
+- In Flanders at early invasion stage (Antwerp population)
+- one of few known populations on EU mainland 
+- subject to management (eradication) by ANB
+
+
+:::
+
+::: {.notes}
+
+- small deer species native to China and Taiwan
+- In Flanders the species is at an early invasion stage
+- ... with an established population currently likely limited to parts of the province of Antwerp
+- one of the few known populations on the EU mainland
+- ... especially important that action is taken to prevent further spread within the EU
+- this population is currently subject to eradication measures coordinated by the Agency for Nature and Forests
+
+:::
+
+
+## Prioritising information needs {background-image="../../media/presentation_ec/symbol_1.png" background-size="5%" background-position="top 30px right 50px"} 
+
+
+Monitoring scopes refined:
+
+- Confirm population decline/eradication
+  - Abundance under management - trend
+  - Abundance under management - status
+- Detection of (re-)introduced/left-over individuals
+  - Presence under management - status
+  - Presence after management - status
+
+
+<!-- []{.fragment .semi-fade-out fragment-index=1} -->
+
+
+::: {.notes}
+
+Focussing on the established population, we refine monitoring scopes from survey,
+based on further expert consultations
+
+- first 2: confirming population decline/eradication under management
+- last 2: detection and I'd like to focus on these now
+
+- Presence under management is important, because
+  - While eradication is going on, the species might evade the measures taken and spread into buffer area around distribution area 
+  - we want to be able to detect that to contain further spread
+
+- Presence after management
+  - Once eradication has been successfully completed, we need to follow it up, to make sure species remains absent
+  - in case left-over of re-introduced animals in above distribution area we want to know this as well
+
+
+:::
+
+
+## Developing sample design and data collection {background-image="../../media/presentation_ec/symbol_2.png" background-size="5%" background-position="top 30px right 50px"}
+
+Sample frame & representative sample of locations
+
+![](../../media/presentation_ec/plot_dist_sample.png){width=780 fig-align="center"}
+
+
+::: {.notes}
+
+For these monitoring scopes we need to decide on:
+
+- sample frame 
+  - where do we *potentially* want to place camera traps: most-suited technique
+- how to draw a representative sample of locations from this sample frame
+
+- here: possible sample frame for distribution area
+- concerns all areas that qualify as potential habitat within the distribution area (green)
+- sample that is representative in the sense that it is spatially balanced
+
+:::
 
 
 
 
-Monitoring scopes/modules
-
-Ecology
-
-Method: Camera traps (gold standard & expertise at INBO)
+## Developing sample design and data collection {background-image="../../media/presentation_ec/symbol_2.png" background-size="5%" background-position="top 30px right 50px"}
 
 
+Optimal sample size for detection
 
-## 2: Developing sample design and data collection {background-image="../../media/symbols/symbol_2.png" background-size="5%" background-position="top 30px right 50px"}
-
-Based on information:
-
-
-
-
-
-Sample frame and sampling
-
-Based on statistical determine the optimal numbner of locations to assess
-- too little: we won't be able to make the statements we want
-- too much: costs higher than they'd need to be
-- translation to costs
+- Aim detection: detect species with a [high probability]{style="text-decoration:underline"} if it is [present]{style="text-decoration:underline"}
+  - high probability: e.g., 90 %
+  - present: animals present at, e.g., 1 % of all possible locations
+  - statistical test: Binomial test ($\alpha$ = 10 %)
 
 
-Already a link to how we will analyse the data; 
-simplyfying assumptions
-here the idea to get
+::: {.notes}
 
+We also need to decide on sample size: 
+
+- Aim detection: we want to be able to detect the species with a high prob if present.
+  - Want to know at how many locations do we need to actually place cameras to do that.
+- We can analyse this a-priori to data collection, but for that we need to define/fix a few things:
+  - high detection prob. of design: 90% 
+  - presence: animals present at 5 or 1 % of all possible locations
+    - 5 or 1 animal per 100 locations
+- statistical test use to test for presence 
+
+Then we can run our analysis
+
+[at least 1 animal -> also a percentage relative to the number of all possible locations; a small one, most likely...]
+[- if we want to be certain that they are absent than we need to check all possible locations]
+
+:::
+
+## Developing sample design and data collection {background-image="../../media/presentation_ec/symbol_2.png" background-size="5%" background-position="top 30px right 50px"}
+
+
+Optimal sample size for detection
+
+```{r sample-size}
+#| include: true
+#| cache: true
+#| message: false
+#| results: 'hide'
+#| fig-cap: " "
+#| fig-align: center
+
+#fig-cap: "Minimal detectable deviation as a function of sample size"
+
+# minimal detectable deviation
+get_mdd <- function(nl, power) {
+  1 - ((1 - power)^(1/nl))
+}
+# number of locations
+get_nl <- function(mdd, power) {
+  (log(1 - power)/log(1 - mdd)) |> 
+    ceiling()
+}
+
+# simulate curve
+data_mdd <- data.frame(
+  nl = seq(1,600),
+  power = 0.9
+) |>
+  dplyr::mutate(
+    mdd = purrr::map2_dbl(nl, power, \(x, y){
+      get_mdd(nl = x, power = y) 
+    })
+) 
+
+# points to highlight
+data_mdd_hl <- data.frame(
+    mdd = c(0.5, 0.1, 0.05, 0.01, 0.005),
+    power = 0.9
+  ) |> 
+    dplyr::mutate(
+      nl = purrr::map_int(mdd, \(x){get_nl(mdd = x, power = .9)}),
+      label = sprintf("%.*f%% presence\n%.*f locations", 
+                      ifelse(.data$mdd > 0.005, 0, 1), mdd*100, 0, nl),
+      col = ifelse(mdd %in% c(0.01), TRUE, FALSE)
+    ) 
+
+# visualize minimal detectable deviation as a function of sample size
+plot_mdd <- ggplot2::ggplot(data = data_mdd, ggplot2::aes(x = nl, y = mdd)) + 
+  ggplot2::geom_line(linewidth = 1) + 
+  ggplot2::geom_point(data = data_mdd_hl, size = 3) + 
+  ggforce::geom_mark_circle(
+    data = data_mdd_hl, 
+    ggplot2::aes(
+      x0 = nl + 50, y0 = mdd + 0.1, 
+      label = label, group = nl, 
+      fill = col
+      ),
+    #colour = "#C27900",
+    #con.colour = "#C27900",
+    con.type = "straight",
+    label.fontface = "plain",
+    label.fontsize = 12,
+    label.buffer = grid::unit(20, "mm")
+    ) +
+  ggplot2::scale_y_continuous(labels = scales::percent) + 
+  ggplot2::scale_fill_manual(values = c("transparent", "#C27900"), guide = "none") + 
+  ggplot2::coord_cartesian(xlim = c(0, 500), ylim = c(0,0.25)) + 
+  ggplot2::labs(
+    x = "Number of sampling locations",
+    y = "Minimal detectable presence (90 % detection probability)"
+    ) + 
+  ggplot2::theme_bw() + 
+  ggplot2::theme(ggplot2::element_text(size = 16)) + 
+  # costs
+  ggplot2::scale_x_continuous(
+    sec.axis = ggplot2::sec_axis(trans =~ .*(540), breaks = c(0,100,200,300,400,500)*(540), name = "Costs per year in EUR")
+  ) 
+
+plot_mdd + 
+  ggplot2::theme(
+    axis.title.x.top = ggplot2::element_text(color = "transparent", size = 13),
+    axis.text.x.top =  ggplot2::element_text(color = "transparent", size = 11),
+    axis.ticks.x.top = ggplot2::element_line(color = "transparent")
+  )
+
+```
+
+
+
+::: {.notes}
+
+Here is the result:
+
+- clear relationship between the minimal presence we can detect with our sample and the sample size
+- if species is present at 1% of locations then we can detect this with a 90% probability using a sample of 230 locations
+- if we obtain 230 zero-observations, it is 'plausible' that the probability of presence is small enough (smaller than 1 %)
+- Species probably not present (=absent) in the 1% sense
+
+[- Optimal sample size: the one that is just large enough to detect the 'presence of interest']
+[- because we do want to get a precise answer, but we don't want to waste resources or impact on nature more than necessary]
+
+
+
+:::
+
+## Developing sample design and data collection {background-image="../../media/presentation_ec/symbol_2.png" background-size="5%" background-position="top 30px right 50px"}
+
+Costs (hypothetical)
+
+```{r costs}
+#| include: true
+#| cache: true
+#| message: false
+#| results: 'hide'
+#| fig-cap: " "
+#| fig-align: center
+
+plot_mdd + 
+  ggplot2::theme(
+    axis.title.x.top = ggplot2::element_text(color = "#2c8698", size = 13),
+    axis.text.x.top =  ggplot2::element_text(color = "#2c8698", size = 11)
+  )
+
+
+```
+
+
+::: {.notes}
+
+- Costs can be included into the analysis by 
+  - roughly translating the number of locations into associated costs
+- the trade off between sensitivity and budget becomes explicit 
+- know how much sensitivity we would need to give up for to stick to a certain budget
+- decide whether that is acceptable in terms of sensitivity
+
+:::
 
 

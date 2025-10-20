@@ -30,7 +30,7 @@ if (!exists("is_html")){
 .booktabs <- if (is_html) {FALSE} else {TRUE}
 .longtable <- if (is_html) {FALSE} else {TRUE}
 .font_size <- if (exists("mode_source") && grepl("presentation", mode_source)) {
-  15
+  13
 } else if (is_html) {
   12
 } else {
@@ -1231,7 +1231,10 @@ table_filtered_illu_final_display <- table_filtered_illu_list_upd |>
   (\(x)
    if (exists("mode_source") && grepl("presentation", mode_source)) {
      x |>
-       dplyr::filter(!grepl("M|N", species)) |>
+       dplyr::filter(!grepl("M|N|B|D|G", species)) |>
+       dplyr::arrange(
+         match(species, paste("species", c("L", "H", "F", "J", "I", "A","C", "D", "K")))
+         ) |>
        dplyr::select(-"stadium")
    } else {
      x

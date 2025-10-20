@@ -2,20 +2,25 @@
 
 ## Purpose
 
-- Developed at INBO
-- Tailoring monitoring scheme to the actual information needs
-- Producing results of high substantive & numerical quality 
+- Support the design of policy-oriented monitoring schemes
+  - Tailoring monitoring schemes to the actual information needs
+  - Producing results of high substantive & numerical quality
 
 ::: footer
-
 @wouters_ontwerp_2008-1
-
 :::
 
 ::: {.notes}
-- comprehensive, taking relevant literature into account
-- guidelines for designing policy‐oriented monitoring schemes
-- ...
+
+- guidelines for monitoring design were developed at INBO based on the relevant scientific lit
+- purpose, in a nutshell, is to support the design of policy‐oriented monitoring schemes
+- with a focus on
+- ... tailoring a scheme to the actual information needs
+- ... to produce results of high substantive and numerical quality
+
+- So, the monitoring questions should be answered 
+  - with a high precision & reliably
+
 
 :::
 
@@ -25,79 +30,89 @@
 ::: {layout="[[6, 94], [6, 94], [6, 94], [6, 94], [6, 94]]" layout-valign="center"}
 
 
-![](../../media/guidelines/symbol_1.png)
+![](../../media/presentation_ec/symbol_1.png)
 
-[Prioritising information needs]{.fragment fragment-index=1}
+[Phase 1: Prioritising information needs]{.fragment fragment-index=1}
 
 
-![](../../media/guidelines/symbol_2.png)
+![](../../media/presentation_ec/symbol_2.png)
 
-[Developing sample design and data collection]{.fragment fragment-index=2}
+[Phase 2: Developing sample design and data collection]{.fragment fragment-index=2}
  
-![](../../media/guidelines/symbol_3.png)
+![](../../media/presentation_ec/symbol_3.png)
 
-[Planning data storage & analysis]{.fragment fragment-index=3}
+[Phase 3: Planning data storage & analysis]{.fragment fragment-index=3}
 
-![](../../media/guidelines/symbol_4.png)
+![](../../media/presentation_ec/symbol_4.png)
 
-[Planning reporting & communication]{.fragment fragment-index=4}
+[Phase 4: Planning reporting & communication]{.fragment fragment-index=4}
 
-![](../../media/guidelines/symbol_5.png)
+![](../../media/presentation_ec/symbol_5.png)
 
-[Implementation & quality assurance]{.fragment fragment-index=5}
+[Phase 5: Implementation & quality assurance]{.fragment fragment-index=5}
 
 :::
 
 ::: {.notes}
 
-- Phase 1, mainly:
-  - Analysing the demand and supply of
-  - reviewing the scientific basis (focus on aspects relevant for monitoring),
-  - (constraints analysis)
-  - outlining a future monitoring scheme by defining monitoring objectives in collaboration with clients and stakeholders
-  - ensure the scheme is relevant and supported, taking into account existing knowledge and data
+The guidelines distinguish 5 different phases
 
-- Phase 2:
-  - monitoring objectives are then translated into specific, measurable targets; selection of suitable indicators
-  - Sample frame and sampling to draw representative
-  - How much data to collect: align dimensioning of the scheme with its purpose
-  - Measurement (e.g., protocols)
-  - Determining costs
+- Phase 1...
+- should in the end lead to clearly formulated monitoring objectives and a rough outline of the design
+- achieved by taking into account the information demand from different stakeholders, 
+  existing monitoring, scientific background information (on species and monitoring)  
 
-- Phase 3:
-  - The focus is then shifted to the future output of a monitoring scheme
-  - planning the storage, processing and statistical analysis of the to be collected data
+- In phase 2...
+  - monitoring objectives are tied to quantifiable outcomes, then
+  - the sampling design is planned, 
+  - ...as well as data collection (implementation monitoring techniques)
+  - costs are estimated
 
+- Phase 3 then concerns...
+  - the storage, processing and statistical analysis of the to be collected data
 
-- Phase 4:
-  - planning the reporting and communication of monitoring results
+- Phase 4 involves...
+  - planning the reporting and communication of the monitoring results
 
-
-- Phase 5:
-  - Approval & start of monitoring network design
-  - guidelines highlight the need for quality assurance and transparent documentation to maintain scientific credibility
-  - regular assessments and adaptive improvements based on new insights and changing information needs
-  
-  - Documentation monitoring scheme
-  - High-quality data collection and storage
-  - Monitoring network control and evaluation
-
+- And the final phase 5:
+  - the actual implementation of scheme, after its approval
+  - continued documentation & evaluation
 
 :::
 
 
 ## The monitoring design process
 
-![Circle of monitoring design](../../media/guidelines/symbols.png){width=900}
+![Circle of monitoring design [adapted from @wouters_ontwerp_2008-1]](../../media/presentation_ec/symbols.png){width=800}
 
+::: {.notes}
 
+- The way in which we follow these phases is a circular process, where
+- one in which one iterate through the different phases,
+- continuously refining the design 
+- until it's ready for implementation
 
-## Applications
+:::
 
-[Soortenmeetnetten]
+## Application challenges
 
-
-## Challenges for IAS
-
-- Documentation...
+- Knowledge transfer
+- Determining information needs / monitoring scopes
 - ...
+- 88 (+ 34 candidate) Union List IAS,<br>but no clear prioritization / strategy
+
+
+::: {.notes}
+
+- guidelines have successfully been applied, for instance in the context of the EU habitats and birds directives
+- Nevertheless, we did experience a number of challenges
+- ...with the most important one being that...
+- ...we are dealing with a long list of species (at that point still 88 union list and 34 candidate species) 
+- ... but no clear prioritization, no clear strategy of how to address this long list
+- (... and how to address monitoring design for this long list)
+
+[- Also: needed some initial information per species as a starting point]
+
+
+
+:::
