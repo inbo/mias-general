@@ -1,0 +1,57 @@
+# Guidelines for monitoring design
+
+## Purpose
+
+- Support the design of policy-oriented monitoring schemes
+  - Tailoring monitoring schemes to the actual information needs
+  - Producing results of high substantive & numerical quality
+
+::: footer
+@wouters_ontwerp_2008-1
+:::
+
+
+## The monitoring design process
+
+
+::: {layout="[[6, 94], [6, 94], [6, 94], [6, 94], [6, 94]]" layout-valign="center"}
+
+
+![](../../media/presentation_ec/symbol_1.png)
+
+[Phase 1: Prioritising information needs]{.fragment fragment-index=1}
+
+
+![](../../media/presentation_ec/symbol_2.png)
+
+[Phase 2: Developing sample design and data collection]{.fragment fragment-index=2}
+ 
+![](../../media/presentation_ec/symbol_3.png)
+
+[Phase 3: Planning data storage & analysis]{.fragment fragment-index=3}
+
+![](../../media/presentation_ec/symbol_4.png)
+
+[Phase 4: Planning reporting & communication]{.fragment fragment-index=4}
+
+![](../../media/presentation_ec/symbol_5.png)
+
+[Phase 5: Implementation & quality assurance]{.fragment fragment-index=5}
+
+:::
+
+
+
+## The monitoring design process
+
+![Circle of monitoring design [adapted from @wouters_ontwerp_2008-1]](../../media/presentation_ec/symbols.png){width=800}
+
+
+## Application challenges
+
+- Knowledge transfer
+- Determining information needs / monitoring scopes
+- ...
+- 88 (+ 34 candidate) Union List IAS,<br>but no clear prioritization / strategy
+
+

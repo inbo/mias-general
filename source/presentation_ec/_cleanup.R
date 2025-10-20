@@ -1,6 +1,7 @@
 paths <- c(
   "source/presentation_ec",
-  "source/presentation_ec/sections"
+  "source/presentation_ec/sections",
+  "source/presentation_ec/sections_nonotes"
   )
 sapply(
   paths,

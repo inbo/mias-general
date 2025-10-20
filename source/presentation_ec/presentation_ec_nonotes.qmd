@@ -1,0 +1,58 @@
+---
+title: "presentation_ec"
+---
+
+```{r setup}
+#| cache: true
+
+options(scipen = 999)
+
+if (TRUE) {
+  mode_source <- "presentation" # mode for sourcing below r scripts
+  response_data_path <- "../../data/survey_experts/"
+  functions_path <- "../functions/"
+  source("../export/survey_experts/09_format_priority_tables.R") #, local = knitr::knit_global()
+}
+
+
+```
+
+```{css}
+/* decrease size of code */
+code {font-size: 20pt;}
+/* decrease font size of slide headers */
+/* increase space below slide headers */
+h2 {
+ font-size: 40pt !important;
+ margin-bottom: 40px !important;
+}
+ /* decrease font size of list items */
+ul li {font-size: 24pt !important;}
+p {font-size: 24pt !important;}
+/* define vcenter */
+vcenter {vertical-align: middle;}
+/* reposition footer text */
+.reveal .footer {
+  text-align: right !important;
+  box-sizing: border-box !important; 
+  padding-right: 180px !important;
+}
+.reveal .footer p {
+  font-size: 15pt !important;
+}
+/* reduce space between image and caption */
+/*.reveal figure img {
+   margin-bottom: -0.2em !important; 
+}*/
+.reveal figure p {
+  margin-bottom: -0.6em !important;   /* remove unwanted space under image */
+}
+/* remove padding a */
+
+```
+
+{{< include sections_nonotes/0_intro.qmd >}}
+{{< include sections_nonotes/1_methodology.qmd >}}
+{{< include sections_nonotes/2_survey.qmd >}}
+{{< include sections_nonotes/3_example.qmd >}}
+{{< include sections_nonotes/4_ending.qmd >}}
