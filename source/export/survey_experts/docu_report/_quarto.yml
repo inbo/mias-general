@@ -118,6 +118,7 @@ execute:
   cache: true
 
 lang: en-GB
+babel-lang: english
 
 bibliography: ../../../../media/MIAS.bib
 
