@@ -79,7 +79,12 @@ species_data <- species_list |>
 ### Response rate {#sec-survey-response}
 
 Of the 120 questionnaires `r n_questionnaires` were completed for `r n_species` species.
-Among these species are `r n_species_unionlist` IAS of Union concern and `r n_species_rest` additional species.
+Among these species are `r n_species_unionlist` IAS of Union concern and `r n_species_rest` additional species.^[
+For the scientific species names, we based ourselves on the currently accepted scientific names according to GBIF [@gbif_the_global_biodiversity_information_facility_what_2025]. This has led to the following error:
+On GBIF the Union List species *Misgurnus bipartitus (Sauvage & Dabry de Thiersant, 1874)* is listed as a synonym of the non-Union List species *Misgurnus mohoity (Dybowski, 1869)*, which thus also classifies as the accepted scientific name.
+The survey results thus pertain to *Misgurnus mohoity (Dybowski, 1869)* instead of *Misgurnus bipartitus (Sauvage & Dabry de Thiersant, 1874)*.
+Unfortunately, this error was missed during checks of the species list and only noted during review.
+]
 At the time we started processing the survey data, the survey was not completed for the following Union List IAS:
 
 ```{r species-missing-a}
