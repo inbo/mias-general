@@ -9,8 +9,9 @@ project:
     - "!LICENSE.md"
     - "!README.md"
   output-dir:  ../../../../output/survey_experts/docu_report
-  #post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R # adjust path
   execute-dir: project
+  post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R
+
 
 format:
   flandersqmd-book-html: default
@@ -21,6 +22,7 @@ flandersqmd:
   level: 1
   title: Prioritising invasive alien species for monitoring in Flanders
   subtitle: Results of an expert survey
+  shorttitle: expert-survey-mius
   author:
   - name:
       given: Janne
@@ -98,14 +100,14 @@ book:
         file: sections/10_introduction.qmd
   chapters:
     - index.qmd
-    - sections/02_summary.qmd
-    - sections/03_summary_dutch.qmd
-    - sections/10_introduction.qmd
-    - sections/20_monitoring_IAS.qmd
-    - sections/30_expert_survey.qmd
-    - sections/40_results_survey.qmd
-    - sections/50_steering_committee.qmd
-    - sections/99_references.qmd
+    - chapters/02_summary.qmd
+    - chapters/03_summary_dutch.qmd
+    - chapters/10_introduction.qmd
+    - chapters/20_monitoring_IAS.qmd
+    - chapters/30_expert_survey.qmd
+    - chapters/40_results_survey.qmd
+    - chapters/50_steering_committee.qmd
+    - chapters/99_references.qmd
   appendices:
     - appendices/appendix_a.qmd
     - appendices/appendix_b.qmd
