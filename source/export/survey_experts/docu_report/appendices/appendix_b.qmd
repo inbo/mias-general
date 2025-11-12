@@ -92,8 +92,9 @@ plot_unknown_pattern
 ### Monitoring methods
 
 @fig-method-freq displays the monitoring methods reported in the survey sorted by frequency.
-Note that per species multiple methods could be reported. 
-Methods are grouped into categories distinguished by colour.
+Note that per species multiple methods could be reported, via multiple-choice and open questions.
+The fact that two question formats were used leads to partly overlapping methods (e.g., while a number of specific traps were included in the multiple choice options, some experts responded "traps" to the open question).
+Methods are post-hoc grouped into broader categories distinguished by colour.
 
 ```{r plot-method-freq}
 #| label: "fig-method-freq"

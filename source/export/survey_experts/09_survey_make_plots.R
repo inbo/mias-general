@@ -715,7 +715,13 @@ res_plot_tmp1 <- res_meth_recoded |>
                   .after = response_text_final) |>
   dplyr::group_by(species) |>
   dplyr::rowwise() |>
-  dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
+  dplyr::mutate(
+    option_applies =
+      stringr::str_split_1(string = response_text_final, pattern = ",\\s") |>
+      stringr::str_equal(x = _, response_options) |>
+      any()
+  ) |>
+  dplyr::filter(option_applies) |>
   dplyr::ungroup()
 #
 #
