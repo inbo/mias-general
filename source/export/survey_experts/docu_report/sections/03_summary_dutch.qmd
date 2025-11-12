@@ -59,7 +59,7 @@ In Vlaanderen is het Instituut voor Natuur- en Bosonderzoek formeel belast met d
 Vlaanderen heeft momenteel echter geen coherent monitoringprogramma dat systematisch alle soorten van de Unielijst volgt.
 
 De bestaande inspanningen vormen een versnipperd landschap van initiatieven, vaak projectmatig en in de tijd beperkt, met een variërende geografische en taxonomische dekking.
-Deze omvatten professionele en op burgerwetenschap gebaseerde programma's die zich richten op specifieke soortengroepen, professionele meetnetten met bredere ecologische doelstellingen en opportunistische waarnemingen die verzameld worden via openbare biodiversiteitsportalen zoals waarnemingen.be [ref]. 
+Deze omvatten professionele en op burgerwetenschap gebaseerde programma's die zich richten op specifieke soortengroepen, professionele meetnetten met bredere ecologische doelstellingen en opportunistische waarnemingen die verzameld worden via openbare biodiversiteitsportalen zoals waarnemingen.be [@noauthor_waarnemingenbe_nodate]. 
 Ondanks hun bijdragen zijn deze initiatieven methodologisch niet op elkaar afgestemd en voldoen ze collectief niet aan de vereisten van de EU Verordening betreffende invasieve uitheemse soorten.
 
 Om het ontwerp van toekomstige, coherente meetnetten voor invasieve uitheemse soorten te ondersteunen, werd 

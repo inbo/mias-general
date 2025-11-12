@@ -270,7 +270,7 @@ data_table_scoring |>
 
 ### Questionnaire generation and distribution
 
-For each species, a separate questionnaire was set up using Google Forms. We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from the Global Biodiversity Information Facility (GBIF) [@gbif_the_global_biodiversity_information_facility_what_2025; @gbiforg_user_occurrence_2024] (@sec-app-maps)). 
+For each species, a separate questionnaire was set up using Google Forms. We opted for species-specific forms because we wanted to include species-specific information (e.g., scientific names, distribution maps based on recent data from the Global Biodiversity Information Facility (GBIF) [@gbif_the_global_biodiversity_information_facility_what_2025; @gbiforg_user_occurrence_2024], see @sec-app-maps). 
 The only exception was the group of three invasive knotweeds, which were combined into a single form. This decision was based not only on their similar ecological characteristics, but primarily on the difficulty of reliably distinguishing them in the field or in most data sources. 
 
 Questionnaires were generated and distributed in a semi-automated workflow involving R and Google Apps Script scripts, all available via the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate].
@@ -291,7 +291,7 @@ We base exclusion not only on the overall feasibility and urgency scores, but al
 It is important to note that the prioritisation process necessarily involves interpretative choices - such as how to best define exclusion criteria - which may be open to debate. The results presented here are intended to inform decision-making by the steering committee, which retains the flexibility to revisit or adjust priorities in light of the expert survey findings and additional considerations (see @sec-committee).
 
 Also note that prioritisation is not to be understood in the sense of (re-)determining the relevance of IAS in general.
-It concerns a temporary ranking of species-scope combinations in order to organize the - to some extent necessarily - sequential planning of IAS monitoring schemes. 
+It concerns a temporary ranking of species-scope combinations in order to organise the - to some extent necessarily - sequential planning of IAS monitoring schemes. 
 
 ### Stage 1: exclusion of irrelevant/less relevant species-scope combinations
 
@@ -353,7 +353,7 @@ For the exact filtering rules applied to the survey data see
 
 #### Representativeness of opportunistic data
 
-First, we check whether species-scope combinations can be considered covered by opportunistic observations (e.g. observations recorded via [waarnemingen.be](https://waarnemingen.be/)). If for a species opportunistic observations are considered highly representative by the expert, all scopes retained for this species are marked as having low priority.
+First, we check whether species-scope combinations can be considered covered by opportunistic observations [e.g. observations recorded via waarnemingen.be, @noauthor_waarnemingenbe_nodate]. If for a species opportunistic observations are considered highly representative by the expert, all scopes retained for this species are marked as having low priority.
 
 
 #### Knowledge and specificity of the monitoring area
