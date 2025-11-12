@@ -2,7 +2,22 @@
 
 # Acknowledgements {-}
 
-We thank all species experts who participated in the survey and contributed their time and expertise to assess the current and expected status of invasive alien species in Flanders. 
+We thank all species experts who participated in the survey and contributed their time and expertise to assess the current and expected status of invasive alien species in Flanders:
+among others
+Arnaud Jacobs (National Scientific Secretariat on Invasive Alien Species), 
+Baudewijn Odé (FLORON),
+Filip Verloove (Meise Botanic Garden),
+Johan van Valkenburg (Netherlands Institute for Vectors, Invasive plants and Plant health),
+Thomas Kerkhove (Royal Belgian Institute of Natural Sciences),
+Tom Van den Neucker (University of Antwerp),
+and, from the Research Institute for Nature and Forest,
+Fleur Petersen,
+Frédérique Steen,
+Hugo Verreycken,
+Jan Soors,
+Jo Packet,
+Marijke Thoonen, and
+Rhea Maesele.
 Their input provided essential information for the prioritisation process outlined in this report and formed the basis for the present analysis. 
 Without their expertise and commitment, this work would not have been possible.
 We are also grateful to the members of the steering committee for their constructive feedback and decision-making contributions.
