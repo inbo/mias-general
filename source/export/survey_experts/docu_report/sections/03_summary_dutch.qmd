@@ -8,7 +8,7 @@ toc: false
 #| message: false
 #| warning: false
 # define paths
-species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list_upd.Rda"
 # load species list
 species_list <- get(load(species_list_path))
 # species data
@@ -17,15 +17,20 @@ species_data <- species_list |>
   dplyr::mutate(
     species = sci_name_gbif_acc,
     vern_name_eng = dplyr::case_when(
-      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
       TRUE ~ vern_name_gbif_eng_alt
-      ),
+    ),
     vern_name_nld = dplyr::case_when(
-      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
-      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
-      TRUE ~ vern_name_gsheet_nld
-      )
-  )
+      is.na(vern_name_gbif_nld) & is.na(vern_name_gbif_nld_alt)  ~ vern_name_gsheet_nld,
+      !is.na(vern_name_gbif_nld_alt)  ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gbif_nld
+      ),
+    sci_name = dplyr::case_when(
+      grepl("Reynoutria", sci_name_gbif_acc) ~ sci_name_gbif_acc_alt,
+      TRUE ~ sci_name_gbif_acc
+    )
+  ) |>
+  dplyr::distinct(sci_name, .keep_all = TRUE)
 # format species names for printing 
 print_species_name <- function(
     species_table, 
@@ -108,18 +113,18 @@ een kleine hertensoort met een momenteel beperkte maar mogelijk uitbreidende ver
 Het dier is onderhevig aan voortdurende uitroeiingsinspanningen. 
 De meest relevante monitoringscope betreft abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.
 
-`r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`,
+`r species_data |> dplyr::filter(grepl("common slider", vern_name_eng)) |> print_species_name()`,
 een via de dierenhandel verspreide schildpadsoort die vaak in de natuur wordt vrijgelaten. 
 Hoewel momenteel niet bevestigd is dat de soort zich voortplant in Vlaanderen, is ze wijdverspreid. 
 De meest relevante monitoringscopes zijn inventarisatie (om het huidige verspreidingsgebied in kaart te brengen) en abundantie onder beheer (voor sites waar beheer plaatsvindt).
 
-`r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()``,
+`r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`,
 een amfibiesoort die in beperkte mate voorkomt in Vlaanderen, maar onderhevig is aan controlemaatregels. 
 De meest relevante monitoringscopes zijn abundantie onder beheer en verspreiding, vooral aan de randen van het huidige verspreidingsgebied.
 
-`r species_data |> dplyr::filter(grepl("Large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
+`r species_data |> dplyr::filter(grepl("large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
 en
-`r species_data |> dplyr::filter(grepl("Floating primrose-willow", vern_name_eng)) |> print_species_name()`,
+`r species_data |> dplyr::filter(grepl("floating primrose-willow", vern_name_eng)) |> print_species_name()`,
 twee soorten waterplanten die variëren van wijd tot beperkt verspreid. 
 Beide soorten worden op verschillende locaties beheerd. 
 De meest relevante monitoringscope is abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.

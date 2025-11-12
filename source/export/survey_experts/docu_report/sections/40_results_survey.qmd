@@ -49,20 +49,26 @@ species_data <- species_list |>
   dplyr::mutate(
     species = sci_name_gbif_acc,
     vern_name_eng = dplyr::case_when(
-      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
       TRUE ~ vern_name_gbif_eng_alt
-      ),
+    ),
     vern_name_nld = dplyr::case_when(
-      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
-      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
-      TRUE ~ vern_name_gsheet_nld
+      is.na(vern_name_gbif_nld) & is.na(vern_name_gbif_nld_alt)  ~ vern_name_gsheet_nld,
+      !is.na(vern_name_gbif_nld_alt)  ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gbif_nld
       ),
+    sci_name = dplyr::case_when(
+      grepl("Reynoutria", sci_name_gbif_acc) ~ sci_name_gbif_acc_alt,
+      TRUE ~ sci_name_gbif_acc
+    ),
     form_completed = dplyr::case_when(
       (sci_name_gbif_acc %in% res_comb_upd$species | 
          grepl("Reynoutria", x  = sci_name_gbif_acc)) ~ TRUE, 
       TRUE ~ FALSE
     )
-  )  
+  ) |>
+  dplyr::distinct(sci_name, .keep_all = TRUE)  
+
 
 ```
 
@@ -527,7 +533,9 @@ which can both be monitored using camera traps and visual surveys (@tbl-synanima
 
 For the scope **abundance under management**, two limited method-based synergies emerge (@tbl-synanimalsanb2), both involving the
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`.
-One groups it with the Common raccoon, based on shared use of visual surveys and camera traps; the other links it with the
+One groups it with the
+`r species_data |> dplyr::filter(grepl("common raccoon", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`,
+based on shared use of visual surveys and camera traps; the other links it with the
 `r species_data |> dplyr::filter(grepl("African clawed frog", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`,
 based on visual surveys and passive acoustic monitoring.
 
@@ -597,8 +605,8 @@ The second group comprises a number of primary
 (`r species_data |> dplyr::filter(grepl("ondatra|herpestes|corvus|axis", species, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`), 
 secondary 
 (`r species_data |> dplyr::filter(grepl("myna|asian needle ant|black imported fire ant|little fire ant", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`)
-and tertiary 
-(`r species_data |> dplyr::filter(grepl("pallas eekhoorn|nieuw-zeelandse platworm", vern_name_nld, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`)
+and tertiary
+(`r species_data |> dplyr::filter(grepl("pallas|nieuw-zeelandse platworm", vern_name_nld, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`)
 terrestrial species. 
 For this large group synergies arise in terms of the potential use of visual surveys, camera traps for the subgroup of mammals, and acoustic surveys for the subgroup of birds.
 

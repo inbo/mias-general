@@ -48,20 +48,25 @@ species_data <- species_list |>
     sci_name = sci_name_gbif_acc, #|> gsub("&", "\\\\&", x = _), 
     # not needed if cell_spec is applied later on 
     vern_name_eng = dplyr::case_when(
-      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
       TRUE ~ vern_name_gbif_eng_alt
-      ),
+    ),
     vern_name_nld = dplyr::case_when(
-      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
-      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
-      TRUE ~ vern_name_gsheet_nld
+      is.na(vern_name_gbif_nld) & is.na(vern_name_gbif_nld_alt)  ~ vern_name_gsheet_nld,
+      !is.na(vern_name_gbif_nld_alt)  ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gbif_nld
       ),
+    sci_name = dplyr::case_when(
+      grepl("Reynoutria", sci_name_gbif_acc) ~ sci_name_gbif_acc_alt,
+      TRUE ~ sci_name_gbif_acc
+    ),
     color_completed = dplyr::case_when(
       (sci_name_gbif_acc %in% res_comb_upd$species | 
          grepl("Reynoutria", x  = sci_name_gbif_acc)) ~ "#000000", 
       TRUE ~ "#A9A9A9"
     )
   ) |>
+  dplyr::distinct(sci_name, .keep_all = TRUE) |>
   dplyr::arrange(on_unionlist_2025 |> dplyr::desc(), sci_name) |>
   dplyr::mutate(
     dplyr::across(

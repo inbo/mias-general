@@ -7,6 +7,7 @@ toc: false
 ```{r steering-committee-setup}
 #| message: false
 #| warning: false
+
 # test format
 is_html <- knitr::is_html_output()
 # define paths
@@ -24,16 +25,20 @@ species_data <- species_list |>
   dplyr::mutate(
     species = sci_name_gbif_acc,
     vern_name_eng = dplyr::case_when(
-      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
       TRUE ~ vern_name_gbif_eng_alt
-      ),
+    ),
     vern_name_nld = dplyr::case_when(
-      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
-      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
-      TRUE ~ vern_name_gsheet_nld
-      )
-  )
-options(knitr.kable.NA = '')
+      is.na(vern_name_gbif_nld) & is.na(vern_name_gbif_nld_alt)  ~ vern_name_gsheet_nld,
+      !is.na(vern_name_gbif_nld_alt)  ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gbif_nld
+      ),
+    sci_name = dplyr::case_when(
+      grepl("Reynoutria", sci_name_gbif_acc) ~ sci_name_gbif_acc_alt,
+      TRUE ~ sci_name_gbif_acc
+    )
+  ) |>
+  dplyr::distinct(sci_name, .keep_all = TRUE)
 
 ```
 
