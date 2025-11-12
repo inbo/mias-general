@@ -87,6 +87,8 @@ which, despite initial discussion on targeted exclusion from sensitive areas suc
 #| label: tbl-selection-committee
 #| tbl-cap: Consolidated species list as decided upon by the steering committee
 
+options(knitr.kable.NA = '')
+options(knitr.table.format = .format)
 
 # 18 - 1
 species_strings_com <- c(
@@ -218,9 +220,15 @@ table_committee_display <- table_committee |>
             paste(species_shortlist_com_eng, collapse = "|"),
             vern_name_eng,
             ignore.case = TRUE
-          ) ~
+          ) 
+          & !is.na(x) ~
             kableExtra::cell_spec(x = x, color = color_black, format = .format, escape = .escape),
-          TRUE ~
+          !grepl(
+            paste(species_shortlist_com_eng, collapse = "|"),
+            vern_name_eng,
+            ignore.case = TRUE
+          ) 
+          & !is.na(x) ~
             kableExtra::cell_spec(x = x, color = color_grey, format = .format, escape = .escape)
         )
       }
@@ -229,7 +237,7 @@ table_committee_display <- table_committee |>
   knitr::kable(
     x = _,
     format = .format,
-    escape = FALSE,
+    escape = .escape,
     booktabs = .booktabs,
     longtable = FALSE,
     linesep = "",
@@ -341,7 +349,7 @@ The third species selected as a priority is the
 `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`,
 which is already established in Flanders. Although its overall distribution remains limited in extent, the species can be locally abundant within its invaded range. The bullfrog is currently the subject of active management by ANB, in collaboration with various partners and funded through multiple projects. Preliminary monitoring is already in place, primarily using eDNA-based approaches.
 
-The most important monitoring scope identified by the committee for this species is abundance under management. Within the currently invaded zones, the aim is to assess whether different management strategies lead to measurable reductions in abundance over time. A secondary but complementary need is for improved data on distribution. This applies both to identifying which specific water bodies within the invaded area are currently occupied, and to detecting any expansion into new areas. This inventory / distribution monitoring is crucial to evaluate whether the species can be effectively contained within its current range. 
+The most important monitoring scope identified by the committee for this species is abundance under management. Within the currently invaded zones, the aim is to assess whether different management strategies lead to measurable reductions in abundance over time. A secondary but complementary need is for improved data on distribution. This applies both to identifying which specific water bodies within the invaded area are currently occupied, and to detecting any expansion into new areas. This inventory/distribution monitoring is crucial to evaluate whether the species can be effectively contained within its current range. 
 
 The case of the American bull frog shares certain features with that of the Chinese muntjac - namely, a combination of management-related monitoring and a need to clarify distribution boundaries - but differs in that the bullfrog is at a more advanced stage of invasion and is already widely established within its core range.
 
