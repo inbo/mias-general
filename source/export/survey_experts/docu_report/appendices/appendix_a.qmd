@@ -38,7 +38,7 @@ is_html <- knitr::is_html_output()
 .font_size <- if (is_html) {12} else {6}
 .col_width_wide <- ifelse(is_html, "150px", "70pt")
 .col_width_medium <- ifelse(is_html, "120px", "70pt")
-.col_width_narrow <- ifelse(is_html, "70px", "40pt")
+.col_width_narrow <- ifelse(is_html, "120px", "40pt")
 
 options(knitr.kable.NA = '')
 options(knitr.table.format = .format)
@@ -96,7 +96,6 @@ species_data <- species_list |>
 ```{r appdx-a-species-table}
 #| label: tbl-species
 #| tbl-cap: All species covered in the expert survey
-#| eval: true
 
 knitr::kable(
     x = species_data,
@@ -144,7 +143,22 @@ knitr::kable(
     kableExtra::column_spec(
     column = c(4,5,8,9),
     width = .col_width_medium
-  )
+  ) |>
+    (\(x)
+     if (is_html){
+       x |>
+         kableExtra::scroll_box(
+           height = "700px",
+           extra_css = sprintf(
+             "scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             "#D3D3D3"
+             )
+         )
+     } else {
+       x
+     }
+    )()
 
 ```
 

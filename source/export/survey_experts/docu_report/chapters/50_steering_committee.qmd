@@ -88,7 +88,6 @@ which, despite initial discussion on targeted exclusion from sensitive areas suc
 #| tbl-cap: Consolidated species list as decided upon by the steering committee
 
 options(knitr.kable.NA = '')
-options(knitr.table.format = .format)
 
 # 18 - 1
 species_strings_com <- c(
@@ -259,30 +258,30 @@ table_committee_display <- table_committee |>
   # species names
   kableExtra::column_spec(
       column = 1,
-      width = ifelse(is_html, "100px", "90pt")
+      width = ifelse(is_html, "150px", "90pt")
   ) |>
   # other id cols
   kableExtra::column_spec(
       column = 2,
-      width = ifelse(is_html, "60px", "40pt")
+      width = ifelse(is_html, "150px", "40pt")
   ) |>
   kableExtra::column_spec(
       column = 3,
-      width = ifelse(is_html, "60px", "30pt")
+      width = ifelse(is_html, "100px", "30pt")
   ) |>
   kableExtra::column_spec(
-      column = 3,
-      width = ifelse(is_html, "60px", "40pt")
+      column = 4,
+      width = ifelse(is_html, "150px", "40pt")
   ) |>
   # scenario 
     kableExtra::column_spec(
       column = 5,
-      width =  ifelse(is_html, "40px", "30pt")
+      width =  ifelse(is_html, "50px", "30pt")
     ) |>
   # scope
   kableExtra::column_spec(
       column = 6,
-      width =  ifelse(is_html, "45px", "80pt")
+      width =  ifelse(is_html, "200px", "80pt")
   ) |>
   # group rows
     kableExtra::group_rows(
@@ -298,7 +297,22 @@ table_committee_display <- table_committee |>
     end_row = table_committee_grouping$row_stop[2],
     indent = FALSE,
     hline_after = TRUE
-  )
+  ) |>
+    (\(x)
+     if (is_html){
+       x |>
+         kableExtra::scroll_box(
+           height = "700px",
+           extra_css = sprintf(
+             "scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             color_grey
+             )
+         )
+     } else {
+       x
+     }
+    )()
 
 
 table_committee_display

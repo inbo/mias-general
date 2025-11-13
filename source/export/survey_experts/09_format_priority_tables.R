@@ -521,12 +521,22 @@ make_table_species_display <- function(
     kableExtra::row_spec(
       row = 1:nrow(data_table_upd),
       extra_css = if (is_html) 'padding: 4px;' else NULL
-    ) #|>
-    # alternating colors
-    #kableExtra::row_spec(
-    #  row = seq(1, nrow(data_table_upd), 2),
-    #  background = color_verylightgrey
-    #)
+    ) |>
+    (\(x)
+     if (is_html){
+       x |>
+         kableExtra::scroll_box(
+           height = "700px",
+           extra_css = sprintf(
+             "scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             color_lightgrey
+             )
+         )
+     } else {
+       x
+     }
+    )()
 }
 
 
@@ -645,7 +655,22 @@ make_table_display <- function(
       symbol = footnote_data$scope_motivation,
       symbol_manual = footnote_data$scope_verbose,
       escape = .escape
-    )
+    ) |>
+    (\(x)
+     if (is_html){
+       x |>
+         kableExtra::scroll_box(
+           height = "700px",
+           extra_css = sprintf(
+             "scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             color_lightgrey
+           )
+         )
+     } else {
+       x
+     }
+    )()
 }
 
 # --- define functions to prepare and display synergy tables ---------------
@@ -1007,6 +1032,21 @@ make_table_syn_display <- function(
            background = "white",
            hline_after = TRUE,
            indent = FALSE
+         )
+     } else {
+       x
+     }
+    )() |>
+    (\(x)
+     if (is_html){
+       x  |>
+         kableExtra::scroll_box(
+           height = NULL,
+           extra_css = sprintf(
+             "overflow-x: scroll; scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             color_lightgrey
+           )
          )
      } else {
        x

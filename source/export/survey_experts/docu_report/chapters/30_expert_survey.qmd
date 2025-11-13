@@ -87,9 +87,9 @@ If the number of introduction sites is limited and sites are specific (e.g. seap
 .latex_options = if (is_html) {"basic"} else {c("repeat_header", "HOLD_position")} #
 
 # add options
-.col_width_1 = if (is_html) {"220px"} else {"100pt"}
+.col_width_1 = if (is_html) {"250px"} else {"100pt"}
 .col_width_2 = if (is_html) {"70px"} else {"10pt"}
-.col_width_3 = if (is_html) {"350px"} else {"280pt"}
+.col_width_3 = if (is_html) {"480px"} else {"280pt"}
 
 
 # latex issue text overflow with kableExtra::collapse_rows
@@ -260,7 +260,22 @@ data_table_scoring |>
     end_row = data_grouping$row_stop[5],
     indent = FALSE,
     hline_after = TRUE
-  ) 
+  ) |>
+    (\(x)
+     if (is_html){
+       x |>
+         kableExtra::scroll_box(
+           height = "700px",
+           extra_css = sprintf(
+             "scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             color_lightgrey
+             )
+         )
+     } else {
+       x
+     }
+    )()
 
 
 ```
@@ -394,6 +409,8 @@ We consider method-based synergies in two ways: first, between species for which
 ```{r table illustration}
 #| label: tbl-illu
 #| tbl-cap: Illustration of the prioritisation results presentation
+#| results: !expr ifelse(is_html, 'asis', 'true')
+
 table_filtered_illu_final_display |>
   # species
   kableExtra::column_spec(
@@ -403,13 +420,21 @@ table_filtered_illu_final_display |>
   # stadium
   kableExtra::column_spec(
     column = 2,
-    width = ifelse(is_html, "70px", "60pt")
+    width = ifelse(is_html, "80px", "60pt")
   ) |>
   # scopes
   kableExtra::column_spec(
     column = seq(1,6) + 2,
-    width = ifelse(is_html, "40px", "40pt")
-  ) 
+    width = ifelse(is_html, "50px", "40pt")
+  ) |>
+  (\(x)
+   if (is_html){
+     x |>  unclass() |> cat()
+   } else {
+     x
+   }
+  )()
+
   
   
 ```

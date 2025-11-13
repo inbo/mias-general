@@ -11,6 +11,7 @@ All R analysis code is again available via the github repository [inbo/mias-gene
 ```{r survey-results-setup}
 #| message: false
 #| warning: false
+
 # test format
 is_html <- knitr::is_html_output()
 # define paths
@@ -293,6 +294,7 @@ Within (i.e., for each value of) invasion stage, rows are sorted by global feasi
 ```{r prior-all-plants}
 #| label: tbl-priorplants
 #| tbl-cap: Prioritisation results for all monitoring scope-plant combinations covered in the survey
+#| results: !expr ifelse(is_html, 'asis', 'true')
 
 table_filtered_upd_display_list$plant |>
   # species names
@@ -309,7 +311,14 @@ table_filtered_upd_display_list$plant |>
   kableExtra::column_spec(
     column = seq(1,6) + 4,
     width = ifelse(is_html, "120px", "45pt")
-  )
+  )  |>
+  (\(x)
+   if (is_html){
+     x |>  unclass() |> cat()
+   } else {
+     x
+   }
+  )()
 
 ```
 
@@ -318,6 +327,7 @@ table_filtered_upd_display_list$plant |>
 ```{r prior-all-animals}
 #| label: tbl-prioranimals
 #| tbl-cap: Prioritisation results for all monitoring scope-animal combinations covered in the survey
+#| results: !expr ifelse(is_html, 'asis', 'true')
 
 table_filtered_upd_display_list$animal |>
   # species names
@@ -334,7 +344,14 @@ table_filtered_upd_display_list$animal |>
   kableExtra::column_spec(
     column = seq(1,6) + 4,
     width = ifelse(is_html, "120px", "45pt")
-  )
+  ) |>
+  (\(x)
+   if (is_html){
+     x |>  unclass() |> cat()
+   } else {
+     x
+   }
+  )()
 
 ```
 
