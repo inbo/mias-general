@@ -301,7 +301,7 @@ Crossing the different monitoring scopes described in @sec-monitoring-ias with a
 Our approach to the prioritisation involves a two-stage exclusion process visualized in @fig-prioritisation [adapt fix size and position]. First we exclude species-scope combinations that are less relevant. Then we exclude species-scope combinations that have low priority.
 We base exclusion not only on the overall feasibility and urgency scores, but also on responses to selected individual survey questions. The latter implies that a species-scope combination is excluded if the expert chooses a certain response to a certain question - an implementation of the one-out-all-out-principle for a limited number of question-response combinations we deemed critical. We detail the two stages of the prioritisation process and the exact exclusion criteria employed in the following.
 
-![Flowchart of the prioritisation process](../media/flowchart-prioritization.pdf){#fig-prioritisation width=600}
+![Flowchart of the prioritisation process](../media/flowchart-prioritization.svg){#fig-prioritisation width=600}
 
 It is important to note that the prioritisation process necessarily involves interpretative choices - such as how to best define exclusion criteria - which may be open to debate. The results presented here are intended to inform decision-making by the steering committee, which retains the flexibility to revisit or adjust priorities in light of the expert survey findings and additional considerations (see @sec-committee).
 

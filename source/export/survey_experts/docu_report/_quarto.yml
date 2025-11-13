@@ -126,3 +126,4 @@ babel-lang: english
 
 bibliography: ../../../../media/MIAS.bib
 
+lightbox: true
