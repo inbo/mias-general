@@ -14,7 +14,7 @@ path <- "source/export/survey_experts/docu_report"
 #
 # section files
 section_files <- list.files(
-  path = paste(path, "sections", sep = "/"),
+  path = paste(path, "chapters", sep = "/"),
   full.names = TRUE,
   pattern = ".qmd"
 ) |>
@@ -40,7 +40,7 @@ for (i in seq_along(section_files)){
       what = eval(parse(text = which_fun)),
       args = list(
         file = file_path_i,
-        gpath = "trackdown/report_expert_survey/v2_sections",
+        gpath = "trackdown/report_expert_survey/v3_sections",
         shared_drive = "PRJ_MIUS",
         hide_code = TRUE,
         open = FALSE
@@ -55,7 +55,7 @@ try(
   googledrive::drive_upload(
     media = pdf_file,
     # "trackdown/report_expert_survey/v2_output_pdf"
-    path = googledrive::as_id("1WUw2kzdTJM2jzPFm7fxoCtlLmRT_IQH5")
+    path = googledrive::as_id("1mzMDE3BDiMOHmQnP-gl2_QbYVRFQfOPP")
   )
 )
 #
