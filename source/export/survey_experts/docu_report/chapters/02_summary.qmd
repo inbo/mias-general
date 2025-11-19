@@ -46,7 +46,7 @@ print_species_name <- function(
 }
 ```
 
-
+<!-- description: start -->
 
 This report presents a survey-based framework to prepare the development of structured, policy-relevant monitoring schemes for invasive alien species in Flanders. 
 Under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014], member states are required to monitor species listed as of Union Concern, including the establishment of systems for early detection and for monitoring species' distributions and management outcomes. 
@@ -89,3 +89,5 @@ For each, one or more main monitoring scopes were identified, often linked to ev
 
 The development of monitoring schemes for these species should proceed based on the methodological guidelines developed by the Research Institute for Nature and Forest [@wouters_ontwerp_2008-1]
 to ensure reliable and policy-aligned monitoring results.
+
+<!-- description: end -->

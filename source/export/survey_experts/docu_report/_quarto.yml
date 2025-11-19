@@ -8,6 +8,7 @@ project:
     - "*.qmd"
     - "!LICENSE.md"
     - "!README.md"
+  #output-dir:  ../../../../output/survey_experts/docu_report_zip
   output-dir:  ../../../../output/survey_experts/docu_report
   execute-dir: project
   post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R
@@ -72,6 +73,11 @@ flandersqmd:
   public_report: true
   colophon: true
   floatbarrier: section
+  # needed for INBOmd::inbo_website()
+  publisher: Research Institute for Nature and Forest (INBO)
+  publication_type: publication-report
+  keywords: invasive alien species; monitoring schemes; expert survey
+  community: inbo
 
 book:
   downloads: pdf

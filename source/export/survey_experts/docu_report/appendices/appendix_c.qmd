@@ -1,6 +1,6 @@
 # R and R package information {#sec-app-c}
 
-```{r appdx-b-setup}
+```{r appdx-c-setup}
 #| message: false
 #| warning: false
 #| cache: false
@@ -31,7 +31,7 @@ pkg_prima <- extract_pkgs_from_source(
       TRUE ~ version
     )
   ) |>
-  dplyr::filter(!grepl("grDevices", pkg))
+  dplyr::filter(!grepl("grDevices|fs", pkg))
 
 # read bib file and get citation handles to add
 if (FALSE) knitr::write_bib(
