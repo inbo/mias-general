@@ -67,8 +67,7 @@ flandersqmd:
   cover: media/cover-placeholder.pdf # remove?
   coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/ # remove?
   coverdescription: Photo by Jimmi Kamballur from Pexels # remove?
-  doi: doi.org/10.21436/inbor.133486163
-  issn: 1782‐9054
+  doi: 10.21436/inbor.133486163
   depotnr: D/2025/3241/386
   public_report: true
   colophon: true
