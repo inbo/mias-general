@@ -1,7 +1,3 @@
----
-toc: false
----
-
 # Dutch executive summary {-}
 
 ```{r exec-summary-setup}

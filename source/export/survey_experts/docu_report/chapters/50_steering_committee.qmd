@@ -1,7 +1,3 @@
----
-toc: false
----
-
 # Steering committee meeting and decision {#sec-committee}
 
 ```{r steering-committee-setup}

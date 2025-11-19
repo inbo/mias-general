@@ -1,7 +1,3 @@
----
-toc: false
----
-
 # Results of the expert survey {#sec-survey-results}
 
 In this chapter, we present the results of the expert survey.

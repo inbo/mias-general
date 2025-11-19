@@ -1,7 +1,3 @@
----
-toc: false
----
-
 # Monitoring schemes for invasive alien species in Flanders: some background {#sec-monitoring-ias}
 
 ## The legal context {#sec-legal-context}

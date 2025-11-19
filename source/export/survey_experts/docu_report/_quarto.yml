@@ -82,21 +82,17 @@ book:
       right:
       - icon: mastodon
         href: https://mastodon.online/&#64;inbo
-      - icon: bluesky
-        href: https://bsky.app/profile/inbo.be
       - icon: facebook
         href: https://www.facebook.com/INBOVlaanderen/
+      - icon: github
+        href: https://github.com/inbo
       left:
       - text: Cover
         file: index.qmd
-      - text: Acknowledgements
-        file: sections/01_acknowledgements.qmd
       - text: Summary
-        file: sections/02_summary.qmd
+        file: chapters/02_summary.qmd
       - text: Dutch executive summary
-        file: sections/03_summary_dutch.qmd
-      - text: Introduction
-        file: sections/10_introduction.qmd
+        file: chapters/03_summary_dutch.qmd
   chapters:
     - index.qmd
     - chapters/02_summary.qmd
