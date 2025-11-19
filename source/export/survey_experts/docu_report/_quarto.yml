@@ -64,11 +64,11 @@ flandersqmd:
        - Research Institute for Nature and Forest (INBO)
   year: 2025 # remove?
   reportnr: 59
-  cover: media/cover-placeholder.pdf # remove?
-  coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/ # remove?
-  coverdescription: Photo by Jimmi Kamballur from Pexels # remove?
   doi: 10.21436/inbor.133486163
   depotnr: D/2025/3241/386
+  #cover: media/cover-placeholder.pdf # remove?
+  #coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/ # remove?
+  #coverdescription: Photo by Jimmi Kamballur from Pexels # remove?
   public_report: true
   colophon: true
   floatbarrier: section
