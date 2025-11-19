@@ -45,35 +45,35 @@ print_species_name <- function(
 
 ::: {lang=nl-BE}
 
-De volgende beleidssamenvatting in het Nederlands is een uitgebreide variatie van de voorafgaande kortere Engelse samenvatting. 
+De volgende beleidssamenvatting in het Nederlands is een uitgebreide versie van de voorafgaande kortere Engelse samenvatting. 
 Het rapport zelf is in het Engels geschreven om het voor een breder publiek toegankelijk te maken.
 
 Dit rapport presenteert een op een expert survey gebaseerd kader ter voorbereiding van het ontwerp van gestructureerde, beleidsrelevante meetnetten voor invasieve uitheemse soorten in Vlaanderen. 
 Onder de EU Verordening betreffende invasieve uitheemse soorten [@noauthor_regulation_2014] zijn lidstaten verplicht om toezicht te houden op een lijst van voor de Unie zorgwekkende invasieve uitheemse soorten (de Unielijst). 
 Dit omvat het opzetten van systemen voor vroegtijdige detectie, het monitoren van de verspreiding van soorten en het opvolgen van beheersresultaten . 
 In Vlaanderen is het Instituut voor Natuur- en Bosonderzoek formeel belast met de coördinatie van dergelijke monitoringsinspanningen. 
-Vlaanderen heeft momenteel echter geen coherent monitoringprogramma dat systematisch alle soorten van de Unielijst volgt.
+Vlaanderen heeft momenteel echter geen coherent monitoringsprogramma dat systematisch alle soorten van de Unielijst volgt.
 
 De bestaande inspanningen vormen een versnipperd landschap van initiatieven, vaak projectmatig en in de tijd beperkt, met een variërende geografische en taxonomische dekking.
 Deze omvatten professionele en op burgerwetenschap gebaseerde programma's die zich richten op specifieke soortengroepen, professionele meetnetten met bredere ecologische doelstellingen en opportunistische waarnemingen die verzameld worden via openbare biodiversiteitsportalen zoals waarnemingen.be [@noauthor_waarnemingenbe_nodate]. 
-Ondanks hun bijdragen zijn deze initiatieven methodologisch niet op elkaar afgestemd en voldoen ze collectief niet aan de vereisten van de EU Verordening betreffende invasieve uitheemse soorten.
+Ondanks hun bijdragen zijn deze initiatieven methodologisch niet op elkaar afgestemd en voldoen ze collectief niet aan de vereisten van de EU Verordening rond invasieve uitheemse soorten.
 
 Om het ontwerp van toekomstige, coherente meetnetten voor invasieve uitheemse soorten te ondersteunen, werd 
 een survey onder soortenexperts uitgevoerd die alle 114 soorten van de huidige Unielijst [@noauthor_commission_2025] omvatte, evenals 8 kandidaatsoorten die werden beschouwd voor opname in de Unielijst in 2025, maar die uiteindelijk niet geselecteerd werden door de Europese Commissie.
-De survey verzamelde soortspecifieke informatie en expertoordelen over de introductie, verspreiding, abundantie, impact, het beheer en de monitoringstatus in Vlaanderen.
-De ontvangen antwoorden werden samengevat tot algemene scores betreffende de haalbaarheid en de urgentie van gestructureerde meetnetten voor de soorten in kwestie.
+De survey verzamelde soortspecifieke informatie en expertoordelen over de introductie, verspreiding, abundantie, impact, het beheer en de monitoringsstatus in Vlaanderen.
+De ontvangen antwoorden werden samengevat tot algemene scores rond de haalbaarheid en de urgentie van gestructureerde meetnetten voor de soorten in kwestie.
 
-Deze survey resultaten vormden vervolgens de basis voor een tweefasig prioriteringsproces.
-Hiermee wilden we de relevantie en prioriteit bepalen van verschillende monitoringscopes voor de beoordeelde soorten 
+Deze surveyresultaten zijn de basis voor een tweefasig prioriteringsproces.
+Hiermee wilden we de relevantie en prioriteit bepalen van verschillende monitoringsscopes voor de beoordeelde soorten 
 en een beperkt aantal soort-scope combinaties met hoge relevantie en prioriteit identificeren.
-We maken onderscheid tussen zes mogelijke monitoringscopes:
+We maken onderscheid tussen zes mogelijke monitoringsscopes:
 detectie (om de aanwezigheid van een soort te meten in gebieden waar de soort afwezig is), 
 inventarisatie (om de verspreidingsgebieden van een soort te lokaliseren), 
 verspreiding (om de status en trend van de verspreiding van een soort te meten),
 abundantie (om de status en trend van de populatiegrootte van een soort te meten),
 verspreiding onder beheer en abundantie onder beheer (beide om de status en trend van de verspreiding of populatiegrootte van een soort te meten in gebieden waar beheer plaatsvindt).
 
-In een eerste fase van het prioriteringsproces werd de relevantie van de verschillende monitoringscopes per soort bepaald aan de hand van criteria gebaseerd op het huidige invasiestadium van de soort, of de soort beheerd wordt, of de gebieden voor monitoring bekend zijn en of er geschikte monitoringtechnieken beschikbaar zijn. 
+In een eerste fase van het prioriteringsproces werd de relevantie van de verschillende monitoringsscopes per soort bepaald aan de hand van criteria gebaseerd op het huidige invasiestadium van de soort, of de soort beheerd wordt, of de gebieden voor monitoring bekend zijn en of er geschikte monitoringstechnieken beschikbaar zijn. 
 Soorten-scope combinaties die op basis van deze criteria als irrelevant werden beschouwd, werden uitgesloten van verdere overweging.
 
 In een tweede fase werd de prioriteit van de overblijvende soort-scope combinaties beoordeeld. 
@@ -81,11 +81,11 @@ De prioriteit werd bepaald op basis van de algemene haalbaarheids- en urgentiesc
 Daarnaast werden de antwoorden op bepaalde kritische surveyvragen gebruikt om beslissingen over uitsluiting te onderbouwen, bijvoorbeeld wanneer experts meldden dat opportunistische gegevensverzameling al voldoende dekking bood voor een soort.
 De toepassing van deze filters leverde een selectie op soort-scope combinaties die als zeer relevant en prioritair werden beschouwd voor de ontwikkeling van toekomstige meetnetten.
 
-Om de resultaten van de prioritering verder te structureren, werden drie strategische focusscenario's ontwikkeld, elk met betrekking tot een subset van de geprioriteerde soorten en monitoringscopes.
+Om de resultaten van de prioritering verder te structureren, werden drie strategische focusscenario's ontwikkeld, elk met betrekking tot een subset van de geprioriteerde soorten en monitoringsscopes.
 
 Scenario 1 richt zich op soorten die door het Agentschap voor Natuur en Bos expliciet als beheersprioriteit zijn aangemerkt. 
 Voor deze soorten is vooral monitoring nodig om maatregelen voor uitroeiing, inperking en controle te begeleiden.
-Relevante monitoringscopes in dit scenario zijn verspreiding en abundantie onder beheer.
+Relevante monitoringsscopes in dit scenario zijn verspreiding en abundantie onder beheer.
 
 Scenario 2 omvat soorten waarvoor vroegtijdige opsporing de voornaamste zorg is. 
 Dit zijn soorten die ofwel afwezig zijn of slechts sporadisch voorkomen in Vlaanderen, 
@@ -94,41 +94,41 @@ Monitoring op basis van detectie kan snelle interventies ondersteunen en de kans
 
 Scenario 3 omvat soorten waarvoor monitoring van de verspreiding het meest relevant is en sluit aan bij de meest expliciet gedefinieerde rapporteringsverplichtingen onder de EU Verordening betreffende invasieve uitheemse soorten.
 
-Voor elk scenario werden de door de experten gerapporteerde monitoringtechnieken geanalyseerd om overeenkomsten en dus potentiële synergieën op basis van methoden tussen soorten te identificeren. 
+Voor elk scenario werden de door de experten gerapporteerde monitoringstechnieken geanalyseerd om overeenkomsten en dus potentiële synergieën op basis van methoden tussen soorten te identificeren. 
 In verschillende gevallen werden overeenkomsten gevonden, bijvoorbeeld met betrekking tot het gebruik van omgevings-DNA voor aquatische soorten, visuele surveys voor terrestrische planten of cameravallen voor terrestrische zoogdieren.
 Dergelijke overlappingen kunnen mogelijkheden bieden voor gecoördineerde planning en mogelijk zelfs gecoördineerde implementatie van meetnetten voor meerdere soorten. 
 Er is echter verder onderzoek nodig om te onthullen in hoeverre deze potentiële synergieën zich uiteindelijk kunnen realiseren.
 
-De resultaten van de survey en het prioriteringsproces werden geëvalueerd door een stuurgroep bestaande uit vertegenwoordigers van het Instituut voor Natuur- en Bosonderzoek, het Agentschap voor Natuur en Bos en de Vlaamse Milieumaatschappij.
-Op basis van deze evaluatie kwam de stuurgroep tot een definitieve short-list van vier soorten of soortgroepen voor het prioritair ontwerpen van meetnetten. 
+De resultaten van de survey en het prioriteringsproces werden geëvalueerd door een stuurgroep met vertegenwoordigers van het Instituut voor Natuur- en Bosonderzoek, het Agentschap voor Natuur en Bos en de Vlaamse Milieumaatschappij.
+Op basis van deze evaluatie kwam de stuurgroep tot een definitieve shortlist van vier soorten of soortgroepen voor het prioritair ontwerpen van meetnetten. 
 Deze selecties weerspiegelen een evenwicht tussen ecologische relevantie, huidige beheersbehoeften, haalbaarheid van monitoring en beleidsprioriteiten.
 De geselecteerde soorten en bijbehorende monitoringsscopes zijn als volgt.
 
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`, 
 een kleine hertensoort met een momenteel beperkte maar mogelijk uitbreidende verspreiding in Vlaanderen. 
 Het dier is onderhevig aan voortdurende uitroeiingsinspanningen. 
-De meest relevante monitoringscope betreft abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.
+De meest relevante monitoringsscope betreft abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.
 
 `r species_data |> dplyr::filter(grepl("common slider", vern_name_eng)) |> print_species_name()`,
 een via de dierenhandel verspreide schildpadsoort die vaak in de natuur wordt vrijgelaten. 
 Hoewel momenteel niet bevestigd is dat de soort zich voortplant in Vlaanderen, is ze wijdverspreid. 
-De meest relevante monitoringscopes zijn inventarisatie (om het huidige verspreidingsgebied in kaart te brengen) en abundantie onder beheer (voor sites waar beheer plaatsvindt).
+De meest relevante monitoringsscopes zijn inventarisatie (om het huidige verspreidingsgebied in kaart te brengen) en abundantie onder beheer (voor sites waar beheer plaatsvindt).
 
 `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`,
 een amfibiesoort die in beperkte mate voorkomt in Vlaanderen, maar onderhevig is aan controlemaatregels. 
-De meest relevante monitoringscopes zijn abundantie onder beheer en verspreiding, vooral aan de randen van het huidige verspreidingsgebied.
+De meest relevante monitoringsscopes zijn abundantie onder beheer en verspreiding, vooral aan de randen van het huidige verspreidingsgebied.
 
 `r species_data |> dplyr::filter(grepl("large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
 en
 `r species_data |> dplyr::filter(grepl("floating primrose-willow", vern_name_eng)) |> print_species_name()`,
 twee soorten waterplanten die variëren van wijd tot beperkt verspreid. 
 Beide soorten worden op verschillende locaties beheerd. 
-De meest relevante monitoringscope is abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.
+De meest relevante monitoringsscope is abundantie onder beheer, om populatieafnames op te volgen en lokale uitroeiing te bevestigen.
 
 Voor deze soorten heeft de ontwikkeling van gestructureerde meetnetten de hoogste prioriteit in Vlaanderen. 
-Deze meetnetten moeten ontwikkeld worden in overeenstemming met de methodologische richtlijnen van het Instituut voor Natuur- en Bosonderzoek [@wouters_ontwerp_2008-1]. Deze richtlijnen bieden een principieel kader voor het afstemmen van monitoringdoelen, gegevensverzameling, gegevensanalyse en rapportage op de ware informatiebehoeften, wat betrouwbare, robuuste en beleidsrelevante inzichten oplevert.
+Deze meetnetten moeten ontwikkeld worden in overeenstemming met de methodologische richtlijnen van het Instituut voor Natuur- en Bosonderzoek [@wouters_ontwerp_2008-1]. Deze richtlijnen bieden een principieel kader voor het afstemmen van monitoringsdoelen, gegevensverzameling, gegevensanalyse en rapportage op de ware informatiebehoeften, wat betrouwbare, robuuste en beleidsrelevante inzichten oplevert.
 Dit rapport biedt een belangrijke basis voor deze volgende fase. 
-Naast een prioritering van soorten en monitoringscopes en een geconsolideerde short-list, biedt het een methodologie voor beslissingsondersteuning, een voorstel voor het vormen van soortgroepen voor monitoring, en een empirisch overzicht van expertinzichten in de huidige status van invasieve uitheemse Unielijst soorten in Vlaanderen. 
+Naast een prioritering van soorten en monitoringsscopes en een geconsolideerde shortlist, biedt het een methodologie voor beslissingsondersteuning, een voorstel voor het vormen van soortgroepen voor monitoring, en een empirisch overzicht van expertinzichten in de huidige status van invasieve uitheemse Unielijst soorten in Vlaanderen. 
 
 
 :::
