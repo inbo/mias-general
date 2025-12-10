@@ -135,6 +135,20 @@ cor(res_m_allspec |> dplyr::select(tidyselect::starts_with(c("m_", "gm_"))))
 # keep only species on unionlist
 res_m <- res_m_allspec |>
   dplyr::filter(on_unionlist_2025)
+
+# assign ranks
+if (FALSE) {
+  tmp <- res_m_allspec |>
+    dplyr::select(c("vern_name_eng", "m_feas", "m_urge")) |>
+    dplyr::mutate(
+      m_feas = -m_feas,
+      m_urge = -m_urge,
+      rank_feas = rank(m_feas, ties.method = "min"),
+      rank_urge = rank(m_urge, ties.method = "min")
+    )
+
+}
+
 #
 #
 #
