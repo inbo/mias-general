@@ -8,8 +8,8 @@ project:
     - "*.qmd"
     - "!LICENSE.md"
     - "!README.md"
-  #output-dir:  ../../../../output/survey_experts/docu_report_zip
-  output-dir:  ../../../../output/survey_experts/docu_report
+  output-dir:  ../../../../output/survey_experts/docu_report_zip
+  #output-dir:  ../../../../output/survey_experts/docu_report
   execute-dir: project
   post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R
 
