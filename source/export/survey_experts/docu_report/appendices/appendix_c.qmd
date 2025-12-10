@@ -45,7 +45,9 @@ data_bib <- bib2df::bib2df(
 tmporder <- sapply(
   pkg_prima$pkg,
   \(i){
-    grep(i, data_bib$URL)
+    tmp <- grep(i, data_bib$URL)
+    if (length(tmp) == 0) tmp <- grep(i, data_bib$TITLE)
+    return(tmp)
   }
 ) |> unlist()
 pkg_prima <- cbind(
