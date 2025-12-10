@@ -428,7 +428,7 @@ Yet despite this filtering, the number of retained combinations remains large an
 To this end, we complement the presentation of the prioritisation results in the previous section with three strategic scenarios.
 Each scenario reflects a different policy or practical rationale for selecting a different subset of the prioritised combinations of species and monitoring scopes:
 
-- **Scenario 1** focuses on prioritised species that are additionally flagged by ANB as management priorities. This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
+- **Scenario 1** focuses on prioritised species that are additionally flagged by ANB as management priorities (based on previous scientific work by INBO). This implies an emphasis on the monitoring scopes related to the evaluation of eradication, population control or containment measures (i.e. distribution and abundance under management). These species are of particular operational interest and align with ongoing or anticipated interventions.
 - **Scenario 2** highlights prioritised species for which early detection is key (i.e., scope detection is retained). This includes species not yet present in Flanders or only sporadically recorded, as well as widespread species that remain absent from high-value conservation areas. Early detection in these contexts supports timely and cost-effective responses, in line with the Invasive Alien Species Regulation and broader prevention goals. 
 - **Scenario 3** targets prioritised species for which distribution monitoring is most relevant. This includes both species established to a limited extent and those already widespread. This scenario focuses on national and EU reporting obligations under the Invasive Alien Species Regulation.
 
@@ -484,7 +484,7 @@ names_dist_prior <- get_names_prior(species_dist_prior, kingdom_list)
 
 #### Scenario 1: ANB focus species {#sec-scenario-1}
 
-To define Scenario 1, we start from the list of species identified by ANB as management priorities. We then check which of these species passed our expert survey-based prioritisation. For about `r round(n_species_anb_prior$plant / n_species_anb$plant * 100)`% of the ANB focus plants and about `r round(n_species_anb_prior$animal / n_species_anb$animal * 100)`% of the ANB focus animals at least one monitoring scope was retained after Stage 2 of the prioritisation. 
+To define Scenario 1, we start from the list of species identified by ANB as management priorities, based on previous scientific work by INBO. We then check which of these species passed our expert survey-based prioritisation. For about `r round(n_species_anb_prior$plant / n_species_anb$plant * 100)`% of the ANB focus plants and about `r round(n_species_anb_prior$animal / n_species_anb$animal * 100)`% of the ANB focus animals at least one monitoring scope was retained after Stage 2 of the prioritisation. 
 The respective plants are in alphabetical order: 
 
 ```{r }
@@ -616,7 +616,7 @@ as primary species as well as the
 and the
 `r species_data |> dplyr::filter(grepl("bottomed star", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`
 as secondary species.
-Aquatic environmental DNA qualifies as a group-wide monitoring method suited for detection. 
+Aquatic eDNA qualifies as a group-wide monitoring method suited for detection. 
 Electric fishing, trapping and netting can in addition be used for the subgroup of fish.
 
 The second group comprises a number of primary 

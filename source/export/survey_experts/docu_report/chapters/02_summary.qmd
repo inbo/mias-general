@@ -29,7 +29,6 @@ species_data <- species_list |>
   ) |>
   dplyr::distinct(sci_name, .keep_all = TRUE)
 
-
 # format species names for printing 
 print_species_name <- function(
     species_table, 
@@ -48,9 +47,9 @@ print_species_name <- function(
 
 <!-- description: start -->
 
-This report presents a survey-based framework to prepare the development of structured, policy-relevant monitoring schemes for invasive alien species in Flanders. 
-Under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014], member states are required to monitor species listed as of Union Concern, including the establishment of systems for early detection and for monitoring species' distributions and management outcomes. 
-In the Flemish region, the Research Institute for Nature and Forest is formally tasked with coordinating such monitoring efforts. 
+This report presents a survey-based framework to prepare the development of structured, policy-relevant monitoring schemes for invasive alien species in Flanders.
+Under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014], member states are required to set up surveillance systems for species of Union Concern, including the establishment of systems for early detection and for monitoring species' distributions and management outcomes. 
+In the Flemish region, the Research Institute for Nature and Forest (INBO) is legally tasked with designing and coordinating monitoring efforts for (potentially) invasive alien species. 
 However, Flanders currently lacks a coherent monitoring programme that systematically addresses all species on the Union List.
 
 Existing efforts consist of a fragmented landscape of initiatives, often project-based and time-limited, with varying geographic and taxonomic coverage.
@@ -60,7 +59,7 @@ Despite their contributions, these initiatives are not methodologically aligned 
 To support the design of future invasive alien species monitoring schemes, 
 an expert survey was conducted covering all 114 species on the current Union List [@noauthor_commission_2025], as well as 8 candidate species that were considered for inclusion in 2025, but were ultimately discarded.
 The survey gathered species-specific information and expert judgements on the introduction, distribution, abundance, impacts, management and monitoring status in Flanders.
-The collected responses were condensed into overall ratings of the feasibility and urgency of structured monitoring schemes for the species under consideration.
+The collected responses were condensed into overall ratings of the **feasibility** and **urgency** of **structured monitoring schemes** for the species under consideration.
 
 These survey results then informed a two-stage prioritisation process.
 Distinguishing the monitoring scopes of detection, inventory, distribution, abundance, and distribution or abundance under management, 
@@ -71,12 +70,12 @@ In a second stage, the priority of remaining combinations was assessed based on 
 The outcome of the prioritisation process was a selection of relevant high-priority species–scope combinations for monitoring scheme development.
 
 To further structure the prioritisation results, three strategic focus scenarios were developed, each concerning a subset of the prioritised species and monitoring scopes: 
-(1) species prioritised for management by the Agency for Nature and Forests; 
+(1) species previously prioritised for management; 
 (2) species requiring mainly early detection;
 and (3) species for which primarily distribution monitoring is relevant.
-For each scenario, commonalities in monitoring methods between species were explored to identify potential method-based synergies relevant for coordination and/or implementation efforts.
+For each scenario, commonalities in monitoring methods between species were explored to identify potential method-based synergies relevant for cost-efficient coordination and/or implementation.
 
-A steering committee involving representatives from the Research Institute for Nature and Forest, the Agency for Nature and Forests and the Flanders Environment Agency reviewed the survey and prioritisation outcomes and agreed on a final short-list of four species or species groups for immediate monitoring scheme development.
+A steering committee involving representatives from INBO, the Agency for Nature and Forests (ANB) and the Flanders Environment Agency (VMM) reviewed the survey and prioritisation outcomes and agreed on a final short-list of four species(groups) as a proof of concept for monitoring scheme development.
 These include
 `r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`,
 `r species_data |> dplyr::filter(grepl("common slider", vern_name_eng)) |> print_species_name()`,
@@ -87,7 +86,7 @@ and
 `r species_data |> dplyr::filter(grepl("floating primrose-willow", vern_name_eng)) |> print_species_name()`.
 For each, one or more main monitoring scopes were identified, often linked to evaluating ongoing or future management actions.
 
-The development of monitoring schemes for these species should proceed based on the methodological guidelines developed by the Research Institute for Nature and Forest [@wouters_ontwerp_2008-1]
+The development of monitoring schemes for these species should proceed based on the methodological guidelines developed by INBO [@wouters_ontwerp_2008-1]
 to ensure reliable and policy-aligned monitoring results.
 
 <!-- description: end -->

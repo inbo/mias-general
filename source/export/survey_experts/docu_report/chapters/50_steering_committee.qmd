@@ -331,9 +331,9 @@ A third group of species, such as the
 was excluded primarily because of uncertainty regarding the feasibility and effectiveness of management interventions. In such cases, the absence of clear options for action limits the practical value of establishing monitoring schemes at this time.
 
 
-### Final selection of species for immediate monitoring design
+### Final selection of species for proof of concept monitoring design
 
-In the final step of the present prioritisation exercise, the representatives of ANB and VMM were invited to further narrow down the short-list by selecting two species each from the remaining candidates. This was again done through an alternating selection process. At this stage, the focus was placed solely on identifying the species to be taken forward for immediate monitoring design, without providing justifications for those not selected. For the selected species, the rationale for inclusion and the general contours of the - according to the steering committee - most required monitoring schemes were briefly discussed. Their exact design and implementation will be addressed in a next phase, relying on the INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1].
+In the final step of the present prioritisation exercise, the representatives of ANB and VMM were invited to further narrow down the short-list by selecting two species each from the remaining candidates. This was again done through an alternating selection process. At this stage, the focus was placed solely on identifying the species to be taken forward for proof of concept monitoring design, without providing justifications for those not selected. For the selected species, the rationale for inclusion and the general contours of the - according to the steering committee - most required monitoring schemes were briefly discussed. Their exact design and implementation will be addressed in a next phase, relying on the INBO guidelines for designing policy-oriented monitoring schemes [@wouters_ontwerp_2008-1].
 
 #### Chinese muntjac
 
@@ -357,7 +357,7 @@ Two monitoring scopes are relevant for this species. First, scope distribution: 
 
 The third species selected as a priority is the
 `r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng, ignore.case = TRUE)) |> print_species_name(shorten = TRUE)`,
-which is already established in Flanders. Although its overall distribution remains limited in extent, the species can be locally abundant within its invaded range. The bullfrog is currently the subject of active management by ANB, in collaboration with various partners and funded through multiple projects. Preliminary monitoring is already in place, primarily using eDNA-based approaches.
+which is already established in Flanders. Although its overall distribution remains limited to specific sites, the species can be locally abundant within its invaded range. The bullfrog is currently the subject of active management by ANB, in collaboration with various partners and funded through multiple projects. Preliminary monitoring is already in place, primarily using eDNA-based approaches.
 
 The most important monitoring scope identified by the committee for this species is abundance under management. Within the currently invaded zones, the aim is to assess whether different management strategies lead to measurable reductions in abundance over time. A secondary but complementary need is for improved data on distribution. This applies both to identifying which specific water bodies within the invaded area are currently occupied, and to detecting any expansion into new areas. This inventory/distribution monitoring is crucial to evaluate whether the species can be effectively contained within its current range. 
 
@@ -374,7 +374,7 @@ Both species are already present in Flanders, with the latter having a more limi
 
 The main monitoring scope for this group is abundance under management. Due to the species’ ability to regenerate from small plant fragments, successful management is challenging, and monitoring is essential to determine whether local populations are truly eradicated or simply reduced temporarily. A monitoring scheme would need to be sensitive enough to detect regrowth and re-establishment, particularly in managed water bodies.
 
-Given the current distribution of invasive water primroses, the proposed monitoring approach will likely involve proof-of-concept case studies, focusing on selected sites where active management is taking place, as well as comparative sites without intervention. This will allow for the evaluation of management effectiveness in reducing abundance and achieving local eradication, and could help inform future scaling of monitoring efforts across the Flemish region.
+Given the current distribution of invasive water primroses, the proposed monitoring approach will likely involve proof of concept case studies, focusing on selected sites where active management is taking place, as well as comparative sites without intervention. This will allow for the evaluation of management effectiveness in reducing abundance and achieving local eradication, and could help inform future scaling of monitoring efforts across the Flemish region.
 
 
 ### Concluding remarks on method-based synergies
