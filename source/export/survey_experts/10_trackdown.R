@@ -40,7 +40,7 @@ for (i in seq_along(section_files)){
       what = eval(parse(text = which_fun)),
       args = list(
         file = file_path_i,
-        gpath = "trackdown/report_expert_survey/v3_sections",
+        gpath = "trackdown/report_expert_survey/v4_sections",
         shared_drive = "PRJ_MIUS",
         hide_code = TRUE,
         open = FALSE
@@ -62,12 +62,12 @@ try(
 # ---download from g-drive -------------------------------------------------
 #
 if (FALSE) {
-  i <- 1
+  i <- 2
   file_path_i <- section_files[i]
   try(
     trackdown::download_file(
       file = file_path_i,
-      gpath = "trackdown/report_expert_survey/v2_sections_accepted",
+      gpath = "trackdown/report_expert_survey/v3_sections",
       shared_drive = "PRJ_MIUS"
     )
   )
