@@ -239,7 +239,7 @@ The question "Is the distribution of the species across Flanders sufficiently kn
 Here we show the distribution map of the Chinese muntjac as an example.
 For the Flemish Region (area within the solid line) and a 30 km wide buffer zone (area between solid and dotted line), we mark those grid cells (EEA Reference grid, 1 x 1 km) in red within which the Chinese muntjac has been observed between the years 2014 and 2024.
 
-![Example occurrence map based on GBIF data](../../../../../media/gbif_occcubes/plots_ggspatial/muntiacus_reevesi_(ogilby,_1839).png){width=100%}
+![Example occurrence map based on GBIF data](../media/gbif_muntiacus_reevesi.svg){width=600}
 
 
 ### Distribution maps of all species
