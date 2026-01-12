@@ -1,0 +1,17 @@
+
+
+## To what extent do opportunistic observations (e.g. collected via waarnemingen.be) provide a representative picture of the species' distribution?
+
+*Choose one of the following options.*
+
+- high representativeness
+- medium representativeness
+- low representativeness
+- unknown
+- I do not know
+
+*Optional: Briefly explain the chosen answer and indicate any sources used.*
+
+&nbsp;
+
+\newpage

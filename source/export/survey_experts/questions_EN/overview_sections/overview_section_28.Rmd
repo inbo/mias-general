@@ -1,0 +1,18 @@
+
+
+## If it is decided to manage the species, or if the species is already managed in Flanders, what information is needed to evaluate the effectiveness of the management measures?
+
+*This question again deals with existing and or to be established management measures (see explanation of previous question). Depending on the measures chosen, an evaluation of effectiveness requires different types of information. Choose one of the following options.*
+
+- presence or absence of the species
+- relative population size of the species
+- absolute population size of the species
+- no direct information on the species because other variables suffice (e.g. damage caused by species serves as proxy for population size)
+- unknown
+- I do not know
+
+*Optional: Briefly explain the chosen answer (e.g. what management measures are involved and what possible proxy variables are involved) and indicate any sources used.*
+
+&nbsp;
+
+\newpage

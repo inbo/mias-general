@@ -1,0 +1,217 @@
+# Monitoring scopes
+
+
+## Scope distribution (EU)
+
+- Operationaliation distribution: 
+  - Presence/absence in Flanders in $10\times 10$ km grid cells
+  
+- Use of 'distribution information' under EU Habitat directive
+  - Deduced information: range ('outer limits of the species distribution')
+    - Via spatial interpolation algorithm ('gap closure') & habitat information
+  - Quantification: size of surface area of range
+  - Status
+    - Size in $km^2$ at time point / over time period
+  - Trends
+    - Short-term and long-term trends in size of range (2 vs. 4 reporting periods)
+    - Direction, magnitude (% change) 
+
+::: {.notes}
+
+- wat gebeurt met verspreidingsinformatie - kijken naar habitatrichtlijn
+- range als spatiale generalisatie
+- periode status dan max. de laatste rapporteringsperiode
+- trends: short-term dus 12 jaar, long-term 24 jaar
+
+:::
+
+
+## Scope distribution (Flanders)
+
+- Specification required...
+  - Operationalization (e.g., presence/absence in grid cells)?
+  - Quantification (e.g., size of surface)?
+  - Definition status & trend?
+  - Scale of statements (e.g., Flanders vs. local)?
+  - Input data (e.g., structured vs. opportunistic)?
+
+
+
+
+::: {.notes}
+
+- over welke periode kunnen we nog over een toestand hebben?
+- trend descriptief op niveau steekproef of sluitend op niveau populatie
+
+:::
+
+
+## Scope distribution (Flanders)
+
+![Example occurrence map based on GBIF data](media/muntiacus_reevesi_(ogilby,_1839).png){width=70%}
+
+
+::: {.notes}
+
+Text survey:
+De bovenstaande verspreidingskaart baseert zich op GBIF gegevens. Voor het Vlaams Gewest (gebied binnen de vaste lijn) en een 30 km brede bufferzone (gebied tussen vaste en stippellijn) zijn die hokken (EEA Reference grid, 1 x 1 km) rood gemarkeerd waarbinnen de soort tijdens de laatste 10 jaar is waargenomen.
+
+
+
+:::
+
+
+## Scope abundance (EU)
+
+- Optional, in the context of management evaluation
+- EU Habitat Directive:
+  - Information: Number of mature individuals 
+  - Quantification: Absolute size 
+  - Status: Size at time point / over time period
+  - Trends
+    - Short-term and long-term trends in size
+    - Direction, magnitude (% change) 
+  - Scale: Flanders ('biogeographical region' of species)  
+
+
+::: {.notes}
+- population is defined as the set of individuals of a species present in a 'biogeographical region within Flanders
+- total distribution area?
+:::
+
+## Scope abundance (EU/Flanders)
+
+- Specification required...
+  - Operationalization (e.g., number of mature individuals)?
+  - Quantification (e.g., relative vs. absolute size)?
+  - Definition status & trend?
+  - Scale of statements (e.g., Flanders vs. local)?
+  - Input data (e.g., structured vs. opportunistic)?
+
+::: {.notes}
+- local scale selected areas: e.g., invasion hotspot, area of management
+- scale: if species is managed than rather at scale of managed area (see next slides; distinct meetnet)
+- schaal: abundance monitoring *kan* ook provide information on distribution (conditions)
+- input data: voorbeeld heat maps op basis van ad-hoc data (geschatte dichtheden)?
+
+:::
+
+
+## Scope distribution/abundance under management (EU/Flanders)
+
+
+- Cf. scope distribution/abundance
+  - Similiar specifications required
+- Evaluation of management happens along continuum: 
+  - Endpoint 1: determining a causal effect of a measure
+  - Endpoint 2: evaluating temporal and spatial correlates of management
+    - Much more feasible & we suggest to focus on this
+
+
+::: {.notes}
+- 'under management':
+  - continuum from determining a causal effect of a measure to evaluating temporal and spatial correlates (assuming some causal effect of a measure)
+  - we will probably rather be close to the latter end than the former
+- EU: Evaluatie maatregelen
+  - Doeltreffendheid: effect op aanwezigheid en/of aantallen
+  - Neveneffecten op habitat / niet-doelsoorten
+
+:::
+
+
+
+## Scope distribution/abundance under management (EU/Flanders)
+
+- Eradication
+  - Evaluation: confirm absence
+  - Limited in space and time: 
+    - Confined area of management with confined follow-up period
+
+::: {.notes}
+
+- Eradication:
+  - Rate of eradication not of primary interest
+  - Rather confirm absence after eradication has taken place
+
+:::
+
+
+## Scope distribution/abundance under management (EU/Flanders)
+
+- Distribution containment
+  - Evaluation: confirm status and/or trend of size of distribution area contained
+  - Limited in space, but not time:
+    - Within confined area of management
+    - Continued measurement
+- Population control
+  - Evaluation: confirm status and/or trend of size of population under control 
+  - Limited in space, but not time
+    - Within confined area of management
+    - Continued measurement
+
+::: {.notes}
+
+- Containment/Control:
+  - onder drempel?
+  - misschien trend onder drempel ook al interessant om vroegtijdig te kunnen reageren?
+  - (cf. early warning lit.)
+
+
+:::
+
+
+## Scope distribution/abundance under management (EU/Flanders)
+
+- Specification required...
+  - Information to evaluate management (distribution vs. abundance)?
+  - Operationalization?
+  - Quantification? 
+    - Binary (e.g., presence-absence, below threshold)?
+    - Continuous (e.g., sub-threshold trend)?
+  - Definition status & trend?
+  - Time frame of evaluation (if eradication)?
+  - Area of evaluation (e.g., buffer area)?
+  - How to assess side effects on habitat/species?
+
+
+::: {.notes}
+Belangrijke vragen hier ...
+Binary -> informatie wordt dan weer gereduceerd
+Neveneffecten op habitat / niet-doelsoorten
+
+:::
+
+## Scope detection (EU/Flanders)
+
+- Presence in defined area
+  - Around known (potential) places of introduction and sites of sporadic occurrence
+  - possibly also in/around conservation area
+- Analogies with scope distribution
+
+
+::: {.notes}
+- in/around conservation area: 
+  - in conservation area
+  - periphery of conservation area
+  - buffer area around conservation area
+- analogies with scope distribution
+  - area divided into grid cells/resolution in terms of grid cells
+  - certain search effort required
+
+:::
+
+## Scope detection (EU/Flanders)
+
+- Specification required...
+  - Operationalization (e.g., presence/absence in grid cells)?
+  - Scale of statements (e.g., Flanders vs. local)?
+  - Area of detection (e.g., known introduction sites, conservation area, buffer area)?
+  - Input data (e.g., structured vs. opportunistic)?
+
+
+
+::: {.notes}
+
+Aantal individuën mogelijk ook relevant
+
+:::

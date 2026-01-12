@@ -1,0 +1,16 @@
+
+
+## In welk invasiestadium befindt zich de soort in Vlaanderen?
+
+
+
+- afwezig
+- sporadisch aanwezig
+- beperkt gevestigd
+- wijdverspreid
+
+
+
+&nbsp;
+
+\newpage

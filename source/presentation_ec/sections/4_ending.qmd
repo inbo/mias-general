@@ -1,0 +1,34 @@
+# Outlook
+
+## Outlook
+
+- Scaling up monitoring scheme development for remaining species
+  - First designs as blueprints
+  - Tackling species groups by capitalizing on synergies
+  - Information compiled via expert survey
+  - Drawing upon existing monitoring / citizen science initiatives
+
+
+::: {.notes}
+
+Zooming out - talking about how we can scale up scheme development
+(bc seems like a lot of work - and it is)
+
+- first designs as blueprints
+- look at groups - survey method-based synergies - saves time during planning
+- Survey information: starting point for monitoring design
+  - limits search space during first phases which can otherwise be very time-consuming
+- Result of phase 1 / 2: 
+  - Drawing upon existing monitoring if it is suited 
+  - Drawing on existing citizen science initiatives if structured monitoring is not feasible or urgent
+
+[investment, but can pay off on the long-run]
+
+:::
+
+# Thank you for your attention
+
+## References
+
+::: {#refs}
+:::

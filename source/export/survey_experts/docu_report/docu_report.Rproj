@@ -1,9 +1,9 @@
 Version: 1.0
-ProjectId: e582d013-cbf6-4a19-96ab-eab683d0dccc
+ProjectId: 901d2cb4-5bc5-4295-af20-c767d96292c3
 
-RestoreWorkspace: No
-SaveWorkspace: No
-AlwaysSaveHistory: No
+RestoreWorkspace: Default
+SaveWorkspace: Default
+AlwaysSaveHistory: Default
 
 EnableCodeIndexing: Yes
 UseSpacesForTab: Yes
@@ -15,4 +15,3 @@ LaTeX: XeLaTeX
 
 AutoAppendNewline: Yes
 StripTrailingWhitespace: Yes
-LineEndingConversion: Posix

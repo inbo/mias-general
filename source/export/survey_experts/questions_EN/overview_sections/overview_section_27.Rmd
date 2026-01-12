@@ -1,0 +1,16 @@
+# Management
+
+## Is the species currently managed in Flanders?
+
+*This question addresses existing management measures, which may focus on: eradication under rapid response; containment of one or more established populations to avoid or further delay spread; keeping specific areas, such as conservation areas, pest-free; limiting the abundance of the species below a threshold level. Choose one of the following options.*
+
+- yes
+- no
+- unknown
+- I do not know
+
+*Optional: Briefly explain the chosen answer (e.g., what management goals and measures are involved and where the species is managed) and indicate any sources used.*
+
+
+&nbsp;
+

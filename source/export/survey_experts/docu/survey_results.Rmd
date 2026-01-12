@@ -1,0 +1,910 @@
+---
+title: "Results expert survey on invasive alien species"
+author: "Janne Adolf"
+date: "`r Sys.Date()`"
+output: 
+  html_document:
+    toc: true
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding, output_dir = "../../../../output/survey_experts") })
+---
+
+<!----------------------------------------------------------------------->
+<!---- setup ------------------------------------------------------------>
+<!----------------------------------------------------------------------->
+
+
+```{r setup, include = FALSE, results = 'hide', warning = FALSE}
+
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+
+lang <- "NL"
+
+functions_path <- "../../../functions"
+response_data_path <- "../../../../data/survey_experts/"
+questions_path <- paste0("../", "questions_", lang)
+
+
+source("../09_survey_make_plots.R", local = knitr::knit_global())
+
+
+# fig dim
+fig_w <- 10
+fig_h <- 10
+
+# check whether y-axis labels are always correct
+
+```
+
+
+## Species ranking
+
+### Ranking according to grand mean response scores
+
+Grand mean scores calculated across all scored questions irrespective of the survey section the question is in (e.g., "Introductie & vestiging", "Monitoring") or the question category ("feasibility" vs. "urgency").
+Letters "F" and "U" mark the mean scores calculated per question category.
+Note that the number of questions per survey section and consequently category varies across species in function of invasion stadium.
+While this figure contains all species included in the survey, the following visualizations only concern the species of union concern.
+
+```{r ranking, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+plot_ranking
+
+```
+
+
+## Invasion stadium
+
+### Invasion stadium Prius vs. survey
+
+Invasion stadium as reported in the PrIUS report against invasion stadium as reported in survey.
+Species for which discrepancies occur are highlighted.
+
+```{r invasion-stadium-1, fig.width = fig_w * 1.2, fig.height = fig_h * 0.75}
+
+plot_stadium
+
+```
+
+
+### Invasion stadium and species distribution
+
+Reported status of species distribution (to what extent known?) per species,
+with species grouped by invasion stadium as reported in survey.
+
+```{r invasion-stadium-2, fig.width = fig_w, fig.height = fig_h * 1.5}
+
+plot_stadium_dist
+
+```
+
+
+## Response scores 
+
+### Scoring of questions
+
+How we currently assign scores to response options across all scored questions.
+The question categories "feasibility" vs. "urgency" are distinguished by color.
+
+```{r scoring-questions, fig.width = fig_w * 1.4, fig.height = fig_h * 1.5}
+
+plot_scoring
+
+#`%+%` <- ggplot2::`%+%`
+#plot_scoring %+% (q_plot |> dplyr::filter(section_number == 2))
+
+
+```
+
+
+### Score distributions per question
+
+Distribution of scores per question.
+The question categories "feasibility" vs. "urgency" are distinguished by color.
+
+```{r score-distributions, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+
+
+
+plot_scoredist
+
+```
+
+
+### Score proportions "unknown" vs. rest per species
+
+Proportion of responses that fall into the category "ongekend / ik weet het niet"
+across all questions per species.
+Species are sorted according to grand mean response scores (highest on top).
+
+```{r score-props-1, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_scored |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ response_text |> gsub(" ", "", x = _)
+    )
+  ) |>
+  # score category proportions per species
+  dplyr::mutate(
+    n_scores_category = dplyr::n(),
+    .by = c(species, score_category)
+  ) |>
+  dplyr::mutate(
+    n_scores_tot = dplyr::n(),
+    .by = species
+  ) |>
+  dplyr::mutate(prop_scores = n_scores_category / n_scores_tot) |>
+  tidyr::pivot_wider(
+    data = _,
+    names_from = score_category,
+    values_from = prop_scores,
+    names_prefix = "prop_scores_"
+  ) |>
+  dplyr::group_by(species) |>
+  tidyr::fill(tidyselect::contains("prop_scores"), .direction = "downup") |>
+  dplyr::ungroup() |>
+  dplyr::mutate(dplyr::across(tidyselect::contains("prop_scores"), \(x) tidyr::replace_na(x, 0)))
+
+# check whether proportions sum to 1
+test <- res_plot_tmp |>
+  dplyr::rowwise() |>
+  dplyr::mutate(prop_check = rowSums(dplyr::across(tidyselect::starts_with("prop_scores"))))
+assertthat::are_equal(sum(test$prop_check), nrow(test))
+#
+# convert character vars to factors for ordering
+res_plot <- factorize(
+  res_plot_tmp,
+  c("question_text", "section_title", "species", "vern_name_nld"),
+  list(
+    res_plot_tmp$question_text |> unique(),
+    res_plot_tmp$section_title |> unique() |> _[match(
+      seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
+      res_plot_tmp$section_no |> unique()
+    )],
+    levels_species,
+    levels_vern_name_nld
+  )
+)
+#
+# plot
+plot_unknown_prop_species <- ggplot2::ggplot(res_plot, ggplot2::aes(y = vern_name_nld)) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      xmin = 0,
+      xmax = prop_scores_ongekend + prop_scores_ikweethetniet,
+      color = "ongekend / ik weet het niet"
+    ),
+    linewidth = 2
+  ) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      xmin = prop_scores_ongekend + prop_scores_ikweethetniet,
+      xmax = prop_scores_ongekend + prop_scores_ikweethetniet + prop_scores_rest,
+      color = "rest"
+    ),
+    linewidth = 2
+  ) +
+  ggplot2::scale_color_manual(values = c(col_hl, col_bg)) +
+  ggplot2::coord_cartesian(xlim = c(0,1)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.y = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "proportion responses",
+    y = "species (vernacular name nld)",
+    color = "category response"
+  )
+
+plot_unknown_prop_species
+
+```
+
+
+### Score proportions "unknown" vs. rest per question
+
+Proportion of responses that fall into the category "ongekend / ik weet het niet"
+across all species per question.
+
+```{r score-props-2, fig.width = fig_w , fig.height = fig_h}
+
+# convert to plot data
+res_plot_tmp <- res_scored |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ response_text |> gsub(" ", "", x = _)
+    )
+  ) |>
+  # score category proportions per question
+  dplyr::mutate(
+    n_scores_category = dplyr::n(),
+    .by = c(question_text, score_category)
+  ) |>
+  dplyr::mutate(
+    n_scores_tot = dplyr::n(),
+    .by = question_text
+  ) |>
+  dplyr::mutate(prop_scores = n_scores_category / n_scores_tot) |>
+  tidyr::pivot_wider(
+    data = _,
+    names_from = score_category,
+    values_from = prop_scores,
+    names_prefix = "prop_scores_"
+  ) |>
+  dplyr::group_by(question_text) |>
+  tidyr::fill(tidyselect::contains("prop_scores"), .direction = "downup") |>
+  dplyr::ungroup() |>
+  dplyr::mutate(dplyr::across(tidyselect::contains("prop_scores"), \(x) tidyr::replace_na(x, 0)))
+
+# check whether proportions sum to 1
+test <- res_plot_tmp |>
+  dplyr::rowwise() |>
+  dplyr::mutate(prop_check = rowSums(dplyr::across(tidyselect::starts_with("prop_scores"))))
+assertthat::are_equal(sum(test$prop_check), nrow(test))
+#
+# convert character vars to factors for ordering
+res_plot <- factorize(
+  res_plot_tmp,
+  c("question_text_short", "section_title", "species", "vern_name_nld"),
+  list(
+    res_plot_tmp$question_text_short |> unique(),
+    res_plot_tmp$section_title |> unique() |> _[match(
+      seq(min(res_plot_tmp$section_no), max(res_plot_tmp$section_no)),
+      res_plot_tmp$section_no |> unique()
+    )],
+    levels_species,
+    levels_vern_name_nld
+  )
+)
+#
+# plot
+plot_unknown_prop_question <- ggplot2::ggplot(res_plot, ggplot2::aes(x = question_text_short)) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      ymin = 0,
+      ymax = prop_scores_ongekend + prop_scores_ikweethetniet,
+      color = "ongekend / ik weet het niet"
+    ),
+    linewidth = 2
+  ) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(
+      ymin = prop_scores_ongekend + prop_scores_ikweethetniet,
+      ymax = prop_scores_ongekend + prop_scores_ikweethetniet + prop_scores_rest,
+      color = "rest"
+    ),
+    linewidth = 2
+  ) +
+    ggplot2::facet_grid(
+    cols = ggplot2::vars(section_title),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::scale_color_manual(values = c(col_hl, col_bg)) +
+  #ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::coord_cartesian(ylim = c(0,1)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank()
+  ) + 
+  ggplot2::labs(
+    x = "question",
+    y = "proportion responses",
+    color = "category response"
+  )
+
+plot_unknown_prop_question
+
+```
+
+### Score patterns "unknown" vs. rest per species and question
+
+Responses that fall into the category "ongekend / ik weet het niet"
+per question and per species.
+Species are sorted according to grand mean response scores (highest on top).
+
+```{r score-patterns, fig.width = fig_w * 1.2, fig.height = fig_h}
+
+res_plot_upd <- res_plot |>
+  dplyr::mutate(
+    score_category = dplyr::case_when(
+      !grepl("ongekend|ik weet het niet", response_text) ~ "rest",
+      TRUE ~ "ongekend / ik weet het niet"
+    )
+  )
+
+plot_unknown_pattern <- ggplot2::ggplot(
+  res_plot_upd,
+  ggplot2::aes(
+    x = question_text_short, y = vern_name_nld,
+    fill = score_category, color = score_category
+  )
+) +
+  ggplot2::geom_point(size = 3, shape = 21) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(section_title),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::scale_color_manual(values = c(col_hl, col_bg)) +
+  ggplot2::scale_fill_manual(values = c(col_hl, col_bg)) +
+  ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    strip.background = ggplot2::element_blank(),
+    axis.text.y = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "question",
+    y = "species (vernacular name nld)",
+    color = "category response",
+    fill = "category response"
+  )
+
+plot_unknown_pattern
+
+```
+
+
+## Methods
+
+```{r methods-prep}
+
+# get recoded and processed data
+res_meth_recoded <- get(load(paste0(response_data_path, "recoded_processed/", "results_methods_recoded.rda"))) 
+res_meth_options <- get(load((paste0(response_data_path, "recoded_processed/", "results_methods_options.rda"))))
+#
+#
+#
+
+
+```
+
+### Frequency of methods
+
+Methods reported in survey by frequency.
+Note that per species multiple methods could be reported. 
+Methods are grouped into categories distinguished by color.
+
+
+```{r methods-freq, fig.width = fig_w, fig.height = fig_h}
+# frequency plot also for best methods
+#
+# get response options per species in long format
+res_plot_tmp1 <- res_meth_recoded |>
+  dplyr::filter(grepl("D1$", question_id), !grepl("followup", question_text)) |>
+  tidyr::crossing(res_meth_options) |>
+  dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
+                  .after = response_text_final) |>
+  dplyr::group_by(species) |>
+  dplyr::rowwise() |>
+  dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
+  dplyr::ungroup()
+#
+#
+# count response option across species
+res_plot_tmp2 <- res_plot_tmp1 |>
+  dplyr::mutate(
+    response_count = dplyr::n(),
+    .by = response_options,
+    .after = response_options
+  ) |>
+  dplyr::distinct(
+    response_options,
+    .keep_all = TRUE
+  ) |>
+  dplyr::arrange(response_count)
+#
+res_plot <- factorize(
+  res = res_plot_tmp2,
+  varnames = c("response_options", "response_options_cat"),
+  varlevels = list(res_plot_tmp2$response_options,
+                   res_meth_options$response_options_cat |> unique()
+                   )
+)
+#
+# plot
+plot_meth_freq <- ggplot2::ggplot(res_plot) +
+  ggplot2::geom_linerange(
+    ggplot2::aes(xmin = 0, xmax = response_count,
+                 y = response_options,
+                 color = response_options_cat),
+    linewidth = 2
+  ) +
+  ggplot2::scale_color_manual(values = c(cols_meth)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    panel.grid.minor.y = ggplot2::element_blank(),
+    panel.grid.major.y = ggplot2::element_blank()
+  ) +
+  ggplot2::labs(
+    x = "frequency",
+    y = "method",
+    color = "method category"
+  )
+
+plot_meth_freq
+
+```
+
+### Methods combinations
+
+Frequencies of all reported pairwise methods combinations. 
+Methods are sorted by frequency.
+
+```{r methods-network, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+
+### plot combination of method within species (network graph)
+#
+# get maximum number of methods selected
+methods_n_max <- res_plot_tmp1 |>
+  dplyr::count(species) |>
+  dplyr::pull(n) |>
+  max()
+#
+# get number of unique pairwise methods combinations (ignoring order)
+methods_pw_max <- methods_n_max * (methods_n_max - 1) / 2
+#
+# prepare plot data 
+res_plot_tmp <- res_plot_tmp1 |>
+  dplyr::mutate(
+    tmp = dplyr::row_number(),
+    .by = species
+  ) |>
+  dplyr::select(-response_options_cat) |>
+  tidyr::pivot_wider(
+    names_from = tmp,
+    names_prefix = "method_",
+    values_from = response_options
+  ) |>
+  # get all unique pairwise combinations of method columns
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    method_pw = combn(
+      x = dplyr::across(tidyselect::contains("method")), # & where !is.na not working
+      m = 2,
+      FUN = paste,
+      collapse = ";"
+    ) |> paste(x = _, collapse = ",")
+  ) |>
+  # separate pairwise combinations into columns
+  tidyr::separate_wider_delim(
+    cols = method_pw,
+    delim = ",",
+    names = paste0("method_pw_", 1:methods_pw_max),
+    too_few = "align_start"
+  ) |>
+  # transform to long format
+  tidyr::pivot_longer(
+    cols = tidyselect::starts_with("method_pw"),
+    names_to = "method_pw_name",
+    values_to = "method_pw_value"
+  ) |>
+  # remove combinations containing NA
+  dplyr::filter(
+    !grepl("NA\\;|\\;NA", method_pw_value)
+  ) |>
+  # separate methods pw values into from and to columns
+  tidyr::separate_wider_delim(
+    cols = method_pw_value,
+    delim = ";",
+    names = c("from", "to")
+  ) |>
+  # turn into network data
+  dplyr::select(c("from", "to")) |>
+  tidygraph::as_tbl_graph(x = _, directed = FALSE) |>
+  tidygraph::activate(edges) |>
+  dplyr::group_by(from, to) |>
+  dplyr::mutate(n_links = dplyr::n()) |>
+  dplyr::ungroup() |>
+  tidygraph::activate(nodes) |>
+  dplyr::arrange(match(name, res_plot_tmp2$response_options))
+#
+plot_meth_netw <- ggraph::ggraph(graph = res_plot_tmp, layout = 'linear', circular = FALSE) +
+  ggraph::geom_edge_arc(ggplot2::aes(edge_width = n_links/1.5, label = n_links, alpha = (n_links + 10)/100),
+                        #label_dodge = grid::unit(3, 'mm'),
+                        angle_calc = 'along',
+                        label_size = 4,
+                        colour = col_hl,
+                        lineend = "butt"
+  ) +
+  ggraph::geom_node_text(ggplot2::aes(label = name), nudge_y = -0.1, hjust = 1) +
+  ggplot2::coord_flip(ylim = c(-2,9)) +
+  ggplot2::theme_void()
+
+plot_meth_netw
+
+```
+
+### Methods across species
+
+Methods reported per species. 
+Methods are grouped by method category, species by kingdom. 
+The methods reported as "most relevant" are highlighted.
+Within groups species are sorted according to grand mean response scores (highest on top).
+
+
+```{r methods-pattern-1, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+#
+# convert to plot data
+res_plot <- factorize(
+  res = res_plot_tmp1,
+  varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+  varlevels = list(levels_vern_name_nld,
+                   res_meth_options$response_options,
+                   res_meth_options$response_options_cat |> unique(),
+                   levels_milieu
+                   )
+)
+#
+# create helper data - here to collect methods with lines per species
+response_options_used <- dplyr::right_join(
+  res_meth_options,
+  res_plot_tmp1 |>
+    dplyr::distinct(response_options)
+)
+#
+data_helper_tmp <- response_options_used |>
+  dplyr::mutate(
+    rownumber = dplyr::row_number()
+  ) |>
+  dplyr::mutate(
+    x_cat = dplyr::row_number() ,
+    .by = response_options_cat
+  ) |>
+  tidyr::crossing(data.frame(
+    species = res_plot_tmp1$species,
+    vern_name_nld = res_plot_tmp1$vern_name_nld)
+    )|>
+  dplyr::left_join(
+    x = _,
+    y = res_plot_tmp1
+  ) |>
+   dplyr::group_by(species) |>
+  tidyr::fill(prius_milieu, kingdom, .direction = "downup")|>
+     dplyr::ungroup(species) |>
+  dplyr::arrange(species, rownumber)  
+#
+data_lines <- data_helper_tmp |>
+  # remove leading and trailing NAs
+  dplyr::group_by(species) |>
+  dplyr::filter(cumsum(!is.na(stadium)) != 0 & rev(cumsum(!is.na(rev(stadium)))) != 0) |>
+  dplyr::ungroup() |>
+  # add x_min and x_max per category
+  dplyr::group_by(species, response_options_cat) |>
+  dplyr::mutate(
+    x_cat_min = x_cat |> min(),
+    x_cat_max = x_cat |> max(),
+    .after = x_cat
+  ) |>
+  dplyr::slice_head() |>
+  dplyr::ungroup() |>
+  # adjust in between values
+  dplyr::arrange(species, rownumber)|>
+  dplyr::mutate(
+    x_cat_min = dplyr::case_when(
+      dplyr::row_number() == 1 ~ x_cat_min,
+      TRUE ~ x_cat_min - 0.5
+      ),
+    x_cat_max = dplyr::case_when(
+      dplyr::row_number() == dplyr::n()  ~ x_cat_max,
+      TRUE ~ x_cat_max + 0.5
+    ),
+    .by = species
+    ) |>
+  dplyr::ungroup() |>
+  factorize(
+    res = _,
+    varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+    varlevels = list(levels_vern_name_nld,
+                     res_meth_options$response_options,
+                     res_meth_options$response_options_cat |> unique(),
+                     levels_milieu
+                     )
+  )
+#
+# data best methods (reply "geen" turns NA)
+res_plot_best <- res_meth_recoded |>
+  dplyr::filter(grepl("D2$", question_id)) |>
+  tidyr::crossing(res_meth_options) |>
+  dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
+                  .after = response_text_final) |>
+  dplyr::group_by(species) |>
+  dplyr::rowwise() |>
+  dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
+  dplyr::ungroup() |>
+  factorize(
+    res = _,
+    varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+    varlevels = list(levels_vern_name_nld,
+                     res_meth_options$response_options,
+                     res_meth_options$response_options_cat |> unique(),
+                     levels_milieu
+    )
+  )
+#
+# plot
+plot_meth_patt <- ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(
+    x = response_options, y = vern_name_nld, group = response_options_cat
+    )
+) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(response_options_cat),
+    rows = ggplot2::vars(kingdom),
+    scales = "free",
+    space = "free"
+  ) +
+  ggplot2::geom_point(size = 3, shape = 21) +
+  ggplot2::geom_linerange(data = data_lines, ggplot2::aes(xmin = x_cat_min, xmax = x_cat_max), linetype = "dashed") +
+  ggplot2::geom_point(data = res_plot_best, size = 3) +
+  #ggplot2::scale_y_discrete(labels = labs_hl) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.x.top = ggplot2::element_text(angle = 20, hjust = 0, vjust = 0),
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.text.y = ggtext::element_markdown()
+  ) +
+  ggplot2::labs(
+    x = "methods",
+    y = "species (vernacular name nld)",
+    color = "category response",
+    fill = "category response"
+  )
+
+plot_meth_patt
+
+
+```
+
+
+### Methods across species by habitat
+
+Methods reported per species.
+Methods are grouped by method category, species by habitat as reported in PrIUS. 
+The methods reported as "most relevant" are highlighted.
+Within groups species are sorted according to grand mean response scores (highest on top).
+Grid cells with at least 1 species-habitat combination are colored.
+
+```{r methods-pattern-2, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+
+# define data background filling (no fill if no entry in group)
+data_bg <- data_helper_tmp |>
+  dplyr::group_by(species, prius_milieu, response_options_cat) |>
+    dplyr::mutate(
+    x_cat_min = 0.5,
+    x_cat_max = dplyr::n() + 0.5
+  )|>
+  dplyr::ungroup() |>
+  dplyr::group_by(prius_milieu, response_options_cat, response_options) |>
+  dplyr::mutate(
+    y_cat_min = 0.5,
+    y_cat_max = dplyr::n() + 0.5
+  ) |>
+  dplyr::ungroup() |>
+  # add alpha
+  dplyr::group_by(response_options_cat, prius_milieu) |>
+    dplyr::mutate(
+    alpha = dplyr::case_when(
+      any(!is.na(stadium)) ~ 1,
+      TRUE ~ 0
+      )
+  ) |> 
+  dplyr::ungroup() |>
+  dplyr::distinct(response_options_cat, prius_milieu, .keep_all = TRUE) |>
+  # finalize
+  factorize(
+    res = _,
+    varnames = c("vern_name_nld", "response_options", "response_options_cat", "prius_milieu"),
+    varlevels = list(levels_vern_name_nld,
+                     res_meth_options$response_options,
+                     res_meth_options$response_options_cat |> unique(),
+                     levels_milieu
+                     )
+  )
+#
+plot_meth_group <- plot_meth_patt + 
+  ggplot2::geom_rect(
+    data = data_bg,
+    ggplot2::aes(
+      xmin = x_cat_min, xmax = x_cat_max, 
+      ymin = y_cat_min, ymax = y_cat_max,
+      alpha = alpha |> as.numeric()
+      ),
+    fill = col_hl
+  ) +
+  ggplot2::facet_grid(
+    cols = ggplot2::vars(response_options_cat),
+    rows = ggplot2::vars(prius_milieu),
+    scales = "free",
+    space = "free",
+    labeller = ggplot2::label_wrap_gen(width = 20)
+  ) +
+  ggplot2::scale_alpha(range = c(0, 0.2)) +  
+  ggplot2::scale_y_discrete(labels = ggplot2::waiver()) + 
+  ggplot2::theme(
+    strip.text.x.top = ggplot2::element_text(angle = 20),
+    strip.text.y.right = ggplot2::element_text(angle = 0),
+    legend.position = "none",
+    panel.spacing.y = grid::unit(1, "lines"),
+    strip.clip = "off"
+  )
+plot_meth_group
+
+
+```
+
+
+### Characteristics best method
+
+Frequencies of responses options per "most relevant" method.
+Responses concerning sensitivity, specificity and costs are separated by column.
+
+
+```{r best-method, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+
+res_plot_tmp <- res_plot_best |> 
+  dplyr::distinct(species, .keep_all = TRUE) |>
+  dplyr::rename(best_method = response_text_final) |>
+  dplyr::select(tidyselect::contains(c("species", "best_method"))) |>
+  dplyr::full_join(
+    x = _,
+    y = res_scored |> 
+      dplyr::filter(grepl("D3|D4|D5", question_id)) |>
+      dplyr::filter(!grepl("followup", question_text))
+  ) |>
+  # adapt response text
+  dplyr::mutate(
+    response_text_recoded = dplyr::case_when(
+      grepl("ongekend|ik weet het niet", response_text) ~ "ongekend / weet niet",
+      grepl("lage", response_text) ~ "laag",
+      grepl("middelhoge", response_text) ~ "middelhoog",
+      grepl("^hoge", response_text) ~ "hoog"
+    ) 
+  ) |>
+  # sort according to response score and frequency best method
+  dplyr::mutate(
+    n_rows = dplyr::n(), 
+    .by = best_method
+  ) |>
+  dplyr::arrange(
+    n_rows |> dplyr::desc(),
+    response_score
+    )
+#
+res_plot <- res_plot_tmp |>
+  factorize(
+    res = _,
+    varnames = c("best_method", "question_text_short", "response_text_recoded"),
+    varlevels = list(res_plot_tmp$best_method |> unique(),
+                     res_plot_tmp$question_text_short |> unique() |> rev(),
+                     res_plot_tmp$response_text_recoded |> unique()
+    )
+  )
+#
+plot_bestmeth <- ggplot2::ggplot(
+  res_plot, 
+  ggplot2::aes(x = response_text_recoded)
+  ) +
+  ggplot2::geom_bar() +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(best_method),
+    cols = ggplot2::vars(question_text_short),
+    labeller = ggplot2::label_wrap_gen(width = 20),
+    switch = "y",
+    scales = "free"
+  ) +
+  ggplot2::scale_y_continuous(breaks = \(x) seq(floor(min(x)), ceiling(max(x)), by = ceiling(max(x)/4))) +
+  ggplot2::coord_cartesian(clip = "off") +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.y.left = ggplot2::element_text(angle = 0),
+    strip.placement = "outside",
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1)
+  ) +
+  ggplot2::labs(
+    x = "response score",
+    y = "frequency"
+  )
+plot_bestmeth
+# NA value?
+
+```
+
+
+
+## Monitoring schemes
+
+```{r moni-prep}
+#
+#
+# get recoded and processed data 
+res_moni_recoded <- get(load(paste0(response_data_path, "recoded_processed/", "results_monitoring_recoded.rda"))) 
+res_moni_options <- get(load((paste0(response_data_path, "recoded_processed/", "results_monitoring_options.rda"))))
+
+```
+
+### Monitoring schemes across species
+
+Monitoring schemes reported per species. 
+Monitoring schemes are sorted by the number of species they cover (highest coverage left).
+Species are grouped by kingdom, and within groups sorted according to grand mean response scores (highest on top).
+
+
+```{r moni-pattern, fig.width = fig_w * 1.2, fig.height = fig_h * 1.2}
+#
+#
+# get response options per species in long format
+res_plot_tmp <- res_moni_recoded |>
+  dplyr::filter(grepl("D8", question_id)) |>
+  tidyr::crossing(res_moni_options) |>
+  dplyr::relocate(tidyselect::any_of(tidyselect::starts_with("response_options")),
+                  .after = response_text_final) |>
+  dplyr::group_by(species) |>
+  dplyr::rowwise() |>
+  dplyr::filter(grepl(pattern = response_options, x = response_text_final)) |>
+  dplyr::ungroup() |>
+  # sort schemes according to number of species covered
+  dplyr::mutate(
+    n_species = dplyr::n(),
+    .by = response_options
+  ) |> 
+  dplyr::arrange(n_species |> dplyr::desc()) |>
+  # separate informative answers from uninformative ones
+  dplyr::mutate(
+    response_category =   dplyr::case_when(
+      grepl("geen|weet het niet|^andere$", response_options) ~ "monitoring scheme absent or unknown",
+      TRUE ~ "monitoring scheme reported"
+    )
+  )
+#
+# convert to plot data
+res_plot <- factorize(
+  res = res_plot_tmp,
+  varnames = c("vern_name_nld", "response_options", "prius_milieu"),
+  varlevels = list(levels_vern_name_nld,
+                   res_plot_tmp$response_options |> unique(),
+                   levels_milieu
+                   )
+)
+#
+# plot
+plot_moni_patt <- ggplot2::ggplot(
+  res_plot,
+  ggplot2::aes(x = response_options, y = vern_name_nld)
+) +
+  ggplot2::facet_grid(
+    rows = ggplot2::vars(kingdom), 
+    cols = ggplot2::vars(response_category), 
+    scales = "free",
+    space = "free",
+    labeller = ggplot2::label_wrap_gen(width = 15)
+  ) +
+  ggplot2::geom_point(size = 3) +
+  ggplot2::scale_x_discrete(labels = ggplot2::label_wrap_gen(width = 30)) +
+  ggplot2::theme_bw() +
+  ggplot2::theme(
+    strip.background = ggplot2::element_blank(),
+    strip.text.x.top = ggplot2::element_text(angle = 0, hjust = 0, vjust = 0),
+    axis.text.x = ggplot2::element_text(angle = 45, hjust = 1, vjust = 1),
+    axis.text.y = ggtext::element_markdown(),
+    strip.text.y.right = ggplot2::element_text(angle = 0)
+  ) +
+  ggplot2::labs(
+    x = "methods",
+    y = "species (vernacular name nld)"
+  )
+plot_moni_patt
+# add lines to mark species - scheme combinations
+# manually add systems not mentioned in survey but listed in ias eu reporting table 
+
+```

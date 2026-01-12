@@ -1,0 +1,17 @@
+
+
+## What is the level of sensitivity of this most relevant surveillance technique?
+
+*The sensitivity indicates how well a method is able to detect the presence of a species or a minimally relevant (change in) population size. With a high sensitivity, the probability of detecting this presence is large if the species or a minimally relevant (change in) population size is actually present. A high sensitivity also leads to a small percentage of false-negative results. Choose one of the following options.*
+
+- high sensitivity
+- medium sensitivity
+- low sensitivity
+- unknown
+- I do not know
+
+*Optional: Briefly explain the answer chosen and indicate any sources used.*
+
+&nbsp;
+
+

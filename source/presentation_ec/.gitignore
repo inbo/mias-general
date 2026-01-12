@@ -1,0 +1,14 @@
+/.quarto/
+*.png
+*.jpg
+*.eps
+*.pdf
+*.sty
+*.tex
+*.ttf
+*.css
+*.csl
+!_extensions/*
+site_libs
+!media/*
+*_cache*

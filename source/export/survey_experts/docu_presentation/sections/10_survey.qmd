@@ -1,0 +1,295 @@
+# Expert survey 
+
+## Purpose
+
+- Draw on expert's expertise during planning IAS monitoring schemes in Flanders
+  - Collect tailored information
+  - Evaluation of information via expert judgement 
+- Assess feasiblity and urgency of monitoring schemes per species
+- Use survey results to prioritize species (groups) for further analysis
+
+::: {.notes}
+- bedoeling van deze survey
+  - informatie zo gericht mogelijk verzamelen
+  - niet enkel informatie verzamelen maar vooral ook inschatting/aggregatie/evaluatie door experts gewenst
+
+:::
+
+
+## Distribution & return
+
+- Questionnaires for 122 IAS via Google forms
+    - IAS of (possible future) union concern
+- Sent to 57 experts
+- Return: 
+    - Questionnaire completed for 105 species
+    - 81 IAS of union concern covered
+
+
+::: {.notes}
+- elke soort een google form aangemaakt, dus 122 forms
+- uitgestuurd naar 57 experten binnen en buiten INBO
+- uiteindelijk hebben we antwoorden voor 105 soorten gekregen, daarvan 81 op de unilijst
+- voor sommige soorten moeilijk om antwoord te krijgen
+  - we hebben hierbij altijd meerdere pogingen gedaan, of bij dezelfde expert of bij verschillende experts
+- unilijst IAS voor die we geen data hebben
+  - heilige ibis
+  - amerikaanse voseekhoorn
+  - grijze eekhoorn
+  - perziche berenklauw
+  - reuzenbalsemien
+  - reuzenberenklauw
+  - roze rimpelgras
+
+:::
+
+
+## Questions
+
+- Questions on a species' ([full list](https://drive.google.com/file/d/1mxxZEbAkcXJAVABRP1NFIs2oJsStPkix/view?usp=sharing)):
+
+```{r survey-questions-sections}
+#| results: "asis"
+
+section_list <- list(
+  "introduction and establishment",
+  "distribution and abundance",
+  "impact",
+  "monitoring",
+  "management"
+)
+section_list |>
+  unlist() |>
+  stringr::str_to_sentence() |>
+  paste(x = "  -", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+- Adaptive design
+  - Selection of questions based on reported invasion stadium 
+
+
+::: {.notes}
+- vragen uit 5 rubrieken gesteld
+  - introductie en vestiging
+  - verspreiding en abundantie
+  - impact
+  - monitoring
+  - management
+- het design was adaptief
+  - vragen over verspreiding niet gesteld indien soort afwezig
+  - vragen over introductie enkel gesteld indien soort afwezig/sporadisch aanwezig 
+  (mogelijk niet de meest optimale keuze)
+  
+:::
+
+
+```{r survey-questions-sections-display}
+#| results: "asis"
+#| eval: false
+
+for (i in seq_along(section_list)){
+  cat("## Questions ", section_list[[i]], "\n")
+  res_comb_upd |> 
+  dplyr::filter(section_no == i) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+}
+
+```
+
+
+
+## Questions introduction and establishment {visibility="hidden"}
+
+
+```{r survey-questions-section-2}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 2) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+
+## Questions distribution and abundance {visibility="hidden"}
+
+
+```{r survey-questions-section-3}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 3) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+
+## Questions impact {visibility="hidden"}
+
+
+```{r survey-questions-section-4}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 4) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+
+## Questions surveillance/monitoring {visibility="hidden"}
+
+```{r survey-questions-section-5}
+#| results: "asis"
+#| 
+res_comb_upd |> 
+  dplyr::filter(section_no == 5) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+
+```
+
+
+## Questions management {visibility="hidden"}
+
+```{r survey-questions-section-6}
+#| results: "asis"
+
+res_comb_upd |> 
+  dplyr::filter(section_no == 6) |>
+  dplyr::pull(question_text_short) |> 
+  unique() |>
+  paste(x = "-", y = _) |>
+  cat(x = _, sep = "\n")
+
+```
+
+
+## Scoring questions 
+
+- Majority of questions is scored
+- Each scored question is either an indicator of *feasibility* or *urgency*, e.g.,
+  - Accessibility of introduction sites -> feasibility
+  - Probability of establishment -> urgency
+- Scores
+  - from 1 (low feasibility/urgency) to 4 (high feasibility/urgency)
+  - not visible to experts
+- Scores used for prioritization
+
+::: {.notes}
+- voor een grootdeel van de vragen kennen we op basis van de antwoorden scores toe
+  - daarnaast ook aantal open vragen voor wat meer flexibiliteit
+- elke gescoorde vraag is of een indicatoor for haalbaarheid of voor nood van mogelijk meetnet
+- scores variëren telkens van 1 - 4 en zijn niet zichtbaar voor de experts
+- we gebruiken ze voor een prioritering van de soorten, we zullen straks zien hoe
+
+:::
+
+
+
+## Scoring questions 
+
+Introduction and establishment
+
+```{r survey-questions-scoring-section-2}
+
+col_feas = col_hl
+col_urge = col_plants
+
+data_table_scoring_upd <- data_table_scoring |> 
+  dplyr::mutate(
+    question_text_short = dplyr::case_when(
+      grepl("feas", score_category) ~ 
+        kableExtra::cell_spec(x = question_text_short, color = col_feas),
+      grepl("urge", score_category) ~ 
+        kableExtra::cell_spec(x = question_text_short, color = col_urge)
+    )
+  )  
+
+make_scoring_table <- function(
+    .data_table_scoring
+){
+  knitr::kable(
+  x = .data_table_scoring,
+  format = "html",
+  escape = FALSE,
+  col.names = c("Question", paste(1:4)),
+  table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+) |>
+  kableExtra::kable_styling(
+    bootstrap_options = c("condensed", "hover"), 
+    full_width = FALSE,
+    position = "left",
+    font_size = .font_size
+  ) |> 
+  kableExtra::column_spec(
+    column = 2:ncol(.data_table_scoring),
+    width = "170px"
+  ) |>
+  kableExtra::collapse_rows(
+    columns = seq_along(colnames(.data_table_scoring)),
+    valign = "middle"
+  ) |>
+  kableExtra::add_header_above(
+    header = c(
+      " " = 1,
+      "low feasibility/urgency" = 1,
+      " " = 2,
+      "high feasibility/urgency" = 1
+    ),
+    align = "justify"
+  )
+}
+
+make_scoring_table(
+  data_table_scoring_upd  |>
+  dplyr::filter(section_number == 2) |>
+  dplyr::select(-c("section_number", "score_category")) 
+) |> gsub(
+  pattern = "feasibility",
+  replacement = kableExtra::cell_spec(x = "feasibility", color = col_feas),
+  x = _
+) |> gsub(
+  pattern = "urgency",
+  replacement = kableExtra::cell_spec(x = "urgency", color = col_urge),
+  x = _
+)
+
+```
+
+::: {.notes}
+
+Om voorbeeld te geven:
+
+- vraag: hoeveel introductieplaatsen en hoe verspreid?
+- lage haalbaarheid indien introductieplaaten onbekend zijn
+- hoge haalbaarheid indien beperkte aantaal specifieke plaatsen
+
+- vraag: kans op introductie
+- lagere nood indien onbekend of klein
+- hogere nood indien grote kans
+
+
+:::
+

@@ -1,0 +1,266 @@
+# Prioritization
+
+## Purpose & approach
+
+
+- Determine which monitoring scopes are *relevant*/*feasible* and *prioritised* for which species
+- Approach:
+  - Propose range of scopes (e.g., detection, distribution, abundance)
+  - Determine relevance/feasibility & priority based on survey results
+  - Present results in terms of scenarios to facilitate decision making
+    - For which scope-species combination should we proceed with planning? 
+
+::: {.notes}
+- vertrokken van vraag: welke soorten zijn welke monitoring noden relevant en prioritair
+- om vraag te kunnen beantwoorden eerst een aantal scopes voorstellen
+  - deze deels gebaseerd op de EU regulatie en deels op typische meetnet toepassingen 
+  - scope bepaald hoe een eventueel meetnet eruit ziet
+  - daarom nodig niet enkel naar soorten maar naar combinaties te kijken
+- we stellen de resultaten in de vorm van een aantal scenario's 
+- bedoeling is dat er vandaag een keuze wordt gemaakt tussen deze scenario's
+- zodat we kunnen doorgaan met planning van meetnetten voor kleine aantal soorten
+
+:::
+
+## Monitoring scopes
+
+- Detection
+- Inventory
+- Distribution (change)
+- Abundance (change)
+- Distribution (change) under management
+- Abundance (change) under management
+
+::: {.notes}
+- Dit eigenlijk een beetje de mogelijke doelstellingen van meetnetten
+- In het vevolg ga ik even een soort preview geven op de scopes en mogelijke manieren van invulling
+- Maar we zullen er op het einde van de presentatie nog op terug moeten komen (vooral de invullingen)
+
+:::
+
+
+## Scope distribution
+
+- Assessing status and trend of distribution of species at known places of distribution
+
+- EU
+  - Operationalization: presence/absence in Flanders in $10\times 10$ km grid cells
+  - EU Habitat Directive:
+    - Derived operationalization: Range of species, quantified in terms of size
+    - Status & trend in size of range 
+
+- Flanders?
+  - [Operationalization?]{style="color:grey;"}
+  - [Quantification?]{style="color:grey;"}
+  - [Definition status & trend?]{style="color:grey;"}
+  - [Scale of statements?]{style="color:grey;"}
+  - [Input data?]{style="color:grey;"}
+
+
+::: {.notes}
+
+- invulling/operationalisering van distributie die vanuit de EU gevraagd wordt: aan-/afwezigheid
+  - ik neem aan dat met deze informatie nog iets gebeurd, bv. ...
+- Op niveau Vlaanderen is deze verspreidingsinformatie mogelijk niet zo betekenisvol
+  - Dus indien er bijkomende rapportage van de opdrachtgever gewenst is, zullen we ons hier over een aantal vragen moeten buigen   - Als er geen concrete informatienoden zijn voor Vlanderen dan blijven we op Europees niveau
+ 
+:::
+
+
+## Scope abundance
+
+- Assessing status and trend of population size in species' distribution or selected area 
+
+- EU
+  - Optional, in the context of management evaluation
+    - No further specifications
+  - EU Habitat Directive:
+    - Operationalization: Number of individuals
+    - Quantification: Absolute population size
+
+- EU/Flanders?
+  - [Operationalization?]{style="color:grey;"}
+  - [Quantification?]{style="color:grey;"}
+  - [Definition status & trend?]{style="color:grey;"}
+  - [Scale of statements?]{style="color:grey;"}
+  - [Input data?]{style="color:grey;"}
+
+
+
+::: {.notes}
+
+- selected areas: invasie hotspot, areal waar beheerd wordt (aparte scope)
+- Voor EU is dit een mogelijke optie voor de evaluatie van beheer 
+- verder geen duidelijke richtlijnen
+- om het concreter te maken weer naar de habitat richtlijn kijken...
+- Voor zowel europees en mogelijk vlaams niveau moeten hier een aantal dingen concreet gemaakt worden
+
+
+:::
+
+
+## Scope distribution/abundance under management
+
+- Evaluating (assessing effects of) management 
+  - Cf. scope distribution/abundance
+  - Causal vs. correlational evaluation
+  - Eradication vs. control/containment 
+
+
+::: {.notes}
+- hoe we de scopes distributie en abundantie invullen heeft natuurlijk voortvloeiende effecten
+voor evaluatie beheer
+- causaal vs. correlationeel 
+(causaal effect schatten vs. in temporeel en ruimtelijk verband met beheer meten)
+- welk beheer er gevoerd wordt heeft dan natuurlijk ook impact op de manier van evaluatie
+
+:::
+
+
+## Scope inventory
+
+- Assessing location of (potential) distribution area
+  - If distribution area not sufficiently known
+- Approach
+  - Candidate areas via list of all possible habitats (e.g., expert judgement)
+  - Presence and absence in candidate areas
+
+
+::: {.notes}
+- Indien verspreiding niet gekend: inhaalslag om verspreiding in kaart te brengen
+- mogelijke manier van aanpak: lijst van mogelijke gebieden, daar meten
+
+:::
+
+## Scope detection
+
+- Assessing species occurrences/presence in defined area
+  - At/around known (potential) places of introduction and sites of sporadic occurrence
+  - In/around conservation area
+
+::: {.notes}
+- detecteren van soort in gedefineerd areaal
+  - natuurlijk introductieplaatsen (eerder voor afwezige)
+  - in/around conservation area (eerder voor)
+
+:::
+
+
+## Species-scope table illustration
+
+```{r species-scope-table}
+#| results: asis
+
+table_base_illu_list_upd$stadium |> 
+  dplyr::mutate(
+    scope_verbose = NA_character_
+  )|>
+  dplyr::arrange(species) |>
+  (\(x)
+   if (exists("mode_source") && grepl("presentation", mode_source)) {
+     x |>
+       dplyr::filter(!grepl("M|N", species))
+   } else {
+     x
+   }
+  )() |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species"),
+    cols_addon = NULL,
+    footnote = NULL) |> 
+  unclass() |> cat()
+
+```
+
+
+::: {.notes}
+
+- deze scopes met alle soorten kruisen: tabel van alle mogelijke combinaties
+- te veel
+- we kunnen eigenlijk maar een klein aantal combinaties tegelijk bekijken
+
+:::
+
+
+
+## Exclusion process {visibility="hidden"}
+
+```{mermaid}
+%%| fig-width: 15
+flowchart LR
+    n1["IAS of (future) union concern"] --> n2{species-scope combination irrelevant/infeasible?}
+    n2 -- no --> n3{species-scope combination low priority?}
+    n2 -- yes --> n4[hold planning]
+    n3 -- no --> n5[start planning]
+    n3 -- yes --> n4
+    n6[surveillance scopes] --> n2
+``` 
+
+
+## Exclusion process
+
+![Flowchart of exclusion process](media/flowchart.svg){height=600}
+
+
+
+## Exclusion criteria
+
+- Exclude species-scope combinations that are *irrelevant/infeasible*
+  - Scope irrelevant for invasion stadium
+  - Distribution area known (exclusion inventory)
+  - Species not managed
+  - Information (presence-absence/abundance) not relevant to evaluate management
+  - No method to measure abundance
+  
+  
+::: {.notes}
+
+- uitsluitingscriteria
+- stadium: 
+  - detectie enkel voor afwezige of sporaadisch aanwezige soorten (of wijd in natuurgebieden)
+- ...
+- scopes met beheer niet relevant indien soort niet beheerd 
+- methode enkel om aan- en afwezigheid te meten
+- zo al een aantal combinaties uitgesloten
+:::
+  
+  
+## Exclusion criteria
+  
+- Exclude species-scope combinations with *low priority*
+  - Opportunistic data are considered representative
+  - Introduction sites/distribution area unknown
+  - Global feasibility & urgency scores below critical value
+
+
+::: {.notes}
+
+- hoogrepresentatief
+- introductieplaatsen ongekend en groot aantal wijdverspreide locaties (afweziG): detectie lage prioriteit
+- verspreidingsgebied ongekend (beperkt gevestigd): distributie en abundantie weg, inhaalslag blijft over
+- ten slotte globale haalbaarheids en nood scores uit de survey om met het geheel aan vragen rekening te houden
+(drempel-waarde mediaan)
+
+
+
+:::
+
+
+## Species-scope table illustration
+
+```{r species-scope-table-filled}
+#| results: asis
+
+table_filtered_illu_final_display |> unclass() |> cat()
+
+```
+
+
+
+::: {.notes}
+
+- circle, dagger
+- x and double asterix, waar detectie wel relevant zou zijn
+
+:::

@@ -1,0 +1,19 @@
+## Outline
+
+- Guidelines for monitoring design
+- Expert survey 
+- Example Chinese muntjac
+- Outlook
+
+
+::: {.notes}
+
+I'll first provide you with
+
+- an overview of the monitoring design guidelines that we follow
+- briefly present an expert survey we conducted to prepare application of the guidelines
+- turn to an example which we are currently working on
+- close with brief outlook
+
+
+:::

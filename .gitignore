@@ -9,6 +9,7 @@
 *.shx
 *.xls*
 *_files
+*.gs
 .DS_Store
 .RData
 .Renviron
@@ -23,4 +24,5 @@ renv/library
 data/raw/*
 data/gis/*
 data/gbif_occcubes/*
+data/survey_experts/*
 media/

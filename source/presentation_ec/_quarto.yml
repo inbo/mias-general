@@ -1,0 +1,59 @@
+project:
+  type: default
+  preview:
+    port: 4201
+    browser: true
+  render:
+    - "*.md"
+    - "*.qmd"
+    - "!LICENSE.md" #ignore LICENSE.md
+    - "!README.md" #ignore README.md
+  output-dir: ../../output/presentation_ec
+
+execute:
+  echo: false
+
+lang: en-GB
+
+format:
+  flandersqmd-revealjs:
+    link-external-newwindow: true
+    transition: none
+
+flandersqmd:
+  entity: INBO
+  level: 2
+  title: |
+    | Designing monitoring schemes
+    | for invasive alien species
+  author:
+    - name:
+        given: Janne
+        family: Adolf
+      orcid: 0000-0001-6064-9803
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+    - name:
+        given: Diederik
+        family: Strubbe
+      orcid: 0000-0002-2613-4985
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+    - name:
+        given: Tim
+        family: Adriaens
+      orcid: 0000-0001-7268-4200
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+    - name:
+        given: Thierry
+        family: Onkelinx
+      orcid: 0000-0001-8804-4216
+      affiliation:
+        - Research Institute for Nature and Forest (INBO)
+  cover: ../../../mias-muntjac/media/img/mapview_snapshot.png
+
+
+lightbox: true
+
+bibliography: ../../media/MIAS.bib

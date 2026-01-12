@@ -1,0 +1,36 @@
+{
+  "access_right": "open",
+  "title": "Monitoring invasive alien species of Union concern",
+  "description": "<p>Repository (under construction) accompanying the development of monitoring schemes for the invasive alien species of Union concern in Flanders. This is an overarching repository.<\/p>",
+  "keywords": [
+    "invasive alien species",
+    "monitoring programs"
+  ],
+  "upload_type": "software",
+  "license": "CC-BY-4.0",
+  "language": "eng",
+  "contributors": [
+    {
+      "name": "Adolf, Janne",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-6064-9803",
+      "type": "contactperson"
+    },
+    {
+      "name": "Research Institute for Nature and Forest (INBO)",
+      "type": "rightsholder"
+    }
+  ],
+  "creators": [
+    {
+      "name": "Adolf, Janne",
+      "affiliation": "Research Institute for Nature and Forest (INBO)",
+      "orcid": "0000-0001-6064-9803"
+    }
+  ],
+  "communities": [
+    {
+      "identifier": "inbo"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+/.quarto/
+*.png
+*.jpg
+*.ttf
+*.css
+*.csl
+*.txt
+!_extensions/*

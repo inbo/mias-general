@@ -1,0 +1,17 @@
+
+
+## How large is the probability that the species becomes established in Flanders?
+
+*The probability of a species becoming established depends, among other things, on climate and habitat requirements and other ecological characteristics of the species (e.g. generalist or specialist, capacity for rapid population growth).  Invasion stages in neighbouring countries or in countries with similar climate and habitat conditions may also serve to estimate the climate and habitat match for Flanders. Choose one of the following options.*
+
+- large probability
+- medium probability
+- small probability
+- unknown
+- I do not know
+
+*Optional: Briefly explain the answer chosen (e.g. which ecological characteristics are important) and indicate any sources used.*
+
+&nbsp;
+
+\newpage

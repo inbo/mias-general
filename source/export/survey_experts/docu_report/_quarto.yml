@@ -1,0 +1,131 @@
+project:
+  type: flandersqmd-book
+  preview:
+    port: 4201
+    browser: true
+  render:
+    - "*.md"
+    - "*.qmd"
+    - "!LICENSE.md"
+    - "!README.md"
+  output-dir:  ../../../../output/survey_experts/docu_report_zip
+  #output-dir:  ../../../../output/survey_experts/docu_report
+  execute-dir: project
+  post-render: _extensions/inbo/flandersqmd-book/filters/post_render.R
+
+
+format:
+  flandersqmd-book-html: default
+  flandersqmd-book-pdf: default
+
+flandersqmd:
+  entity: INBO
+  level: 1
+  title: Prioritising invasive alien species for monitoring in Flanders
+  subtitle: Results of an expert survey
+  shorttitle: expert-survey-mius
+  author:
+  - name:
+      given: Janne
+      family: Adolf
+    email: janne.adolf@inbo.be
+    corresponding: true
+    orcid: 0000-0001-6064-9803
+    affiliation:
+      - Research Institute for Nature and Forest (INBO)
+  - name:
+      given: Diederik
+      family: Strubbe
+    email: diederik.strubbe@inbo.be
+    corresponding: false
+    orcid: 0000-0002-2613-4985
+    affiliation:
+      - Research Institute for Nature and Forest (INBO)
+  - name:
+      given: Tim
+      family: Adriaens
+    email: tim.adriaens@inbo.be
+    orcid: 0000-0001-7268-4200
+    affiliation:
+      - Research Institute for Nature and Forest (INBO)
+  - name:
+      given: Thierry
+      family: Onkelinx
+    email: thierry.onkelinx@inbo.be
+    orcid: 0000-0001-8804-4216
+    affiliation:
+      - Research Institute for Nature and Forest (INBO)
+  reviewer:
+  - name:
+      given: Hugo
+      family: Verreycken
+    email: hugo.verreycken@inbo.be
+    orcid: 0000-0003-2060-7005
+    affiliation:
+       - Research Institute for Nature and Forest (INBO)
+  year: 2025
+  reportnr: 59
+  doi: 10.21436/inbor.133486163
+  depotnr: D/2025/3241/386
+  #cover: media/cover-placeholder.pdf # remove?
+  #coverphoto: https://www.pexels.com/photo/plant-growing-under-and-above-water-5722348/ # remove?
+  coverdescription: Swimming specimen of trachemys scripta by Vilda/Rollin Verlinde
+  public_report: true
+  colophon: true
+  floatbarrier: subsection
+  linenr: false
+  # needed for INBOmd::inbo_website()
+  publisher: Research Institute for Nature and Forest (INBO)
+  publication_type: publication-report
+  keywords: invasive alien species; monitoring schemes; expert survey
+  community: inbo
+
+book:
+  downloads: pdf
+  open-graph: true
+  body-footer: '{{< footer >}}'
+  navbar:
+      pinned: true
+      right:
+      - icon: mastodon
+        href: https://mastodon.online/&#64;inbo
+      - icon: facebook
+        href: https://www.facebook.com/INBOVlaanderen/
+      - icon: github
+        href: https://github.com/inbo
+      left:
+      - text: Cover
+        file: index.qmd
+      - text: Summary
+        file: chapters/02_summary.qmd
+      - text: Dutch executive summary
+        file: chapters/03_summary_dutch.qmd
+  chapters:
+    - index.qmd
+    - chapters/02_summary.qmd
+    - chapters/03_summary_dutch.qmd
+    - chapters/10_introduction.qmd
+    - chapters/20_monitoring_IAS.qmd
+    - chapters/30_expert_survey.qmd
+    - chapters/40_results_survey.qmd
+    - chapters/50_steering_committee.qmd
+    - chapters/99_references.qmd
+  appendices:
+    - appendices/appendix_a.qmd
+    - appendices/appendix_b.qmd
+    - appendices/appendix_c.qmd
+
+execute:
+  echo: false
+  warnings: true
+  errors: true
+  message: true
+  freeze: false
+  cache: true
+
+lang: en-GB
+babel-lang: english
+
+bibliography: ../../../../media/MIAS.bib
+
+lightbox: true

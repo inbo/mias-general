@@ -1,0 +1,82 @@
+# Outtakes
+
+## Scenario 1: ANB priority species (plants)
+
+- Method synergies for plants & scope abundance
+
+```{r scenario-anb-priorities-syn-plants-abd}
+#| results: asis
+
+table_syn_anb_plants_display_list$abundance |> unclass() |> cat()
+
+```
+
+## Scenario 1: ANB priority species (plants)
+
+- Method synergies for plants & scope abundance after management
+
+```{r scenario-anb-priorities-syn-plants-abd-after}
+#| results: asis
+
+table_syn_anb_plants_display_list$abundance_management |> unclass() |> cat()
+
+```
+
+
+## Scenario 1: ANB priority species (animals)
+
+- Method synergies for animals & scope abundance after management
+
+```{r scenario-anb-priorities-syn-animals-abd-after}
+#| results: asis
+
+table_syn_anb_animals_display_list$abundance_management |> unclass() |> cat()
+
+```
+
+
+## Scenario 2: Focus on detection (plants)
+
+- Method synergies for plants & scope abundance
+
+```{r scenario-det-priorities-syn-plants-abd}
+#| results: asis
+
+table_syn_det_plants_display_list$abundance |> unclass() |> cat()
+
+```
+
+## Scenario 2: Focus on detection (plants)
+
+- Method synergies for plants & scope distribution after management
+
+```{r scenario-det-priorities-syn-plants-dist-after}
+#| results: asis
+
+table_syn_det_plants_display_list$distribution_management |> unclass() |> cat()
+
+```
+
+
+## Scenario 3: Focus on distribution (plants)
+
+- Method synergies under scope abundance
+
+```{r scenario-dist-priorities-syn-plants-abd}
+#| results: asis
+
+table_syn_dist_plants_display_list$abundance |> unclass() |> cat()
+
+```
+
+
+## Scenario 3: Focus on distribution (plants)
+
+- Method synergies under scope distribution after management
+
+```{r scenario-dist-priorities-syn-plants-dist-after}
+#| results: asis
+
+table_syn_dist_plants_display_list$distribution_management |> unclass() |> cat()
+
+```

@@ -1,0 +1,118 @@
+# Guidelines for monitoring design
+
+## Purpose
+
+- Support the design of policy-oriented monitoring schemes
+  - Tailoring monitoring schemes to the actual information needs
+  - Producing results of high substantive & numerical quality
+
+::: footer
+@wouters_ontwerp_2008-1
+:::
+
+::: {.notes}
+
+- guidelines for monitoring design were developed at INBO based on the relevant scientific lit
+- purpose, in a nutshell, is to support the design of policy‐oriented monitoring schemes
+- with a focus on
+- ... tailoring a scheme to the actual information needs
+- ... to produce results of high substantive and numerical quality
+
+- So, the monitoring questions should be answered 
+  - with a high precision & reliably
+
+
+:::
+
+## The monitoring design process
+
+
+::: {layout="[[6, 94], [6, 94], [6, 94], [6, 94], [6, 94]]" layout-valign="center"}
+
+
+![](../../media/presentation_ec/symbol_1.png)
+
+[Phase 1: Prioritising information needs]{.fragment fragment-index=1}
+
+
+![](../../media/presentation_ec/symbol_2.png)
+
+[Phase 2: Developing sample design and data collection]{.fragment fragment-index=2}
+ 
+![](../../media/presentation_ec/symbol_3.png)
+
+[Phase 3: Planning data storage & analysis]{.fragment fragment-index=3}
+
+![](../../media/presentation_ec/symbol_4.png)
+
+[Phase 4: Planning reporting & communication]{.fragment fragment-index=4}
+
+![](../../media/presentation_ec/symbol_5.png)
+
+[Phase 5: Implementation & quality assurance]{.fragment fragment-index=5}
+
+:::
+
+::: {.notes}
+
+The guidelines distinguish 5 different phases
+
+- Phase 1...
+- should in the end lead to clearly formulated monitoring objectives and a rough outline of the design
+- achieved by taking into account the information demand from different stakeholders, 
+  existing monitoring, scientific background information (on species and monitoring)  
+
+- In phase 2...
+  - monitoring objectives are tied to quantifiable outcomes, then
+  - the sampling design is planned, 
+  - ...as well as data collection (implementation monitoring techniques)
+  - costs are estimated
+
+- Phase 3 then concerns...
+  - the storage, processing and statistical analysis of the to be collected data
+
+- Phase 4 involves...
+  - planning the reporting and communication of the monitoring results
+
+- And the final phase 5:
+  - the actual implementation of scheme, after its approval
+  - continued documentation & evaluation
+
+:::
+
+
+## The monitoring design process
+
+![Circle of monitoring design [adapted from @wouters_ontwerp_2008-1]](../../media/presentation_ec/symbols.png){width=800}
+
+::: {.notes}
+
+- The way in which we follow these phases is a circular process, where
+- one in which one iterate through the different phases,
+- continuously refining the design 
+- until it's ready for implementation
+
+:::
+
+## Application challenges
+
+- Knowledge transfer
+- Determining information needs / monitoring scopes
+- ...
+- 88 (+ 34 candidate) Union List IAS,<br>but no clear prioritization / strategy
+
+
+::: {.notes}
+
+- guidelines have successfully been applied, for instance in the context of the EU habitats and birds directives
+- Nevertheless, we did experience a number of challenges
+- ...with the most important one being that...
+- ...we are dealing with a long list of species (at that point still 88 union list and 34 candidate species) 
+- ... but no clear prioritization, no clear strategy of how to address this long list
+- (... and how to address monitoring design for this long list)
+
+[- Also: needed some initial information per species as a starting point]
+
+
+
+:::

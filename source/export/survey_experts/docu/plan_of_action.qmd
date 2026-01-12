@@ -1,0 +1,776 @@
+---
+title: "Plan of action"
+author: "Janne Adolf, Diederik Strubbe, Tim Adriaens, Thierry Onkelinx"
+format: 
+  html:
+    toc: true
+    toc-location: left-body
+    toc-depth: 3
+    toc-expand: true
+    theme: yeti
+    number-sections: true
+    number-depth: 3
+    embed-resources: true
+execute: 
+  eval: true
+  echo: false
+  cache: false
+---
+
+```{r format-priority-tables}
+#| warning: false
+
+response_data_path <- "../../../../data/survey_experts/"
+functions_path <- "../../../functions"
+source("../09_format_priority_tables.R", local = knitr::knit_global())
+
+``` 
+
+
+## Approach
+
+### Potential surveillance/monitoring schemes for IAS
+
+Following the EU IAS regulation, the IAS of (future) union concern can in theory be subjected to surveillance/monitoring schemes of different scopes.
+We distinguish 6 surveillance/monitoring scopes:
+
+- Detection
+- Inventory
+- (Change in) Distribution
+- (Change in) Abundance
+- (Change in) Distribution after management
+- (Change in) Abundance after management
+
+We employ the following working definitions:
+
+
+
+#### Detection
+
+- *Purpose*:
+- Early identification of new invasive alien species
+- Maximize chance of detection (through probability of presence and probability of detection)
+- Enable rapid responses
+- *Methods*:
+- *high sensitivity* required relative to costs; this can also be high sensitivity accumulated over repeated measurements if costs are very low
+- *high specificity* not required as false positives less problematic than false negatives; some procedure of confirmation of initial detections needs to be in place though
+- provide at least presence/absence information
+- e.g., eDNA, remote sensing methods
+- *Spatial and temporal coverage/resolution*:
+- focused surveillance area at/around known/potential places of introduction and sites of sporadic occurrence; possibly also in/around conservation area
+- complemented by broad (scale of Flanders?) "surveillance" via opportunistic observations?
+- near-continuous measurement in space and time; this can but need not be achieved through high spatial/temporal frequency sampling: methods with low costs and/or sampling effort (e.g., remote sensing) can be used with dense sampling schemes; methods that have lower specificity in time and space (e.g., eDNA) could substitute for near-continuous sampling
+
+#### Inventory
+Definition here.
+
+#### (Change in) Distribution
+
+- *Purpose*:
+- Assessing the status (and trend) of the spatial distribution of an invasive alien species
+- ...
+
+#### (Change in) Abundance
+
+- *Purpose*:
+- Assessing the status (and trend) of the population size of an invasive alien species in its distribution area
+- ...
+
+#### (Change in) Distribution after management
+
+- *Purpose*:
+- Assessing the status (and trend) of the spatial distribution of an invasive alien species within a defined area after managment has taken place
+- ...
+
+#### (Change in) Abundance after management
+
+- *Purpose*:
+- Assessing the status (and trend) of the population size of an invasive alien species within a defined area after managment has taken place
+- ...
+
+
+Combining the IAS of union concern (here species A - N for purposes of illustration) with all surveillance/monitoring scopes results in a table of *potential combinations* of the form:
+
+
+```{r show-empty-table}
+#| results: asis
+#| classes: .center-table
+#| 
+table_base_illu_list_upd$stadium |> 
+  dplyr::mutate(
+    scope_verbose = NA_character_
+  )|>
+  dplyr::arrange(species) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species"),
+    cols_addon = NULL,
+    footnote = NULL) |> 
+  unclass() |> cat()
+
+
+```
+
+### Limiting the number of species-scheme combinations
+
+Our aim is to fill this table - with a limited number of *relevant and/or feasible* and *high priority* species-surveillance/monitoring scheme combinations.
+Hence we want to obtain sparse variants of the above table as a first component of the plan of action. 
+This will then give rise to a concrete suggestion for the steering committee (e.g., ~3 species groups for which we will start designing the respective surveillance/monitoring schemes using the INBO-guidelines). 
+
+To arrive at such a table variant, the *following steps* are proposed.
+We thereby mainly rely on the information gathered via the expert survey on IAS in Flanders.
+Complementing the expert judgements with additional information will probably be required occasionally.
+
+- **Step 1**: **Indicate cells that will definitively not be covered**, because...
+- ... a *scope is irrelevant* for a species (e.g., detection is the only relevant scope for absent species, detection in conservation areas is only needed if a species is absent from the conservation area, if a species is not managed then monitoring after management is not needed)
+- ... there is *no method available* to implement a scope (e.g., if available methods can only measure presence/absence of a species, but not numbers, abundance cannot be monitored)
+- **Step 2**:  **Obtain a ‘base’ table**
+- Fill the remaining cells with the *reported methods* and *existing surveillance/monitoring schemes*
+- **Step 3**: **Indicate cells that have higher vs. lower priority**
+- e.g., species that reach a *critical urgency and feasibility* value can be given priority
+- **Step 4**: **Look for synergies based on method-overlap within scopes**
+- Between *prior* species, as well as between *prior and non-prior* species
+
+In the following, we detail these steps and provide a schematic illustration of how the initially presented table will change.
+
+
+### Details and demonstration of approach
+
+
+#### Step 1: Indicate cells that will definitively not be covered
+
+In Step 1, we mark cells that are *definitively not covered*. 
+One reason for a cell not being covered is that the respective *scope is irrelevant* for a species. 
+We determine scope relevance based on ... 
+
+- the invasion stadium of a species, 
+- whether the surveillance/monitoring area is known, 
+- whether the species is managed,
+- which information is necessary to evaluate management.
+
+Another reason for a cell not being covered is that there are no suitable methods available to implement the scope.
+
+We explain and illustrate each component of Step 1 in the following.
+For the exact filtering rules applied to the survey data see [here](https://github.com/inbo/mias-general/blob/b5c6d5bdccdb77f97c0c42874f5524f57d856ebc/source/export/survey_experts/08_make_priority_tables.R#L226-L292).
+
+##### Invasion stadium
+
+First and foremost, scope relevance depends on *invasion stadium*.
+Depending on the invasion stadium (in conservation areas) only certain scopes make sense:
+
+- For **absent species**, the (potential) scope is detection (ideally) at / around places of introduction
+- For **sporadically present species** the (potential) scope is detection (ideally) at / around places of introduction and known sites  
+- For **limited established species**, the (potential) scopes are
+- inventory,
+- (change in) distribution (after management) at / around places of distribution and/or management,
+- (change in) abundance (after management) at places of distribution and/or management
+- For **widely established species**, the (potential) scopes are
+- detection in conservation areas if the species is not yet present/established there and is expected to have an impact,
+- (change in) distribution (after management) at and around places of distribution and/or management,
+- (change in) abundance (after management) at places of distribution and/or management;
+- inventory is not considered as the distribution of widely established species is generally known (see survey results so far)
+
+Having considered the invasion stadium the table looks like this:
+
+
+```{r show-base-table-illustration-stadium}
+#| results: asis
+#| classes: .center-table
+
+# https://github.com/quarto-dev/quarto-cli/issues/1710
+table_base_illu_list_display$stadium |> unclass() |> cat()
+
+```
+
+<br>
+
+##### Surveillance/monitoring area being (un-)known
+
+Second, scope relevance also depends on whether the *surveillance/monitoring area is known* for a species. 
+At this stage, we only consider *limited established species* here. 
+
+- If the **distribution area is reported as known**, then the scope inventory is irrelevant.
+- If the **distribution area is unknown**, inventory is relevant, and we also keep the distribution and abundance-related scopes for now and reconsider them later (see step 3)
+
+Having considered whether the surveillance/monitoring area is known the table looks like this:
+
+```{r show-base-table-illustration-area}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_list_display$area |> unclass() |> cat()
+
+```
+
+<br>
+
+##### Existence of management
+
+A third factor to determine scope relevance is the *existence of management*.
+
+- If a **species is not managed**, then management-related monitoring is irrelevant.
+
+Having considered which species are managed the table looks like this:
+
+```{r show-base-table-illustration-managementexists}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_list_display$management_exists |> unclass() |> cat()
+
+```
+
+<br>
+
+##### Evaluation of management
+
+Fourth, scope relevance depends on the *kind of information necessary to evaluate management* (if the species is managed).
+
+- If **presence-absence information is sufficient**, then management-related monitoring using abundance information is irrelevant
+- If **abundance information is required**, then management-related monitoring using distribution information is irrelevant
+
+Having considered the evaluation of management the table looks like this:
+
+```{r show-base-table-illustration-managementeval}
+#| results: asis
+#| classes: .center-table
+
+
+table_base_illu_list_display$management_eval |> unclass() |> cat()
+
+```
+
+<br>
+
+##### Suitable methods
+
+While a scope might remain relevant for a species after considering the above-discussed components, 
+a cell might still not being covered because there are no *suitable methods* available to implement the scope.
+At this stage, we consider a method not suitable, if it *cannot measure the desired outcome*:
+
+- If a method reported in the survey can **only measure presence-absence** but not relative/absolute abundance of a species,
+the scopes related to abundance become infeasible
+- Strictly speaking, we only have this information of the 'most relevant' but not other methods listed; here we take a conservative approach assuming that if the 'most relevant' method cannot measure abundance then none of the other methods can (debatable)
+
+Having considered the suitability of methods the table looks like this:
+
+
+```{r show-base-table-illustration-5}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_list_display$method |> unclass() |> cat()
+
+```
+
+#### Step 2: Obtain a ‘base’ table
+
+To obtain a ‘base’ table in Step 2, we can now fill the remaining cells with the *reported surveillance/monitoring methods*.
+In addition, we can provide *existing surveillance/monitoring schemes* (potentially) meeting the respective surveillance/monitoring scope (not illustrated here).
+
+The base table looks like this:
+
+```{r show-base-table-illustration-6}
+#| results: asis
+#| classes: .center-table
+
+table_base_illu_final_display |> unclass() |> cat()
+
+```
+
+
+#### Step 3: Indicate cells with higher vs. lower priority
+
+
+In Step 3, we further filter the base table (i.e., distinguish cells with high vs. low priority). 
+To filter, we currently propose to use the following criteria:
+
+- whether or not existing surveillance/monitoring schemes or opportunistic/unstructured observations cover the relevant/feasible scopes
+- whether or not the surveillance/monitoring area is known for a species
+- whether the expert-judged global feasibility and urgency reaches a critical value
+
+We again explain and illustrate each component of Step 3 in the following.
+For the exact filtering rules applied to the survey data see [here](https://github.com/inbo/mias-general/blob/b5c6d5bdccdb77f97c0c42874f5524f57d856ebc/source/export/survey_experts/08_make_priority_tables.R#L293-L340).
+
+
+
+##### Existing surveillance/monitoring schemes and opportunistic observations
+
+First, we check whether species-scope combinations can be considered covered by *existing surveillance/monitoring schemes* or *opportunistic/unstructured observations* (i.e., waarnemingen.be).
+
+- Cells for which **existing surveillance schemes meet the respective scope** are marked as having low priority (not yet implemented)
+- Cells associated with species for which **opportunistic observations are considered representative** are marked as having low priority
+
+Having considered the representativeness of opportunistic observations the table looks like this:
+
+```{r show-filtered-table-illustration-observation}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_list_display$observation |> unclass() |> cat()
+
+```
+
+<br>
+
+##### Surveillance/monitoring area being (un-)known
+
+Second, we (again) take into account whether the *surveillance/monitoring area is known* for a species. 
+If the area is reported as unknown the following cells are marked as having low priority.
+
+- For **absent species** the detection scope is marked as having low priority if the introduction places are reported as unknown
+- For **sporadically present species** the detection scope is marked as having low priority if the introduction places or the distribution area are reported as unknown
+- For **limited established species**, if the distribution area is reported as unknown, 
+- the distribution- and abundance-related scopes are marked as low priority (conditional on inventory), 
+- while the inventory scope is marked as high priority
+
+Having considered whether the surveillance/monitoring area is known the table looks like this:
+
+
+```{r show-filtered-table-illustration-area}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_list_display$area |> unclass() |> cat()
+
+```
+
+<br>
+
+##### Global priority score
+
+Finally, we consider the survey’s global priority scores reflecting the *expert-judged global feasibility and urgency per species*. 
+For now we calculate these scores as the grand mean across all scored questions per species, which means that each question gets the same weight.
+
+- One (or even multiple) critical value(s) can be defined in an absolute or relative (percentile) manner. 
+- Currently, the median is employed as as a critical value(s) 
+- Cells associated with species that *do not reach the critical value* are marked as having low priority
+
+Having considered the global prirority score the table looks like this:
+
+
+```{r show-filtered-table-illustration-globalscore}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_list_display$score |> unclass() |> cat()
+
+```
+
+
+The final version of the filtered table looks like this:
+
+```{r show-filtered-table-illustration-final}
+#| results: asis
+#| classes: .center-table
+
+table_filtered_illu_final_display |> unclass() |> cat()
+
+```
+
+
+
+#### Step 4: Look for synergies
+
+Finally we aim to *group species based on synergies*. 
+For now we consider synergies in *designing* different surveillance/monitoring schemes (e.g., researching methods, planning sampling independent of the concrete sampling sites). We do at this stage not consider synergies that might purely arise during the implementation of the surveillance/monitoring scheme (e.g., overlap in concrete sampling sites). 
+We expect the design-synergies to mainly be driven by method overlap between species within scopes. 
+
+Synergies can occur... 
+
+- ... between prior species resulting in groups with multiple prior species,
+- ... between prior and non-prior species. In this case we...
+- ... indicate non-prior species that are potential ‘free riders’ under surveillance/monitoring schemes for prior species.
+- One priority species per group can thereby be sufficient.
+
+
+```{r show-synergies}
+#| results: asis
+#| classes: .center-table
+#| eval: false
+
+# FIX symbols score disappeared
+table_filtered_illu_final |>
+  dplyr::mutate(
+    scope_verbose = dplyr::case_when(
+      grepl("distribution$", scope_type) & grepl("high", scope_prior) & grepl("methode A", method_all) ~ 
+        kableExtra::cell_spec(x = method_all, color = color_meth_a, bold = TRUE),
+      grepl("distribution$", scope_type) & grepl("high", scope_prior) & grepl("methode B", method_all) ~ 
+        kableExtra::cell_spec(x = method_all, color = color_meth_b, bold = TRUE),
+      TRUE ~ scope_verbose
+    )
+  ) |>
+  make_table_display(
+    data_table = _,
+    cols_id = c("species", "stadium"),
+    cols_addon = NULL,
+    footnote_data = footnote_filtered
+  ) |> unclass() |> cat()
+
+```
+
+
+
+## Results
+
+### Base tables
+
+The following base tables for plants and animals are sorted as follows:
+
+- First, rows are sorted by scope type relying on the order of the table columns: `r table_base_upd$scope_type |> levels()`.
+- That is, all species for which (at least) detection is relevant/feasible appear first, 
+followed by those for which (at least) inventory is relevant/feasible, 
+followed by those for which (at least) inventory is relevant/feasible etc., resulting in a stair step (?)/ blocked pattern.
+- Within (i.e., for each value of) scope type, rows are sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
+- Within (i.e., for each value of) milieu, rows are sorted by invasion stadium, from "absent" to "widely established".
+- Within (i.e., for each value of) invasion stadium, rows are again sorted by taxon according to the order: `r table_base_upd$taxon |> levels()`.
+- Within (i.e., for each value of) taxon, rows are again sorted by feasibility priority score from high to low.
+
+#### Plants
+
+```{r make-base-table-display-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_base_upd_display_list$plant |> unclass() |> cat()
+
+```
+
+#### Animals
+
+```{r make-base-table-display-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_base_upd_display_list$dier |> unclass() |> cat()
+
+```
+
+
+### Filtered tables
+
+The following filtered tables for plants and animals are sorted similarly to the base tables:
+
+- First, rows are sorted by scope priority, with high priority scopes on top.
+- Within (i.e., for each value of) scope priority, rows are sorted by scope type relying again on the order: `r table_base_upd$scope_type |> levels()`.
+- That is, within the high/low priority scopes, all species for which (at least) detection is relevant/feasible appear first, 
+followed by those for which (at least) inventory is relevant/feasible, 
+followed by those for which (at least) inventory is relevant/feasible etc..
+- Within (i.e., for each value of) scope type, rows are again sorted by milieu according to the order: `r table_base_upd$prius_milieu |> levels()`.
+- Within (i.e., for each value of) milieu, rows are again sorted by invasion stadium, from "absent" to "widely established".
+- Within (i.e., for each value of) invasion stadium, rows are again sorted by taxon according to the order: `r table_base_upd$taxon |> levels()`.
+- Within (i.e., for each value of) taxon, rows are again sorted by feasibility priority score from high to low.
+
+
+
+#### Plants
+
+```{r make-filtered-table-display-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_upd_display_list$plant |> unclass() |> cat()
+
+```
+
+#### Animals
+
+```{r make-filtered-table-display-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_upd_display_list$dier |> unclass() |> cat()
+
+```
+
+
+### Method-related synergies
+
+
+Per surveillance/monitoring scope, the following tables reveal method-related synergies between species.
+If a species is covered by one of the methods reported for the respective scope, the table cell is filled and the total number of species covered by that method is displayed.
+
+We might use these tables to identify the x largest species groups covered by the same method within similar habitats.
+For these x groups we could proceed with the detailed planning of surveillance/monitoring schemes.
+
+Once we have identified x high-priority species groups to tackle, we can search for method-related synergies between the chosen high-priority and low-priority species.
+
+
+
+#### Plants
+
+
+```{r synergies-plants-display}
+#| results: asis
+#| classes: .center-table
+#| cache: false
+
+for (i in names(table_syn_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_plants_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+#### Animals
+
+
+```{r synergies-animals-display}
+#| results: asis
+#| classes: .center-table
+#| cache: false
+
+for (i in names(table_syn_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_animals_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+##  Scenarios
+
+### ANB priority species
+
+
+The ANB priority species we have collected survey data for are:
+
+
+```{r scenario-1-data-present}
+#| results: asis
+#| classes: .center-table
+
+species_anb_display |> unclass() |> cat()
+
+```
+
+
+#### Plants
+
+For the plants, applying our survey-based prioritization to the ANB priority species we have data for results in the following filtered table variant: 
+
+```{r scenario-1-make-filtered-table-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_anb_display_list$plant |> unclass() |> cat()
+
+```
+
+
+<br>
+Looking at method-related synergies between species (see tables in the following), we see a clear group emerging:
+For 4 to 5 (partly) freshwater plants we might be able to fill in the scopes distribution, abundance, and abundance after management relying on aquatic eDNA and/or visual surveys.
+We suggest to analyse for these plants as a group which scopes can be filled in how, at which costs.
+
+Aandachtspunten, nog te bekijken: 
+
+- Hebben de soorten een voldoende gelijkaardige ecologie zodat er kans op een kleiner aantal meetnetten dan de aantal soorten bestaat voor minstens een van de scopes? Indien ja, vermelden.
+- Zijn de toepassingen van dezelfde methode binnen een groep vergelijkbaar genoeg om synergiën tijdens het plannen te verwachten? Daarmee ook rekening houden.
+- Zijn er projecten aan het INBO waarop we kunnen bouwen, maar voldoende complementair zijn? Indien ja vermelden. Indien overlap te groot (nieuwe projecten?), vermelden en niet voorstellen.
+- Denken we dat die soorten haalbaar zijn om vlot te analyseren?
+- Zijn er al meetnetten op die we kunnen voortbouwen? Indien ja, vermelden. Dat zou dan ook deel uitmaken van de analyse.
+- Er klopt iets niet met de tabellen voor de niet-prioritaire soorten, moet nog bekijken wat
+
+
+
+```{r scenario-1-synergies-plants-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_anb_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_anb_plants_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+#### Animals
+
+
+For the animals, applying our survey-based prioritization to the ANB priority species we have data for results in the following filtered table variant: 
+
+```{r scenario-1-make-filtered-table-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_anb_display_list$dier |> unclass() |> cat()
+
+```
+
+
+<br>
+Looking at method-related synergies between species (see tables in the following), we see a larger groups emerging for the scope distribution:
+For 4 (partly) terrestrial mammals we might be able to fill in the scope distribution relying on visual surveys or camera traps.
+If camera traps are used, there is 1 secondary mammal that could be considered during planning as well.
+For 3 (partly) freshwater species, we might be able to fill in the scope distribution relying on aquatic eDNA.
+There is 1 secondary crayfish that could be considered during planning as well.
+This latter group is however very heterogeneous and it is unclear whether a grouped analysis is feasible.
+We thus suggest to focus on the first group of mammals here. 
+
+Looking at the other scopes, we do not see clear synergies emerge as groups remain small, often consisting of only 1 species.
+
+One of the species occurring frequently across scopes is the chinese muntjak. We thus suggest to use this as a focus species, for which we 
+suggest to analyse which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs.
+For the scope distribution we also consider the additional mammals included in the above-mentioned group.
+
+Another species occurring frequenty across scopes is the afrikaanse klauwkikker. 
+We suggest to analyse which scopes (distribution, abundance, abundance after management) can be filled in how, at which costs.
+
+
+
+<br>
+Aandachtspunten, noch te bekijken: zie planten.
+
+
+
+
+```{r scenario-1-synergies-animals-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_anb_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_anb_animals_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+### Focus on species for which detection is relevant
+
+
+Out of the prioritized species we select those for which the surveillance/monitoring detection is (also) relevant.
+
+
+#### Plants
+
+For the plants we get the following filtered table variant: 
+
+```{r scenario-2-make-filtered-table-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_det_display_list$plant |> unclass() |> cat()
+
+```
+
+In terms of method-related synergies we get:
+
+```{r scenario-2-synergies-plants-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_det_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_det_plants_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+#### Animals
+
+
+For the animals we get the following filtered table variant:
+
+```{r scenario-2-make-filtered-table-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_det_display_list$dier |> unclass() |> cat()
+
+```
+
+In terms of method-related synergies we get:
+
+```{r scenario-2-synergies-animals-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_det_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_det_animals_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+
+### Focus on species for which (also) distribution is relevant
+
+Out of the prioritized species we select those for which the surveillance/monitoring distribution is (also) relevant.
+
+#### Plants
+
+For the plants we get the following filtered table variant: 
+
+```{r scenario-3-make-filtered-table-plants}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_dist_display_list$plant |> unclass() |> cat()
+
+```
+
+In terms of method-related synergies we get:
+
+```{r scenario-3-synergies-plants-display}
+#| results: asis
+#| cache: false
+
+for (i in names(table_syn_dist_plants_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_dist_plants_display_list[[i]] |> unclass() |> cat()
+}
+
+```
+
+
+#### Animals
+
+
+For the animals we get the following filtered table variant:
+
+```{r scenario-3-make-filtered-table-animals}
+#| results: asis
+#| cache: false
+#| classes: .center-table
+
+table_filtered_dist_display_list$dier |> unclass() |> cat()
+
+```
+
+In terms of method-related synergies we get:
+
+```{r scenario-3-synergies-animals-display}
+#| results: asis
+#| cache: false
+
+
+
+for (i in names(table_syn_dist_animals_display_list)){
+  cat("<br>")
+  cat("\n\n##### Scope ", i, "\n")
+  table_syn_dist_animals_display_list[[i]] |> unclass() |> cat()
+}
+
+```

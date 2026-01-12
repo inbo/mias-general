@@ -1,0 +1,114 @@
+# R and R package information {#sec-app-c}
+
+```{r appdx-c-setup}
+#| message: false
+#| warning: false
+#| cache: false
+
+functions_path <- "../../../functions/"
+bib_file_path <- "../../../../media/"
+
+# source functions
+list.files(functions_path, full.names = TRUE) |>
+  lapply(source) |>
+  invisible()
+
+# get R and package information from renv.lock file
+
+pkg_all <- extract_pkgs_from_renvlock("../../../../renv.lock")
+pkg_prima <- extract_pkgs_from_source(
+  source_dir = "../../../../source/export/survey_experts"
+  ) |>
+  dplyr::left_join(
+    x = _,
+    y = pkg_all$pkg,
+    by = c("pkg" = "name")
+  ) |>
+  dplyr::rowwise() |>
+  dplyr::mutate(
+    version = dplyr::case_when(
+      is.na(version) ~ packageVersion(pkg) |> as.character(),
+      TRUE ~ version
+    )
+  ) |>
+  dplyr::filter(!grepl("grDevices|fs", pkg))
+
+# read bib file and get citation handles to add
+if (FALSE) knitr::write_bib(
+  x = pkg_prima$pkg, file = "../../../../media/packages.bib"
+  )
+data_bib <- bib2df::bib2df(
+  file.path(bib_file_path, "MIAS.bib")
+) |> dplyr::filter(
+  grepl(paste(pkg_prima$pkg, collapse = "|"), TITLE)
+)
+tmporder <- sapply(
+  pkg_prima$pkg,
+  \(i){
+    tmp <- grep(i, data_bib$URL)
+    if (length(tmp) == 0) tmp <- grep(i, data_bib$TITLE)
+    return(tmp)
+  }
+) |> unlist()
+pkg_prima <- cbind(
+  pkg_prima,
+  citekey = data_bib$BIBTEXKEY[tmporder]
+)
+
+
+```
+
+
+For the current project, we use the R package renv [@ushey_renv_2024] for dependency management.
+The following information is thus extracted from the current version (date: `r Sys.Date()`) of the *renv.lock* file in the github repository [inbo/mias-general](https://github.com/inbo/mias-general) [@adolf_monitoring_nodate] accompanying this project.
+The *renv.lock* file (and its commit history) provides detailed information on the R version and all R packages used.
+
+
+## R version used
+
+We have used R version `r pkg_all$R$version` [@r_core_team_r_2025].
+
+## Quarto version used
+
+We have used Quarto version `r quarto::quarto_version()` [@allaire_quarto_2025].
+
+## Primary R packages
+
+As primary R packages, we define those R packages that we directly call in the project's source code.
+These are (from most to least frequently used):
+
+
+```{r appdx-c-pkg-prima}
+#| results: "asis"
+
+pkg_prima |>
+  dplyr::mutate(
+    tmp = paste0(pkg, " [version ", version, ", @",citekey,"]")
+  ) |>
+  dplyr::pull(tmp) |>
+  paste(x = "-", y = _) |>
+    cat(x = _, sep = "\n")
+
+```
+
+
+## Non-primary R packages
+
+The following list contains all additional, non-primary packages in alphabetical order: 
+
+```{r appdx-c-pkg-all}
+#| results: "asis"
+
+pkg_all$pkg |>
+  dplyr::filter(
+    !grepl(paste(pkg_prima$pkg, collapse = "|"), name)
+  ) |>
+  dplyr::mutate(
+    tmp = paste0(name, " (version ", version, ")")
+  ) |>
+  dplyr::pull(tmp) |>
+  paste(x = "-", y = _) |>
+    cat(x = _, sep = "\n")
+
+```
+

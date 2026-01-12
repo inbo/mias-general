@@ -1,0 +1,16 @@
+# Verspreiding & abundantie
+
+## Is de verspreiding van de soort over Vlaanderen voldoende gekend?
+
+*De bovenstaande verspreidingskaart baseert zich op GBIF gegevens. Voor het Vlaams Gewest (gebied binnen de vaste lijn) en een 30 km brede bufferzone (gebied tussen vaste en stippellijn) zijn die hokken (EEA Reference grid, 1 x 1 km) rood gemarkeerd waarbinnen de soort tijdens de laatste 10 jaar is waargenomen. In- en uitzoomen kan via de toetscombinaties Ctrl + en Ctrl -. Kies een van de volgende opties.*
+
+- ja, de verspreiding is voldoende gekend en de verspreidingskaart geeft een goed beeld hiervan
+- ja, de verspreiding is voldoende gekend maar de verspreidingskaart geeft hier geen goed beeld van
+- neen, de verspreiding is niet voldoende gekend
+- ik weet het niet
+
+*Optioneel: Licht het gekozen antwoord kort toe (bv. welke leefgebieden er mogelijk niet op de kaart staan) en geef eventueel gebruikte bronnen aan.*
+
+&nbsp;
+
+

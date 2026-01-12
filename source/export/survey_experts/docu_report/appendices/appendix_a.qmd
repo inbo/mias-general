@@ -1,0 +1,262 @@
+# Expert survey design {#sec-app-a}
+
+
+## Species covered {#sec-app-species}
+
+The following table provides an overview over all species covered by the expert survey.
+Entries are greyed out if the survey was sent out but not completed.
+All scientific names are the currently accepted scientific names according to GBIF [@gbif_the_global_biodiversity_information_facility_what_2025].
+Vernacular names have largely also been retrieved from GBIF or filled in by species experts otherwise.
+
+
+::: {.landscape}
+
+```{r appdx-a-species}
+#| message: false
+#| warning: false
+#| cache: false
+
+# load files
+response_data_path <- "../../../../data/survey_experts/"
+species_list_path <- "../../../../data/processed/2025-04-30_species_list_upd.Rda"
+maps_urls_path <- "../../../../media/gbif_occcubes/plot_filepaths_gdriveurls.rda"
+
+res_comb_upd <- get(load(paste0(response_data_path, "results_combined_upd.rda")))
+species_list <- get(load(species_list_path))
+maps_urls <- get(load(maps_urls_path))
+
+# test format
+is_html <- knitr::is_html_output()
+
+# table specification
+.format <- ifelse(is_html, "html", "latex")
+.escape <- FALSE
+.bootstrap_options <- if (is_html) {c("condensed", "hover") } else {"basic"}
+.latex_options <- if (is_html) {"basic"} else {c("repeat_header", "striped")}
+.booktabs <- if (is_html) {FALSE} else {TRUE}
+.longtable <- if (is_html) {FALSE} else {TRUE}
+.font_size <- if (is_html) {12} else {6}
+.col_width_wide <- ifelse(is_html, "150px", "70pt")
+.col_width_medium <- ifelse(is_html, "120px", "70pt")
+.col_width_narrow <- ifelse(is_html, "120px", "40pt")
+
+options(knitr.kable.NA = '')
+options(knitr.table.format = .format)
+
+# prep species data for display
+species_data <- species_list |> 
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    sci_name = sci_name_gbif_acc, #|> gsub("&", "\\\\&", x = _), 
+    # not needed if cell_spec is applied later on 
+    vern_name_eng = dplyr::case_when(
+      is.na(vern_name_gbif_eng_alt) ~ vern_name_gbif_eng,
+      TRUE ~ vern_name_gbif_eng_alt
+    ),
+    vern_name_nld = dplyr::case_when(
+      is.na(vern_name_gbif_nld) & is.na(vern_name_gbif_nld_alt)  ~ vern_name_gsheet_nld,
+      !is.na(vern_name_gbif_nld_alt)  ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gbif_nld
+      ),
+    sci_name = dplyr::case_when(
+      grepl("Reynoutria", sci_name_gbif_acc) ~ sci_name_gbif_acc_alt,
+      TRUE ~ sci_name_gbif_acc
+    ),
+    color_completed = dplyr::case_when(
+      (sci_name_gbif_acc %in% res_comb_upd$species | 
+         grepl("Reynoutria", x  = sci_name_gbif_acc)) ~ "#000000", 
+      TRUE ~ "#A9A9A9"
+    )
+  ) |>
+  dplyr::distinct(sci_name, .keep_all = TRUE) |>
+  dplyr::arrange(on_unionlist_2025 |> dplyr::desc(), sci_name) |>
+  dplyr::mutate(
+    dplyr::across(
+      tidyselect::everything(),
+      \(x) {
+        kableExtra::cell_spec(x = x, color = color_completed, format = .format)
+      }
+      )
+    ) |>
+  dplyr::select(
+    tidyselect::all_of(
+    c(
+      "on_unionlist",
+      "on_unionlist_2025",
+      "sci_name", "vern_name_eng", "vern_name_nld", 
+      "kingdom", "taxon", 
+      "prius_stadium", "prius_milieu"
+      )
+    )
+  ) 
+
+
+```
+
+```{r appdx-a-species-table}
+#| label: tbl-species
+#| tbl-cap: All species covered in the expert survey
+
+knitr::kable(
+    x = species_data,
+    format = .format,
+    escape = .escape,
+    booktabs = .booktabs,
+    longtable = .longtable,
+    linesep = "",
+    col.names = 
+      c(
+        "species on union list 2022",
+        "species on union list 2025",
+        "accepted scientific name", 
+        "vernacular name eng", 
+        "vernacular name nld", 
+        "kingdom", 
+        "taxon",
+        "prius invasion stage",
+        "prius milieu"
+        ) |> 
+      gsub("^([a-z])", "\\U\\1", x = _, perl = TRUE),
+    table.attr = 'data-quarto-disable-processing="true"' # if quarto HERE
+  ) |>
+    kableExtra::kable_styling(
+      bootstrap_options = .bootstrap_options,
+      latex_options = .latex_options,
+      full_width = FALSE,
+      position = "left",
+      font_size = .font_size
+    ) |>
+    # row height
+    kableExtra::row_spec(
+      row = 1:nrow(species_data),
+      extra_css = if (is_html) 'padding: 4px;' else NULL
+    ) |>
+  # col width
+  kableExtra::column_spec(
+    column = 1:ncol(species_data),
+    width = .col_width_narrow
+  ) |>
+    kableExtra::column_spec(
+    column = 3,
+    width = .col_width_wide
+  ) |>
+    kableExtra::column_spec(
+    column = c(4,5,8,9),
+    width = .col_width_medium
+  ) |>
+    (\(x)
+     if (is_html){
+       x |>
+         kableExtra::scroll_box(
+           height = "700px",
+           extra_css = sprintf(
+             "scrollbar-color: %s %s;",
+             INBOtheme::inbo_hoofd,
+             "#D3D3D3"
+             )
+         )
+     } else {
+       x
+     }
+    )()
+
+```
+
+:::
+
+{{< pagebreak >}}
+
+## Questionnaire {#sec-app-questionnaire}
+
+
+```{r appdx-a-questionnaire}
+#| results: "asis"
+
+sections_list <- list.files(
+  path = "../questions_EN/overview_sections", 
+  full.names = TRUE
+  ) |> 
+  stringr::str_sort(x = _, numeric = TRUE)
+
+children_list <- vector(mode = "list", length = length(sections_list))
+
+for (i in seq_along(sections_list)) {
+      children_list[[i]] <- knitr::knit_child(
+        sections_list[[i]],
+        quiet = TRUE,
+        envir = environment()
+        ) |> 
+        gsub(pattern = "# ", replacement = "### ", x = _) 
+      # alternative: pattern = "##", replacement = ""
+}
+
+cat(unlist(children_list), sep = "\n")
+
+
+```
+
+
+{{< pagebreak >}}
+
+## Invitation e-mail text {#sec-app-mail}
+
+The following e-mail text was used to invite species experts to participate in the survey. 
+
+
+> ***Subject: Survey on invasive alien species in Flanders***
+
+> *Dear [name receiver],*
+
+> *In connection with the project “Designing surveillance schemes for Invasive Alien Species” at the Research Institute for Nature and Forest we are conducting a survey among species experts. With this we would like to kindly ask you to participate in it.* 
+
+> *The survey is intended to take your expertise into account when planning future survey schemes for invasive alien species in Flanders. This includes the current list of invasive alien species of concern to the European Union (Invasive Alien Species of Union concern), as well as a number of species that may be added to this list in the future. You are not an expert for invasive alien species or the species listed below? In that case we have - based on recommendations from colleagues or literature research - come to the conclusion that you are probably still the most appropriate person to make statements about this or these (sometimes poorly known) species, in a Flemish context.* 
+
+> *For each species, a separate form has been prepared with questions on its (probability of) introduction and/or establishment, its distribution and abundance, its impact, its monitoring and its management. You obviously only need to fill in a form for the species listed below. For each species, this will take about 20 - 30 minutes. An overview of the full questionnaire can be found here: [link overview questions]* 
+
+> *We would greatly appreciate it if you could complete this survey before [date]. Should it be impossible for you to participate, we would appreciate it if you could recommend other experts who could help us further with the species below.*
+
+> *The email address that you may provide with this survey will only be used to contact you regarding the results, given your explicit permission. When analyzing the survey results, personal data will be anonymized. Similarly, responses containing free text will not be disclosed verbatim but only in summarized form.*
+
+> *Should you have any further questions or require further information, please do not hesitate to contact us. Thank you very much for your cooperation.*
+
+> *Kind regards,*
+> *[name sender]*
+
+
+> *Link to the form for [species name]:*
+> *[link form]*
+
+
+
+{{< pagebreak >}}
+
+## Species distribution maps {#sec-app-maps}
+
+The question "Is the distribution of the species across Flanders sufficiently known?" was complemented by species-specific distribution maps based on recent data from GBIF [@gbif_the_global_biodiversity_information_facility_what_2025; @gbiforg_user_occurrence_2024].
+
+### Example distribution map for the Chinese muntjac
+
+Here we show the distribution map of the Chinese muntjac as an example.
+For the Flemish Region (area within the solid line) and a 30 km wide buffer zone (area between solid and dotted line), we mark those grid cells (EEA Reference grid, 1 x 1 km) in red within which the Chinese muntjac has been observed between the years 2014 and 2024.
+
+![Example occurrence map based on GBIF data](../media/gbif_muntiacus_reevesi.svg){width=600}
+
+
+### Distribution maps of all species
+
+Distribution maps for all species are available as external png files under the following links: 
+
+
+```{r appdx-a-distmaps-urls}
+#| results: "asis"
+
+urls_to_print <- maps_urls |>
+  dplyr::arrange(species) |>
+  dplyr::mutate(
+    tmp = paste0("[", species, "](", gdrive_url,")")
+  ) |>
+  dplyr::pull(tmp) |>
+  paste(x = "-", y = _) |>
+    cat(x = _, sep = "\n")
+
+```

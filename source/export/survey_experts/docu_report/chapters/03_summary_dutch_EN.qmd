@@ -1,0 +1,154 @@
+# Dutch executive summary {-}
+
+```{r exec-summary-setup}
+#| message: false
+#| warning: false
+
+# define paths
+species_list_path <- "../../../../data/processed/2025-04-30_species_list.Rda"
+# load species list
+species_list <- get(load(species_list_path))
+# species data
+species_data <- species_list |> 
+  purrr::pluck("data") |>
+  dplyr::mutate(
+    species = sci_name_gbif_acc,
+    vern_name_eng = dplyr::case_when(
+      !is.na(vern_name_gbif_eng) ~ vern_name_gbif_eng,
+      TRUE ~ vern_name_gbif_eng_alt
+      ),
+    vern_name_nld = dplyr::case_when(
+      !is.na(vern_name_gbif_nld) ~ vern_name_gbif_nld,
+      !is.na(vern_name_gbif_nld_alt) ~ vern_name_gbif_nld_alt,
+      TRUE ~ vern_name_gsheet_nld
+      )
+  )
+# format species names for printing 
+print_species_name <- function(
+    species_table, 
+    name_expr = expression(c("*",species,"*", " [EN: ", vern_name_eng, ", NL: ", vern_name_nld, "]"))
+    ) {
+  species_table |>
+    dplyr::rowwise() |> 
+    dplyr::mutate(
+      tmp = paste0(eval(expr = name_expr), collapse = "")
+        ) |>
+    dplyr::arrange(tmp) |>
+    dplyr::pull(tmp) |>
+    gsub("\\\\&", "&", x = _)
+}
+
+```
+
+::: {lang=nl-BE}
+
+This report presents a survey-based framework to prepare the development of structured, policy-relevant monitoring schemes for invasive alien species in Flanders. 
+Under the EU Invasive Alien Species Regulation [@noauthor_regulation_2014], member states are required to monitor species listed as of Union Concern, including the establishment of systems for early detection and for monitoring species' distributions and management outcomes. 
+In the Flemish region, the Research Institute for Nature and Forest is formally tasked with coordinating such monitoring efforts. 
+However, Flanders currently lacks a coherent monitoring programme that systematically addresses all species on the Union List.
+
+Existing efforts consist of a fragmented landscape of initiatives, often project-based and time-limited, with varying geographic and taxonomic coverage.
+These include professional and citizen science-based schemes dedicated to specific species groups, professional monitoring schemes with broader ecological aims, and opportunistic observations collected through public biodiversity reporting portals such as waarnemingen.be [ref]. 
+Despite their contributions, these initiatives are not methodologically aligned and do not collectively meet the requirements of the EU Invasive Alien Species Regulation.
+
+To support the design of future invasive alien species monitoring schemes, 
+an expert survey was conducted covering all 88 species on the current Union List as well as 34 candidate species considered for future inclusion.
+The survey gathered species-specific information and expert judgements on the introduction, distribution, abundance, impacts, management and monitoring status in Flanders.
+The collected responses were condensed into overall ratings of the feasibility and urgency of structured monitoring schemes for the species under consideration.
+
+These survey results subsequently informed a two-stage prioritisation process.
+With this we aimed to determine the relevance and priority of different monitoring scopes for the assessed species 
+and identify a limited number of species-scope combinations with high relevance and priority.
+We distinguish between six possible monitoring scopes:
+Detection (to assess a species' presence in areas from which the species is absent), 
+inventory (to locate the areas of a species' distribution), 
+distribution (to assess the status and trend of a species' distribution),
+abundance (to assess the status and trend of a species' population size),
+distribution under management and abundance under management (both to assess the status and trend of a species' distribution or population size in areas where management takes place).
+
+In a first stage of the prioritisation process, the relevance of the different monitoring scopes per species was determined using criteria based on the species’ current invasion stage, whether it is subject to management, whether monitoring areas are known, and whether suitable monitoring techniques are available. 
+Species–scope combinations considered irrelevant under these criteria were excluded from further consideration.
+In a second stage, the priority of the remaining species–scope combinations was assessed. 
+Priority was determined based on the overall feasibility and urgency scores derived from the expert survey. In addition, experts' responses to selected critical survey questions were used to inform exclusion decisions, for instance, where experts reported that opportunistic data collection already provided sufficient coverage of a species.
+The application of these filters yielded a short-list of species–scope combinations considered of both high relevance and high priority for future monitoring scheme development.
+
+To further structure the prioritisation results, three strategic focus scenarios were developed, each concerning a subset of the prioritised species and monitoring scopes: 
+Scenario 1 focuses on species that have been explicitly identified as management priorities by the Agency for Nature and Forests. 
+For these species, monitoring is especially needed to accompany measures of eradication, containment and control.
+Relevant monitoring scopes in this scenario include distribution and abundance under management.
+Scenario 2 includes species for which early detection is the primary concern. 
+These are species that are either absent or only sporadically present in Flanders, 
+or which are still absent from conservation areas of interest.
+Detection-based monitoring can support rapid intervention and increase the likelihood of successful prevention or early eradication.
+Scenario 3 comprises species for which distribution monitoring is relevant and ties in with the most explicitly defined reporting obligations under the Invasive Alien Species Regulation.
+
+For each scenario, reported monitoring techniques were analysed to identify commonalities and hence potential method-based synergies between species. 
+Commonalities were found in several cases, concerning for instance the use of environmental DNA for aquatic species, visual surveys for terrestrial plants, or camera traps for terrestrial mammals.
+Such overlaps may offer opportunities for coordinated planning and possibly even coordinated implementation of monitoring schemes across multiple species. 
+However, further investigation is needed to reveal the extent to which these potential synergies prove successful.
+
+The results of the survey and the prioritisation process were reviewed by a steering committee composed of representatives from the Research Institute for Nature and Forest, the Agency for Nature and Forests and the Flanders Environment Agency.
+Based on this review, the committee agreed on a final short-list of four species or species groups for immediate monitoring scheme development. 
+These selections reflect a balance of ecological relevance, current management needs, monitoring feasibility, and policy priorities.
+The selected species and corresponding monitoring scopes are as follows:
+
+`r species_data |> dplyr::filter(grepl("Chinese muntjac", vern_name_eng)) |> print_species_name()`, 
+a small deer species with a currently limited but potentially expanding distribution in Flanders. 
+It is subject to ongoing eradication efforts. 
+The most relevant monitoring scope is abundance under management, to follow up population reductions and confirm local eradication.
+
+`r species_data |> dplyr::filter(grepl("Common slider", vern_name_eng)) |> print_species_name()`,
+a turtle species commonly released into the wild through pet trade. 
+While currently not confirmed to reproduce in Flanders, the species is widely distributed. 
+The most relevant monitoring scopes are inventory (to better determine the current distribution) and abundance under management (for sites where removal actions are taking place).
+
+`r species_data |> dplyr::filter(grepl("American bull frog", vern_name_eng)) |> print_species_name()`,
+an amphibian species established to a limited extent in Flanders, but subject to control efforts. 
+Most relevant monitoring scopes include abundance under management, and distribution, particularly at the edges of the current range.
+
+`r species_data |> dplyr::filter(grepl("Large-flower primrose-willow", vern_name_eng)) |> print_species_name()`
+and 
+`r species_data |> dplyr::filter(grepl("Floating primrose-willow", vern_name_eng)) |> print_species_name()`,
+aquatic plant species that range from being widespread to established to limited extent. 
+Both species are subject to control in various locations. 
+The most relevant monitoring scope is abundance under management, to follow up population reductions and confirm local eradication.
+
+Each of these cases will serve as a test bed for the design and implementation of structured monitoring schemes for invasive alien species in Flanders. 
+Monitoring schemes for these species should be developed in accordance with the methodological guidelines put forward by the Research Institute for Nature and Forest [@wouters_ontwerp_2008-1]. These guidelines provide a principled framework for tailoring monitoring targets, data collection, data analysis and reporting to information needs, ensuring reliable, robust, and policy-relevant insights.
+The present report provides important groundwork for this next phase. 
+In addition to a prioritisation of species and monitoring scopes and a final, consolidated short-list, it offers a methodology for decision support, a starting point for forming species groups for monitoring, and an empirical overview of expert insights into the current status of invasive alien species of (future) Union concern in Flanders. 
+
+
+
+
+:::
+
+<!-- This part adds the table of content in the pdf -->
+<!-- Add it at the end of the last chapter of the frontmatter -->
+<!-- spell-check: ignore:start-->
+::: {.content-visible when-format="pdf"}
+\clearpage
+\phantomsection
+\addcontentsline{toc}{chapter}{\contentsname}
+\setcounter{tocdepth}{2}
+\tableofcontents
+
+\clearpage <!-- remove this line when you have neither a list of figures and a list of tables -->
+
+<!-- remove this block when you don't want a list of figures -->
+\phantomsection
+\addcontentsline{toc}{chapter}{\listfigurename}
+\listoffigures
+\vspace{34pt}
+<!-- remove this block when you don't want a list of figures -->
+
+<!-- remove this block when you don't want a list of tables -->
+\phantomsection
+\addcontentsline{toc}{chapter}{\listtablename}
+\listoftables
+<!-- remove this block when you don't want a list of tables -->
+
+<!-- keep the lines below -->
+:::
+<!-- spell-check: ignore:end-->
+<!-- This part adds the tables of contents in the pdf -->

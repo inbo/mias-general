@@ -1,0 +1,101 @@
+# Expert survey
+
+
+## Purpose
+
+- Draw on expert knowledge & assessment of situation in Flanders
+  - introduction & establishment
+  - distribution & abundance
+  - impacts
+  - monitoring
+  - management
+- Assess [feasiblity]{style="text-decoration:underline"} and [urgency]{style="text-decoration:underline"} of monitoring schemes per species
+- Prioritize Union List (candidate) IAS for monitoring in Flanders
+
+::: footer
+@adolf_prioritising_2025; under review
+:::
+
+
+
+
+## Prioritization {visibility="hidden"}
+
+![Flowchart of the exclusion process](../../media/survey/flowchart-prioritization.svg){width=700}
+
+::: footer
+@adolf_prioritising_2025; under review
+:::
+
+
+## Results - Illustration
+
+```{r species-scope-table}
+#| results: asis
+
+table_filtered_illu_final_display |> 
+  kableExtra::add_footnote(NULL) |> 
+  unclass() |> cat()
+
+```
+
+::: footer
+@adolf_prioritising_2025; under review
+:::
+
+
+## Results - Final selection steering committee
+
+:::: {.columns}
+
+::: {.column width="25%"}
+
+![Chinese muntjac](../../media/presentation_ec/muntjac2.png){height=200}
+
+- abundance under management
+- detection
+
+:::
+
+::: {.column width="25%"}
+
+
+![American bull frog](../../media/presentation_ec/bullfrog2.png){height=200}
+
+
+- abundance under management
+- inventory / distribution
+
+:::
+
+::: {.column width="25%"}
+
+![Common slider](../../media/presentation_ec/slider2.png){height=200}
+
+- inventory / distribution
+- abundance under management
+
+
+:::
+
+::: {.column width="25%"}
+
+
+![Large-flower/floating primrose-willow](../../media/presentation_ec/pimrose2.png){height=200}
+
+- abundance under management
+
+
+:::
+
+::::
+
+::: footer
+@adolf_prioritising_2025; under review
+:::
+
+
+
+
+
+

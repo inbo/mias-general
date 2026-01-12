@@ -1,0 +1,25 @@
+# Surveillance
+
+## Which surveillance techniques are available for the species?
+
+*This may include, for example, the use of eDNA for invasive fish species or camera traps for nocturnal invasive mammals. Other examples may include other types of traps, visual surveys, or acoustic surveillance, depending on the species. Choose one or more of the following options.*
+
+- visual surveys
+- acoustic surveys
+- passive acoustic surveillance (through automatic recordings)
+- camera traps
+- pheromone traps
+- light traps
+- colored traps
+- pitfall traps
+- environmental DNA: water
+- environmental DNA: soil
+- environmental DNA: air
+- electrofishing
+- other
+
+*Optional: Briefly explain the answer chosen (e.g. what other surveillance techniques are available) and indicate any sources used.*
+
+&nbsp;
+
+

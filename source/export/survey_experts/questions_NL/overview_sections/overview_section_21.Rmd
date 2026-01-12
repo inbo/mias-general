@@ -1,0 +1,17 @@
+
+
+## Hoe hoog is de specificiteit van deze meest relevante bemonsteringsmethode?
+
+*De specificiteit geeft aan hoe goed een methode de afwezigheid van een soort of een minimaal relevante (verandering in) populatiegrootte kan detecteren. Bij een hoge specificiteit is de kans groot dat deze afwezigheid wordt vastgesteld als de soort of de minimaal relevante (verandering in) populatiegrootte daadwerkelijk afwezig is. Een hoge specificiteit leidt ook tot een klein percentage fout-positieve resultaten. Kies een van de volgende opties.*
+
+- hoge specificiteit
+- middelhoge specificiteit
+- lage specificiteit
+- ongekend
+- ik weet het niet
+
+*Optioneel: Licht het gekozen antwoord kort toe en geef eventueel gebruikte bronnen aan.*
+
+&nbsp;
+
+
