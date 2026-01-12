@@ -39,7 +39,6 @@ The repository is organised as follows:
 .
 ├── data/processed
 ├── inst/
-├── media/
 ├── renv/
 └── source/
 ```
